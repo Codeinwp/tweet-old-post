@@ -13,9 +13,9 @@
                 </div>
             </div>
         </div>
-        <div class="columns " v-if="!isPro">
+        <div class="columns " v-if="!isPro && wpml_active_status">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> <span v-html="labels.full_wpml_support_upsell"></span></p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> <span v-html="labels.full_wpml_support_upsell"></span></p>
             </div>
         </div>
         <span class="divider"></span>
@@ -139,27 +139,27 @@
             </div>
         </div>
         <span class="divider"></span>
-
-        <div class="columns py-2" :class="'rop-control-container-'+isPro">
+        <!-- License price id 7 is starter plan. Per account based filtering not included in starter plan,  -->
+        <div class="columns py-2" :class="'rop-control-container-'+(isPro && (license_price_id !== 7))">
             <div class="column col-6 col-sm-12 vertical-align rop-control">
                 <b>{{labels_settings.taxonomies_title}}</b>
                 <p class="text-gray"><span v-html="labels_settings.taxonomies_desc"></span></p>
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="input-group">
-                    <multiple-select :disabled="!!isPro" :options="taxonomy" :selected="taxonomy_filter" :name="post_format.taxonomy_filter" :changed-selection="updated_tax_filter" :key="this.account_id"></multiple-select>
+                    <multiple-select :disabled="!!isPro && (license_price_id !== 7)" :options="taxonomy" :selected="taxonomy_filter" :name="post_format.taxonomy_filter" :changed-selection="updated_tax_filter" :key="this.account_id"></multiple-select>
                     <span class="input-group-addon vertical-align">
                         <label class="form-checkbox">
-						    <input :disabled="!isPro" type="checkbox" v-model="post_format.exclude_taxonomies"/>
+						    <input :disabled="!isPro || (license_price_id === 7)" type="checkbox" v-model="post_format.exclude_taxonomies"/>
 							<i class="form-icon"></i>{{labels_settings.taxonomies_exclude}}
 						</label>
 					</span>
                 </div>
             </div>
         </div>
-        <div class="columns " v-if="!isPro">
+        <div class="columns " v-if="!isPro || (license_price_id === 7)">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
             </div>
         </div>
         <span class="divider"></span>
@@ -285,7 +285,7 @@
 
         <div class="columns " v-if="!isPro">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.image_upsell}}</p>
             </div>
         </div>
         <span class="divider"></span>
@@ -315,7 +315,7 @@
         </div>
         <div class="columns " v-if="!isPro">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.custom_utm_upsell}}</p>
             </div>
         </div>
         <span class="divider"></span>
@@ -347,7 +347,9 @@
         updated: function() {
             this.$nextTick(function () {
                 if(!this.$store.state.dom_updated){
+                    if(this.wpml_active_status){
                     this.refresh_language_taxonomies();
+                    }
                 }
             });
         },
@@ -436,6 +438,9 @@
             },
             isPro: function () {
                 return (this.license > 0);
+            },
+            license_price_id: function () {
+                return this.license;
             },
             short_url_service: function () {
                 let postFormat = this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];

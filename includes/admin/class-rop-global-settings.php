@@ -137,10 +137,10 @@ class Rop_Global_Settings {
 	 */
 	private $settings_defaults = array(
 		'default_interval'      => 10,
-		'min_interval'          => 0.5,
-		'step_interval'         => 0.1,
+		'min_interval'          => 5,
+		'step_interval'         => 0.5,
 		'minimum_post_age'      => 30,
-		'maximum_post_age'      => 0,
+		'maximum_post_age'      => 365,
 		'number_of_posts'       => 1,
 		'more_than_once'        => true,
 		'available_post_types'  => array(),
@@ -412,12 +412,16 @@ class Rop_Global_Settings {
 	 * @return  int
 	 */
 	public function license_type() {
+
 		$pro_check = defined( 'ROP_PRO_VERSION' );
+
 		if ( ! $pro_check ) {
 			return - 1;
 		}
+
 		$product_key  = 'tweet_old_post_pro';
 		$license_data = get_option( $product_key . '_license_data', '' );
+
 		if ( empty( $license_data ) ) {
 			return - 1;
 		}
@@ -425,6 +429,7 @@ class Rop_Global_Settings {
 		if ( ! isset( $license_data->license ) ) {
 			return - 1;
 		}
+
 		/**
 		 * If we have an invalid license but the pro is installed.
 		 */
@@ -435,12 +440,15 @@ class Rop_Global_Settings {
 
 			return ( - 1 );
 		}
+
 		if ( isset( $license_data->price_id ) ) {
 			return intval( $license_data->price_id );
 		}
+
 		$plan = get_option( $product_key . '_license_plan', - 1 );
 
 		$plan = intval( $plan );
+
 		/**
 		 * If the plan is not fetched but we have pro.
 		 */

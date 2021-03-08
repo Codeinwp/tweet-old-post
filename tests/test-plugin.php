@@ -62,7 +62,7 @@ class Test_ROP extends WP_UnitTestCase {
 		$this->assertEmpty( $settings->get_selected_posts(), 'Exclude posts should be empty by default.' );
 		$this->assertTrue( $settings->get_ga_tracking(), 'GA tags should be on by default.' );
 		$this->assertEquals( 10.00, $settings->get_interval(), 'Default interval should be 4 hours.' );
-		$this->assertEquals( 0, $settings->get_maximum_post_age(), 'Default maximum age should be 0' );
+		$this->assertEquals( 365, $settings->get_maximum_post_age(), 'Default maximum age should be 0' );
 		$this->assertEquals( 30, $settings->get_minimum_post_age(), 'Default minimum age should be 0' );
 		$this->assertTrue( $settings->get_more_than_once(), 'More than once setting should be on' );
 		$this->assertNotEmpty( $settings->get_selected_post_types(), 'Default we should have the post type selected' );
