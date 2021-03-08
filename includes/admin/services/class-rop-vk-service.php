@@ -449,14 +449,14 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$new_post = $this->vk_text_post( $post_details, $args, $owner_id );
 		}
 
-		// VK image post
+		// VK media post
 		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
 			$new_post = $this->vk_media_post( $post_details, $args, $owner_id, $client, $access_token );
 		}
 
 		if ( empty( $new_post ) ) {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
-			return;
+			return false;
 		}
 
 		$response = $client->wall()->post(

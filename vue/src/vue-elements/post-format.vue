@@ -105,7 +105,9 @@
                         <i class="form-icon"></i> {{labels.add_link_yes}}
                     </label>
                 </div>
+            <p v-if="allAccounts[this.account_id].account_type === 'instagram_account'">{{labels.instagram_disable_link_recommendation}}</p>
             </div>
+
         </div>
         <span class="divider"></span>
         <div class="columns py-2">
@@ -269,11 +271,15 @@
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="input-group">
                     <label class="form-checkbox">
-                        <input type="checkbox" v-model="post_format.image"
+                        <input v-if="!is_instagram_account" type="checkbox" v-model="post_format.image"
                                :disabled="!isPro"/>
+                        <!-- For instagram accounts -->
+                        <input v-if="is_instagram_account" type="checkbox" v-model="is_instagram_account"
+                               :disabled="!isPro || is_instagram_account"/>
                         <i class="form-icon"></i> {{labels.image_yes}}
                     </label>
                 </div>
+            <p v-if="is_instagram_account">{{labels.instagram_image_post_default}}</p>
             </div>
         </div>
 
@@ -349,6 +355,11 @@
         },
        methods:{
             refresh_language_taxonomies: function(e){
+               
+                if( this.wpml_active_status !== true){
+                    return;
+                }
+
                 const lang = e && e.target ? e.target.options[e.target.options.selectedIndex].value : document.querySelector('#wpml-language-selector').value;
                 if(e && e.target){
                     // clear selected taxonomies on language change
@@ -394,6 +405,31 @@
 
         },
         computed: {
+
+            allAccounts: function(){
+
+                    const all_accounts = {};
+                                
+                    const services = this.$store.state.authenticatedServices;
+
+                        for (const key in services) {
+                            if (!services.hasOwnProperty(key)) {
+                                continue;
+                            }
+                            const service = services[key];
+
+                            for (const account_id in service.available_accounts) {
+                                if (!service.available_accounts.hasOwnProperty(account_id)) {
+                                    continue;
+                                }
+                                all_accounts[account_id] = service.available_accounts[account_id];
+                            }
+                        }
+                    return all_accounts;
+            },
+            is_instagram_account: function(){
+                return this.allAccounts[this.account_id].account_type === 'instagram_account';
+            },
             postTypes: function () {
                 return this.$store.state.generalSettings.available_post_types;
             },

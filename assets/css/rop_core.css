@@ -3920,6 +3920,16 @@ a.active {
     background-color: #3b5998;
 }
 
+.instagram,
+.icon_box .fa-instagram {
+    background-color: #c13584;
+}
+
+.facebook,
+.icon_box .fa-users {
+    background-color: #3b5998;
+}
+
 .twitter,
 .icon_box .fa-twitter {
     background-color: #55acee;

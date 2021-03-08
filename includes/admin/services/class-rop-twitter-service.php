@@ -402,6 +402,129 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Method for creating link(article) posts to Twitter.
+	 *
+	 * @since  8.7.0
+	 * @access private
+	 *
+	 * @param array $post_details The post details to be published by the service.
+	 *
+	 * @return array
+	 */
+	private function twitter_article_post( $post_details ) {
+
+		$new_post['status'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
+		return $new_post;
+	}
+
+	/**
+	 * Method for creating link(article) posts to Twitter.
+	 *
+	 * @since  8.7.0
+	 * @access private
+	 *
+	 * @param array $post_details The post details to be published by the service.
+	 *
+	 * @return array
+	 */
+	private function twitter_text_post( $post_details ) {
+
+		$new_post['status'] = $post_details['content'] . $post_details['hashtags'];
+
+		return $new_post;
+	}
+
+	/**
+	 * Method for creating media posts to Twitter.
+	 *
+	 * @since  8.7.0
+	 * @access private
+	 *
+	 * @param array  $post_details The post details to be published by the service.
+	 * @param object $api Instance of twitter api wrapper.
+	 *
+	 * @return array
+	 */
+	private function twitter_media_post( $post_details, $api ) {
+
+		$attachment_url = $post_details['post_image'];
+
+		// if the post has no image but "Share as image post" is checked
+		// share as an article post
+		if ( empty( $attachment_url ) ) {
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
+			return $this->twitter_article_post( $post_details );
+		}
+
+		if ( class_exists( 'Jetpack_Photon' ) ) {
+			// Disable Jetpack Photon filter.
+			$photon_bypass = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
+		}
+
+		$upload_args = array(
+			'media' => $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ),
+			'media_type' => $post_details['mimetype']['type'],
+		);
+
+		if ( ! empty( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
+			// Re-enable Jetpack Photon filter.
+			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
+		}
+
+		$status_check = false;
+
+		// Overwrite media_type and category if is Video Post
+		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
+			$upload_args['media_type']     = $post_details['mimetype']['type'];
+			$upload_args['media_category'] = 'tweet_video';
+			$status_check                  = true;
+		}
+
+		// Overwrite media_type and category if is Gif Post
+		if ( strpos( $post_details['mimetype']['type'], 'image/gif' ) !== false ) {
+			$upload_args['media_type']     = $post_details['mimetype']['type'];
+			$upload_args['media_category'] = 'tweet_gif';
+			$status_check                  = true;
+		}
+
+		$this->logger->info( 'Before upload to twitter . ' . json_encode( $upload_args ) );
+		$media_response = $api->upload( 'media/upload', $upload_args, true );
+
+		if ( isset( $media_response->media_id_string ) ) {
+
+			$media_id = $media_response->media_id_string;
+
+			$limit = 0;
+			do {
+				if ( ! $status_check ) {
+					break;
+				}
+				$upload_status = $api->mediaStatus( $media_response->media_id_string );
+				if ( $upload_status->processing_info->state === 'failed' ) {
+					$media_id = '';
+					break;
+				}
+				$media_id = $media_response->media_id_string;
+				$this->logger->info( 'State : ' . json_encode( $upload_status ) );
+				sleep( 3 );
+				$limit ++;
+			} while ( $upload_status->processing_info->state !== 'succeeded' && $limit <= 10 );
+
+			if ( ! empty( $media_id ) ) {
+				$new_post['media_ids'] = $media_id;
+			}
+		} else {
+			$this->logger->alert_error( sprintf( 'Can not upload media to twitter. Error: %s', json_encode( $media_response ) ) );
+			$this->rop_get_error_docs( $media_response );
+		}
+
+		$new_post['status'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
+		return $new_post;
+	}
+
+	/**
 	 * Method for publishing with Twitter service.
 	 *
 	 * @since   8.0.0
@@ -429,72 +552,29 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$new_post = array();
 
 		$post_id = $post_details['post_id'];
+		$post_url = $post_details['post_url'];
+		$share_as_image_post = $post_details['post_with_image'];
 		$message = $this->strip_excess_blank_lines( $post_details['content'] );
 
-		if ( ! empty( $post_details['post_image'] ) ) {
-
-			if ( class_exists( 'Jetpack_Photon' ) ) {
-				// Disable Jetpack Photon filter.
-				$photon_bypass = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
-			}
-
-			$upload_args = array(
-				'media' => $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ),
-				'media_type' => $post_details['mimetype']['type'],
-			);
-
-			if ( ! empty( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
-				// Re-enable Jetpack Photon filter.
-				add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
-			}
-
-			$status_check = false;
-
-			if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
-				$upload_args['media_type']     = $post_details['mimetype']['type'];
-				$upload_args['media_category'] = 'tweet_video';
-				$status_check                  = true;
-			}
-
-			if ( strpos( $post_details['mimetype']['type'], 'image/gif' ) !== false ) {
-				$upload_args['media_type']     = $post_details['mimetype']['type'];
-				$upload_args['media_category'] = 'tweet_gif';
-				$status_check                  = true;
-			}
-
-			$this->logger->info( 'Before upload to twitter . ' . json_encode( $upload_args ) );
-			$media_response = $api->upload( 'media/upload', $upload_args, true );
-
-			if ( isset( $media_response->media_id_string ) ) {
-
-				$media_id = $media_response->media_id_string;
-
-				$limit = 0;
-				do {
-					if ( ! $status_check ) {
-						break;
-					}
-					$upload_status = $api->mediaStatus( $media_response->media_id_string );
-					if ( $upload_status->processing_info->state === 'failed' ) {
-						$media_id = '';
-						break;
-					}
-					$media_id = $media_response->media_id_string;
-					$this->logger->info( 'State : ' . json_encode( $upload_status ) );
-					sleep( 3 );
-					$limit ++;
-				} while ( $upload_status->processing_info->state !== 'succeeded' && $limit <= 10 );
-
-				if ( ! empty( $media_id ) ) {
-					$new_post['media_ids'] = $media_id;
-				}
-			} else {
-				$this->logger->alert_error( sprintf( 'Can not upload media to twitter. Error: %s', json_encode( $media_response ) ) );
-				$this->rop_get_error_docs( $media_response );
-			}
+		// Twitter link post
+		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
+			$new_post = $this->twitter_article_post( $post_details );
 		}
 
-		$new_post['status'] = $message . $this->get_url( $post_details ) . $post_details['hashtags'];
+		// Twitter plain text post
+		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
+			$new_post = $this->twitter_text_post( $post_details );
+		}
+
+		// Twitter media post
+		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
+			$new_post = $this->twitter_media_post( $post_details, $api );
+		}
+
+		if ( empty( $new_post ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
+			return false;
+		}
 
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 

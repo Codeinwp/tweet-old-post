@@ -747,6 +747,7 @@ class Rop_Post_Format_Helper {
 			$post_url = get_permalink( $post_id );
 		}
 
+		// WPML compatibility
 		if ( function_exists( 'icl_object_id' ) ) {
 			$selector = new Rop_Posts_Selector_Model;
 			$post_url = $selector->rop_wpml_link( $post_url, $this->account_id );
@@ -913,7 +914,7 @@ class Rop_Post_Format_Helper {
 			// Get image from featured image, if attachment post type (Video or image); get attachment URL.
 			if ( get_post_type( $post_id ) === 'attachment' ) {
 				$image = wp_get_attachment_url( $post_id );
-			} elseif ( has_post_thumbnail( $post_id ) && ! empty( $post_with_image ) ) {
+			} elseif ( has_post_thumbnail( $post_id ) ) {
 				$image = get_the_post_thumbnail_url( $post_id, 'large' );
 			} else {
 				$image = '';

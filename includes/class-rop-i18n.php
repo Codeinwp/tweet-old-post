@@ -284,6 +284,8 @@ class Rop_I18n {
 				'media_post_upsell'                 => __( 'Media posting is available in the Business version.', 'tweet-old-post' ),
 				'no_post_format_error'              => __( 'Post Format option empty, "Share scheduled posts to social media on publish" cannot work. Please go to the Post Format tab and click "Save" for this feature to work', 'tweet-old-post' ),
 				'active_account_no_post_format_error' => __( 'No post format found for the following network, please go to "Post Format" tab and save your changes for: ', 'tweet-old-post' ),
+				'instagram_disable_link_recommendation' => __( 'We recommend that you disable links for Instagram posts. If you do leave this option checked, then we recommend that you enable a shortener.', 'tweet-old-post' ),
+				'instagram_image_post_default' => __( 'Instagram posts need to be an image.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
@@ -418,6 +420,8 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_missing_lib_class' => __( 'Unable to find Google_Service_MyBusiness Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
 				'linkedin_missing_exif_imagetype' => __( 'Cannot share image to LinkedIn. exif_imagetype() function is missing from your system. Please contact your web host and ask that this function be enabled on your hosting.', 'tweet-old-post' ),
 				'linkedin_issue_fetching_token' => __( 'There was an issue fetching the LinkedIn Token. Please contact Revive Old Posts support for assistance.', 'tweet-old-post' ),
+				'no_image_found' => __( 'No image was found for post %1$s cannot share as an image post to: %2$s. Please double check that you have a featured image set.', 'tweet-old-post' ),
+				'license_not_active' => __( 'An active Pro license is needed to share to %1$s', 'tweet-old-post' ),
 			),
 			'generic' => array(
 				'only_pro_suffix' => ' (' . __( 'Available in Pro', 'tweet-old-post' ) . ')',
