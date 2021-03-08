@@ -13,9 +13,9 @@
 
 			<div v-else-if="start_status && queueCount > 0 ">
 
-				<div class="columns py-2" v-if="! is_business">
+				<div class="columns py-2" v-if="! is_business_and_higher">
 					<div class="column text-center">
-						<p class="upsell"><i class="fa fa-lock"></i> <span v-html="labels.biz_only"></span></p>
+						<p class="upsell"><i class="fa fa-lock"></i> <span v-html="labels.business_or_higher_only"></span></p>
 					</div>
 				</div>
 
@@ -33,7 +33,7 @@
 			</div>
 			<div class="columns" v-if="start_status && queueCount > 0">
 				<div class="column col-12 text-left" v-for=" (data, index) in queue ">
-					<queue-card :card_data="data.post_data" :id="index" :enabled="is_business"/>
+					<queue-card :card_data="data.post_data" :id="index" :enabled="is_business_and_higher"/>
 				</div>
 			</div>
 		</div>
@@ -62,8 +62,8 @@
 			start_status: function () {
 				return this.$store.state.cron_status.current_status
 			},
-			is_business: function () {
-				return (this.$store.state.licence > 1)
+			is_business_and_higher: function () {
+				return (this.$store.state.licence > 1 && this.$store.state.licence !== 7)
 			},
 		},
 		data: function () {
