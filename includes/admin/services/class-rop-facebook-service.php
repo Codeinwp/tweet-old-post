@@ -579,8 +579,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$attachment_url = $post_details['post_image'];
 
-		// if the post has no image but "Share as image post" is checked
-		// share as an article post
+		/** If the post has no image but "Share as image post" is checked
+		 * Share as an article post */
 		if ( empty( $attachment_url ) ) {
 			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
 			return $this->fb_article_post( $post_details );
@@ -682,6 +682,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( empty( $installed_with_app ) ) {
 			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		}
+
 		if ( $this->get_api() && empty( $installed_with_app ) ) {
 			// Page was added using user application (old method)
 			// Try post via Facebook Graph SDK

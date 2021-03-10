@@ -462,8 +462,27 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$photon_bypass = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 		}
 
+		$media_path = '';
+
+		if ( strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
+
+			$passed_image_url_host = parse_url( $attachment_url )['host'];
+			$admin_site_url_host = parse_url( get_site_url() )['host'];
+
+			/** If this image is not local then lets download it locally to get its path  */
+			if ( $passed_image_url_host === $admin_site_url_host ) {
+				$media_path = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+			} else {
+				$media_path = $this->rop_download_external_image( $attachment_url );
+			}
+		} else {
+
+			$media_path = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+
+		}
+
 		$upload_args = array(
-			'media' => $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ),
+			'media' => $media_path,
 			'media_type' => $post_details['mimetype']['type'],
 		);
 
@@ -517,6 +536,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		} else {
 			$this->logger->alert_error( sprintf( 'Can not upload media to twitter. Error: %s', json_encode( $media_response ) ) );
 			$this->rop_get_error_docs( $media_response );
+		}
+
+		/** Delete this image if it was an external one downloaded temporarily. */
+		if ( strpos( $media_path, ROP_TEMP_IMAGES ) !== false ) {
+			wp_delete_file( $media_path );
 		}
 
 		$new_post['status'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
