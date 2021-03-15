@@ -1,5 +1,25 @@
 <template>
     <div>
+        <div class="columns py-2" v-if="wpml_active_status">
+            <div class="column col-6 col-sm-12 vertical-align">
+                <b>{{labels.language_title}}</b>
+                <p class="text-gray">{{labels.language_title_desc}}</p>
+            </div>
+            <div class="column col-6 col-sm-12 vertical-align">
+                <div class="form-group">
+                    <select id="wpml-language-selector" class="form-select" v-model="post_format.wpml_language" :disabled="!isPro" v-on:change="refresh_language_taxonomies">
+                        <option v-for="(lang, index) in wpml_languages" :value="lang.code" v-bind:selected="index == 0 || lang.code == post_format.wpml_language ? true : false">{{lang.label}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="columns " v-if="!isPro && wpml_active_status">
+            <div class="column text-center">
+                <p class="upsell"><i class="fa fa-info-circle"></i> <span v-html="labels.full_wpml_support_upsell"></span></p>
+            </div>
+        </div>
+        <span class="divider"></span>
+
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.post_content_title}}</b>
@@ -17,18 +37,18 @@
             </div>
         </div>
 
-        <div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
-            <div class="column col-6 col-sm-12 vertical-align">
-                <b>{{labels.custom_meta_title}}</b>
-                <p class="text-gray">{{labels.custom_meta_desc}}</p>
-            </div>
-            <div class="column col-6 col-sm-12 vertical-align">
-                <div class="form-group">
-                    <input class="form-input" type="text" v-model="post_format.custom_meta_field"
-                           value="" placeholder=""/>
+                <div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
+                    <div class="column col-6 col-sm-12 vertical-align">
+                        <b>{{labels.custom_meta_title}}</b>
+                        <p class="text-gray">{{labels.custom_meta_desc}}</p>
+                    </div>
+                    <div class="column col-6 col-sm-12 vertical-align">
+                        <div class="form-group">
+                            <input class="form-input" type="text" v-model="post_format.custom_meta_field"
+                                   value="" placeholder=""/>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
         <span class="divider"></span>
 
@@ -39,9 +59,12 @@
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
-                    <input class="form-input" type="number" v-model="post_format.maximum_length"
-                           value="" placeholder=""/>
+                    <input v-if="allAccounts[this.account_id].service === 'twitter'" class="form-input" type="number" v-model="post_format.maximum_length"
+                           value="" max="280"/>
+                    <input v-if="allAccounts[this.account_id].service !== 'twitter'" class="form-input" type="number" v-model="post_format.maximum_length"
+                           value="" placeholder="" />
                 </div>
+            <p v-if="allAccounts[this.account_id].service === 'twitter'" v-html="labels.twitter_max_characters_notice"></p>
             </div>
         </div>
         <span class="divider"></span>
@@ -85,6 +108,7 @@
                         <i class="form-icon"></i> {{labels.add_link_yes}}
                     </label>
                 </div>
+            <p v-if="allAccounts[this.account_id].account_type === 'instagram_account'" v-html="labels.instagram_disable_link_recommendation"></p>
             </div>
         </div>
         <span class="divider"></span>
@@ -117,27 +141,27 @@
             </div>
         </div>
         <span class="divider"></span>
-
-        <div class="columns py-2" :class="'rop-control-container-'+isPro">
+        <!-- License price id 7 is starter plan. Per account based filtering not included in starter plan,  -->
+        <div class="columns py-2" :class="'rop-control-container-'+(isPro && (license_price_id !== 7))">
             <div class="column col-6 col-sm-12 vertical-align rop-control">
                 <b>{{labels_settings.taxonomies_title}}</b>
                 <p class="text-gray"><span v-html="labels_settings.taxonomies_desc"></span></p>
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="input-group">
-                    <multiple-select :disabled="!!isPro" :options="taxonomy" :selected="taxonomy_filter" :name="post_format.taxonomy_filter" :changed-selection="updated_tax_filter" :key="this.account_id"></multiple-select>
+                    <multiple-select :disabled="!!isPro && (license_price_id !== 7)" :options="taxonomy" :selected="taxonomy_filter" :name="post_format.taxonomy_filter" :changed-selection="updated_tax_filter" :key="this.account_id"></multiple-select>
                     <span class="input-group-addon vertical-align">
                         <label class="form-checkbox">
-						    <input :disabled="!isPro" type="checkbox" v-model="post_format.exclude_taxonomies"/>
+						    <input :disabled="!isPro || (license_price_id === 7)" type="checkbox" v-model="post_format.exclude_taxonomies"/>
 							<i class="form-icon"></i>{{labels_settings.taxonomies_exclude}}
 						</label>
 					</span>
                 </div>
             </div>
         </div>
-        <div class="columns " v-if="!isPro">
+        <div class="columns " v-if="!isPro || (license_price_id === 7)">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
             </div>
         </div>
         <span class="divider"></span>
@@ -249,17 +273,21 @@
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="input-group">
                     <label class="form-checkbox">
-                        <input type="checkbox" v-model="post_format.image"
+                        <input v-if="!is_instagram_account" type="checkbox" v-model="post_format.image"
                                :disabled="!isPro"/>
+                        <!-- For instagram accounts -->
+                        <input v-if="is_instagram_account" type="checkbox" v-model="is_instagram_account"
+                               :disabled="!isPro || is_instagram_account"/>
                         <i class="form-icon"></i> {{labels.image_yes}}
                     </label>
                 </div>
+            <p v-if="is_instagram_account" v-html="labels.instagram_image_post_default"></p>
             </div>
         </div>
 
         <div class="columns " v-if="!isPro">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.image_upsell}}</p>
             </div>
         </div>
         <span class="divider"></span>
@@ -289,7 +317,7 @@
         </div>
         <div class="columns " v-if="!isPro">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.custom_utm_upsell}}</p>
             </div>
         </div>
         <span class="divider"></span>
@@ -308,20 +336,49 @@
                 labels_settings: this.$store.state.labels.settings,
                 labels_generic: this.$store.state.labels.generic,
                 upsell_link: ropApiSettings.upsell_link,
+                wpml_active_status: ropApiSettings.rop_get_wpml_active_status,
+                wpml_languages: ropApiSettings.rop_get_wpml_languages,
                 selected_tax_filter: [],
+                // selected_language: this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id].wpml_language : [],
+                // post_types: this.$store.state.generalSettings.available_post_types,
             }
         },
         created: function () {
             this.get_taxonomy_list();
         },
-        methods:{
+        updated: function() {
+            this.$nextTick(function () {
+                if(!this.$store.state.dom_updated){
+                    if(this.wpml_active_status){
+                    this.refresh_language_taxonomies();
+                    }
+                }
+            });
+        },
+       methods:{
+            refresh_language_taxonomies: function(e){
+               
+                if( this.wpml_active_status !== true){
+                    return;
+                }
+
+                const lang = e && e.target ? e.target.options[e.target.options.selectedIndex].value : document.querySelector('#wpml-language-selector').value;
+                if(e && e.target){
+                    // clear selected taxonomies on language change
+                    this.post_format.taxonomy_filter = [];
+                }
+                if(lang !== ''){
+                    this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}});
+                }
+                this.$store.state.dom_updated = true;
+            },
             get_taxonomy_list(){
                 if (this.$store.state.generalSettings.length === 0) {
                     this.is_loading = true;
                     this.$log.info('Fetching general settings.');
                     this.$store.dispatch('fetchAJAXPromise', {req: 'get_general_settings'}).then(response => {
                         this.is_loading = false;
-                        this.$log.debug('Succesfully fetched.')
+                        this.$log.debug('Successfully fetched.')
                     }, error => {
                         this.is_loading = false;
                         this.$log.error('Can not fetch the general settings.')
@@ -350,11 +407,42 @@
 
         },
         computed: {
+
+            allAccounts: function(){
+
+                    const all_accounts = {};
+                                
+                    const services = this.$store.state.authenticatedServices;
+
+                        for (const key in services) {
+                            if (!services.hasOwnProperty(key)) {
+                                continue;
+                            }
+                            const service = services[key];
+
+                            for (const account_id in service.available_accounts) {
+                                if (!service.available_accounts.hasOwnProperty(account_id)) {
+                                    continue;
+                                }
+                                all_accounts[account_id] = service.available_accounts[account_id];
+                            }
+                        }
+                    return all_accounts;
+            },
+            is_instagram_account: function(){
+                return this.allAccounts[this.account_id].account_type === 'instagram_account';
+            },
+            postTypes: function () {
+                return this.$store.state.generalSettings.available_post_types;
+            },
             post_format: function () {
                 return this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];
             },
             isPro: function () {
                 return (this.license > 0);
+            },
+            license_price_id: function () {
+                return this.license;
             },
             short_url_service: function () {
                 let postFormat = this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];
@@ -374,7 +462,6 @@
                 return (postFormat.taxonomy_filter) ? postFormat.taxonomy_filter : [];
             },
             taxonomy: function () {
-
                 return this.$store.state.generalSettings.available_taxonomies
             },
             shorteners: function () {

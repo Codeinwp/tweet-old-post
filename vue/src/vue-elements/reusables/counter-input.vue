@@ -1,10 +1,10 @@
 <template>
 	<div class="input-group rop-counter-group">
-		<input class="form-input rop-counter" type="text" v-model="inputValueC" :id="id">
-		<button class="btn input-group-btn increment-btn up" @mousedown="isPressed('up')" @mouseup="isReleased('up')"><i
+		<input class="form-input rop-counter" type="text" v-model="inputValueC" :id="id" :disabled="is_disabled">
+		<button class="btn input-group-btn increment-btn up" @mousedown="isPressed('up')" @mouseup="isReleased('up')" :disabled="is_disabled"><i
 				class="fa fa-fw fa-caret-up"></i></button>
 		<button class="btn input-group-btn increment-btn down" @mousedown="isPressed('down')"
-		        @mouseup="isReleased('down')"><i class="fa fa-fw fa-caret-down"></i></button>
+		        @mouseup="isReleased('down')" :disabled="is_disabled"><i class="fa fa-fw fa-caret-down"></i></button>
 	</div>
 </template>
 
@@ -16,6 +16,10 @@
 		props: {
 			id: {
 				default: ''
+			},
+			disabled: {
+				default: false,
+				type: Boolean
 			},
 			value: {
 				default: 0,
@@ -43,23 +47,31 @@
 				pressStartTime: null,
 				incrementUp: 0,
 				incrementDown: 0,
-				inputValue: 0
+				inputValue: 0,
 			}
 		},
 		computed: {
 			inputValueC: {
+				
 				get: function () {
 					return this.value;
 				},
 				set: function (newValue) {
 					this.inputValue = parseFloat(newValue)
 					this.$emit('update:value', this.inputValue)
-				}
+				},
 
-			}
+			},
+			is_disabled: function () {
+				return this.disabled;
+			},
 		},
 		methods: {
 			updateInput() {
+				if( this.is_disabled ){
+					return;
+				}
+
 				this.inputValue = this.value.toString();
 				this.inputValue = parseFloat(this.inputValue);
 				let now = new Date()
@@ -80,6 +92,10 @@
 				this.$emit('update:value', this.inputValue)
 			},
 			isPressed(type) {
+				if( this.is_disabled ){
+					return;
+				}
+				
 				if (type === 'up') {
 					this.incrementUp = this.stepVal
 				} else {
@@ -90,6 +106,10 @@
 				intervalID = setInterval(this.updateInput, 250)
 			},
 			isReleased(type) {
+				if( this.is_disabled ){
+					return;
+				}
+
 				if (type === 'up') {
 					this.incrementUp = 0
 				} else {

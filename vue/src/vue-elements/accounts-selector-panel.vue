@@ -88,6 +88,7 @@
 		},
 		mounted: function () {
 			this.setupData();
+		//	this.refresh_language_taxonomies();
 		},
 		filters: {
 			capitalize: function (value) {
@@ -137,9 +138,23 @@
 		watch: {
 			type: function () {
 				this.setupData();
+				//this.get_lang();
 			}
 		},
 		methods: {
+
+			postTypes() {
+				// console.log('post types:', this.$store.state.generalSettings.available_post_types);
+					return this.$store.state.generalSettings.available_post_types;
+			},
+			refresh_language_taxonomies(lang){
+				 this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes(), language_code: lang}});
+			},
+			get_lang(){
+				console.log("Inside Get lang");
+				console.log("LANG: ", document.querySelector('#wpml-language-selector').value);
+				return document.querySelector('#wpml-language-selector').value;
+			},
 			setupData() {
 				let action = this.type.replace('-', '_');
 				let label = '';
@@ -152,7 +167,8 @@
 					/**
 					 * Allow footer if we have a valid license.
 					 */
-					this.allow_footer = (this.license > 1);
+					// 7 is the price id for Starter license. This feature is not available in Starter plan
+					this.allow_footer = (this.license > 1 && this.license !== 7 ); 
 				}
 				this.action = action;
 				this.component_label = label;
@@ -202,7 +218,15 @@
 			getIcon(account) {
 
 				let serviceIcon = 'fa-'
-				if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook')
+
+				if( account.service === 'facebook' &&  account.account_type !== 'instagram_account' && account.account_type !== 'facebook_group' ){
+					serviceIcon = serviceIcon.concat('facebook');
+				}else if(account.account_type === 'instagram_account'){
+					serviceIcon = serviceIcon.concat('instagram');
+				}else if(account.account_type === 'facebook_group'){
+					serviceIcon = serviceIcon.concat('users');
+				}
+
 				if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter')
 				if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin')
 				if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr')
@@ -239,6 +263,10 @@
 				}
 			},
 			setActiveAccount(id) {
+				// this.get_lang;
+				
+				// console.log(wpml_language_selector);
+				// console.log(wpml_language_selector.value);
 				if (this.is_loading) {
 					this.$log.warn("Request in progress...Bail");
 					return;
@@ -254,6 +282,7 @@
 				 * When a new account is added and we don't have any data for it.
 				 */
 				this.checkActiveData();
+    this.$store.state.dom_updated = false;
 			}
 		},
 		components: {

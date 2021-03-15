@@ -463,7 +463,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		// Photo post
-		if ( ! empty( $post_details['post_image'] ) && strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
+		if ( ! empty( $post_details['post_with_image'] ) && strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
 			$new_post['type']       = 'photo';
 			$new_post['source_url'] = esc_url( get_site_url() );
 

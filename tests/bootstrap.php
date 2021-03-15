@@ -9,6 +9,15 @@ if ( ! $_tests_dir ) {
 	$_tests_dir = '/tmp/wordpress-tests-lib';
 }
 
+/************* UVLabs test environment *************/
+
+if ( getenv( 'USER' ) === 'uvdev' ){
+	$_tests_dir = '/Users/uvdev/git_repos/wordpress-develop/tests/phpunit';
+};
+
+/************* UVLabs test environment *************/
+
+
 /************* contactashish13 test environment *************
  * $_tests_dir = 'E:\work\apps\wordpress-dev\tests\phpunit';
  * $_core_dir = 'E:\work\apps\wordpress-dev\src\\';

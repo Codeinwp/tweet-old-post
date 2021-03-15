@@ -71,7 +71,7 @@ class Rop_Post_Format_Helper {
 
 		if ( function_exists( 'icl_object_id' ) ) {
 			$selector = new Rop_Posts_Selector_Model;
-			$post_id  = $selector->rop_wpml_id( $post_id );
+			$post_id  = $selector->rop_wpml_id( $post_id, $this->account_id );
 		}
 
 		$service                            = $this->get_service();
@@ -162,14 +162,18 @@ class Rop_Post_Format_Helper {
 				return wp_parse_args( array( 'display_content' => $share_content ), $default_content );
 			}
 		}
+
+		$settings = new Rop_Settings_Model();
+		$general_settings = $settings->get_settings();
+
 		/**
 		 * Check custom messages(share variations) if exists.
 		 */
 		$custom_messages = get_post_meta( $post_id, 'rop_custom_messages_group', true );
 
-		if ( ! empty( $custom_messages ) ) {
+		// If share variations exist for this post and the option to use them is turned on
+		if ( ! empty( $custom_messages ) && ! empty( $general_settings['custom_messages'] ) ) {
 
-			$settings                    = new Rop_Settings_Model();
 			$custom_messages_share_order = $settings->get_custom_messages_share_order();
 
 			if ( $custom_messages_share_order ) {
@@ -743,9 +747,10 @@ class Rop_Post_Format_Helper {
 			$post_url = get_permalink( $post_id );
 		}
 
+		// WPML compatibility
 		if ( function_exists( 'icl_object_id' ) ) {
 			$selector = new Rop_Posts_Selector_Model;
-			$post_url = $selector->rop_wpml_link( $post_url );
+			$post_url = $selector->rop_wpml_link( $post_url, $this->account_id );
 		}
 
 		if ( isset( $this->post_format['url_from_meta'] ) && $this->post_format['url_from_meta'] && isset( $this->post_format['url_meta_key'] ) && ! empty( $this->post_format['url_meta_key'] ) ) {
@@ -909,7 +914,7 @@ class Rop_Post_Format_Helper {
 			// Get image from featured image, if attachment post type (Video or image); get attachment URL.
 			if ( get_post_type( $post_id ) === 'attachment' ) {
 				$image = wp_get_attachment_url( $post_id );
-			} elseif ( has_post_thumbnail( $post_id ) && ! empty( $post_with_image ) ) {
+			} elseif ( has_post_thumbnail( $post_id ) ) {
 				$image = get_the_post_thumbnail_url( $post_id, 'large' );
 			} else {
 				$image = '';
