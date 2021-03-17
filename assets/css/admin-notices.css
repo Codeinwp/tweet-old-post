@@ -3,15 +3,17 @@
 color: #fb3300
 }
 .rop-revive-network-admin-notice {
-    background: #eeeeeec2;
-    border-color: #ED494D;
-    border-top: 4px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-left-width: 4px;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
     display: block;
+    margin-bottom: 20px;
+    margin-top: 30px;
     min-height: 68px;
     padding: 20px 40px 60px 145px;
-    margin-top: 30px;
-    margin-bottom: 20px;
     position: relative;
+
 }
 .rop-revive-network-notice-logo {
     clear: both;
