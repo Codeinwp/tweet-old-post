@@ -31,6 +31,7 @@
                         <option value="post_title">{{labels.post_content_option_title}}</option>
                         <option value="post_content">{{labels.post_content_option_content}}</option>
                         <option value="post_title_content">{{labels.post_content_option_title_content}}</option>
+                        <option value="post_excerpt">{{labels.post_content_option_excerpt}}</option>
                         <option value="custom_field">{{labels.post_content_option_custom_field}}</option>
                     </select>
                 </div>

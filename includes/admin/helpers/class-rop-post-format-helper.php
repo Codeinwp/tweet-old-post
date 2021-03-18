@@ -278,6 +278,15 @@ class Rop_Post_Format_Helper {
 			case 'post_title_content':
 				$content = get_the_title( $post_id ) . apply_filters( 'rop_title_content_separator', ' ' ) . get_post_field( apply_filters( 'rop_content', 'post_content', $post_id ), $post_id );
 				break;
+			case 'post_excerpt':
+				$excerpt = get_post_field( 'post_excerpt', $post_id );
+				// If the excerpt is empty let's fallback to the post content
+				if ( ! empty( $excerpt ) ) {
+					$content = $excerpt;
+				} else {
+					$content = get_post_field( 'post_content', $post_id );
+				}
+				break;
 			case 'custom_field':
 				$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
 				break;
