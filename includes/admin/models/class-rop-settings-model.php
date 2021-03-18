@@ -428,7 +428,9 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		}
 		// ***
 
-		if ( empty( $data['selected_post_types'] ) ) {
+		// We only need to check this if on General Settings tab.
+		// Otherwise it would throw an error in log whenever this method is called anywhere else.
+		if ( empty( $data['selected_post_types'] ) && array_key_exists( 'minimum_post_age', $data ) ) {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_types_selected' ) );
 			$data['selected_post_types'] = $this->defaults['selected_post_types'];
 		}
