@@ -222,6 +222,7 @@ class Rop_I18n {
 				'post_content_option_title'         => __( 'Post Title', 'tweet-old-post' ),
 				'post_content_option_content'       => __( 'Post Content', 'tweet-old-post' ),
 				'post_content_option_title_content' => __( 'Post Title & Content', 'tweet-old-post' ),
+				'post_content_option_excerpt'       => __( 'Post Excerpt', 'tweet-old-post' ),
 				'post_content_option_custom_field'  => __( 'Custom Field', 'tweet-old-post' ),
 				'custom_meta_title'                 => __( 'Custom Meta Field', 'tweet-old-post' ),
 				'custom_meta_desc'                  => __( 'Meta field name from which to get the content.', 'tweet-old-post' ),
