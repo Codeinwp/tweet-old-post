@@ -175,7 +175,8 @@ function run_rop() {
 	define( 'ROP_PRO_PATH', WP_PLUGIN_DIR . '/tweet-old-post-pro/' );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
-	define( 'ROP_STATUS_ALERT', 6 );// How many consecutive errors count towards status alert "Status: Error (check logs)"
+	define( 'ROP_STATUS_ALERT', 6 ); // How many consecutive errors count towards status alert "Status: Error (check logs)"
+	define( 'ROP_TEMP_IMAGES', plugin_dir_path( __FILE__ ) . 'temp-images/' ); // Path for external images downloaded for sharing
 
 	// Authorization APP Data
 	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
