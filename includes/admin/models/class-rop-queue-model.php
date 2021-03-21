@@ -244,7 +244,11 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					unset( $post_pool[ $rand_key ] );
 					$post_pool = array_values( $post_pool );
 				}
-				$normalized_queue[ $account_id ][ $index ] = $event_queue;
+
+				// $normalized_queue[ $account_id ][ $index ] = $event_queue;
+				$new_queue = array_merge( $account_queue, array($event_queue) );
+				$normalized_queue[ $account_id ] = $new_queue;
+				$account_queue  = $new_queue;
 			}
 		}
 		$this->set( $this->queue_namespace, $normalized_queue );
