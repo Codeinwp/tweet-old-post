@@ -37323,7 +37323,7 @@ module.exports = {
             return false;
         },
         isBiz: function isBiz() {
-            return this.$store.state.licence > 1;
+            return this.$store.state.licence > 1 && this.$store.state.licence !== 7;
         },
         postTypes: function postTypes() {
             return this.$store.state.generalSettings.available_post_types;
