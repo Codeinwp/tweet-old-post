@@ -178,6 +178,7 @@
                         <i class="form-icon"></i> {{labels.use_shortner_yes}}
                     </label>
                 </div>
+                <p v-if="allAccounts[this.account_id].service === 'vk'" v-html="labels.vk_unsupported_shorteners"></p>
             </div>
         </div>
         <div class="columns py-2" v-if="post_format.short_url">
