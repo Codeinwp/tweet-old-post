@@ -288,6 +288,7 @@ class Rop_I18n {
 				'twitter_max_characters_notice' => sprintf( __( '%1$sNote:%2$s Maximum characters supported by Twitter is 280.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'instagram_disable_link_recommendation' => sprintf( __( '%1$sNote:%2$s We recommend that you disable links for Instagram posts. If you do leave this option checked, then we recommend that you enable a shortener.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'instagram_image_post_default' => sprintf( __( '%1$sNote:%2$s Instagram posts need to be an image.', 'tweet-old-post' ), '<strong>', '</strong>' ),
+				'vk_unsupported_shorteners' => sprintf( __( '%1$sNote:%2$s is.gd shortener is not currently supported by VK.com.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),

@@ -67,7 +67,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			'name' => 'ow.ly',
 			'active' => true,
 		),
-		'is.id' => array(
+		'is.gd' => array(
 			'id' => 'is.gd',
 			'name' => 'is.gd',
 			'active' => true,
