@@ -196,20 +196,30 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		$no_of_posts = $settings->get_number_of_posts();
 
 		$upcoming_events = $this->scheduler->get_all_upcoming_events();
+
 		$current_queue   = $this->queue;
 		if ( empty( $upcoming_events ) ) {
 			return array();
 		}
 		$normalized_queue = array();
+		$event_queue = array();
+
 		foreach ( $upcoming_events as $account_id => $events ) {
+
 			$account_queue                   = isset( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
+			// Normalizes the array keys so next available posts can go to the bottom of the Sharing Queue (stack)
+			$account_queue = array_values( $account_queue );
+
 			$normalized_queue[ $account_id ] = array();
 
+			$post_pool = '';
 			$post_pool = $this->selector->select( $account_id );
+
 			if ( empty( $post_pool ) ) {
 				$this->logger->alert_error( 'No posts are available to share for your account. Try activating the Share more than once option or changing the minimum and maximum post age setting to widen the pool of available posts.' );
 				continue;
 			}
+
 			foreach ( $events as $index => $event ) {
 				$event_queue = isset( $account_queue[ $index ] ) ? $account_queue[ $index ] : array();
 				/**
@@ -227,30 +237,41 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					$normalized_queue[ $account_id ][ $index ] = array_slice( $event_queue, 0, $no_of_posts );
 					continue;
 				}
+
 				if ( empty( $post_pool ) ) {
 					continue;
 				}
 
 				$items_needed = $no_of_posts - count( $event_queue );
 				$i            = 0;
+
 				while ( $i < $items_needed ) {
 					if ( empty( $post_pool ) ) {
 						break;
 					}
 					$rand_key      = rand( 0, count( $post_pool ) - 1 );
+					// Below is a second layer of randomness to choosing posts to add to queue
 					$post_id       = $post_pool[ $rand_key ];
+
 					$event_queue[] = $post_id;
-					$i ++;
+					$i++;
 					unset( $post_pool[ $rand_key ] );
+
 					$post_pool = array_values( $post_pool );
+
 				}
 
-				// $normalized_queue[ $account_id ][ $index ] = $event_queue;
-				$new_queue = array_merge( $account_queue, array($event_queue) );
-				$normalized_queue[ $account_id ] = $new_queue;
-				$account_queue  = $new_queue;
+				$normalized_queue[ $account_id ][ $index ] = $event_queue;
+
+				// Below causes more issues with post stacking. Solution 
+				// Is to regen account queue keys
+				// $new_queue = array_merge( $account_queue, array($event_queue) );
+				// $normalized_queue[ $account_id ] = $new_queue;
+				// $account_queue  = $new_queue;
+
 			}
 		}
+
 		$this->set( $this->queue_namespace, $normalized_queue );
 		$this->queue = $normalized_queue;
 
@@ -410,6 +431,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	public function build_queue() {
 		$queue            = $this->get_queue();
+
 		$upcoming_events  = $this->scheduler->get_all_upcoming_events();
 		$normalized_queue = array();
 		foreach ( $upcoming_events as $account_id => $events ) {
