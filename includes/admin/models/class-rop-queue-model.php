@@ -263,7 +263,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 				$normalized_queue[ $account_id ][ $index ] = $event_queue;
 
-				// Below causes more issues with post stacking. Solution 
+				// Below causes more issues with post stacking. Solution
 				// Is to regen account queue keys
 				// $new_queue = array_merge( $account_queue, array($event_queue) );
 				// $normalized_queue[ $account_id ] = $new_queue;
