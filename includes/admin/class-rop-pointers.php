@@ -218,7 +218,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Post Types', 'tweet-old-post' ) . '</h3>' .
-									  '<p>' . esc_html__( 'Rop works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . esc_html__( 'ROP works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
 									  '<p>' . esc_html__( 'You can share media straight from your media library!', 'tweet-old-post' ) . '</p>' .
 									  '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
 						'position' => array(

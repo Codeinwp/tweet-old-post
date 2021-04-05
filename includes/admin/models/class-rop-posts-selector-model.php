@@ -344,9 +344,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$post_types      = $this->build_post_types();
 		$global_settings = new Rop_Global_Settings();
 
-		// Taxonomy: Post Format new option.
-		// TODO Add conditional so this doesn't run for starter plan
-		if ( $global_settings->license_type() > 0 && ! empty( $account_id ) ) {
+		// Taxonomy: Post Format new option
+		if ( $global_settings->license_type() > 0 && $global_settings->license_type() !== 7 && ! empty( $account_id ) ) {
 			$parts             = explode( '_', $account_id );
 			$service           = $parts[0];
 			$post_format_model = new Rop_Post_Format_Model( $service );
