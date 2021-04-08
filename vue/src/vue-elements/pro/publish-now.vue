@@ -1,8 +1,8 @@
 <template>
-	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
-
+	<div class="rop-control-container">
+			<p v-if="Object.keys(accounts).length < 1">{{labels.add_account_to_use_instant_share}}</p>
 		<!-- Share on publish/update -->
-		<fieldset>
+		<fieldset v-if="Object.keys(accounts).length > 0">
 			<label class="form-checkbox">
 				<input type="checkbox" :checked="share_on_update_by_default" v-on:click="toggle_accounts = !toggle_accounts" name="publish_now" value="1"/>
 				<span v-html=" labels.share_on_update"></span>
