@@ -567,6 +567,17 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Getter for choose account manually option.
+	 *
+	 * @since   9.0.0
+	 * @access  public
+	 * @return bool
+	 */
+	public function get_instant_share_choose_accounts_manually() {
+		return isset( $this->settings['instant_share_choose_accounts_manually'] ) ? $this->settings['instant_share_choose_accounts_manually'] : false;
+	}
+
+	/**
 	 * Getter for instant sharing on scheduled post publish.
 	 *
 	 * Getting for checking if the option to share scheduled posts after their post status has changed from future to publish.

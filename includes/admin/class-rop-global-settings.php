@@ -159,6 +159,7 @@ class Rop_Global_Settings {
 		'instant_share'         => true,
 		'true_instant_share'    => true,
 		'instant_share_default' => false,
+		'instant_share_choose_accounts_manually' => false,
 		'instant_share_future_scheduled' => false,
 		'start_time'            => false,
 		'minute_interval'      => 5,

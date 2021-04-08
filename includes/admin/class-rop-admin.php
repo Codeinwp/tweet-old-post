@@ -339,7 +339,9 @@ class Rop_Admin {
 		$array_nonce['remote_cron_type_limit']    = $this->limit_remote_cron_system();
 		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
 		$array_nonce['publish_now']             = array(
-			'action'   => $settings->get_instant_sharing_by_default(),
+			'instant_share_enabled' => $settings->get_instant_sharing(),
+			'instant_share_by_default'   => $settings->get_instant_sharing_by_default(),
+			'choose_accounts_manually' => $settings->get_instant_share_choose_accounts_manually(),
 			'accounts' => $active_accounts,
 		);
 		$array_nonce['added_networks']          = $added_networks;
@@ -791,6 +793,10 @@ class Rop_Admin {
 	 */
 	public function maybe_publish_now( $post_id ) {
 		if ( ! isset( $_POST['rop_publish_now_nonce'] ) || ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
+			return;
+		}
+
+		if ( empty( $_POST['publish_now_accounts'] ) ) {
 			return;
 		}
 
