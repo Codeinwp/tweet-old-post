@@ -231,6 +231,23 @@
                   </div>
                 </div>
 
+                <span class="divider" v-if="isInstantShare && isInstantShareByDefault"></span>
+
+                <div class="columns py-2" v-if="isInstantShare && isInstantShareByDefault">
+                  <div class="column col-6 col-sm-12 vertical-align rop-control">
+                    <b>{{labels.instant_share_choose_accounts_manually_title}}</b>
+                    <p class="text-gray">{{labels.instant_share_choose_accounts_manually_desc}}</p>
+                  </div>
+                  <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+                    <div class="form-group">
+                      <label class="form-checkbox">
+                        <input type="checkbox" v-model="generalSettings.instant_share_choose_accounts_manually"/>
+                        <i class="form-icon"></i>{{labels.instant_share_choose_accounts_manually_yes}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
                 <span class="divider" v-if="isInstantShare"></span>
 
                 <div class="columns py-2" v-if="isInstantShare" :class="'rop-control-container-'+isPro">
@@ -390,6 +407,9 @@
             isInstantShare: function () {
                 return this.$store.state.generalSettings.instant_share;
             },
+            isInstantShareByDefault: function () {
+                return this.$store.state.generalSettings.instant_share_default;
+            },
             isCustomMsgs: function () {
                 return this.$store.state.generalSettings.custom_messages;
             },
@@ -538,6 +558,7 @@
 						true_instant_share: this.generalSettings.true_instant_share,
 						instant_share_default: this.generalSettings.instant_share_default,
 						instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
+                        instant_share_choose_accounts_manually: this.generalSettings.instant_share_choose_accounts_manually,
 						housekeeping: this.generalSettings.housekeeping,
 					}
 				}).then(response => {
