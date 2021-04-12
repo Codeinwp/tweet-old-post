@@ -29,6 +29,9 @@
                               :disabled="rop_cron_remote_agreement"
                               @change="update_agreement_checkbox()"
                           /> <span v-html="labels.cron_type_label_desc_terms"></span>
+                          <br>
+                          <br>
+                          <small v-html="labels.cron_type_notice"></small>
                         </div>
                     </div>
                 </div>
