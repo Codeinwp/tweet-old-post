@@ -1309,7 +1309,7 @@ class Rop_Admin {
 		}
 
 		// If any type of Pro is installed and active.
-		if ( $global_settings->license_type() > 0 &&  $global_settings->license_type() !== 7 ) {
+		if ( $global_settings->license_type() > 0 && $global_settings->license_type() !== 7 ) {
 			// Get the current plugin options.
 			$option = get_option( 'rop_data' );
 
