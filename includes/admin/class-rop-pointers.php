@@ -331,7 +331,7 @@ class Rop_Pointers {
 					),
 				),
 				'log'                  => array(
-					'target'       => '#logs',
+					'target'       => '#sharinglogs',
 					'next'         => 'start-stop',
 					'next_trigger' => array(
 						'target' => '#logs',
@@ -504,19 +504,25 @@ class Rop_Pointers {
 
 								switch (pointer.next) {
 									case 'activate-rop':
-										window.scrollBy(0, 400);
+										window.scrollBy(0, 500);
 										break;
 									case 'rop-menu':
 										window.scrollBy(0, 400);
 										break;
+									case 'share-more-than-once':
+										window.scrollBy(0, 100);
+										break;
 									case 'post-types':
-										window.scrollBy(0, 350);
+										window.scrollBy(0, 300);
+										break;
+									case 'instant-share':
+										window.scrollBy(0, 100);
 										break;
 									case 'custom-share':
-										window.scrollBy(0, 190);
+										window.scrollBy(0, 400);
 										break;
 									case 'post-format':
-										window.scrollBy(0, -590);
+										window.scrollBy(0, -1000);
 										break;
 								}
 							});
