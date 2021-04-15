@@ -1300,17 +1300,6 @@ class Rop_Admin {
 	 */
 	public function migrate_taxonomies_to_post_format() {
 
-		$installed_at_version = get_option( 'rop_first_install_version' );
-		// If this option does not exist, stop the process.
-		if ( empty( $installed_at_version ) ) {
-			return;
-		}
-
-		// Apply the migration process only for users that installed an older version.
-		if ( version_compare( $installed_at_version, '8.5.4', '>' ) ) {
-			return;
-		}
-
 		// Fetch the plugin global settings.
 		$global_settings = new Rop_Global_Settings();
 
@@ -1320,7 +1309,7 @@ class Rop_Admin {
 		}
 
 		// If any type of Pro is installed and active.
-		if ( $global_settings->license_type() > 0 ) {
+		if ( $global_settings->license_type() > 0 && $global_settings->license_type() !== 7 ) {
 			// Get the current plugin options.
 			$option = get_option( 'rop_data' );
 
