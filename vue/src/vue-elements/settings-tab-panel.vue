@@ -29,6 +29,9 @@
                               :disabled="rop_cron_remote_agreement"
                               @change="update_agreement_checkbox()"
                           /> <span v-html="labels.cron_type_label_desc_terms"></span>
+                          <br>
+                          <br>
+                          <small v-html="labels.cron_type_notice"></small>
                         </div>
                     </div>
                 </div>
@@ -137,7 +140,7 @@
                     </div>
                 </div>
 
-				<span class="divider" v-if="!isPro"></span>
+				<span class="divider" v-if="!isPro || license_price_id === 7"></span>
                 <!-- Taxonomies -->
                 <!-- Price ID 7 is Starter Plan -->
 				<div class="columns py-2" v-if="!isPro || license_price_id === 7">
@@ -326,7 +329,6 @@
                         </div>
                     </div>
                 </div>
-                <span class="divider"></span>
 
             </div>
         </div>
