@@ -449,8 +449,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 			$new_post['type']        = 'link';
 			$new_post['url']         = trim( $this->get_url( $post_details ) );
-			$new_post['title']       = get_the_title( $post_details['post_id'] );
-			$new_post['description'] = $this->strip_excess_blank_lines( $post_details['content'] );
+			$new_post['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES );
+			$new_post['description'] = $this->strip_excess_blank_lines( html_entity_decode( $post_details['content'], ENT_QUOTES ) );
 			$new_post['author']      = $this->get_author( $post_id );
 			$new_post['tags']        = $hashtags;
 		}
@@ -458,7 +458,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		// Text post
 		if ( empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
 			$new_post['type'] = 'text';
-			$new_post['body'] = $this->strip_excess_blank_lines( $post_details['content'] );
+			$new_post['body'] = $this->strip_excess_blank_lines( html_entity_decode( $post_details['content'], ENT_QUOTES ) );
 			$new_post['tags'] = $hashtags;
 		}
 
@@ -486,7 +486,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 				}
 			}
 
-			$new_post['caption'] = $this->strip_excess_blank_lines( $post_details['content'] ) . ' ' . trim( $this->get_url( $post_details ) );
+			$new_post['caption'] = $this->strip_excess_blank_lines( html_entity_decode( $post_details['content'], ENT_QUOTES ) ) . ' ' . trim( $this->get_url( $post_details ) );
 			$new_post['tags']    = $hashtags;
 		}
 
@@ -498,7 +498,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
   																 <source src="' . $post_details['post_image'] . '" type="video/mp4">
 																	 Your browser does not support the video tag.
 																	 </video>';
-			$new_post['caption']    = $this->strip_excess_blank_lines( $post_details['content'] ) . ' ' . trim( $this->get_url( $post_details ) );
+			$new_post['caption']    = $this->strip_excess_blank_lines( html_entity_decode( $post_details['content'], ENT_QUOTES ) ) . ' ' . trim( $this->get_url( $post_details ) );
 			$new_post['tags']       = $hashtags;
 		}
 
