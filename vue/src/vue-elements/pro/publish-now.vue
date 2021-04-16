@@ -8,7 +8,7 @@
 				<span v-html=" labels.share_on_update"></span>
 			</label>
 
-			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_by_default || toggle_accounts" v-for="(account, key) in accounts" :id="key" v-bind:key="key">
+			<div class="form-group rop-publish-now-accounts-wrapper" v-if="toggle_accounts" v-for="(account, key) in accounts" :id="key" v-bind:key="key">
 				<label class="form-checkbox rop-publish-now-account" :id="key">
 					<input type="checkbox" :checked="share_on_update_by_default && !choose_accounts_manually" :value="key" v-on:click="toggleServices($event, key)" name="publish_now_accounts[]" class="rop-account-names"/>
 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
@@ -46,7 +46,7 @@
 				share_on_update_by_default: this.$store.state.publish_now.instant_share_by_default,
 				choose_accounts_manually: this.$store.state.publish_now.choose_accounts_manually,
 				showField: fields,
-				toggle_accounts: false,
+				toggle_accounts: this.$store.state.publish_now.instant_share_by_default,
 			}
 		},
 		components: {
