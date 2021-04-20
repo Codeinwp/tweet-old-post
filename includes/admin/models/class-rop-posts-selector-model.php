@@ -473,6 +473,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 */
 		$posts = array_values( $posts );
 
+		/**
+		 * Shuffle retrieved posts
+		 */
 		shuffle( $posts );
 
 		if ( function_exists( 'icl_object_id' ) ) {
@@ -481,7 +484,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		if ( ! empty( $posts ) ) {
 			wp_reset_postdata();
-			wp_reset_query();
 		}
 
 		return $posts;
