@@ -1,16 +1,16 @@
 <template>
-	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
-
+	<div class="rop-control-container">
+			<p v-if="Object.keys(accounts).length < 1">{{labels.add_account_to_use_instant_share}}</p>
 		<!-- Share on publish/update -->
-		<fieldset>
+		<fieldset v-if="Object.keys(accounts).length > 0">
 			<label class="form-checkbox">
-				<input type="checkbox" :checked="share_on_update_enabled" v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
+				<input type="checkbox" :checked="share_on_update_by_default" v-on:click="toggle_accounts = !toggle_accounts" name="publish_now" value="1"/>
 				<span v-html=" labels.share_on_update"></span>
 			</label>
 
-			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts" :id="key" v-bind:key="key">
+			<div class="form-group rop-publish-now-accounts-wrapper" v-if="toggle_accounts" v-for="(account, key) in accounts" :id="key" v-bind:key="key">
 				<label class="form-checkbox rop-publish-now-account" :id="key">
-					<input type="checkbox" :checked="share_on_update_enabled" :value="key" v-on:click="toggleServices($event, key)" name="publish_now_accounts[]" class="rop-account-names"/>
+					<input type="checkbox" :checked="share_on_update_by_default && !choose_accounts_manually" :value="key" v-on:click="toggleServices($event, key)" name="publish_now_accounts[]" class="rop-account-names"/>
 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
 				</label>
 				<span v-on:click="togglefields(key)" :id="key" class="rop-edit-custom-instant-share-message-text">{{ showField[key] ? 'done' : 'edit message' }}</span>
@@ -42,8 +42,11 @@
 				license: this.$store.state.licence,
 				labels: this.$store.state.labels.publish_now,
 				accounts: this.$store.state.publish_now.accounts,
-				share_on_update_enabled: this.$store.state.publish_now.action,
-				showField: fields
+				share_on_update_enabled: this.$store.state.publish_now.instant_share_enabled,
+				share_on_update_by_default: this.$store.state.publish_now.instant_share_by_default,
+				choose_accounts_manually: this.$store.state.publish_now.choose_accounts_manually,
+				showField: fields,
+				toggle_accounts: this.$store.state.publish_now.instant_share_by_default,
 			}
 		},
 		components: {
