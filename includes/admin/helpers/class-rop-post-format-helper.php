@@ -891,7 +891,6 @@ class Rop_Post_Format_Helper {
 		}
 
 		$image = '';
-		$post_with_image = $this->post_format['image'];
 
 		if ( class_exists( 'Jetpack_Photon' ) ) {
 			// Disable Jetpack Photon filter.
