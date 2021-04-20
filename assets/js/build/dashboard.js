@@ -41479,7 +41479,15 @@ module.exports = {
 			if (accountId !== null) {
 				serviceIcon = 'fa-';
 				var account = this.active_accounts[accountId];
-				if (account !== undefined && account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook facebook');
+
+				if (account !== undefined && account.service === 'facebook' && !this.is_instagram_account) {
+					serviceIcon = serviceIcon.concat('facebook facebook');
+				}
+
+				if (account !== undefined && this.is_instagram_account) {
+					serviceIcon = serviceIcon.concat('instagram instagram');
+				}
+
 				if (account !== undefined && account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter twitter');
 				if (account !== undefined && account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin linkedin');
 				if (account !== undefined && account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr tumblr');
