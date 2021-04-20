@@ -517,7 +517,7 @@ class Rop_Admin {
 	}
 
 	/**
-	 * The display method for the main page.
+	 * The display method for the main dashboard of ROP.
 	 *
 	 * @since   8.0.0
 	 * @access  public
