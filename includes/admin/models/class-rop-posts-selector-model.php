@@ -381,6 +381,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 * reset the buffer and query again.
 		 */
 		if ( empty( $results ) && $this->has_buffer_items( $account_id ) && $this->settings->get_more_than_once() ) {
+
 			$this->clear_buffer( $account_id );
 
 			$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
@@ -416,6 +417,17 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			}
 		}
 
+		// Clear entire buffer if only one post id remains in the list of available ones that can be added to queue
+		// Helps in preventing the same post from being added to the queue over and over again
+		$results_count = count( $results );
+
+		if ( $results_count <= 1 && $this->settings->get_more_than_once() ) {
+
+			$this->clear_buffer( $account_id );
+			$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
+
+		}
+
 		$this->selection = $results;
 
 		if ( function_exists( 'icl_object_id' ) && ! empty( $post_format['wpml_language'] ) ) {
@@ -439,7 +451,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 */
 	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
+
 		$exclude = $this->build_exclude( $account_id, $excluded_by_user );
+
 		if ( ! is_array( $exclude ) ) {
 			$exclude = array();
 		}
@@ -459,11 +473,18 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 */
 		$posts = array_values( $posts );
 
+		/**
+		 * Shuffle retrieved posts
+		 */
+		shuffle( $posts );
+
 		if ( function_exists( 'icl_object_id' ) ) {
 			$posts = $this->rop_wpml_id( $posts, $account_id );
 		}
 
-		wp_reset_postdata();
+		if ( ! empty( $posts ) ) {
+			wp_reset_postdata();
+		}
 
 		return $posts;
 	}
@@ -506,10 +527,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 */
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
+
+		$rop_quantity_of_posts = apply_filters( 'rop_quantity_of_posts', 1000 );
+
 		$admin = new Rop_Admin();
 		$args  = array(
 			'no_found_rows'          => true,
-			'posts_per_page'         => ( 1000 + count( $exclude ) ),
+			'posts_per_page'         => ( $rop_quantity_of_posts + count( $exclude ) ),
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
 			'post_status'            => array( 'publish' ),
@@ -561,7 +585,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to determine if the buffer is empty or not.
 	 *
-	 * @param string $account_id The account ID for witch to check.
+	 * @param string $account_id The account ID for which to check.
 	 *
 	 * @return bool
 	 * @since   8.0.0
@@ -569,7 +593,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	public function has_buffer_items( $account_id ) {
 		$this->buffer = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
-
 		return ( isset( $this->buffer[ $account_id ] ) ) ? true : false;
 	}
 
@@ -610,6 +633,17 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			array_push( $this->blocked[ $account_id ], $post_id );
 		}
 
+		$this->set( 'posts_blocked', $this->blocked );
+	}
+
+	/**
+	 * Utility method to clear blocked posts.
+	 *
+	 * @since   9.0.0
+	 * @access  public
+	 */
+	public function clear_blocked_posts() {
+		$this->blocked = array();
 		$this->set( 'posts_blocked', $this->blocked );
 	}
 

@@ -427,5 +427,9 @@ class Rop_Cron_Helper {
 		 */
 		$selector = new Rop_Posts_Selector_Model();
 		$selector->clear_buffer();
+		/**
+		 * Clear all blocked posts.
+		 */
+		$selector->clear_blocked_posts();
 	}
 }

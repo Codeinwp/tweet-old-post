@@ -517,7 +517,7 @@ class Rop_Admin {
 	}
 
 	/**
-	 * The display method for the main page.
+	 * The display method for the main dashboard of ROP.
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -1075,6 +1075,7 @@ class Rop_Admin {
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
+		$posts_selector_model = new Rop_Posts_Selector_Model();
 		$refresh_rop_data = false;
 		$revive_network_active = false;
 
@@ -1150,6 +1151,9 @@ class Rop_Admin {
 								if ( $response === true ) {
 									update_option( 'rop_last_post_shared', $post_shared );
 								}
+
+								$posts_selector_model->update_buffer( $account, $post_data['post_id'] );
+
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
