@@ -613,6 +613,50 @@ abstract class Rop_Services_Abstract {
 	}
 
 	/**
+	 * Download external images temporarily.
+	 *
+	 * This method is only needed for Twitter Service since the other Libraries
+	 * That we use work fine with external image URLS
+	 *
+	 * @param int $image_url The image URL.
+	 *
+	 * @return string Path of downloaded external image.
+	 */
+	protected function rop_download_external_image( $image_url ) {
+
+		$tmp_images_folder = ROP_TEMP_IMAGES;
+
+		if ( ! is_dir( $tmp_images_folder ) ) {
+			wp_mkdir_p( $tmp_images_folder );
+		}
+
+		$headers = get_headers( $image_url );
+
+		if ( empty( $headers ) ) {
+			return $image_url;
+		}
+
+		// Returns response code e.g 200, 404 etc
+		$response_code = (int) substr( $headers[0], 9, 3 );
+
+		$image_contents = '';
+
+		if ( $response_code !== 200 ) {
+			return $image_url;
+		}
+
+		$image_contents = file_get_contents( $image_url );
+
+		$tmp_image_name = 'rop-external-image' . substr( time(), -3 ) . rand( 0, 50 ) . '.jpg';
+		$tmp_image_path = ROP_TEMP_IMAGES . $tmp_image_name;
+
+		file_put_contents( $tmp_image_path, $image_contents );
+
+		return $tmp_image_path;
+
+	}
+
+	/**
 	 * Get Image file path if exists, return default image_url if not.
 	 *
 	 * Used where file_get_contents might not work with urls, we provide the file path.
@@ -623,6 +667,7 @@ abstract class Rop_Services_Abstract {
 	 * @return string Image path.
 	 */
 	protected function get_path_by_url( $image_url, $mimetype = '' ) {
+
 		if ( empty( $image_url ) ) {
 			return '';
 		}

@@ -16,7 +16,7 @@
 					</div>
 				</div>
 				<div class="form-group columns" v-if="edit">
-					<div class="column col-12" v-if="content.post_with_image">
+					<div class="column col-12" v-if="content.post_with_image || is_instagram_account">
 						<label class="form-label" for="image">{{labels.queue_image}}</label>
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
@@ -91,7 +91,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="column col-4 col-sm-12 vertical-align" v-if="!edit && content.post_with_image">
+			<div class="column col-4 col-sm-12 vertical-align" v-if="(!edit && content.post_with_image) || (!edit && is_instagram_account)">
 				<div v-if="content.post_image !== ''">
 					<figure class="figure" v-if="content.post_image !== ''">
 						<img :src="( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )"
@@ -148,6 +148,31 @@
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
 			},
+			allAccounts: function(){
+
+                    const all_accounts = {};
+                                
+                    const services = this.$store.state.authenticatedServices;
+
+                        for (const key in services) {
+                            if (!services.hasOwnProperty(key)) {
+                                continue;
+                            }
+                            const service = services[key];
+
+                            for (const account_id in service.available_accounts) {
+                                if (!service.available_accounts.hasOwnProperty(account_id)) {
+                                    continue;
+                                }
+                                all_accounts[account_id] = service.available_accounts[account_id];
+                            }
+                        }
+                    return all_accounts;
+            },
+            is_instagram_account: function(){
+                return this.allAccounts[this.card_data.account_id].account_type === 'instagram_account';
+            },
+
 		},
 		mounted: function () {
 			//console.log(this.card_data);
@@ -256,7 +281,15 @@
 				if (accountId !== null) {
 					serviceIcon = 'fa-'
 					let account = this.active_accounts[accountId]
-					if (account !== undefined && account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook facebook')
+					
+					if( (account !== undefined && account.service === 'facebook') && !this.is_instagram_account ){
+						serviceIcon = serviceIcon.concat('facebook facebook')
+					}
+
+					if( account !== undefined && this.is_instagram_account ){
+						serviceIcon = serviceIcon.concat('instagram instagram')
+					}
+
 					if (account !== undefined && account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter twitter')
 					if (account !== undefined && account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin linkedin')
 					if (account !== undefined && account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr tumblr')

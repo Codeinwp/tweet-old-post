@@ -66,25 +66,60 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to retrieve taxonomies.
 	 *
-	 * @param array $post_formats The post formats to use.
+	 * @param array $data Contains an array of post types to get the taxonomies for. Can also contain a language code passed by the langauge selector option on the Post Format settings for an account.
 	 *
 	 * @return array|bool
 	 * @since   8.0.0
 	 * @access  public
 	 */
-	public function get_taxonomies( $post_formats = array() ) {
+	public function get_taxonomies( $data = array() ) {
 
-		if ( empty( $post_formats ) ) {
+		$post_types = array();
+
+		if ( empty( $data['language_code'] ) ) {
+			$post_types = $data;
+		} else {
+			$post_types = $data['post_types'];
+			$language_code = $data['language_code'];
+		}
+
+		if ( empty( $post_types ) ) {
 			return array();
 		}
+
 		$taxonomies = array();
-		foreach ( $post_formats as $post_type_name ) {
+
+		$wpml_current_lang = apply_filters( 'wpml_current_language', null );
+
+		if ( function_exists( 'icl_object_id' ) && ! empty( $language_code ) ) {
+			// changes the language of global query to use the specfied language
+			do_action( 'wpml_switch_language', $language_code );
+		}
+
+		// Here We are refreshing the taxonomies "on page load"
+		// This method fires whenever the post format page is brought into view.
+		// We're refreshing the taxonomies based on whether that first account has a language assigned or not
+		if ( function_exists( 'icl_object_id' ) && empty( $language_code ) ) {
+			// check the first active account and it's post format and see if it has a language code.
+			$first_account_id = array_keys( $this->data['active_accounts'] )[0];
+			$post_format_model = new Rop_Post_Format_Model;
+			$post_format = $post_format_model->get_post_format( $first_account_id );
+			$first_account_lang = ! empty( $post_format['wpml_language'] ) ? $post_format['wpml_language'] : '';
+
+			if ( ! empty( $first_account_lang ) ) {
+				// changes the language of global query to use the specfied language
+				do_action( 'wpml_switch_language', $first_account_lang );
+			}
+		}
+
+		foreach ( $post_types as $post_type_name ) {
 
 			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
 
 			$post_type_taxonomies = $this->ignore_taxonomies( $post_type_taxonomies );
 
 			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
+
 				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
 
 				if ( empty( $taxonomy ) ) {
@@ -97,7 +132,15 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				}
 
 				$tax_name = $taxonomy->labels->singular_name;
+
 				foreach ( $terms as $term ) {
+					/*
+					$translated_term_id = apply_filters( 'wpml_object_id', $term->term_id, $taxonomy->name, FALSE, $lang );
+					$args = array('element_id' => $translated_term_id, 'element_type' => $taxonomy->name );
+					$lang_details = apply_filters( 'wpml_element_language_details', null, $args );
+					$translated_name =  apply_filters( 'wpml_translated_language_name', NULL, $lang_details->language_code, $lang_details->language_code );
+					*/
+
 					array_push(
 						$taxonomies,
 						array(
@@ -109,6 +152,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 					);
 				}
 			}
+		}
+
+		if ( function_exists( 'icl_object_id' ) && ! ( empty( $language_code ) && empty( $first_account_lang ) ) ) {
+			// set language back to original
+			do_action( 'wpml_switch_language', $wpml_current_lang );
 		}
 
 		if ( empty( $taxonomies ) ) {
@@ -289,17 +337,25 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 *
+	 * @see Rop_Queue_Model::get_queue For how this function is getting used
 	 */
 	public function select( $account_id = false ) {
 		$post_types      = $this->build_post_types();
 		$global_settings = new Rop_Global_Settings();
 
-		// Taxonomy: Post Format new option.
-		if ( $global_settings->license_type() > 0 && ! empty( $account_id ) ) {
+		// Taxonomy: Post Format new option
+		if ( $global_settings->license_type() > 0 && $global_settings->license_type() !== 7 && ! empty( $account_id ) ) {
 			$parts             = explode( '_', $account_id );
 			$service           = $parts[0];
 			$post_format_model = new Rop_Post_Format_Model( $service );
 			$post_format       = $post_format_model->get_post_format( $account_id );
+
+			if ( function_exists( 'icl_object_id' ) && ! empty( $post_format['wpml_language'] ) ) {
+				$wpml_current_lang = apply_filters( 'wpml_current_language', null );
+					// changes the language of global query to use the specfied language for the account
+				do_action( 'wpml_switch_language', $post_format['wpml_language'] );
+			}
 
 			$custom_data = array();
 			if ( isset( $post_format['taxonomy_filter'] ) && ! empty( $post_format['taxonomy_filter'] ) ) {
@@ -325,6 +381,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 * reset the buffer and query again.
 		 */
 		if ( empty( $results ) && $this->has_buffer_items( $account_id ) && $this->settings->get_more_than_once() ) {
+
 			$this->clear_buffer( $account_id );
 
 			$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
@@ -360,7 +417,23 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			}
 		}
 
+		// Clear entire buffer if only one post id remains in the list of available ones that can be added to queue
+		// Helps in preventing the same post from being added to the queue over and over again
+		$results_count = count( $results );
+
+		if ( $results_count <= 1 && $this->settings->get_more_than_once() ) {
+
+			$this->clear_buffer( $account_id );
+			$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
+
+		}
+
 		$this->selection = $results;
+
+		if ( function_exists( 'icl_object_id' ) && ! empty( $post_format['wpml_language'] ) ) {
+				// Sets WP language back to what user set it.
+			do_action( 'wpml_switch_language', $wpml_current_lang );
+		}
 
 		return $results;
 	}
@@ -378,7 +451,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 */
 	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
+
 		$exclude = $this->build_exclude( $account_id, $excluded_by_user );
+
 		if ( ! is_array( $exclude ) ) {
 			$exclude = array();
 		}
@@ -398,11 +473,18 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 */
 		$posts = array_values( $posts );
 
+		/**
+		 * Shuffle retrieved posts
+		 */
+		shuffle( $posts );
+
 		if ( function_exists( 'icl_object_id' ) ) {
-			$posts = $this->rop_wpml_id( $posts );
+			$posts = $this->rop_wpml_id( $posts, $account_id );
 		}
 
-		wp_reset_postdata();
+		if ( ! empty( $posts ) ) {
+			wp_reset_postdata();
+		}
 
 		return $posts;
 	}
@@ -445,10 +527,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 */
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
+
+		$rop_quantity_of_posts = apply_filters( 'rop_quantity_of_posts', 1000 );
+
 		$admin = new Rop_Admin();
 		$args  = array(
 			'no_found_rows'          => true,
-			'posts_per_page'         => ( 1000 + count( $exclude ) ),
+			'posts_per_page'         => ( $rop_quantity_of_posts + count( $exclude ) ),
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
 			'post_status'            => array( 'publish' ),
@@ -500,7 +585,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to determine if the buffer is empty or not.
 	 *
-	 * @param string $account_id The account ID for witch to check.
+	 * @param string $account_id The account ID for which to check.
 	 *
 	 * @return bool
 	 * @since   8.0.0
@@ -508,7 +593,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	public function has_buffer_items( $account_id ) {
 		$this->buffer = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
-
 		return ( isset( $this->buffer[ $account_id ] ) ) ? true : false;
 	}
 
@@ -549,6 +633,17 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			array_push( $this->blocked[ $account_id ], $post_id );
 		}
 
+		$this->set( 'posts_blocked', $this->blocked );
+	}
+
+	/**
+	 * Utility method to clear blocked posts.
+	 *
+	 * @since   9.0.0
+	 * @access  public
+	 */
+	public function clear_blocked_posts() {
+		$this->blocked = array();
 		$this->set( 'posts_blocked', $this->blocked );
 	}
 
@@ -623,28 +718,60 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @since   8.1.7
 	 * @access   public
 	 */
-	public function rop_wpml_id( $post_id ) {
+	public function rop_wpml_id( $post_id, $account_id = '' ) {
 
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
 
+		$post = $post_id;
+
+		if ( ! empty( $account_id ) ) {
+
+			$post_format_model = new Rop_Post_Format_Model();
+			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
+			// If no language set, use default WPML language
+			$rop_account_lang_code = ! empty( $rop_account_post_format['wpml_language'] ) ? $rop_account_post_format['wpml_language'] : $default_lang;
+
+		}
+
+		if ( ! empty( $rop_account_lang_code ) ) {
+			  $lang_code = $rop_account_lang_code;
+		}
+
 		if ( is_array( $post_id ) ) {
+
+			$post = array();
+
 			foreach ( $post_id as $id ) {
+
 				$post_type = get_post_type( $id );
 				$wpml_post = apply_filters( 'wpml_object_id', $id, $post_type, false, $lang_code );
+
 				if ( ! empty( $wpml_post ) ) {
+
+					if ( get_post_status( $wpml_post ) !== 'publish' ) {
+						continue;
+					}
+
 					$post[] = $wpml_post;
 				}
 			}
 		} else {
+
+			$post = '';
 			$post_type = get_post_type( $post_id );
-			$post      = apply_filters( 'wpml_object_id', $post_id, $post_type, false, $lang_code );
+			$wpml_post = apply_filters( 'wpml_object_id', $post_id, $post_type, false, $lang_code );
+
+			if ( get_post_status( $wpml_post ) === 'publish' ) {
+				$post = $wpml_post;
+			}
 		}
 
-		if ( empty( $post ) ) {
-			return $post_id;
-		} else {
+		if ( ! empty( $post ) ) {
 			return $post;
+		} else {
+			// Return original passed in post id if none of the conditions are met.
+			return $post_id;
 		}
 
 	}
@@ -658,9 +785,23 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @since   8.1.7
 	 * @access   public
 	 */
-	public function rop_wpml_link( $url ) {
+	public function rop_wpml_link( $url, $account_id ) {
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
+
+		if ( ! empty( $account_id ) ) {
+
+			$post_format_model = new Rop_Post_Format_Model();
+			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
+			// If no language set, use default WPML language
+			$rop_account_lang_code = ! empty( $rop_account_post_format['wpml_language'] ) ? $rop_account_post_format['wpml_language'] : $default_lang;
+
+		}
+
+		if ( ! empty( $rop_account_lang_code ) ) {
+					$lang_code = $rop_account_lang_code;
+		}
+
 		$wpml_url     = apply_filters( 'wpml_permalink', $url, $lang_code );
 
 		return $wpml_url;

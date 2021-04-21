@@ -227,16 +227,24 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 
 		$attachment_url = $post_details['post_image'];
 
-		// if the post has no image but "Share as image post" is checked
+		// If the post has no image but "Share as image post" is checked
 		// share as an article post
 		if ( empty( $attachment_url ) ) {
 			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
 			return $this->vk_article_post( $post_details, $args, $owner_id );
 		}
 
-		$attachment_path = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] );
+		$passed_image_url_host = parse_url( $attachment_url )['host'];
+		$admin_site_url_host = parse_url( get_site_url() )['host'];
 
-		// if attachment is video
+		/** If this image is not local then lets download it locally to get its path  */
+		if ( ( $passed_image_url_host === $admin_site_url_host ) && strpos( $post_details['mimetype']['type'], 'video' ) !== true ) {
+			$attachment_path = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] );
+		} else {
+			$attachment_path = $this->rop_download_external_image( $attachment_url );
+		}
+
+		// If attachment is video
 		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
 			return $this->vk_video_post( $post_details, $attachment_path, $args, $owner_id, $client, $access_token );
 		}
@@ -272,6 +280,11 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$response = json_decode( curl_exec( $ch ), true );
 
 		curl_close( $ch );
+
+		/** Delete this image if it was an external one downloaded temporarily. */
+		if ( strpos( $attachment_path, ROP_TEMP_IMAGES ) !== false ) {
+			wp_delete_file( $attachment_path );
+		}
 
 		$params = array(
 			'photo' => stripslashes( $response['photo'] ),
@@ -449,14 +462,14 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$new_post = $this->vk_text_post( $post_details, $args, $owner_id );
 		}
 
-		// VK image post
+		// VK media post
 		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
 			$new_post = $this->vk_media_post( $post_details, $args, $owner_id, $client, $access_token );
 		}
 
 		if ( empty( $new_post ) ) {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
-			return;
+			return false;
 		}
 
 		$response = $client->wall()->post(

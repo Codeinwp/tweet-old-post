@@ -218,7 +218,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Post Types', 'tweet-old-post' ) . '</h3>' .
-									  '<p>' . esc_html__( 'Rop works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . esc_html__( 'ROP works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
 									  '<p>' . esc_html__( 'You can share media straight from your media library!', 'tweet-old-post' ) . '</p>' .
 									  '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
 						'position' => array(
@@ -331,7 +331,7 @@ class Rop_Pointers {
 					),
 				),
 				'log'                  => array(
-					'target'       => '#logs',
+					'target'       => '#sharinglogs',
 					'next'         => 'start-stop',
 					'next_trigger' => array(
 						'target' => '#logs',
@@ -504,19 +504,25 @@ class Rop_Pointers {
 
 								switch (pointer.next) {
 									case 'activate-rop':
-										window.scrollBy(0, 400);
+										window.scrollBy(0, 500);
 										break;
 									case 'rop-menu':
 										window.scrollBy(0, 400);
 										break;
+									case 'share-more-than-once':
+										window.scrollBy(0, 100);
+										break;
 									case 'post-types':
-										window.scrollBy(0, 350);
+										window.scrollBy(0, 300);
+										break;
+									case 'instant-share':
+										window.scrollBy(0, 100);
 										break;
 									case 'custom-share':
-										window.scrollBy(0, 190);
+										window.scrollBy(0, 400);
 										break;
 									case 'post-format':
-										window.scrollBy(0, -590);
+										window.scrollBy(0, -1000);
 										break;
 								}
 							});

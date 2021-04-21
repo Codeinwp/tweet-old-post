@@ -510,6 +510,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 					}
 					$response['user']       = isset( $account['user'] ) ? $account['user'] : '';
 					$response['is_company'] = ! isset( $account['is_company'] ) ? false : $account['is_company'];
+					$response['account_type'] = ! empty( $account['account_type'] ) ? $account['account_type'] : '';
 
 					return $response;
 				}

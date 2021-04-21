@@ -1,5 +1,5 @@
 <template>
-	<div :class="'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'">
+	<div :class="'rop-control-container-'+ ( license > 1 && license !== 7 ) +  '  rop-schedule-tab-container'">
 
 		<div class="columns py-2 rop-control">
 			<div class="column col-6 col-sm-12 vertical-align">
@@ -77,7 +77,7 @@
 		</div>
 
 		<!-- Upsell -->
-		<div class="columns py-2" v-if="license < 2">
+		<div class="columns py-2" v-if="license < 2 || license === 7">
 			<div class="column text-center">
 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.schedule_upsell}}</p>
 			</div>

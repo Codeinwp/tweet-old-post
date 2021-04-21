@@ -67,7 +67,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			'name' => 'ow.ly',
 			'active' => true,
 		),
-		'is.id' => array(
+		'is.gd' => array(
 			'id' => 'is.gd',
 			'name' => 'is.gd',
 			'active' => true,
@@ -391,51 +391,59 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed Sanitized data.
 	 */
 	private function validate_settings( $data ) {
+
+		// TODO Move Pro related logic to pro plugin
 		if ( isset( $data['default_interval'] ) ) {
 			$data['default_interval'] = floatval( $data['default_interval'] );
 			if ( $data['default_interval'] < 0.1 ) {
-				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6 mins.' );
+				$this->logger->alert_error( Rop_I18n::get_labels( 'misc.min_interval_6_mins' ) );
 				$data['default_interval'] = 0.1;
 			}
 
-			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 0.5 );
+			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 5 );
 			if ( $data['default_interval'] < $min_allowed ) {
-				$this->logger->alert_error( sprintf( 'Minimum allowed value of mininum interval between consecutive shares is %d mins.', $min_allowed * 60 ) );
+				$this->logger->alert_error( sprintf( Rop_I18n::get_labels( 'misc.min_interval_between_shares' ), $min_allowed ) );
 				$data['default_interval'] = $min_allowed;
 			}
 
 			$data['default_interval'] = round( $data['default_interval'], 1 );
 		}
 
+		// FIXME This code doesn't seem to do anything.
+		// We're actually checking for this in Rop_Scheduler_Model::create_schedule()
 		if ( isset( $data['interval_r'] ) ) {
 			$data['interval_r'] = floatval( $data['interval_r'] );
 			if ( $data['interval_r'] < 0.1 ) {
-				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6 mins.' );
+				$this->logger->alert_error( Rop_I18n::get_labels( 'misc.min_interval_6_mins' ) );
 				$data['interval_r'] = 0.1;
 			}
 
-			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 0.5 );
+			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 5 );
 			if ( $data['interval_r'] < $min_allowed ) {
-				$this->logger->alert_error( sprintf( 'Minimum allowed value of mininum interval between consecutive shares is %d mins.', $min_allowed * 60 ) );
+				$this->logger->alert_error( sprintf( Rop_I18n::get_labels( 'misc.min_interval_between_shares' ), $min_allowed ) );
 				$data['interval_r'] = $min_allowed;
 			}
 
 			$data['interval_r'] = round( $data['interval_r'], 1 );
 		}
+		// ***
 
-		if ( empty( $data['selected_post_types'] ) ) {
-			$this->logger->alert_error( 'You need to have at least one post type to share.' );
+		// We only need to check this if on General Settings tab.
+		// Otherwise it would throw an error in log whenever this method is called anywhere else.
+		if ( empty( $data['selected_post_types'] ) && array_key_exists( 'minimum_post_age', $data ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_types_selected' ) );
 			$data['selected_post_types'] = $this->defaults['selected_post_types'];
 		}
+
 		if ( isset( $data['number_of_posts'] ) ) {
 			$data['number_of_posts'] = intval( $data['number_of_posts'] );
 			if ( $data['number_of_posts'] < 0 ) {
-				$this->logger->alert_error( 'Minimum posts to share is 1.' );
+				$this->logger->alert_error( Rop_I18n::get_labels( 'misc.min_number_of_concurrent_posts' ) );
 				$data['number_of_posts'] = 1;
 			}
-			if ( $data['number_of_posts'] > 5 ) {
-				$this->logger->alert_error( 'Maximum posts to share is 5.' );
-				$data['number_of_posts'] = 5;
+			if ( $data['number_of_posts'] > 4 ) {
+				$this->logger->alert_error( Rop_I18n::get_labels( 'misc.max_number_of_concurrent_posts' ) );
+				$data['number_of_posts'] = 4;
 			}
 		}
 
@@ -556,6 +564,17 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function get_instant_sharing_by_default() {
 		return isset( $this->settings['instant_share_default'] ) ? $this->settings['instant_share_default'] : false;
+	}
+
+	/**
+	 * Getter for choose account manually option.
+	 *
+	 * @since   9.0.0
+	 * @access  public
+	 * @return bool
+	 */
+	public function get_instant_share_choose_accounts_manually() {
+		return isset( $this->settings['instant_share_choose_accounts_manually'] ) ? $this->settings['instant_share_choose_accounts_manually'] : false;
 	}
 
 	/**

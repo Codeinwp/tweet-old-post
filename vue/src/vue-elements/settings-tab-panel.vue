@@ -29,10 +29,15 @@
                               :disabled="rop_cron_remote_agreement"
                               @change="update_agreement_checkbox()"
                           /> <span v-html="labels.cron_type_label_desc_terms"></span>
+                          <br>
+                          <br>
+                          <small v-html="labels.cron_type_notice"></small>
                         </div>
                     </div>
                 </div>
                 <span class="divider" v-if="this.apply_exclude_limit_cron && ! isBiz" ></span>
+                
+                <!-- Minimum interval between shares -->
 
                 <div class="columns py-2" v-if="! isBiz">
                     <div class="column col-6 col-sm-12 vertical-align">
@@ -42,6 +47,7 @@
                     <div class="column col-6 col-sm-12 vertical-align">
                         <counter-input id="default_interval" :min-val="generalSettings.min_interval" :step-val="generalSettings.step_interval"
                                        :value.sync="generalSettings.default_interval"></counter-input>
+                                     
                     </div>
                 </div>
                 <span class="divider"></span>
@@ -54,7 +60,11 @@
                         <counter-Input id="min_post_age" :max-val="365"
                                        :value.sync="generalSettings.minimum_post_age"></counter-Input>
                     </div>
+                    
                 </div>
+
+                <span class="divider"></span>
+
                 <!-- Max Post Age -->
                 <div class="columns py-2">
                     <div class="column col-6 col-sm-12 vertical-align">
@@ -63,19 +73,30 @@
                     </div>
                     <div class="column col-6 col-sm-12 vertical-align">
                         <counter-input id="max_post_age" :max-val="365"
-                                       :value.sync="generalSettings.maximum_post_age"></counter-input>
+                                       :value.sync="generalSettings.maximum_post_age" :disabled="!isPro"></counter-input>
                     </div>
                 </div>
-
+                
+                <div class="columns " v-if="!isPro">
+                    <div class="column text-center">
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.maximum_post_age_upsell}}</p>
+                    </div>
+                </div>
                 <span class="divider"></span>
-
-                <div class="columns py-2">
-                    <div class="column col-6 col-sm-12 vertical-align">
+              
+                <!-- Number of Posts -->
+                <div class="columns py-2" :class="'rop-control-container-'+isPro">
+                    <div class="column col-6 col-sm-12 vertical-align rop-control">
                         <b>{{labels.no_posts_title}}</b>
                         <p class="text-gray">{{labels.no_posts_desc}}</p>
                     </div>
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"></counter-input>
+                    <div class="column col-6 col-sm-12 vertical-align rop-control">
+                        <counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts" :disabled="!isPro"></counter-input>
+                    </div>
+                </div>
+                   <div class="columns " v-if="!isPro">
+                    <div class="column text-center">
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.number_of_posts_upsell}}</p>
                     </div>
                 </div>
                 <span class="divider"></span>
@@ -96,6 +117,9 @@
                     </div>
                 </div>
                 <span class="divider"></span>
+               
+                <!-- Post Types -->
+
                 <div class="columns py-2" :class="'rop-control-container-'+isPro">
                     <div class="column col-6 col-sm-12 vertical-align rop-control">
                         <b>{{labels.post_types_title}}</b>
@@ -112,14 +136,14 @@
 
                 <div class="columns " v-if="!isPro">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.post_types_upsell}}</p>
                     </div>
                 </div>
 
-				<span class="divider" v-if="!isPro"></span>
-
+				<span class="divider" v-if="!isPro || license_price_id === 7"></span>
                 <!-- Taxonomies -->
-				<div class="columns py-2" v-if="!isPro">
+                <!-- Price ID 7 is Starter Plan -->
+				<div class="columns py-2" v-if="!isPro || license_price_id === 7">
                     <div class="column col-6 col-sm-12 vertical-align">
                         <b>{{labels.taxonomies_title}}</b>
                         <p class="text-gray"><span v-html="labels.taxonomies_desc"></span></p>
@@ -210,6 +234,23 @@
                   </div>
                 </div>
 
+                <span class="divider" v-if="isInstantShare && isInstantShareByDefault"></span>
+
+                <div class="columns py-2" v-if="isInstantShare && isInstantShareByDefault">
+                  <div class="column col-6 col-sm-12 vertical-align rop-control">
+                    <b>{{labels.instant_share_choose_accounts_manually_title}}</b>
+                    <p class="text-gray">{{labels.instant_share_choose_accounts_manually_desc}}</p>
+                  </div>
+                  <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+                    <div class="form-group">
+                      <label class="form-checkbox">
+                        <input type="checkbox" v-model="generalSettings.instant_share_choose_accounts_manually"/>
+                        <i class="form-icon"></i>{{labels.instant_share_choose_accounts_manually_yes}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
                 <span class="divider" v-if="isInstantShare"></span>
 
                 <div class="columns py-2" v-if="isInstantShare" :class="'rop-control-container-'+isPro">
@@ -229,7 +270,7 @@
                 <!-- Upsell -->
                 <div class="columns " v-if="!isPro && isInstantShare">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-lock"></i> {{labels.instant_share_future_scheduled_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.instant_share_future_scheduled_upsell}}</p>
                     </div>
                 </div>
                 <span class="divider" v-if="isInstantShare"></span>
@@ -269,7 +310,7 @@
                 <!-- Upsell -->
                 <div class="columns " v-if="!isPro">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.custom_share_upsell}}</p>
                     </div>
                 </div>
                 <span class="divider" v-if="isCustomMsgs"></span>
@@ -288,7 +329,6 @@
                         </div>
                     </div>
                 </div>
-                <span class="divider"></span>
 
             </div>
         </div>
@@ -334,6 +374,9 @@
             isPro: function () {
                 return (this.$store.state.licence >= 1);
             },
+            license_price_id: function () {
+                return this.$store.state.licence;
+            },
             isTaxLimit: function () {
                 if (ropApiSettings.tax_apply_limit > 0) {
                     return true;
@@ -341,7 +384,7 @@
                 return false;
             },
             isBiz: function () {
-                return (this.$store.state.licence > 1);
+                return (this.$store.state.licence > 1 && this.$store.state.licence !== 7 );
             },
             postTypes: function () {
                 return this.$store.state.generalSettings.available_post_types;
@@ -365,6 +408,9 @@
             },
             isInstantShare: function () {
                 return this.$store.state.generalSettings.instant_share;
+            },
+            isInstantShareByDefault: function () {
+                return this.$store.state.generalSettings.instant_share_default;
             },
             isCustomMsgs: function () {
                 return this.$store.state.generalSettings.custom_messages;
@@ -514,6 +560,7 @@
 						true_instant_share: this.generalSettings.true_instant_share,
 						instant_share_default: this.generalSettings.instant_share_default,
 						instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
+                        instant_share_choose_accounts_manually: this.generalSettings.instant_share_choose_accounts_manually,
 						housekeeping: this.generalSettings.housekeeping,
 					}
 				}).then(response => {

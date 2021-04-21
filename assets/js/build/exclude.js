@@ -13244,6 +13244,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* global ropApiSettings */
 /* exported ropApiSettings */
 
+/* eslint-disable*/
+
 var logOptions = {
     // required ['debug', 'info', 'warn', 'error', 'fatal']
     logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',
@@ -13329,7 +13331,8 @@ exports.default = new _vuex2.default.Store({
          *
          * @category New Cron System
          */
-        rop_cron_remote: ropApiSettings.rop_cron_remote
+        rop_cron_remote: ropApiSettings.rop_cron_remote,
+        dom_updated: false
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -17359,7 +17362,7 @@ exports.push([module.i, "\n\t#rop-upsell-box[_v-4cbae0f4]{\n\t\tmargin-top:20px;
 // 				<img class="img-responsive" :src="to_pro_upsell" :alt="labels.upgrade_pro_cta">
 // 			</a>
 // 		</div>
-// 		<div class="card rop-upsell-business-card" v-if="license  === 1">
+// 		<div class="card rop-upsell-business-card" v-if="license  === 1 || license === 7 ">
 // 			<a :href="upsell_link" target="_blank">
 // 				<img class="img-responsive" :src="to_business_upsell" :alt="labels.upgrade_biz_cta">
 // 			</a>
@@ -17397,7 +17400,7 @@ module.exports = {
 /* 84 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-4cbae0f4=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-4cbae0f4=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-4cbae0f4=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-4cbae0f4=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-4cbae0f4=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-4cbae0f4=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-4cbae0f4=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-4cbae0f4=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-4cbae0f4=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-4cbae0f4=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-4cbae0f4=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1 || license === 7 \" _v-4cbae0f4=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-4cbae0f4=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-4cbae0f4=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 85 */,
