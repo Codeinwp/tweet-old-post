@@ -292,6 +292,30 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 9.0.0 - 2021-04-21  = 
+
+* [Note] This version is a major update and moves some features to the Pro version of the plugin
+* [Note Pro] Revive Network v2.0.6 and higher is needed for compatibility with Revive Old Posts v9.0.0
+* [New Pro] Improved WPML Support - Share a WPML language on a per-account basis for better modularity
+* [New Pro] Instagram Sharing! Share your post images and images from your Media Libary to Instagram
+* [New] Built-in option in "Share Content" settings to use the post excerpt as the share content
+* [New] Made it possible to manually select which accounts users would like to share to when using the Post on Publish feature with the "Share by default" option turned on 
+* [Fix Pro] Share variations would still get shared even though the option to use them was turned off
+* [Fix Pro] Issue with migrating taxonomy filters when moving from Lite(free version) to Pro, requiring users to clear options and reinstall the plugin
+* [Fix Pro] Character decoding in Tumblr share content
+* [Fix] Escaped quotes would show in Twitter share content
+* [Fix] Issue where WPML draft posts would get added to sharing queue
+* [Fix] New posts to share would always get added to the top of sharing queue instead of the bottom
+* [Fix] Script error with wp_localize_script on WP 5.7
+* [Fix] Download external images temporarily before attempting to share on Twitter and VK to prevent sharing error
+* [Fix] Banned posts were not cleared from sharing queue if the plugin was stopped and started again
+* [Change] Prevent saving of Twitter character length longer than 280 characters to keep within the Twitter character limit
+* [Change] Minimum sharing interval in Lite version of the plugin is now 5 hours
+* [Change] Number of posts per share in Lite version is now limited to 1
+* [Change] Maximum Post Age in Lite version is now 365 (1 year)
+* [Info] Tested on WP 5.7
+
+
 = 8.6.7 - 2021-02-01  = 
 
 * Fix: Instant share metabox would not show unless RSS feed item post type was selected on General Settings screen
