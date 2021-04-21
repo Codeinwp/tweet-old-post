@@ -71,7 +71,7 @@ Once set, the plugin will then be able to determine which content to auto share 
 
 ### A RSS to Social Media Plugin
 
-With our Revive Network addon, you can share posts from any RSS feed to Facebook, Twitter, Linkedin, Tumblr, Google My Business or Vkontakte(VK).
+With our Revive Network addon, you can share posts from any RSS feed to Facebook, Twitter, Linkedin, Tumblr, Google My Business, Vkontakte(VK) or Instagram (imported post needs to have an image).
 
 ---
 
@@ -86,6 +86,7 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 
 - WordPress to Facebook page
 - WordPress to Facebook Groups [Pro]
+- WordPress to Instagram [Pro]
 - WordPress to Twitter
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
@@ -126,6 +127,8 @@ Some of the available networks and features require the Pro version of the plugi
 
 - Post to Twitter. [Free]
 
+- Post to Instagram. [Pro]
+
 - Post to Facebook Groups. [Pro]
 
 - Post to LinkedIn Profiles. [Pro]
@@ -161,6 +164,8 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 
 - **WordPress to Facebook Groups** scheduling and auto post
+
+- **WordPress to Instagram** scheduling and auto post
 
 - **WordPress to LinkedIn Company Pages** scheduling and auto post
 
