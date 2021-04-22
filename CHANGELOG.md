@@ -1,4 +1,9 @@
 
+ ### v9.0.1 - 2021-04-22 
+ **Changes:** 
+ * [Fix Pro] Issue with saving maximum post age setting for users on Personal Plan
+* [Change] Don't show ROP Log error notice to non-admins
+ 
  ### v9.0.0 - 2021-04-21 
  **Changes:** 
  * [Note] This version is a major update and moves some features to the Pro version of the plugin
