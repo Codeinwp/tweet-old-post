@@ -403,12 +403,12 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			$global_settings = new Rop_Global_Settings();
 			$min_hours = 5;
 
-			if( $global_settings->license_type() > 0 ){
+			if ( $global_settings->license_type() > 0 ) {
 				$min_hours = 0.5;
 			}
 
 			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : $min_hours );
-			
+
 			if ( $data['default_interval'] < $min_allowed ) {
 				$this->logger->alert_error( sprintf( Rop_I18n::get_labels( 'misc.min_interval_between_shares' ), $min_allowed ) );
 				$data['default_interval'] = $min_allowed;
@@ -428,7 +428,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 
 			$min_hours = 5;
 
-			if( $global_settings->license_type() > 0 ){
+			if ( $global_settings->license_type() > 0 ) {
 				$min_hours = 0.5;
 			}
 

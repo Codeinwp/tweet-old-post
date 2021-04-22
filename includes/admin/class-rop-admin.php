@@ -72,7 +72,7 @@ class Rop_Admin {
 	public function display_global_status_warning() {
 		$log                  = new Rop_Logger();
 		$is_status_logs_alert = $log->is_status_error_necessary(); // true | false
-		if ( $is_status_logs_alert &&  current_user_can( 'manage_options' ) ) {
+		if ( $is_status_logs_alert && current_user_can( 'manage_options' ) ) {
 			?>
 			<div id="rop-status-error" class="notice notice-error is-dismissible">
 				<p>
