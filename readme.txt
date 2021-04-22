@@ -143,6 +143,8 @@ Some of the available networks and features require the Pro version of the plugi
 
 - Post to Vk Communities [Pro]
 
+- Share multilingual posts to respective pages with WPML example, share English Posts to your English social media accounts and Spanish posts to your Spanish social media accounts. [Pro]
+
 And More! Try Revive Old Posts, see why it's the **best** WordPress social media marketing tool to boost your site traffic and keep your followers engaged.
 
 
@@ -152,7 +154,7 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 **Awesome features in Pro:**
 
-- RSS feed sharing. Share feed items from ANY website to your connected social media accounts. With the Revive Network addon(available with Revive Old Posts Pro) it's all possible. 
+- RSS feed sharing. Share feed items from ANY website to your connected social media accounts. With the [Revive Network addon](https://revive.social/plugins/revive-network/) it's all possible (available free with Revive Old Posts Pro). 
 
 - [Support for WordPress Custom Post Types](https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts) (WooCommerce Products, BigCommerce Products, Recipes etc.)
 
@@ -162,6 +164,7 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - Share **WordPress scheduled posts** to social media on publish. [Learn More](https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts)
 
+- Finer **WPML support** for multilingual websites. [Learn More](https://docs.revive.social/article/1338-how-to-share-different-wpml-languages-to-different-social-media-accounts)
 
 - **WordPress to Facebook Groups** scheduling and auto post
 
