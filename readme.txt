@@ -209,12 +209,10 @@ Post questions and issues on the [Support Forum](https://wordpress.org/support/p
 - Read more about social media marketing on [our blog](https://revive.social/blog/).
 - Read more about WordPress on [our blog](https://www.codeinwp.com/blog/).
 - Take a look at our other plugins [see here](https://themeisle.com/wordpress-plugins/).
+- We're using the plugin on a few major sites that are using the plugin [FinMaster](https://finmasters.com), [Themeisle](https://themeisle.com/), [Codeinwp](https://www.codeinwp.com)
 
 
 
-= Translations =
-
-* sk_SK translation by Patrik Žec [PATWIST](http://patwist.com)
 
 == Installation ==
 
