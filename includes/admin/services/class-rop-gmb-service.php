@@ -232,12 +232,12 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		}
 
 		 // $created = '1593273390';
-		// check if access token will expire in next 30 seconds.
+		// Check if access token will expire in next 30 seconds.
 		$expired = ( $created + ( $expires_in - 30 ) ) < time();
 
-		// if it's not expired then return current access token in DB
+		// If it's not expired then return current access token in DB
 		if ( ! $expired ) {
-			// add an expires_in value to prevent Google Client PHP notice for undefined expires_in index
+			// Add an expires_in value to prevent Google Client PHP notice for undefined expires_in index
 			$access_token = array('access_token' => $access_token, 'expires_in' => $expires_in);
 			return $access_token;
 		}
@@ -247,6 +247,13 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$url = ROP_AUTH_APP_URL . '/wp-json/gmb/v1/access-token?refresh-token=' . $refresh_token;
 
 		$response = wp_remote_get( $url );
+
+		if ( is_wp_error( $response ) ) {
+			$error_string = $response->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return false;
+		}
+
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( $response['code'] !== 200 ) {
