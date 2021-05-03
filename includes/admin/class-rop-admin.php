@@ -149,6 +149,10 @@ class Rop_Admin {
 
 		$bitly = get_option( 'rop_shortners_bitly' );
 
+		if( ! is_array($bitly) ){
+			return;
+		}
+
 		if ( array_key_exists( 'generic_access_token', $bitly['bitly_credentials'] ) ) {
 			return;
 		}
