@@ -149,7 +149,7 @@ class Rop_Admin {
 
 		$bitly = get_option( 'rop_shortners_bitly' );
 
-		if( ! is_array($bitly) ){
+		if ( ! is_array( $bitly ) ) {
 			return;
 		}
 

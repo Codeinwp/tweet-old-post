@@ -940,6 +940,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			)
 		);
 
+		if ( is_wp_error( $response ) ) {
+			$error_string = $response->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return array(
+				'response' => '',
+				'body'     => '',
+			);
+		}
+
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		return array(
@@ -1045,6 +1054,12 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 				)
 			);
+
+			if ( is_wp_error( $scrape_response ) ) {
+				$error_string = $scrape_response->get_error_message();
+				$this->logger->info( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+				return false;
+			}
 
 			$body = wp_remote_retrieve_body( $scrape_response );
 

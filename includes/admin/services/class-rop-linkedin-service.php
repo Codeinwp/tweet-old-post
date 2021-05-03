@@ -559,6 +559,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			)
 		);
 
+		if ( is_wp_error( $response ) ) {
+			$error_string = $response->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return false;
+		}
+
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( array_key_exists( 'id', $body ) ) {
@@ -738,7 +744,24 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			)
 		);
 
+		if ( is_wp_error( $response ) ) {
+			$error_string = $response->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return false;
+		}
+
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( empty( $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'] ) ) {
+			$this->logger->alert_error( 'Cannot share to LinkedIn, empty upload url' );
+			return false;
+		}
+
+		if ( empty( $body['value']['asset'] ) ) {
+			$this->logger->alert_error( 'Cannot share to LinkedIn, empty asset' );
+			return false;
+		}
+		
 		$upload_url = $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
 		$asset      = $body['value']['asset'];
 
@@ -760,11 +783,18 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			)
 		);
 
-		if ( ! empty( $wp_img_put['body'] ) ) {
-			$response_code    = $wp_img_put['response']['code'];
+		if ( is_wp_error( $wp_img_put ) ) {
+			$error_string = $wp_img_put->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return false;
+		}
+
+		$response_code = $wp_img_put['response']['code'];
+
+		if ( $response_code !== 201 ) {
 			$response_message = $wp_img_put['response']['message'];
-			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $response_code . ' ' . $response_message );
-			exit( 1 );
+			$this->logger->alert_error( 'Cannot share to LinkedIn. Error:  ' . $response_code . ' ' . $response_message );
+			return false;
 		}
 
 		$new_post = array(
