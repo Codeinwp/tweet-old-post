@@ -761,7 +761,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( 'Cannot share to LinkedIn, empty asset' );
 			return false;
 		}
-		
+
 		$upload_url = $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
 		$asset      = $body['value']['asset'];
 
