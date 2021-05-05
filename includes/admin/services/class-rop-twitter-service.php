@@ -413,7 +413,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	private function twitter_article_post( $post_details ) {
 
-		$new_post['status'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+		$new_post['status'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
 
 		return $new_post;
 	}
@@ -430,7 +430,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	private function twitter_text_post( $post_details ) {
 
-		$new_post['status'] = $post_details['content'] . $post_details['hashtags'];
+		$new_post['status'] = $this->strip_excess_blank_lines( $post_details['content'] );
 
 		return $new_post;
 	}
@@ -543,7 +543,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			wp_delete_file( $media_path );
 		}
 
-		$new_post['status'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+		$new_post['status'] =  $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
 
 		return $new_post;
 	}
@@ -578,7 +578,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$post_id = $post_details['post_id'];
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
-		$message = $this->strip_excess_blank_lines( $post_details['content'] );
 
 		// Twitter link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
@@ -599,6 +598,17 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
 			return false;
 		}
+
+		$model       = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format( $post_details['account_id'] );
+
+		$hashtags = $post_details['hashtags'];
+		
+		if( $post_format['hashtags_randomize'] ){
+			$hashtags = $this->shuffle_hashtags( $hashtags );
+		}
+
+		$new_post['status'] = $new_post['status'] . $hashtags;
 
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 

@@ -433,8 +433,17 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$post_type = new Rop_Posts_Selector_Model();
 		$post_id   = $post_details['post_id'];
 
+		$model       = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format( $post_details['account_id'] );
+
+		$hashtags = $post_details['hashtags'];
+		
+		if( $post_format['hashtags_randomize'] ){
+			$hashtags = $this->shuffle_hashtags( $hashtags );
+		}
+
 		// Tumblr creates hashtags differently
-		$hashtags = preg_replace( array( '/ /', '/#/' ), array( '', ',' ), $post_details['hashtags'] );
+		$hashtags = preg_replace( array( '/ /', '/#/' ), array( '', ',' ), $hashtags );
 		$hashtags = ltrim( $hashtags, ',' );
 
 		// Link post
@@ -442,7 +451,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 			$thumbnail = get_the_post_thumbnail_url( $post_id, 'large' );
 
-			// if thumbnail parameter is set but empty, tumblr would return an error. So we prevent this here.
+			// If thumbnail parameter is set but empty, tumblr would return an error. So we prevent this here.
 			if ( ! empty( $thumbnail ) ) {
 				$new_post['thumbnail'] = $thumbnail;
 			}

@@ -519,14 +519,23 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$share_as_image_post = $post_details['post_with_image'];
 		$post_id = $post_details['post_id'];
 
+		$model       = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format( $post_details['account_id'] );
+
+		$hashtags = $post_details['hashtags'];
+		
+		if( $post_format['hashtags_randomize'] ){
+			$hashtags = $this->shuffle_hashtags( $hashtags );
+		}
+
 		// LinkedIn link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
-			$new_post = $this->linkedin_article_post( $post_details, $args );
+			$new_post = $this->linkedin_article_post( $post_details, $hashtags, $args );
 		}
 
 		// LinkedIn plain text post
 		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
-			$new_post = $this->linkedin_text_post( $post_details, $args );
+			$new_post = $this->linkedin_text_post( $post_details, $hashtags, $args );
 		}
 
 		// LinkedIn media post
@@ -534,9 +543,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			// Linkedin Api v2 doesn't support video upload. Share as article post
 			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) !== false ) {
-				$new_post = $this->linkedin_article_post( $post_details, $args );
+				$new_post = $this->linkedin_article_post( $post_details, $hashtags, $args );
 			} else {
-				$new_post = $this->linkedin_image_post( $post_details, $args, $token );
+				$new_post = $this->linkedin_image_post( $post_details, $hashtags, $args, $token );
 			}
 		}
 
@@ -602,7 +611,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.2.3
 	 * @access  private
 	 */
-	private function linkedin_article_post( $post_details, $args ) {
+	private function linkedin_article_post( $post_details, $hashtags, $args ) {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
@@ -615,7 +624,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 						array(
 							'shareCommentary'    =>
 								array(
-									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags,
 								),
 							'shareMediaCategory' => 'ARTICLE',
 							'media'              =>
@@ -656,7 +665,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.6.0
 	 * @access  private
 	 */
-	private function linkedin_text_post( $post_details, $args ) {
+	private function linkedin_text_post( $post_details, $hashtags, $args ) {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
@@ -669,7 +678,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 						array(
 							'shareCommentary'    =>
 								array(
-									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags,
 								),
 							'shareMediaCategory' => 'NONE',
 						),
@@ -695,7 +704,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.2.3
 	 * @access  private
 	 */
-	private function linkedin_image_post( $post_details, $args, $token ) {
+	private function linkedin_image_post( $post_details, $hashtags, $args, $token ) {
 
 		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
 		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
@@ -706,7 +715,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		if ( empty( $img ) ) {
 			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
-			return $this->linkedin_article_post( $post_details, $args );
+			return $this->linkedin_article_post( $post_details, $hashtags, $args );
 		}
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
@@ -806,7 +815,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 						array(
 							'shareCommentary'    =>
 								array(
-									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags,
 								),
 							'shareMediaCategory' => 'IMAGE',
 							'media'              =>

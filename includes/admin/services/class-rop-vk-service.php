@@ -211,6 +211,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * @access private
 	 *
 	 * @param array  $post_details The post details to be published by the service.
+	 * @param array  $hashtags Hashtags.
 	 * @param array  $args Optional arguments needed by the method.
 	 * @param int    $owner_id The owner id.
 	 * @param object $client Instance of the client.
@@ -218,7 +219,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 *
 	 * @return array $new_post The post contents
 	 */
-	private function vk_media_post( $post_details, $args, $owner_id, $client, $access_token ) {
+	private function vk_media_post( $post_details, $hashtags, $args, $owner_id, $client, $access_token ) {
 
 		if ( ! function_exists( 'curl_init' ) ) {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.curl_not_detected' ) );
@@ -231,7 +232,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		// share as an article post
 		if ( empty( $attachment_url ) ) {
 			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
-			return $this->vk_article_post( $post_details, $args, $owner_id );
+			return $this->vk_article_post( $post_details, $hashtags, $args, $owner_id );
 		}
 
 		$passed_image_url_host = parse_url( $attachment_url )['host'];
@@ -246,7 +247,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 
 		// If attachment is video
 		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
-			return $this->vk_video_post( $post_details, $attachment_path, $args, $owner_id, $client, $access_token );
+			return $this->vk_video_post( $post_details, $hashtags, $attachment_path, $args, $owner_id, $client, $access_token );
 		}
 
 		$param = array();
@@ -307,7 +308,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 
 		$new_post = array(
 			'owner_id' => $owner_id,
-			'message' => $post_details['content'] . $post_details['hashtags'],
+			'message' => $post_details['content'] . $hashtags,
 			'attachments' => $attachment . ',' . $this->get_url( $post_details ),
 		);
 		return $new_post;
@@ -321,6 +322,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * @access private
 	 *
 	 * @param array  $post_details The post details to be published by the service.
+	 * @param array  $hashtags Hashtags.
 	 * @param string $attachment_path The video attachment URL.
 	 * @param array  $args Optional arguments needed by the method.
 	 * @param int    $owner_id The owner id.
@@ -329,7 +331,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 *
 	 * @return array $new_post The post contents
 	 */
-	private function vk_video_post( $post_details, $attachment_path, $args, $owner_id, $client, $access_token ) {
+	private function vk_video_post( $post_details, $hashtags, $attachment_path, $args, $owner_id, $client, $access_token ) {
 
 		$params = array(
 			'name' => get_the_title( $post_details['post_id'] ),
@@ -368,7 +370,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 
 		$new_post = array(
 			'owner_id' => $response['owner_id'],
-			'message' => $post_details['content'] . $post_details['hashtags'],
+			'message' => $post_details['content'] . $hashtags,
 			'attachments' => $attachment . ',' . $this->get_url( $post_details ),
 		);
 
@@ -384,17 +386,18 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * @access private
 	 *
 	 * @param array $post_details The post details to be published by the service.
+	 * @param array $hashtags Hashtags.
 	 * @param array $args Optional arguments needed by the method.
 	 * @param int   $owner_id The owner id.
 	 *
 	 * @return array $new_post The post contents
 	 */
-	private function vk_text_post( $post_details, $args, $owner_id ) {
+	private function vk_text_post( $post_details, $hashtags, $args, $owner_id ) {
 
 		$new_post = array(
 			'owner_id' => $owner_id,
 			'friends_only' => 0,
-			'message' => $post_details['content'] . $post_details['hashtags'],
+			'message' => $post_details['content'] . $hashtags,
 		);
 
 		return $new_post;
@@ -408,16 +411,17 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * @access private
 	 *
 	 * @param array $post_details The post details to be published by the service.
+	 * @param array $hashtags Hashtags.
 	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return object
 	 */
-	private function vk_article_post( $post_details, $args, $owner_id ) {
+	private function vk_article_post( $post_details, $hashtags, $args, $owner_id ) {
 
 		$new_post = array(
 			'owner_id' => $owner_id,
 			'friends_only' => 0,
-			'message' => $post_details['content'] . $post_details['hashtags'],
+			'message' => $post_details['content'] . $hashtags,
 			'attachments' => $this->get_url( $post_details ),
 		);
 
@@ -452,19 +456,28 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
 
+		$model       = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format( $post_details['account_id'] );
+
+		$hashtags = $post_details['hashtags'];
+		
+		if( $post_format['hashtags_randomize'] ){
+			$hashtags = $this->shuffle_hashtags( $hashtags );
+		}
+
 		// VK link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
-			$new_post = $this->vk_article_post( $post_details, $args, $owner_id );
+			$new_post = $this->vk_article_post( $post_details, $hashtags, $args, $owner_id );
 		}
 
 		// VK plain text post
 		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
-			$new_post = $this->vk_text_post( $post_details, $args, $owner_id );
+			$new_post = $this->vk_text_post( $post_details, $hashtags, $args, $owner_id );
 		}
 
 		// VK media post
 		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
-			$new_post = $this->vk_media_post( $post_details, $args, $owner_id, $client, $access_token );
+			$new_post = $this->vk_media_post( $post_details, $hashtags, $args, $owner_id, $client, $access_token );
 		}
 
 		if ( empty( $new_post ) ) {
