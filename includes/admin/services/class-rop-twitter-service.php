@@ -543,7 +543,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			wp_delete_file( $media_path );
 		}
 
-		$new_post['status'] =  $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
+		$new_post['status'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
 
 		return $new_post;
 	}
@@ -603,8 +603,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$post_format = $model->get_post_format( $post_details['account_id'] );
 
 		$hashtags = $post_details['hashtags'];
-		
-		if( $post_format['hashtags_randomize'] ){
+
+		if ( $post_format['hashtags_randomize'] ) {
 			$hashtags = $this->shuffle_hashtags( $hashtags );
 		}
 

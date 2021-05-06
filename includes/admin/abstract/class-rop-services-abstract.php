@@ -859,16 +859,16 @@ abstract class Rop_Services_Abstract {
 	 * @return string|string[] Randomized string of hashtags
 	 * @since 9.0.2
 	 */
-	protected function shuffle_hashtags( $hashtags ){
+	protected function shuffle_hashtags( $hashtags ) {
 
-		if( empty($hashtags) ){
+		if ( empty( $hashtags ) ) {
 			return '';
 		}
 
-		$hashtags = trim($hashtags);
-		$hashtags = explode(' ', $hashtags);
-		shuffle($hashtags);
-		$hashtags = ' ' . implode(' ', $hashtags);
+		$hashtags = trim( $hashtags );
+		$hashtags = explode( ' ', $hashtags );
+		shuffle( $hashtags );
+		$hashtags = ' ' . implode( ' ', $hashtags );
 
 		return $hashtags;
 	}

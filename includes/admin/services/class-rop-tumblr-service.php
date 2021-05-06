@@ -437,8 +437,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$post_format = $model->get_post_format( $post_details['account_id'] );
 
 		$hashtags = $post_details['hashtags'];
-		
-		if( $post_format['hashtags_randomize'] ){
+
+		if ( $post_format['hashtags_randomize'] ) {
 			$hashtags = $this->shuffle_hashtags( $hashtags );
 		}
 
