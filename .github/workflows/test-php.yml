@@ -10,4 +10,4 @@ jobs:
   test-terminal-2: 
     runs-on: ubuntu-18.04
     steps:
-     - run: composer -v
+     - run: composer run test
