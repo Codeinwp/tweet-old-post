@@ -1,0 +1,9 @@
+name : Test PHP TEST
+
+on: push
+
+jobs:
+  test-terminal:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cat /etc/os-release
