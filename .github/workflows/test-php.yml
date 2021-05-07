@@ -13,5 +13,6 @@ jobs:
          with: 
           php-version: '7.2'
        - name: Install composer
-         run: |
-          composer install
+         run: composer install
+       - name: PHP CS
+         run: phpcs -i
