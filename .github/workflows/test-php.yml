@@ -15,4 +15,3 @@ jobs:
        - name: Install composer
          run: |
           composer install
-          composer run test
