@@ -20,7 +20,8 @@
     "source": "https://github.com/Codeinwp/tweet-old-post"
   },
   "scripts": {
-    "test": "vendor/bin/phpunit"
+    "test": "vendor/bin/phpunit",
+    "lint": "phpcs --standard=phpcs.xml"
   },
   "autoload": {
     "files": [

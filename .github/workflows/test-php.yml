@@ -16,4 +16,8 @@ jobs:
        - name: Install composer
          run: composer install
        - name: PHP CS
-         run: phpcs -i
+         run: |
+          phpcs -i
+          phpcs -v
+       - name: PHP LINT
+         run: composer run lint
