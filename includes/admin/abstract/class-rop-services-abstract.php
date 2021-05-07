@@ -854,7 +854,7 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Shuffle hashtags list
 	 *
-	 * @param string $hashtags hashtags list string
+	 * @param string $hashtags hashtags list string.
 	 *
 	 * @return string|string[] Randomized string of hashtags
 	 * @since 9.0.2
