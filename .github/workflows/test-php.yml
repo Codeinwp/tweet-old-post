@@ -6,8 +6,9 @@ jobs:
   test-terminal:
     runs-on: ubuntu-latest
     steps:
-      - run: cat /etc/os-release
-  test-terminal-2: 
-    runs-on: ubuntu-18.04
-    steps:
-     - run: composer run test
+       - name: Checkout source code
+         uses: actions/checkout@v2
+       - name: Install composer
+         run: |
+          composer install
+          composer run test
