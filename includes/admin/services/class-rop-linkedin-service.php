@@ -605,7 +605,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * Linkedin article post.
 	 *
 	 * @param array  $post_details The post details to be published by the service.
-	 * @param string $hashtags hashtags list string
+	 * @param string $hashtags hashtags list string.
 	 * @param array  $args Arguments needed by the method.
 	 *
 	 * @return array
@@ -660,7 +660,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * Linkedin Text post.
 	 *
 	 * @param array  $post_details The post details to be published by the service.
-	 * @param string $hashtags hashtags list string
+	 * @param string $hashtags hashtags list string.
 	 * @param array  $args Arguments needed by the method.
 	 *
 	 * @return array
@@ -699,7 +699,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * Linkedin image post format.
 	 *
 	 * @param array  $post_details The post details to be published by the service.
-	 * @param string $hashtags hashtags list string
+	 * @param string $hashtags hashtags list string.
 	 * @param array  $args Arguments needed by the method.
 	 * @param string $token The user token.
 	 *
