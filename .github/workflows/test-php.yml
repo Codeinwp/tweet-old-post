@@ -12,11 +12,10 @@ jobs:
          uses: shivammathur/setup-php@v2
          with: 
           php-version: '7.2'
-          tools: composer:v1, phpcs
+          tools: phpcs
        - name: Install composer
          run: composer install
-       - name: PHP CS
-         run: |
-          phpcs -i
+       - name: List PHP CS standards
+         run: phpcs -i
        - name: PHP LINT
          run: composer run lint
