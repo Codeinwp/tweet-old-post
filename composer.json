@@ -21,7 +21,7 @@
   },
   "scripts": {
     "test": "vendor/bin/phpunit",
-    "lint": "phpcs --standard=phpcs.xml -v"
+    "lint": "phpcs --standard=phpcs.xml"
   },
   "autoload": {
     "files": [

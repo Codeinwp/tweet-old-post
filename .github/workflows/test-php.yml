@@ -1,9 +1,9 @@
-name : Test PHP TEST
+name : Test PHP
 
 on: [push, pull_request]
 
 jobs:
-  test-terminal:
+  code-sniff:
     runs-on: ubuntu-latest
     steps:
        - name: Checkout source code
@@ -15,9 +15,8 @@ jobs:
           tools: composer:v1, phpcs
        - name: Install composer
          run: composer install
-       - name: PHP LINT
-         run: composer run lint
        - name: PHP CS
          run: |
           phpcs -i
-          # phpcs -v
+       - name: PHP LINT
+         run: composer run lint
