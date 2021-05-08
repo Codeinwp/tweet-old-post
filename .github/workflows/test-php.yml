@@ -15,9 +15,9 @@ jobs:
           tools: composer:v1, phpcs
        - name: Install composer
          run: composer install
+       - name: PHP LINT
+         run: composer run lint
        - name: PHP CS
          run: |
           phpcs -i
           # phpcs -v
-       - name: PHP LINT
-         run: composer run lint
