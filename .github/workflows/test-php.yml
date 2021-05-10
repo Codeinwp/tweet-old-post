@@ -21,7 +21,7 @@ jobs:
          run: composer run lint
 
   php-unit: 
-    needs: code-sniff 
+    #needs: code-sniff 
     runs-on: ubuntu-latest
     steps:
      - name: Checkout source code
