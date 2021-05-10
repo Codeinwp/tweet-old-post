@@ -14,8 +14,14 @@ jobs:
           php-version: '7.2'
           tools: phpcs
        - name: Install composer
-         run: composer install
+         run: composer install --prefer-dist --no-progress
        - name: List PHP CS standards
          run: phpcs -i
        - name: PHP LINT
          run: composer run lint
+
+  php-unit: 
+    runs-on: ubuntu-latest
+    steps:
+     - name: Run PHP Unit
+       run: phpunit
