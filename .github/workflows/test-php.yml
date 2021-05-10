@@ -24,4 +24,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name: Run PHP Unit
-       run: phpunit
+       run: composer run test
