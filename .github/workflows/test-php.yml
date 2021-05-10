@@ -26,6 +26,8 @@ jobs:
     steps:
      - name: Checkout source code
        uses: actions/checkout@v2
+     - name: Install composer
+       run: composer install --prefer-dist --no-progress
     #  - name: Setup PHP
     #    uses: shivammathur/setup-php@v2
     #    with:
