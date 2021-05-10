@@ -21,7 +21,15 @@ jobs:
          run: composer run lint
 
   php-unit: 
+    needs: code-sniff 
     runs-on: ubuntu-latest
     steps:
+     - name: Checkout source code
+       uses: actions/checkout@v2
+    #  - name: Setup PHP
+    #    uses: shivammathur/setup-php@v2
+    #    with:
+    #       php-version: '7.2'
+    #       tools: phpcs
      - name: Run PHP Unit
        run: composer run test
