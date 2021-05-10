@@ -26,12 +26,12 @@ jobs:
     steps:
      - name: Checkout source code
        uses: actions/checkout@v2
-     - name: Install composer
      - name: Setup PHP
        uses: shivammathur/setup-php@v2
        with:
           php-version: '7.2'
           # tools: phpcs
+     - name: Install composer
        run: composer install --prefer-dist --no-progress
      - name: Run PHP Unit
        run: composer run test
