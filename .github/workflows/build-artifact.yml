@@ -16,5 +16,8 @@ jobs:
         node -v
         npm -v
      - name: Install npm dependencies
-       run: npm install
+       run: |
+        npm install
+        grunt local
+
  
