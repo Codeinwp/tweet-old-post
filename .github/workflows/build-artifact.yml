@@ -26,7 +26,9 @@ jobs:
           phpcs -i
       #grunt local
       - name: Install composer
-        run: composer install --prefer-dist --no-progress
+        run: |
+          composer install --prefer-dist --no-progress
+          phpcs -i
       - run: phpcs -i
 
 
