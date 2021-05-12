@@ -34,7 +34,7 @@ jobs:
         run: |
           npm install
           phpcs -i
-      #grunt local
+          grunt local
 
 
 
