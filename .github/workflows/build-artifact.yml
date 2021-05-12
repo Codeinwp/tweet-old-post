@@ -13,6 +13,16 @@ jobs:
         with:
           php-version: '7.2'
           tools: phpcs, phpcbf
+      - name: Install composer
+        run: |
+          composer install --prefer-dist --no-progress --quiet
+          phpcs -i
+          pwd
+          phpcs --config-set installed_paths $(pwd)/vendor/wp-coding-standards/wpcs
+          phpcs -i
+      - run: |
+          phpcs -i
+          pwd
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
@@ -25,14 +35,6 @@ jobs:
           npm install
           phpcs -i
       #grunt local
-      - name: Install composer
-        run: |
-          composer install --prefer-dist --no-progress
-          phpcs -i
-          pwd
-      - run: |
-          phpcs -i
-          pwd
 
 
 
