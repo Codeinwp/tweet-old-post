@@ -35,7 +35,7 @@ jobs:
           echo ${{steps.install-dep.outcome}}
           #cat $(pwd)/logs/phpcs.log
       - name: Check outcome
-        if: steps.install-dep.outcome == failure
+        if: steps.install-dep.outcome == 'failure'
         run: |
           echo ${{steps.install-dep.outcome}}
           ls
