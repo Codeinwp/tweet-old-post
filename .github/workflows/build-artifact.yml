@@ -25,7 +25,7 @@ jobs:
       - name: List files 
         run: ls
       - name: Show step details
-        run: echo ${{ steps.}}
+        run: echo ${{ steps }}
       - name: Install npm dependencies
         id: install-dep
         continue-on-error: true
