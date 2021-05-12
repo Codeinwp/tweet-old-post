@@ -12,7 +12,5 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12.18'
-        run: |
-          node -v
-          npm -v
- 
+        run: node -v
+         
