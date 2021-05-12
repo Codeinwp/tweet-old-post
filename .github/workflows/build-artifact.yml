@@ -3,17 +3,17 @@ name: Build Artifact Test
 on: [push, pull_request]
 
 jobs: 
-  setup-npm:
+  run-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
+      - name: Checkout Source Code
         uses: actions/checkout@v2
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.2'
           tools: phpcs, phpcbf
-      - name: Install composer
+      - name: Install Composer
         run: |
           composer install --prefer-dist --no-progress --quiet
           phpcs --config-set installed_paths $(pwd)/vendor/wp-coding-standards/wpcs
@@ -22,24 +22,28 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12.18'
-      - name: List files 
-        run: ls
-      - name: Show step details
-        run: echo ${{ steps }}
-      - name: Install npm dependencies
+      # - name: List files 
+      #   run: ls
+      # - name: Show step details
+      #   run: echo ${{ steps }}
+      - name: Install NPM Dependencies
         id: install-dep
         continue-on-error: true
         run: |
           npm install
           grunt local
-          echo ${{steps.install-dep.outcome}}
-          #cat $(pwd)/logs/phpcs.log
-      - name: Check outcome
-        if: steps.install-dep.outcome != 'failure'
+        #echo ${{steps.install-dep.outcome}}
+      - name: Check Outcome
+        if: steps.install-dep.outcome == 'failure'
         run: |
-          echo ${{steps.install-dep.outcome}}
-          ls
           cat $(pwd)/logs/phpcs.log
+      - name: Build Artifact
+        run: grunt deploy
+      - run: |
+          ls
+          cd artifact
+          ls
+
 
 
 
