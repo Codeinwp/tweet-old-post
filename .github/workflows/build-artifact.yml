@@ -26,6 +26,7 @@ jobs:
         run: |
           npm install
           grunt local
+          ls
           cat $(pwd)/logs/phpcs
 
 
