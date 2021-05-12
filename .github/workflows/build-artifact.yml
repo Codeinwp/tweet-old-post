@@ -38,7 +38,7 @@ jobs:
         run: grunt deploy
       - name: Check Artifact
         if: steps.build-artifact.outcome == 'success'
-      - run: |
+        run: |
           cd artifact
           ls -lh
 
