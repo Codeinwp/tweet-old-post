@@ -12,7 +12,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.2'
-          tools: phpcs, phpcbf
+          #tools: phpcs, phpcbf
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
@@ -20,6 +20,8 @@ jobs:
       - run: |
           node -v
           npm -v
+      - name: Install composer
+        run: composer install --prefer-dist --no-progress
       - name: Install npm dependencies
         run: |
           npm install
