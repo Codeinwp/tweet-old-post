@@ -22,27 +22,25 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12.18'
-      # - name: List files 
-      #   run: ls
-      # - name: Show step details
-      #   run: echo ${{ steps }}
       - name: Install NPM Dependencies
+        run: npm install
+      - name: Grunt tests
         id: install-dep
         continue-on-error: true
-        run: |
-          npm install
-          grunt local
-        #echo ${{steps.install-dep.outcome}}
+        run: grunt local
       - name: Check Outcome
         if: steps.install-dep.outcome == 'failure'
         run: |
           cat $(pwd)/logs/phpcs.log
       - name: Build Artifact
+        id: build-artifact
+        continue-on-error: false
         run: grunt deploy
+      - name: Check Artifact
+        if: steps.build-artifact.outcome == 'success'
       - run: |
-          ls
           cd artifact
-          ls
+          ls -lh
 
 
 
