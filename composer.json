@@ -21,7 +21,8 @@
   },
   "scripts": {
     "test": "vendor/bin/phpunit",
-    "lint": "vendor/bin/phpcs"
+    "lint": "vendor/bin/phpcs",
+    "beautify": "vendor/bin/phpcbf"
   },
   "autoload": {
     "files": [

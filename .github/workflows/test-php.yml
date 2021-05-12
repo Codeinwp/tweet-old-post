@@ -14,7 +14,7 @@ jobs:
           php-version: '7.2'
           tools: phpcs
        - name: Install composer
-         run: composer install --prefer-dist --no-progress
+         run: composer install --prefer-dist --no-progress --quiet
        - name: List PHP CS standards
          run: phpcs -i
        - name: PHP LINT
