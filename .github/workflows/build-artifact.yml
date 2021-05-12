@@ -1,4 +1,4 @@
-name: Build Artifact
+name: Build Artifact Test
 
 on: [push, pull_request]
 
