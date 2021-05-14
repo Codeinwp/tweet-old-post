@@ -33,7 +33,7 @@ jobs:
         run: |
           cat $(pwd)/logs/phpcs.log
          # exit 1
-  build-artifact:
+  create-artifact:
     runs-on: ubuntu-latest
     needs: run-tests
     steps:
