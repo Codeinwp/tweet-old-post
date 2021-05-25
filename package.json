@@ -24,7 +24,7 @@
   "scripts": {
     "dev": "cross-env WEBPACK_ENV=dev webpack --progress --colors --watch",
     "build": "cross-env WEBPACK_ENV=production webpack",
-    "release": "semantic-release --no-ci"
+    "release": "semantic-release --debug"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
