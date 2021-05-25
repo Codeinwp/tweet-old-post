@@ -1,3 +1,12 @@
+#### [Version 10.0.0](https://github.com/UVLabs/tweet-old-post//compare/v9.1.0...v10.0.0) (2021-05-25)
+
+### Features
+- Feature 1
+### Fixes
+- Fix 1
+### Changes
+- Change 1
+
 #### [Version 9.1.0](https://github.com/UVLabs/tweet-old-post//compare/v9.0.1...v9.1.0) (2021-05-25)
 
 ### Features
