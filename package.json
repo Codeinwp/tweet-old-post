@@ -24,6 +24,7 @@
   "scripts": {
     "dev": "cross-env WEBPACK_ENV=dev webpack --progress --colors --watch",
     "build": "cross-env WEBPACK_ENV=production webpack",
+    "dist": "bash bin/dist.sh",
     "release": "semantic-release --debug"
   },
   "devDependencies": {
