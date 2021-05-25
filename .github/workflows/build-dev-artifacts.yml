@@ -49,7 +49,7 @@ jobs:
         id: retrieve-branch-name
         run: |
          echo "::set-output name=branch_name::$(REF=${GITHUB_HEAD_REF:-$GITHUB_REF} && echo ${REF#refs/heads/} | sed 's/\//-/g')"
-         echo "branch name: ${{ steps.retrieve-branch-name.outputs.branch_name }}" 
+         echo "branch name: $(REF=${GITHUB_HEAD_REF:-$GITHUB_REF} && echo ${REF#refs/heads/} | sed 's/\//-/g')" 
       - name: Retrieve git SHA-8 string
         id: retrieve-git-sha-8
         run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
