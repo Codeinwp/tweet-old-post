@@ -14,9 +14,9 @@ plugins:
     - prepareCmd: "replace-in-file \"== Changelog ==\" \"== Changelog ==\n\n${nextRelease.notes}\" readme.txt"
   - - "@semantic-release/exec"
     - prepareCmd: grunt version::${nextRelease.version} && grunt wp_readme_to_markdown
-#   - - "@semantic-release/git"
-#     - assets:
-#         - CHANGELOG.md
+  - - "@semantic-release/git"
+    - assets:
+        - CHANGELOG.md
 #         - readme.md
 #         - readme.txt
 #         - includes/feedzy-rss-feeds.php
@@ -24,5 +24,5 @@ plugins:
 #         - feedzy-rss-feed.php
 #         - package-lock.json
 #         - package.json
-#       message: "chore(release): ${nextRelease.version} \n\n${nextRelease.notes}"
+      message: "chore(release): ${nextRelease.version} \n\n${nextRelease.notes}"
 #   - - "@semantic-release/github"
