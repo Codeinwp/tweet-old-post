@@ -23,7 +23,8 @@
   },
   "scripts": {
     "dev": "cross-env WEBPACK_ENV=dev webpack --progress --colors --watch",
-    "build": "cross-env WEBPACK_ENV=production webpack"
+    "build": "cross-env WEBPACK_ENV=production webpack",
+    "release": "semantic-release --dry-run --no-ci"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -55,7 +56,15 @@
     "vue-hot-reload-api": "^2.1.1",
     "vue-html-loader": "^1.0.0",
     "vue-loader": "^7.5.3",
-    "webpack": "^3.12.0"
+    "webpack": "^3.12.0",
+    "semantic-release": "^17.4.3",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/exec": "^5.0.0",
+    "replace-in-file": "^6.2.0",
+    "grunt": "^1.4.0",
+    "grunt-version": "^2.0.0",
+    "grunt-wp-readme-to-markdown": "^2.0.1",
+    "conventional-changelog-simple-preset": "^1.0.15"
   },
   "dependencies": {
     "moment-duration-format": "^2.2.2",
