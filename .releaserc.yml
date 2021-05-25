@@ -17,7 +17,7 @@ plugins:
   - - "@semantic-release/git"
     - assets:
         - CHANGELOG.md
-#         - readme.md
+        - readme.md
 #         - readme.txt
 #         - includes/feedzy-rss-feeds.php
 #         - css/feedzy-rss-feeds.css
@@ -25,4 +25,4 @@ plugins:
 #         - package-lock.json
 #         - package.json
       message: "chore(release): ${nextRelease.version} \n\n${nextRelease.notes}"
-#   - - "@semantic-release/github"
+  - - "@semantic-release/github"
