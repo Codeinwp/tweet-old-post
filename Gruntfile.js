@@ -46,4 +46,4 @@
 	);
 	grunt.loadNpmTasks( 'grunt-version' );
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
-};
+ };
