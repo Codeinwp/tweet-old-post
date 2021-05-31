@@ -1,0 +1,31 @@
+name: Deploy
+on:
+  push:
+    tags:
+      - "*"
+jobs:
+  tag:
+    name: New version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get The Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+      - name: Run Composer Install
+        run: |
+          npm ci
+          composer install --no-dev --prefer-dist --no-progress --no-suggest
+      - name: WordPress Plugin Deploy
+        uses: 10up/action-wordpress-plugin-deploy@master
+        env:
+          SVN_PASSWORD: ${{ secrets.SVN_THEMEISLE_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_THEMEISLE_USERNAME }}
+      - name: Send Update to the Store
+        env:
+          PRODUCT_ID: ${{ secrets.THEMEISLE_ID }}
+          AUTH_TOKEN: ${{ secrets.THEMEISLE_STORE_AUTH }}
+          STORE_URL: ${{ secrets.THEMEISLE_STORE_URL }}
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+          BUILD_VERSION: ${{ steps.get_version.outputs.VERSION }}
+        uses: Codeinwp/action-store-release@main
