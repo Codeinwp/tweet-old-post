@@ -337,6 +337,7 @@ class Rop_Admin {
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
 		$array_nonce['rop_get_wpml_active_status']  = $this->rop_get_wpml_active_status();
 		$array_nonce['rop_get_yoast_seo_active_status']  = $this->rop_get_yoast_seo_active_status();
+		$array_nonce['rop_is_edit_post_screen']  = $this->rop_is_edit_post_screen();
 		$array_nonce['rop_get_wpml_languages']  = $this->rop_get_wpml_languages();
 		$array_nonce['hide_own_app_option']      = $this->rop_hide_add_own_app_option();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
@@ -1608,6 +1609,27 @@ class Rop_Admin {
 			}
 			
 			</style>';
+		}
+
+		return false;
+
+	}
+
+
+	/**
+	 * Hides the pinterest account button
+	 *
+	 * Pinterest changed API and has no ETA on when they'll start reviewing developer apps.
+	 * Disable this for now
+	 *
+	 * @since   9.0.1
+	 * @access  public
+	 */
+	public function rop_is_edit_post_screen() {
+
+		// Can't use get_current_screen here because it wouldn't be populated with all the data needed
+		if( !empty( $_GET['action'] ) && $_GET['action'] === 'edit' ){
+			return apply_filters('rop_is_edit_post_screen', true, get_the_ID());
 		}
 
 		return false;
