@@ -336,6 +336,7 @@ class Rop_Admin {
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
 		$array_nonce['rop_get_wpml_active_status']  = $this->rop_get_wpml_active_status();
+		$array_nonce['rop_get_yoast_seo_active_status']  = $this->rop_get_yoast_seo_active_status();
 		$array_nonce['rop_get_wpml_languages']  = $this->rop_get_wpml_languages();
 		$array_nonce['hide_own_app_option']      = $this->rop_hide_add_own_app_option();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
@@ -1499,6 +1500,23 @@ class Rop_Admin {
 	public function rop_get_wpml_active_status() {
 
 		if ( function_exists( 'icl_object_id' ) ) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	/**
+	 * Check YoastSEO is active on the website.
+	 *
+	 * @since   9.0.2
+	 * @access  public
+	 * @return bool Whether or not the YoastSEO plugin is active.
+	 */
+	public function rop_get_yoast_seo_active_status() {
+
+		if ( function_exists( 'YoastSEO' ) ) {
 			return true;
 		} else {
 			return false;
