@@ -84,10 +84,10 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 
 **The plugin can automatically share posts from:**
 
+- WordPress to Twitter
 - WordPress to Facebook page
 - WordPress to Facebook Groups [Pro]
 - WordPress to Instagram [Pro]
-- WordPress to Twitter
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
@@ -209,12 +209,10 @@ Post questions and issues on the [Support Forum](https://wordpress.org/support/p
 - Read more about social media marketing on [our blog](https://revive.social/blog/).
 - Read more about WordPress on [our blog](https://www.codeinwp.com/blog/).
 - Take a look at our other plugins [see here](https://themeisle.com/wordpress-plugins/).
+- A few major sites that are using the plugin [FinMaster](https://finmasters.com), [Themeisle](https://themeisle.com/), [Codeinwp](https://www.codeinwp.com)
 
 
 
-= Translations =
-
-* sk_SK translation by Patrik Žec [PATWIST](http://patwist.com)
 
 == Installation ==
 
@@ -300,6 +298,12 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 9.0.1 - 2021-04-22  = 
+
+* [Fix Pro] Issue with saving maximum post age setting for users on Personal Plan
+* [Change] Don't show ROP Log error notice to non-admins
+
+
 = 9.0.0 - 2021-04-21  = 
 
 * [Note] This version is a major update and moves some features to the Pro version of the plugin

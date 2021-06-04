@@ -165,7 +165,9 @@
                 <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
             </div>
         </div>
+
         <span class="divider"></span>
+        
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.use_shortner_title}}</b>
@@ -181,6 +183,7 @@
                 <p v-if="allAccounts[this.account_id].service === 'vk'" v-html="labels.vk_unsupported_shorteners"></p>
             </div>
         </div>
+
         <div class="columns py-2" v-if="post_format.short_url">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.shortner_title}}</b>
@@ -208,6 +211,8 @@
                 </div>
             </div>
         </div>
+
+        <span class="divider"></span>
 
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
@@ -261,6 +266,21 @@
                 <div class="form-group">
                     <input class="form-input" type="number" v-model="post_format.hashtags_length"
                            value="" placeholder=""/>
+                </div>
+            </div>
+        </div>
+
+        <div class="columns py-2" v-if="post_format.hashtags !== 'no-hashtags'">
+            <div class="column col-6 col-sm-12 vertical-align rop-control">
+                <b>{{labels.hashtags_randomize}}</b>
+                <p class="text-gray"><span v-html="labels.hashtags_randomize_desc"></span></p>
+            </div>
+            <div class="column col-6 col-sm-12 vertical-align">
+                <div class="input-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" v-model="post_format.hashtags_randomize" />
+                        <i class="form-icon"></i> {{labels.hashtags_randomize_yes}}
+                    </label>
                 </div>
             </div>
         </div>

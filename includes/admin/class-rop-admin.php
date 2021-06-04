@@ -149,6 +149,10 @@ class Rop_Admin {
 
 		$bitly = get_option( 'rop_shortners_bitly' );
 
+		if ( ! is_array( $bitly ) ) {
+			return;
+		}
+
 		if ( array_key_exists( 'generic_access_token', $bitly['bitly_credentials'] ) ) {
 			return;
 		}
@@ -1026,7 +1030,7 @@ class Rop_Admin {
 			foreach ( $events as $index => $event ) {
 				$post    = $event['post'];
 				$message = ! empty( $event['custom_instant_share_message'] ) ? $event['custom_instant_share_message'] : '';
-				$message = apply_filters( 'rop_instant_share_message', wp_kses_stripslashes( $message ), $event );
+				$message = apply_filters( 'rop_instant_share_message', stripslashes( $message ), $event );
 				$account_data = $services_model->find_account( $account );
 				try {
 					$service = $service_factory->build( $account_data['service'] );

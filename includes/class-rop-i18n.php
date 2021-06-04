@@ -268,6 +268,9 @@ class Rop_I18n {
 				'hastags_field_desc'                => __( 'The name of the meta field that contains the hashtags.', 'tweet-old-post' ),
 				'hashtags_length_title'             => __( 'Maximum Hashtags length', 'tweet-old-post' ),
 				'hashtags_length_desc'              => __( 'The maximum hashtags length to be used when publishing.', 'tweet-old-post' ),
+				'hashtags_randomize'                => __( 'Randomize hashtags', 'tweet-old-post' ),
+				'hashtags_randomize_desc'           => __( 'Randomize the list of hashtags on every successful share. You won\'t see this change in the Sharing Queue, the randomization happens at share time.', 'tweet-old-post' ),
+				'hashtags_randomize_yes'            => __( 'Yes', 'tweet-old-post' ),
 				'image_title'                       => __( 'Share As Image Post', 'tweet-old-post' ),
 				'image_desc'                        => __( 'Should ROP share your posts as an image post? <a href="https://docs.revive.social/article/958-how-to-share-posts-as-image-posts-to-social-accounts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'image_yes'                         => __( 'Yes', 'tweet-old-post' ),
@@ -421,6 +424,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'share_attempted_on_staging' => __( 'ROP has detected that this is a development website. Share process skipped.', 'tweet-old-post' ),
 			),
 			'errors' => array(
+				'wordpress_api_error' => __( 'Cannot post to network. WordPress Error: ', 'tweet-old-post' ),
 				'gmb_failed_access_token_refresh' => __( 'Failed to retrieve Google My Business access token: ', 'tweet-old-post' ),
 				'gmb_failed_share' => __( 'Could not share post to Google My Business with LIVE state: ', 'tweet-old-post' ),
 				'gmb_no_valid_accounts' => __( 'Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business location.', 'tweet-old-post' ),

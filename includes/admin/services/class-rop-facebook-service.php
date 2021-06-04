@@ -462,6 +462,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		$model       = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format( $post_details['account_id'] );
+
+		$hashtags = $post_details['hashtags'];
+
+		if ( $post_format['hashtags_randomize'] ) {
+			$hashtags = $this->shuffle_hashtags( $hashtags );
+		}
+
 		$post_id = $post_details['post_id'];
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
@@ -477,7 +486,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			// **** Instagram Sharing ***** //
 			if ( $args['account_type'] === 'instagram_account' && class_exists( 'Rop_Pro_Instagram_Service' ) ) {
 
-				$response = Rop_Pro_Instagram_Service::share( $post_details, $args );
+				$response = Rop_Pro_Instagram_Service::share( $post_details, $hashtags, $args );
 
 				return $response;
 
@@ -499,21 +508,21 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		// FB link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
-			$sharing_data = $this->fb_article_post( $post_details );
+			$sharing_data = $this->fb_article_post( $post_details, $hashtags );
 		}
 
 		// FB plain text post
 		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
-			$sharing_data = $this->fb_text_post( $post_details );
+			$sharing_data = $this->fb_text_post( $post_details, $hashtags );
 		}
 
 		// FB media post
 		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
 
 			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) === false ) {
-				$sharing_data = $this->fb_image_post( $post_details );
+				$sharing_data = $this->fb_image_post( $post_details, $hashtags );
 			} else {
-				$sharing_data = $this->fb_video_post( $post_details );
+				$sharing_data = $this->fb_video_post( $post_details, $hashtags );
 			}
 		}
 
@@ -551,11 +560,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 *
 	 * @return array
 	 */
-	private function fb_article_post( $post_details ) {
+	private function fb_article_post( $post_details, $hashtags ) {
 
 		$new_post = array();
 
-		$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
+		$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $hashtags;
 
 		$new_post['link'] = $this->get_url( $post_details );
 
@@ -575,7 +584,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 *
 	 * @return array
 	 */
-	private function fb_image_post( $post_details ) {
+	private function fb_image_post( $post_details, $hashtags ) {
 
 		$attachment_url = $post_details['post_image'];
 
@@ -583,14 +592,14 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		 * Share as an article post */
 		if ( empty( $attachment_url ) ) {
 			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
-			return $this->fb_article_post( $post_details );
+			return $this->fb_article_post( $post_details, $hashtags );
 		}
 
 		$new_post = array();
 
 		$new_post['url']     = $attachment_url;
 		$new_post['source']  = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] ); // get image path
-		$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+		$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $hashtags;
 
 		return array(
 			'post_data' => $new_post,
@@ -609,20 +618,20 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 *
 	 * @return array
 	 */
-	private function fb_video_post( $post_details ) {
+	private function fb_video_post( $post_details, $hashtags ) {
 
 		$new_post = array();
 
-			$image     = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
-			$new_post['source']      = $image;
-			// $new_post['source']      = $api->videoToUpload( $image );
-			$new_post['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES );
-			$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+		$image     = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+		$new_post['source']      = $image;
+		// $new_post['source']      = $api->videoToUpload( $image );
+		$new_post['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES );
+		$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $hashtags;
 
-			return array(
-				'post_data' => $new_post,
-				'type'      => 'video',
-			);
+		return array(
+			'post_data' => $new_post,
+			'type'      => 'video',
+		);
 	}
 
 	/**
@@ -635,11 +644,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 *
 	 * @return array
 	 */
-	private function fb_text_post( $post_details ) {
+	private function fb_text_post( $post_details, $hashtags ) {
 
 		$new_post = array();
 
-		$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
+		$new_post['message'] = $post_details['content'] . $hashtags;
 
 		return array(
 			'post_data' => $new_post,
@@ -940,6 +949,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			)
 		);
 
+		if ( is_wp_error( $response ) ) {
+			$error_string = $response->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return array(
+				'response' => '',
+				'body'     => '',
+			);
+		}
+
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		return array(
@@ -1030,7 +1048,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$scrape = array();
 			$url = get_permalink( $post_id );
 
-			$scrape['id']           = $url . '?scrape=true';
+			$scrape['id']           = $url . '?scrape=true&cacheburst=' . time();
 			$scrape['access_token'] = $token;
 
 			$scrape_response = wp_remote_post(
@@ -1045,6 +1063,12 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 				)
 			);
+
+			if ( is_wp_error( $scrape_response ) ) {
+				$error_string = $scrape_response->get_error_message();
+				$this->logger->info( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+				return false;
+			}
 
 			$body = wp_remote_retrieve_body( $scrape_response );
 
