@@ -268,8 +268,8 @@ class Rop_Post_Format_Helper {
 	 */
 	private function build_base_content( $post_id ) {
 
-		$post_title = apply_filters( 'rop_share_post_title', get_the_title( $post_id ), $post_id);
-		$post_content = apply_filters( 'rop_share_post_content', get_post_field( 'post_content', $post_id ), $post_id);
+		$post_title = apply_filters( 'rop_share_post_title', get_the_title( $post_id ), $post_id );
+		$post_content = apply_filters( 'rop_share_post_content', get_post_field( 'post_content', $post_id ), $post_id );
 
 		switch ( $this->post_format['post_content'] ) {
 			case 'post_title':
@@ -287,30 +287,30 @@ class Rop_Post_Format_Helper {
 				if ( ! empty( $excerpt ) ) {
 					$content = $excerpt;
 				} else {
-					$content =  $post_content;
+					$content = $post_content;
 				}
 				break;
 			case 'custom_field':
 				$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
 				break;
 			case 'yoast_seo_title':
-				if( function_exists('YoastSEO') ){
+				if ( function_exists( 'YoastSEO' ) ) {
 					// See https://developer.yoast.com/blog/yoast-seo-14-0-using-yoast-seo-surfaces/
-					$content =  YoastSEO()->meta->for_post($post_id)->title;
-				}else{
-					$content =  $post_title;
+					$content = YoastSEO()->meta->for_post( $post_id )->title;
+				} else {
+					$content = $post_title;
 				}
 				break;
 			case 'yoast_seo_description':
-				if( function_exists('YoastSEO') ){
-					$content =  YoastSEO()->meta->for_post($post_id)->description;
-				}else{
-					$content =  $post_content;
+				if ( function_exists( 'YoastSEO' ) ) {
+					$content = YoastSEO()->meta->for_post( $post_id )->description;
+				} else {
+					$content = $post_content;
 				}
 				// This is empty if user doesn't add a custom description
 				// So lets fall back to post content
-				if( empty($content) ){
-					$content =  $post_content;
+				if ( empty( $content ) ) {
+					$content = $post_content;
 				}
 				break;
 			default:
