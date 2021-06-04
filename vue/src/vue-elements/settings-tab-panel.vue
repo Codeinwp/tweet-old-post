@@ -57,7 +57,7 @@
                         <p class="text-gray">{{labels.min_days_desc}}</p>
                     </div>
                     <div class="column col-6 col-sm-12 vertical-align">
-                        <counter-Input id="min_post_age" :max-val="365"
+                        <counter-Input id="min_post_age"
                                        :value.sync="generalSettings.minimum_post_age"></counter-Input>
                     </div>
                     
@@ -72,7 +72,7 @@
                         <p class="text-gray">{{labels.max_days_desc}}</p>
                     </div>
                     <div class="column col-6 col-sm-12 vertical-align">
-                        <counter-input id="max_post_age" :max-val="365"
+                        <counter-input id="max_post_age" 
                                        :value.sync="generalSettings.maximum_post_age" :disabled="!isPro"></counter-input>
                     </div>
                 </div>
