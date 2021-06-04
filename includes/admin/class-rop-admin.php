@@ -1628,8 +1628,8 @@ class Rop_Admin {
 	public function rop_is_edit_post_screen() {
 
 		// Can't use get_current_screen here because it wouldn't be populated with all the data needed
-		if( !empty( $_GET['action'] ) && $_GET['action'] === 'edit' ){
-			return apply_filters('rop_is_edit_post_screen', true, get_the_ID());
+		if ( ! empty( $_GET['action'] ) && $_GET['action'] === 'edit' ) {
+			return apply_filters( 'rop_is_edit_post_screen', true, get_the_ID() );
 		}
 
 		return false;
