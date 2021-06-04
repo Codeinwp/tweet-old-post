@@ -32,7 +32,8 @@
                         <option value="post_content">{{labels.post_content_option_content}}</option>
                         <option value="post_title_content">{{labels.post_content_option_title_content}}</option>
                         <option value="post_excerpt">{{labels.post_content_option_excerpt}}</option>
-                        <option value="custom_field">{{labels.post_content_option_custom_field}}</option>
+                        <option v-if="yoast_seo_active_status" value="yoast_seo_title">{{labels.post_content_option_yoast_seo_title}}</option>
+                        <option v-if="yoast_seo_active_status" value="yoast_seo_description">{{labels.post_content_option_yoast_seo_description}}</option>
                     </select>
                 </div>
             </div>
@@ -359,6 +360,7 @@
                 labels_generic: this.$store.state.labels.generic,
                 upsell_link: ropApiSettings.upsell_link,
                 wpml_active_status: ropApiSettings.rop_get_wpml_active_status,
+                yoast_seo_active_status: ropApiSettings.rop_get_yoast_seo_active_status,
                 wpml_languages: ropApiSettings.rop_get_wpml_languages,
                 selected_tax_filter: [],
                 // selected_language: this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id].wpml_language : [],
