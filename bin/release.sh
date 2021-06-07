@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-replace-in-file "== Changelog ==" "== Changelog ==\n\n${1}" ../readme.txt
+echo "${RELEASE_NOTES}";
+replace-in-file "== Changelog ==" "== Changelog ==\n\n${RELEASE_NOTES}" ../readme.txt
