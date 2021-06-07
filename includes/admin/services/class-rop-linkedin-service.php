@@ -519,14 +519,23 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$share_as_image_post = $post_details['post_with_image'];
 		$post_id = $post_details['post_id'];
 
+		$model       = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format( $post_details['account_id'] );
+
+		$hashtags = $post_details['hashtags'];
+
+		if ( $post_format['hashtags_randomize'] ) {
+			$hashtags = $this->shuffle_hashtags( $hashtags );
+		}
+
 		// LinkedIn link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
-			$new_post = $this->linkedin_article_post( $post_details, $args );
+			$new_post = $this->linkedin_article_post( $post_details, $hashtags, $args );
 		}
 
 		// LinkedIn plain text post
 		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
-			$new_post = $this->linkedin_text_post( $post_details, $args );
+			$new_post = $this->linkedin_text_post( $post_details, $hashtags, $args );
 		}
 
 		// LinkedIn media post
@@ -534,9 +543,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			// Linkedin Api v2 doesn't support video upload. Share as article post
 			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) !== false ) {
-				$new_post = $this->linkedin_article_post( $post_details, $args );
+				$new_post = $this->linkedin_article_post( $post_details, $hashtags, $args );
 			} else {
-				$new_post = $this->linkedin_image_post( $post_details, $args, $token );
+				$new_post = $this->linkedin_image_post( $post_details, $hashtags, $args, $token );
 			}
 		}
 
@@ -558,6 +567,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				),
 			)
 		);
+
+		if ( is_wp_error( $response ) ) {
+			$error_string = $response->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return false;
+		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
@@ -589,14 +604,15 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Linkedin article post.
 	 *
-	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args Arguments needed by the method.
+	 * @param array  $post_details The post details to be published by the service.
+	 * @param string $hashtags hashtags list string.
+	 * @param array  $args Arguments needed by the method.
 	 *
 	 * @return array
 	 * @since   8.2.3
 	 * @access  private
 	 */
-	private function linkedin_article_post( $post_details, $args ) {
+	private function linkedin_article_post( $post_details, $hashtags, $args ) {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
@@ -609,7 +625,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 						array(
 							'shareCommentary'    =>
 								array(
-									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags,
 								),
 							'shareMediaCategory' => 'ARTICLE',
 							'media'              =>
@@ -643,14 +659,15 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Linkedin Text post.
 	 *
-	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args Arguments needed by the method.
+	 * @param array  $post_details The post details to be published by the service.
+	 * @param string $hashtags hashtags list string.
+	 * @param array  $args Arguments needed by the method.
 	 *
 	 * @return array
 	 * @since   8.6.0
 	 * @access  private
 	 */
-	private function linkedin_text_post( $post_details, $args ) {
+	private function linkedin_text_post( $post_details, $hashtags, $args ) {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
@@ -663,7 +680,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 						array(
 							'shareCommentary'    =>
 								array(
-									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags,
 								),
 							'shareMediaCategory' => 'NONE',
 						),
@@ -682,6 +699,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * Linkedin image post format.
 	 *
 	 * @param array  $post_details The post details to be published by the service.
+	 * @param string $hashtags hashtags list string.
 	 * @param array  $args Arguments needed by the method.
 	 * @param string $token The user token.
 	 *
@@ -689,7 +707,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.2.3
 	 * @access  private
 	 */
-	private function linkedin_image_post( $post_details, $args, $token ) {
+	private function linkedin_image_post( $post_details, $hashtags, $args, $token ) {
 
 		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
 		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
@@ -700,7 +718,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		if ( empty( $img ) ) {
 			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
-			return $this->linkedin_article_post( $post_details, $args );
+			return $this->linkedin_article_post( $post_details, $hashtags, $args );
 		}
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
@@ -738,7 +756,24 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			)
 		);
 
+		if ( is_wp_error( $response ) ) {
+			$error_string = $response->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return false;
+		}
+
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( empty( $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'] ) ) {
+			$this->logger->alert_error( 'Cannot share to LinkedIn, empty upload url' );
+			return false;
+		}
+
+		if ( empty( $body['value']['asset'] ) ) {
+			$this->logger->alert_error( 'Cannot share to LinkedIn, empty asset' );
+			return false;
+		}
+
 		$upload_url = $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
 		$asset      = $body['value']['asset'];
 
@@ -760,11 +795,18 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			)
 		);
 
-		if ( ! empty( $wp_img_put['body'] ) ) {
-			$response_code    = $wp_img_put['response']['code'];
+		if ( is_wp_error( $wp_img_put ) ) {
+			$error_string = $wp_img_put->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return false;
+		}
+
+		$response_code = $wp_img_put['response']['code'];
+
+		if ( $response_code !== 201 ) {
 			$response_message = $wp_img_put['response']['message'];
-			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $response_code . ' ' . $response_message );
-			exit( 1 );
+			$this->logger->alert_error( 'Cannot share to LinkedIn. Error:  ' . $response_code . ' ' . $response_message );
+			return false;
 		}
 
 		$new_post = array(
@@ -776,7 +818,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 						array(
 							'shareCommentary'    =>
 								array(
-									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags,
 								),
 							'shareMediaCategory' => 'IMAGE',
 							'media'              =>

@@ -353,7 +353,7 @@ abstract class Rop_Services_Abstract {
 			return $link;
 		}
 
-			$post_format_helper = new Rop_Post_Format_Helper();
+		$post_format_helper = new Rop_Post_Format_Helper();
 
 		if ( $post_details['short_url_service'] === 'wp_short_url' ) {
 			return $link;
@@ -849,6 +849,28 @@ abstract class Rop_Services_Abstract {
 		}
 
 		return $given_id;
+	}
+
+	/**
+	 * Shuffle hashtags list
+	 *
+	 * @param string $hashtags hashtags list string.
+	 *
+	 * @return string|string[] Randomized string of hashtags
+	 * @since 9.0.2
+	 */
+	protected function shuffle_hashtags( $hashtags ) {
+
+		if ( empty( $hashtags ) ) {
+			return '';
+		}
+
+		$hashtags = trim( $hashtags );
+		$hashtags = explode( ' ', $hashtags );
+		shuffle( $hashtags );
+		$hashtags = ' ' . implode( ' ', $hashtags );
+
+		return $hashtags;
 	}
 
 }

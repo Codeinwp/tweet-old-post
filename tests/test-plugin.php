@@ -26,7 +26,13 @@ class Test_ROP extends WP_UnitTestCase {
 	 * @access public
 	 */
 	public function test_sdk() {
-		$this->assertTrue( class_exists( 'ThemeisleSDK\\Loader' ), ' ThemeIsle SDK Is NOT present.' );
+
+		$vendor_file = ROP_LITE_PATH . '/vendor/codeinwp/themeisle-sdk/start.php';
+		if ( is_readable( $vendor_file ) ) {
+			require_once $vendor_file;
+		}
+		$this->assertTrue( class_exists( 'ThemeisleSDK\Loader' ), 'ThemeIsle SDK Is NOT present.' );
+
 		$all_plugins = apply_filters( 'themeisle_sdk_products', array() );
 		$this->assertContains( ROP_LITE_BASE_FILE, $all_plugins, 'ThemeIsle is NOT loaded' );
 

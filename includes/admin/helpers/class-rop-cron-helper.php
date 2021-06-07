@@ -132,7 +132,7 @@ class Rop_Cron_Helper {
 	 */
 	private function publish_now() {
 		if ( ! wp_next_scheduled( self::CRON_NAMESPACE_PUBLISH_NOW ) ) {
-			wp_schedule_single_event( current_time( 'timestamp' ) + 15, self::CRON_NAMESPACE_PUBLISH_NOW );
+			wp_schedule_single_event( time() + 10, self::CRON_NAMESPACE_PUBLISH_NOW );
 		}
 
 		return true;
