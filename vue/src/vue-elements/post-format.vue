@@ -32,8 +32,9 @@
                         <option value="post_content">{{labels.post_content_option_content}}</option>
                         <option value="post_title_content">{{labels.post_content_option_title_content}}</option>
                         <option value="post_excerpt">{{labels.post_content_option_excerpt}}</option>
-                        <option v-if="yoast_seo_active_status" value="yoast_seo_title">{{labels.post_content_option_yoast_seo_title}}</option>
-                        <option v-if="yoast_seo_active_status" value="yoast_seo_description">{{labels.post_content_option_yoast_seo_description}}</option>
+                        <option value="custom_field">{{labels.post_content_option_custom_field}}</option>
+                        <option v-if="yoast_seo_active_status" value="yoast_seo_title" :disabled="!isPro">{{labels.post_content_option_yoast_seo_title}} {{ !isPro ? "(Pro)" : ''}}</option>
+                        <option v-if="yoast_seo_active_status" value="yoast_seo_description" :disabled="!isPro">{{labels.post_content_option_yoast_seo_description}} {{ !isPro ? "(Pro)" : ''}}</option>
                     </select>
                 </div>
             </div>
@@ -79,7 +80,7 @@
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
 					<textarea class="form-input" v-model="post_format.custom_text"
-                              v-bind:placeholder="labels.add_char_placeholder">{{post_format.custom_text}}</textarea>
+                              v-bind:placeholder="labels.add_char_placeholder"></textarea>
                 </div>
             </div>
         </div>
