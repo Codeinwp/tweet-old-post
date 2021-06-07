@@ -268,15 +268,18 @@ class Rop_Post_Format_Helper {
 	 */
 	private function build_base_content( $post_id ) {
 
+		$post_title = apply_filters( 'rop_share_post_title', get_the_title( $post_id ), $post_id );
+		$post_content = apply_filters( 'rop_share_post_content', get_post_field( 'post_content', $post_id ), $post_id );
+
 		switch ( $this->post_format['post_content'] ) {
 			case 'post_title':
-				$content = get_the_title( $post_id );
+				$content = $post_title;
 				break;
 			case 'post_content':
-				$content = get_post_field( apply_filters( 'rop_content', 'post_content', $post_id ), $post_id );
+				$content = $post_content;
 				break;
 			case 'post_title_content':
-				$content = get_the_title( $post_id ) . apply_filters( 'rop_title_content_separator', ' ' ) . get_post_field( apply_filters( 'rop_content', 'post_content', $post_id ), $post_id );
+				$content = $post_title . apply_filters( 'rop_title_content_separator', ' ' ) . $post_content;
 				break;
 			case 'post_excerpt':
 				$excerpt = get_post_field( 'post_excerpt', $post_id );
@@ -284,14 +287,34 @@ class Rop_Post_Format_Helper {
 				if ( ! empty( $excerpt ) ) {
 					$content = $excerpt;
 				} else {
-					$content = get_post_field( 'post_content', $post_id );
+					$content = $post_content;
 				}
 				break;
 			case 'custom_field':
 				$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
 				break;
+			case 'yoast_seo_title':
+				if ( function_exists( 'YoastSEO' ) ) {
+					// See https://developer.yoast.com/blog/yoast-seo-14-0-using-yoast-seo-surfaces/
+					$content = YoastSEO()->meta->for_post( $post_id )->title;
+				} else {
+					$content = $post_title;
+				}
+				break;
+			case 'yoast_seo_description':
+				if ( function_exists( 'YoastSEO' ) ) {
+					$content = YoastSEO()->meta->for_post( $post_id )->description;
+				} else {
+					$content = $post_content;
+				}
+				// This is empty if user doesn't add a custom description
+				// So lets fall back to post content
+				if ( empty( $content ) ) {
+					$content = $post_content;
+				}
+				break;
 			default:
-				$content = '';
+				$content = $post_title;
 				break;
 		}
 

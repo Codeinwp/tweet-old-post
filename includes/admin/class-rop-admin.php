@@ -149,6 +149,10 @@ class Rop_Admin {
 
 		$bitly = get_option( 'rop_shortners_bitly' );
 
+		if ( ! is_array( $bitly ) ) {
+			return;
+		}
+
 		if ( array_key_exists( 'generic_access_token', $bitly['bitly_credentials'] ) ) {
 			return;
 		}
@@ -332,6 +336,8 @@ class Rop_Admin {
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
 		$array_nonce['rop_get_wpml_active_status']  = $this->rop_get_wpml_active_status();
+		$array_nonce['rop_get_yoast_seo_active_status']  = $this->rop_get_yoast_seo_active_status();
+		$array_nonce['rop_is_edit_post_screen']  = $this->rop_is_edit_post_screen();
 		$array_nonce['rop_get_wpml_languages']  = $this->rop_get_wpml_languages();
 		$array_nonce['hide_own_app_option']      = $this->rop_hide_add_own_app_option();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
@@ -1026,7 +1032,7 @@ class Rop_Admin {
 			foreach ( $events as $index => $event ) {
 				$post    = $event['post'];
 				$message = ! empty( $event['custom_instant_share_message'] ) ? $event['custom_instant_share_message'] : '';
-				$message = apply_filters( 'rop_instant_share_message', wp_kses_stripslashes( $message ), $event );
+				$message = apply_filters( 'rop_instant_share_message', stripslashes( $message ), $event );
 				$account_data = $services_model->find_account( $account );
 				try {
 					$service = $service_factory->build( $account_data['service'] );
@@ -1503,6 +1509,23 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Check YoastSEO is active on the website.
+	 *
+	 * @since   9.0.2
+	 * @access  public
+	 * @return bool Whether or not the YoastSEO plugin is active.
+	 */
+	public function rop_get_yoast_seo_active_status() {
+
+		if ( function_exists( 'YoastSEO' ) ) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	/**
 	 * Get WPML active languages.
 	 *
 	 * @since   8.5.8
@@ -1586,6 +1609,27 @@ class Rop_Admin {
 			}
 			
 			</style>';
+		}
+
+		return false;
+
+	}
+
+
+	/**
+	 * Hides the pinterest account button
+	 *
+	 * Pinterest changed API and has no ETA on when they'll start reviewing developer apps.
+	 * Disable this for now
+	 *
+	 * @since   9.0.1
+	 * @access  public
+	 */
+	public function rop_is_edit_post_screen() {
+
+		// Can't use get_current_screen here because it wouldn't be populated with all the data needed
+		if ( ! empty( $_GET['action'] ) && $_GET['action'] === 'edit' ) {
+			return apply_filters( 'rop_is_edit_post_screen', true, get_the_ID() );
 		}
 
 		return false;

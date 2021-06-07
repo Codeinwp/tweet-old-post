@@ -32,7 +32,8 @@
                         <option value="post_content">{{labels.post_content_option_content}}</option>
                         <option value="post_title_content">{{labels.post_content_option_title_content}}</option>
                         <option value="post_excerpt">{{labels.post_content_option_excerpt}}</option>
-                        <option value="custom_field">{{labels.post_content_option_custom_field}}</option>
+                        <option v-if="yoast_seo_active_status" value="yoast_seo_title">{{labels.post_content_option_yoast_seo_title}}</option>
+                        <option v-if="yoast_seo_active_status" value="yoast_seo_description">{{labels.post_content_option_yoast_seo_description}}</option>
                     </select>
                 </div>
             </div>
@@ -165,7 +166,9 @@
                 <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
             </div>
         </div>
+
         <span class="divider"></span>
+        
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.use_shortner_title}}</b>
@@ -181,6 +184,7 @@
                 <p v-if="allAccounts[this.account_id].service === 'vk'" v-html="labels.vk_unsupported_shorteners"></p>
             </div>
         </div>
+
         <div class="columns py-2" v-if="post_format.short_url">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.shortner_title}}</b>
@@ -208,6 +212,8 @@
                 </div>
             </div>
         </div>
+
+        <span class="divider"></span>
 
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
@@ -261,6 +267,21 @@
                 <div class="form-group">
                     <input class="form-input" type="number" v-model="post_format.hashtags_length"
                            value="" placeholder=""/>
+                </div>
+            </div>
+        </div>
+
+        <div class="columns py-2" v-if="post_format.hashtags !== 'no-hashtags'">
+            <div class="column col-6 col-sm-12 vertical-align rop-control">
+                <b>{{labels.hashtags_randomize}}</b>
+                <p class="text-gray"><span v-html="labels.hashtags_randomize_desc"></span></p>
+            </div>
+            <div class="column col-6 col-sm-12 vertical-align">
+                <div class="input-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" v-model="post_format.hashtags_randomize" />
+                        <i class="form-icon"></i> {{labels.hashtags_randomize_yes}}
+                    </label>
                 </div>
             </div>
         </div>
@@ -339,6 +360,7 @@
                 labels_generic: this.$store.state.labels.generic,
                 upsell_link: ropApiSettings.upsell_link,
                 wpml_active_status: ropApiSettings.rop_get_wpml_active_status,
+                yoast_seo_active_status: ropApiSettings.rop_get_yoast_seo_active_status,
                 wpml_languages: ropApiSettings.rop_get_wpml_languages,
                 selected_tax_filter: [],
                 // selected_language: this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id].wpml_language : [],
