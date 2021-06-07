@@ -1,8 +1,8 @@
 name: Deploy
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - master
 jobs:
   tag:
     name: New version
@@ -12,6 +12,10 @@ jobs:
       - name: Get The Version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.2'
       - name: Run Composer Install
         run: |
           npm ci
@@ -19,5 +23,6 @@ jobs:
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@master
         env:
+          VERSION: "9.0.2"
           SVN_PASSWORD: ${{ secrets.SVN_THEMEISLE_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_THEMEISLE_USERNAME }}
