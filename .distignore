@@ -22,5 +22,6 @@ composer.lock
 key.enc
 package-lock.json
 vue
+.github
 webpack.config.js
 docker-compose.yml
