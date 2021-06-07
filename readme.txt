@@ -298,7 +298,19 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 9.0.1 - 2021-04-22  = 
+
+= 9.0.2 - 2021-06-07  =
+
+#### Features
+* [New Pro] Post Format "Share Content" option to share post's Yoast SEO title or description.
+* New Post Format option to randomize hashtags before sharing.
+#### Fixes
+* All backslashes were not being removed from Post on Publish share messages.
+* Post on Publish checkboxes would sometimes be checked by default while updating already published posts.
+* Post on Publish feature would sometimes share the post at odd times if the "True Instant Share" option was turned off in General Settings of ROP.
+* Better error handling for wp_remote_post() calls.
+
+= 9.0.1 - 2021-04-22  =
 
 * [Fix Pro] Issue with saving maximum post age setting for users on Personal Plan
 * [Change] Don't show ROP Log error notice to non-admins
