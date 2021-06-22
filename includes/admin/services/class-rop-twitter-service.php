@@ -604,7 +604,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$hashtags = $post_details['hashtags'];
 
-		if ( $post_format['hashtags_randomize'] ) {
+		if ( ! empty( $post_format['hashtags_randomize'] ) && $post_format['hashtags_randomize'] ) {
 			$hashtags = $this->shuffle_hashtags( $hashtags );
 		}
 
