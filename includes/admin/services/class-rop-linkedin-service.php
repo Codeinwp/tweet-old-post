@@ -633,15 +633,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 									0 =>
 										array(
 											'status'      => 'READY',
-											'description' =>
-												array(
-													'text' => $this->strip_excess_blank_lines( $post_details['content'] ),
-												),
 											'originalUrl' => trim( $this->get_url( $post_details ) ),
-											'title'       =>
-												array(
-													'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
-												),
 										),
 								),
 						),
