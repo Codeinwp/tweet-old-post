@@ -721,7 +721,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	public function rop_wpml_id( $post_id, $account_id = '' ) {
 
 		$default_lang = apply_filters( 'wpml_default_language', null );
-		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
+		$lang_code    = '';
 
 		$post = $post_id;
 
@@ -735,9 +735,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		if ( ! empty( $rop_account_lang_code ) ) {
-			  $lang_code = $rop_account_lang_code;
+				$lang_code = apply_filters( 'rop_wpml_lang', $rop_account_lang_code);
 		}
-
+		
 		if ( is_array( $post_id ) ) {
 
 			$post = array();
@@ -786,8 +786,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @access   public
 	 */
 	public function rop_wpml_link( $url, $account_id ) {
+		
 		$default_lang = apply_filters( 'wpml_default_language', null );
-		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
+		$lang_code    = '';
 
 		if ( ! empty( $account_id ) ) {
 
@@ -799,7 +800,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		if ( ! empty( $rop_account_lang_code ) ) {
-					$lang_code = $rop_account_lang_code;
+				$lang_code =  apply_filters( 'rop_wpml_lang', $rop_account_lang_code);
 		}
 
 		$wpml_url     = apply_filters( 'wpml_permalink', $url, $lang_code );
