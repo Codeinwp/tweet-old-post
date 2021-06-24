@@ -1,3 +1,11 @@
+##### [Version 9.0.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.2...v9.0.3) (2021-06-24)
+
+### Fixes
+- LinkedIn shared article posts would not show the preview image.
+- The filter to set the WPML language that is shared to accounts was being overridden in the Lite version of the plugin.
+- Handle cases where the wpml_language option is not set for an account and the user tries to share a post.
+- Handle cases where randomize hashtags option is not set for an account and the user tries to share a post.
+
 ##### [Version 9.0.2](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.1...v9.0.2) (2021-06-07)
 
 ### Features
