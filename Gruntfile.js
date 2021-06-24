@@ -25,9 +25,9 @@
 					'tweet-old-post.php',
 					]
 				},
-				functions: {
+				class: {
 					options: {
-						prefix: 'version\\s+=\\s+[\'"]'
+						prefix: '\\$this->version\.*\\s=\.*\\s\''
 					},
 					src: [
 					'includes/class-rop.php',

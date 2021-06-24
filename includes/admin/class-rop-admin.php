@@ -1570,19 +1570,23 @@ class Rop_Admin {
 
 		$post_lang_code = apply_filters( 'wpml_post_language_details', '', $post_id )['language_code'];
 
-		// TODO double check that this is looping correctly since pulling down latest changes
-		// from v860
 		foreach ( $share_to_accounts as $account_id ) {
 
 			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
+			
+			if( empty( $rop_account_post_format['wpml_language'] ) ){
+				continue;
+			};
+
 			$rop_account_lang_code = $rop_account_post_format['wpml_language'];
 
 			if ( $post_lang_code === $rop_account_lang_code ) {
 				$filtered_share_to_accounts[] = $account_id;
 			}
+
 		}
 
-		return $filtered_share_to_accounts;
+		return empty($filtered_share_to_accounts) ? $share_to_accounts : $filtered_share_to_accounts;
 
 	}
 

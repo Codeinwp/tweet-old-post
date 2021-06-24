@@ -18,6 +18,7 @@ plugins:
         - readme.md
         - readme.txt
         - tweet-old-post.php
+        - includes/class-rop.php
         - package-lock.json
         - package.json
       message: "chore(release): ${nextRelease.version} \n\n${nextRelease.notes}"
