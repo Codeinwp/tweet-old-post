@@ -483,6 +483,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		$access_token = $this->gmb_refresh_access_token();
 		$client->setAccessToken( $access_token );
+		$client->setApiFormatV2(true);
 
 		$post_id = $post_details['post_id'];
 		$post_url = $post_details['post_url'];
