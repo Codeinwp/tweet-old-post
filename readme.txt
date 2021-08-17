@@ -299,6 +299,18 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.0.4](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.3...v9.0.4) (2021-08-17)
+
+### Fixes
+- Google My Business posts were not sharing because of missing Topic Type field
+
+### Changes
+- Turned off Remote Cron feature. Use [this doc](https://docs.revive.social/article/686-fix-revive-old-post-not-posting) if you have issues where your posts aren't sharing.
+- Google My Business errors will now return more information with details on why the post didn't share.
+
+
+
+
 ##### [Version 9.0.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.2...v9.0.3) (2021-06-24)
 
 ### Fixes
