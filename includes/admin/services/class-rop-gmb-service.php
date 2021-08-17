@@ -309,6 +309,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$locale = get_locale();
 
 		$new_post->setLanguageCode( $locale );
+		$new_post->setTopicType( 'STANDARD' );
 
 		if ( ! empty( $post_details['post_url'] ) ) {
 			$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
@@ -354,8 +355,8 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$locale = get_locale();
 
 		$new_post->setLanguageCode( $locale );
-
-		 $new_post->setSummary( $post_details['content'] );
+		$new_post->setTopicType( 'STANDARD' );
+		$new_post->setSummary( $post_details['content'] );
 
 		return $new_post;
 
@@ -388,7 +389,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$url = $this->get_url( $post_details );
 
 		$new_post->setLanguageCode( $locale );
-
+		$new_post->setTopicType( 'STANDARD' );
 		$new_post->setSummary( $post_details['content'] );
 
 		$call_to_action = new Google_Service_MyBusiness_CallToAction();
@@ -430,7 +431,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$url = $this->get_url( $post_details );
 
 		$new_post->setLanguageCode( $locale );
-
+		$new_post->setTopicType( 'STANDARD' );
 		$new_post->setSummary( $post_details['content'] );
 
 		$call_to_action = new Google_Service_MyBusiness_CallToAction();
@@ -483,6 +484,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		$access_token = $this->gmb_refresh_access_token();
 		$client->setAccessToken( $access_token );
+		$client->setApiFormatV2( true );
 
 		$post_id = $post_details['post_id'];
 		$post_url = $post_details['post_url'];
