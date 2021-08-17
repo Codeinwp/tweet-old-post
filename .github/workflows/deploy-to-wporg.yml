@@ -7,6 +7,9 @@ jobs:
   tag:
     name: New version
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
     steps:
       - uses: actions/checkout@master
       - name: Get The Version
@@ -20,6 +23,10 @@ jobs:
         run: |
           npm ci
           composer install --no-dev --prefer-dist --no-progress --no-suggest
+      - name: Build files using ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: NPM Build
         run: npm run build
       - name: WordPress Plugin Deploy
