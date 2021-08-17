@@ -1646,7 +1646,7 @@ class Rop_Admin {
 	 * @since   9.0.4
 	 * @access  public
 	 */
-	public function rop_remove_remote_cron() {
+	public function rop_remove_remote_cron_notice() {
 
 		$installed_at_version = get_option( 'rop_first_install_version' );
 
@@ -1654,11 +1654,56 @@ class Rop_Admin {
 			return false;
 		}
 
-		if ( version_compare( $installed_at_version, '9.0.3', '<=' ) ) {
+		if ( version_compare( $installed_at_version, '9.0.3', '>' ) ) {
+			return;
+		}
+		
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-remove-remote-cron-notice-dismissed' ) ) {
+			return;
+		}
+
+		$using_remote_cron = (bool) get_option('rop_use_remote_cron');
+
+		if( $using_remote_cron ){
 			delete_option( 'rop_use_remote_cron' );
-			delete_option( 'rop_is_sharing_cron_active' );
-			delete_option( 'rop_remote_cron_terms_agree' );
-			delete_option( 'rop_access_token' );
+		}
+
+		$dismiss_link = add_query_arg( array(
+			'rop-remove-remote-cron-notice-dismissed' => '1',
+		));
+
+		$rop = __('Revive Old Posts: ', 'tweet-old-post');
+		$admin_url = admin_url('admin.php?page=TweetOldPost');
+		$notice_text = sprintf( __('We\'ve removed the Remote Cron service feature of Revive Old Posts. If you used this option in the past, then please %1$shead to the Revive Old Posts dashboard%2$s to start sharing using the default WordPress cron. If post sharing is not working for you, then please see %3$shere for solutions.%2$s', 'tweet-old-post'), "<a href='$admin_url'>", "</a>", "<a href='https://docs.revive.social/article/686-fix-revive-old-post-not-posting' target='blank'>" );
+
+		$message = <<<MSG
+		<p style="font-size: 14px">
+		<b>$rop</b> $notice_text 
+		<a style='float: right;' href='$dismiss_link'>Dismiss</a>
+		</p>
+MSG;
+
+		?>
+
+		<div class="notice notice-error">
+			<?php echo $message ?>
+		</div>
+		<?php
+
+	}
+
+	/**
+	 * Dismiss Remote cron removal notice.
+	 *
+	 * @since   9.0.5
+	 * @access  public
+	 */
+	public function rop_dismiss_remove_remote_cron() {
+		$user_id = get_current_user_id();
+		if ( isset( $_GET['rop-remove-remote-cron-notice-dismissed'] ) ) {
+			add_user_meta( $user_id, 'rop-remove-remote-cron-notice-dismissed', 'true', true );
 		}
 
 	}

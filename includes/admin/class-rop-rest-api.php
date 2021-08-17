@@ -25,7 +25,7 @@ class Rop_Rest_Api {
 	 *
 	 * @since   8.0.0
 	 * @access  private
-	 * @var     array $response The default response.
+	 * @var     object $response The default response.
 	 */
 	private $response;
 

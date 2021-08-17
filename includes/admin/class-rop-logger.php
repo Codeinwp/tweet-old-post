@@ -158,6 +158,11 @@ class Rop_Logger {
 	 * @return mixed
 	 */
 	public function translate_messages( $direct_message ) {
+	
+		if( ! is_string( $direct_message ) ){
+			return;
+		}
+
 		$direct_message = trim( $direct_message );
 		$direct_message = preg_replace( '/\s\s+/', ' ', $direct_message ); // we need to remove extra spaces
 
