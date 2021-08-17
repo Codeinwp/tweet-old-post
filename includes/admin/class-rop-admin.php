@@ -1618,7 +1618,6 @@ class Rop_Admin {
 
 	}
 
-
 	/**
 	 * Hides the pinterest account button
 	 *
@@ -1639,5 +1638,28 @@ class Rop_Admin {
 
 	}
 
+	/**
+	 * Hide and remove remote cron feature.
+	 *
+	 * This feature will be discontinued.
+	 *
+	 * @since   9.0.4
+	 * @access  public
+	 */
+	public function rop_remove_remote_cron() {
 
+		$installed_at_version = get_option( 'rop_first_install_version' );
+
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
+
+		if ( version_compare( $installed_at_version, '9.0.3', '<=' ) ) {
+			delete_option( 'rop_use_remote_cron' );
+			delete_option( 'rop_is_sharing_cron_active' );
+			delete_option( 'rop_remote_cron_terms_agree' );
+			delete_option( 'rop_access_token' );
+		}
+
+	}
 }

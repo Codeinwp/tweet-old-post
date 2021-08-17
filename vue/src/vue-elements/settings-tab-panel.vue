@@ -2,14 +2,15 @@
     <div class="tab-view">
         <div class="panel-body">
             <div class="container" :class="'rop-tab-state-'+is_loading">
-                <div class="columns py-2" v-if="this.apply_exclude_limit_cron" >
+                <!-- Disabled Remote Cron feature and left code commented out. -->
+                <!-- <div class="columns py-2" v-if="this.apply_exclude_limit_cron" >
                     <div class="column col-6 col-sm-12 vertical-align rop-control">
                         <b>{{labels.cron_type_label}}</b>
                         <p class="text-gray"><span v-html="labels.cron_type_label_desc"></span></p>
                     </div>
                     <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
                         <div class="form-group">
-                            <!-- @category New Cron System -->
+                          
                             <div style="padding: 10px; text-align: left;">
                                 <toggle-button
                                         :value="rop_cron_remote"
@@ -34,8 +35,8 @@
                           <small v-html="labels.cron_type_notice"></small>
                         </div>
                     </div>
-                </div>
-                <span class="divider" v-if="this.apply_exclude_limit_cron && ! isBiz" ></span>
+                </div> -->
+                <!-- <span class="divider" v-if="this.apply_exclude_limit_cron && ! isBiz" ></span> -->
                 
                 <!-- Minimum interval between shares -->
 
@@ -50,7 +51,11 @@
                                      
                     </div>
                 </div>
-                <span class="divider"></span>
+
+                <span class="divider"  v-if="! isBiz"></span>
+                
+                <!-- Min Post Age -->
+               
                 <div class="columns py-2">
                     <div class="column col-6 col-sm-12 vertical-align">
                         <b>{{labels.min_days_title}}</b>
