@@ -16,7 +16,7 @@ jobs:
        - name: Run Composer Install
          run: composer install --prefer-dist --no-progress --quiet
        - name: Run PHPCBF 
-         run: composer run beautify
+         run: composer run format
 # PHPCBF returns exit code 1 when it fixes errors, so we continue letting PHPCS find unfixed issues
          continue-on-error: true
        - name: Run PHPCS
