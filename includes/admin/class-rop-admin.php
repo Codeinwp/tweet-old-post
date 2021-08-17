@@ -1656,9 +1656,6 @@ class Rop_Admin {
 
 		if ( version_compare( $installed_at_version, '9.0.3', '<=' ) ) {
 			delete_option( 'rop_use_remote_cron' );
-			delete_option( 'rop_is_sharing_cron_active' );
-			delete_option( 'rop_remote_cron_terms_agree' );
-			delete_option( 'rop_access_token' );
 		}
 
 	}
