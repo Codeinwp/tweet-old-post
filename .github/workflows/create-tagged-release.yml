@@ -7,17 +7,10 @@ on:
 jobs:
   create_tag:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
     steps:
       - uses: actions/checkout@master
         with:
           persist-credentials: false
-      - name: Build files using ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
       - name: Release New Version
         id: release
         run: |
