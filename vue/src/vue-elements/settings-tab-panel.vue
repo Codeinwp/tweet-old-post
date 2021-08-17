@@ -2,7 +2,7 @@
     <div class="tab-view">
         <div class="panel-body">
             <div class="container" :class="'rop-tab-state-'+is_loading">
-                <!-- Disabled Remote Cron feature and left code commented out. -->
+                <!-- Disabled Remote Cron feature and left code commented out -->
                 <!-- <div class="columns py-2" v-if="this.apply_exclude_limit_cron" >
                     <div class="column col-6 col-sm-12 vertical-align rop-control">
                         <b>{{labels.cron_type_label}}</b>
