@@ -11,9 +11,6 @@ jobs:
     name: Build ZIP and Upload To S3
     if: github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
     outputs:
       branch-name: ${{ steps.retrieve-branch-name.outputs.branch_name }}
       git-sha-8: ${{ steps.retrieve-git-sha-8.outputs.sha8 }}
@@ -40,12 +37,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
           composer install --no-dev --prefer-dist --no-progress
-      - name: Build files using ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: NPM Build
-        run: npm run build
       - name: Create Zip file
         run: npm run dist
       - name: Retrieve branch name
