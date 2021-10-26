@@ -91,7 +91,7 @@ class Rop_Post_Format_Helper {
 
 		$filtered_post['shortner_credentials'] = ( isset( $this->post_format['shortner_credentials'] ) ) ? $this->post_format['shortner_credentials'] : array();
 
-		return apply_filters('rop_formatted_post_object', $filtered_post, $post_id, $this->account_id);
+		return apply_filters( 'rop_formatted_post_object', $filtered_post, $post_id, $this->account_id );
 	}
 
 	/**
@@ -957,7 +957,7 @@ class Rop_Post_Format_Helper {
 			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
 
-		return apply_filters('rop_post_share_image', $image, $post_id);
+		return apply_filters( 'rop_post_share_image', $image, $post_id );
 	}
 
 	/**
