@@ -299,6 +299,14 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.0.5](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.4...v9.0.5) (2021-08-17)
+
+### Changes
+- Add notice about Remote Cron feature removal
+
+
+
+
 ##### [Version 9.0.4](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.3...v9.0.4) (2021-08-17)
 
 ### Fixes
