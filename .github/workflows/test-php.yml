@@ -1,7 +1,10 @@
 name: Test PHP
 
-on: [pull_request]
-
+on:
+  pull_request:
+    branches: 
+      - master 
+      - development
 jobs:
   code-sniff:
     runs-on: ubuntu-latest
