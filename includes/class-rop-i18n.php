@@ -122,6 +122,8 @@ class Rop_I18n {
 				'limit_reached'              => __( 'Limit reached', 'tweet-old-post' ),
 			),
 			'settings'    => array(
+				'yes_text' => __( 'Yes', 'tweet-old-post' ),
+				'available_in_pro' => __( ' This feature is only available in the Pro version.', 'tweet-old-post' ),
 				'post_types_exclude_limit' => sprintf( __( 'Upgrade to Pro version to select more than 30 posts. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
 				'post_types_exclude_limit_tooltip' => __( 'Upgrade to Pro version to select more than 30 posts.', 'tweet-old-post' ),
 				'menu_item'                   => __( 'General Settings', 'tweet-old-post' ),
@@ -139,22 +141,24 @@ class Rop_I18n {
 					'If all available posts have been shared to your active accounts, should we automatically restart the sharing?',
 					'tweet-old-post'
 				),
-				'post_types_title'            => __( 'Post Types', 'tweet-old-post' ),
-				'post_types_taxonomy_limit' => sprintf( __( 'Upgrade to Pro version to select more than 4 taxonomies. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
-				'post_types_attachament_info' => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
-				'post_types_desc'             => __( 'Which post types should Revive Old Posts share? <a href="https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
-				'filter_by_post_types_desc'   => __( 'Filter posts list by Post Type', 'tweet-old-post' ),
-				'number_of_posts_upsell'           => __(
+				'post_types_title'                      => __( 'Post Types', 'tweet-old-post' ),
+				'post_types_taxonomy_limit'             => sprintf( __( 'Upgrade to Pro version to select more than 4 taxonomies. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
+				'post_types_attachament_info'           => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
+				'post_types_desc'                       => __( 'Which post types should Revive Old Posts share? <a href="https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'update_post_published_date_title'      => __( 'Update Post Published Date After Share', 'tweet-old-post' ),
+				'update_post_published_date_desc'       => sprintf( __( 'Update the post published date after it has been shared to your social media account. %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1489-automatically-updating-post-publish-date-after-sharing-a-post" target="_blank">', '</a>' ),
+				'filter_by_post_types_desc'             => __( 'Filter posts list by Post Type', 'tweet-old-post' ),
+				'number_of_posts_upsell'                => __(
 					'Changing the number of posts per share is available in the Pro
 							version.',
 					'tweet-old-post'
 				),
-				'maximum_post_age_upsell'           => __(
+				'maximum_post_age_upsell'               => __(
 					'Changing the maximum post age is available in the Pro
-					version..',
+					version.',
 					'tweet-old-post'
 				),
-				'post_types_upsell'           => __(
+				'post_types_upsell'                     => __(
 					'Selecting custom post types is available in the Pro
 							version.',
 					'tweet-old-post'

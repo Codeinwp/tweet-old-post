@@ -619,4 +619,15 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		return isset( $this->settings['true_instant_share'] ) ? $this->settings['true_instant_share'] : false;
 	}
 
+	/**
+	 * Getter for Update Post Published Date After Share feature.
+	 *
+	 * @since 9.0.6
+	 * @access public
+	 * @return bool
+	 */
+	public function get_update_post_published_date() {
+		return isset( $this->settings['update_post_published_date'] ) ? $this->settings['update_post_published_date'] : false;
+	}
+
 }

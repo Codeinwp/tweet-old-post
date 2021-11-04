@@ -1154,12 +1154,12 @@ class Rop_Admin {
 									}
 								}
 
-								if ( $response === true ) {
-									update_option( 'rop_last_post_shared', $post_shared );
-								}
-
 								$posts_selector_model->update_buffer( $account, $post_data['post_id'] );
 
+								if ( $response === true ) {
+									update_option( 'rop_last_post_shared', $post_shared );
+									do_action( 'rop_after_share', $post_data );
+								}
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
