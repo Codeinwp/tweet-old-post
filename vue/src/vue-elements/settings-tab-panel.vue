@@ -84,7 +84,7 @@
                 
                 <div class="columns " v-if="!isPro">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.maximum_post_age_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.available_in_pro}}</p>
                     </div>
                 </div>
                 <span class="divider"></span>
@@ -101,7 +101,7 @@
                 </div>
                    <div class="columns " v-if="!isPro">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.number_of_posts_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.available_in_pro}}</p>
                     </div>
                 </div>
                 <span class="divider"></span>
@@ -116,7 +116,7 @@
                         <div class="form-group">
                             <label class="form-checkbox" id="share_more_than_once">
                                 <input type="checkbox" v-model="generalSettings.more_than_once"/>
-                                <i class="form-icon"></i> {{labels.share_once_yes}}
+                                <i class="form-icon"></i> {{labels.yes_text}}
                             </label>
                         </div>
                     </div>
@@ -204,7 +204,7 @@
                         <div class="form-group">
                             <label class="form-checkbox">
                                 <input type="checkbox" v-model="generalSettings.ga_tracking"/>
-                                <i class="form-icon"></i>{{labels.ga_yes}}
+                                <i class="form-icon"></i>{{labels.yes_text}}
                             </label>
                         </div>
                     </div>
@@ -221,7 +221,7 @@
                         <div class="form-group">
                             <label id="rop_instant_share" class="form-checkbox">
                                 <input type="checkbox" v-model="generalSettings.instant_share"/>
-                                <i class="form-icon"></i>{{labels.instant_share_yes}}
+                                <i class="form-icon"></i>{{labels.yes_text}}
                             </label>
                         </div>
                     </div>
@@ -239,7 +239,7 @@
                         <div class="form-group">
                             <label class="form-checkbox">
                                 <input type="checkbox" v-model="generalSettings.true_instant_share"/>
-                                <i class="form-icon"></i>{{labels.true_instant_share_yes}}
+                                <i class="form-icon"></i>{{labels.yes_text}}
                             </label>
                         </div>
                     </div>
@@ -257,7 +257,7 @@
                     <div class="form-group">
                       <label class="form-checkbox">
                         <input type="checkbox" v-model="generalSettings.instant_share_default"/>
-                        <i class="form-icon"></i>{{labels.instant_share_default_yes}}
+                        <i class="form-icon"></i>{{labels.yes_text}}
                       </label>
                     </div>
                   </div>
@@ -274,7 +274,7 @@
                     <div class="form-group">
                       <label class="form-checkbox">
                         <input type="checkbox" v-model="generalSettings.instant_share_choose_accounts_manually"/>
-                        <i class="form-icon"></i>{{labels.instant_share_choose_accounts_manually_yes}}
+                        <i class="form-icon"></i>{{labels.yes_text}}
                       </label>
                     </div>
                   </div>
@@ -291,7 +291,7 @@
                         <div class="form-group">
                             <label class="form-checkbox">
                                 <input type="checkbox" v-model="generalSettings.instant_share_future_scheduled" :disabled="!isPro"/>
-                                <i class="form-icon"></i>{{labels.instant_share_future_scheduled_yes}}
+                                <i class="form-icon"></i>{{labels.yes_text}}
                             </label>
                         </div>
                     </div>
@@ -299,7 +299,7 @@
                 <!-- Upsell -->
                 <div class="columns " v-if="!isPro && isInstantShare">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.instant_share_future_scheduled_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.available_in_pro}}</p>
                     </div>
                 </div>
                 <span class="divider" v-if="isInstantShare"></span>
@@ -314,7 +314,7 @@
                         <div class="form-group">
                             <label id="rop_custom_share_msg" class="form-checkbox">
                                 <input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages"/>
-                                <i class="form-icon"></i>{{labels.custom_share_yes}}
+                                <i class="form-icon"></i>{{labels.yes_text}}
                             </label>
                         </div>
                     </div>
@@ -322,7 +322,7 @@
                 <!-- Upsell -->
                 <div class="columns " v-if="!isPro">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.custom_share_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.available_in_pro}}</p>
                     </div>
                 </div>
                 <span class="divider"></span>
@@ -337,7 +337,7 @@
                         <div class="form-group">
                             <label id="rop_custom_share_msg" class="form-checkbox">
                                 <input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages_share_order"/>
-                                <i class="form-icon"></i>{{labels.custom_share_order_yes}}
+                                <i class="form-icon"></i>{{labels.yes_text}}
                             </label>
                         </div>
                     </div>
@@ -354,7 +354,7 @@
                         <div class="form-group">
                             <label class="form-checkbox">
                                 <input type="checkbox" v-model="generalSettings.housekeeping"/>
-                                <i class="form-icon"></i>{{labels.housekeeping_yes}}
+                                <i class="form-icon"></i>{{labels.yes_text}}
                             </label>
                         </div>
                     </div>
