@@ -108,7 +108,7 @@
                 <div class="input-group">
                     <label class="form-checkbox">
                         <input type="checkbox" v-model="post_format.include_link"/>
-                        <i class="form-icon"></i> {{labels.add_link_yes}}
+                        <i class="form-icon"></i> {{labels.yes_text}}
                     </label>
                 </div>
             <p v-if="allAccounts[this.account_id].account_type === 'instagram_account'" v-html="labels.instagram_disable_link_recommendation"></p>
@@ -124,7 +124,7 @@
                 <div class="input-group">
                     <label class="form-checkbox">
                         <input type="checkbox" v-model="post_format.url_from_meta"/>
-                        <i class="form-icon"></i> {{labels.meta_link_yes}}
+                        <i class="form-icon"></i> {{labels.yes_text}}
                     </label>
                 </div>
             </div>
@@ -179,7 +179,7 @@
                 <div class="input-group">
                     <label class="form-checkbox">
                         <input type="checkbox" v-model="post_format.short_url"/>
-                        <i class="form-icon"></i> {{labels.use_shortner_yes}}
+                        <i class="form-icon"></i> {{labels.yes_text}}
                     </label>
                 </div>
                 <p v-if="allAccounts[this.account_id].service === 'vk'" v-html="labels.vk_unsupported_shorteners"></p>
@@ -281,7 +281,7 @@
                 <div class="input-group">
                     <label class="form-checkbox">
                         <input type="checkbox" v-model="post_format.hashtags_randomize" />
-                        <i class="form-icon"></i> {{labels.hashtags_randomize_yes}}
+                        <i class="form-icon"></i> {{labels.yes_text}}
                     </label>
                 </div>
             </div>
@@ -302,7 +302,7 @@
                         <!-- For instagram accounts -->
                         <input v-if="is_instagram_account" type="checkbox" v-model="is_instagram_account"
                                :disabled="!isPro || is_instagram_account"/>
-                        <i class="form-icon"></i> {{labels.image_yes}}
+                        <i class="form-icon"></i> {{labels.yes_text}}
                     </label>
                 </div>
             <p v-if="is_instagram_account" v-html="labels.instagram_image_post_default"></p>
