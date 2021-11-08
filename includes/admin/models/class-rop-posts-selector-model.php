@@ -597,6 +597,41 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Get the current buffer in the Database.
+	 *
+	 * @since 9.0.6
+	 * @return array An array of Accounts and the post IDs that have been shared.
+	 */
+	public function get_buffer() {
+		return $this->get( 'posts_buffer' );
+	}
+
+	/**
+	 * Check if a post has already been shared to an account.
+	 *
+	 * Checks the account buffer for a given Post ID.
+	 *
+	 * @since 9.0.6
+	 * @param mixed $account_id The account ID to check.
+	 * @param mixed $post_id The Post ID to look for.
+	 * @return bool Wher or not the post ID exists in the buffer(meaning if it has already been shared).
+	 */
+	public function buffer_has_post_id( $account_id, $post_id ) {
+
+		$buffer = $this->get_buffer();
+		$account_posts = $buffer[ $account_id ] ?? '';
+
+		$post_ids = array_values( $account_posts );
+
+		if ( in_array( $post_id, $post_ids ) ) {
+			return true;
+		}
+
+		return false;
+
+	}
+
+	/**
 	 * Method to clear buffer.
 	 *
 	 * @param bool|string $account_id The account ID to clear buffer filter. Default false, clear all.
