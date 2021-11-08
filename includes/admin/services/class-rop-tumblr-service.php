@@ -415,7 +415,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 *
 	 * Also remove the hashtags from the content since they are not clickable.
 	 *
-	 * @param mixed $post_details
+	 * @param array $post_details The post details array for the post that is being shared.
 	 * @return string
 	 */
 	private function get_custom_share_variation_hashtags( $post_details ) {
