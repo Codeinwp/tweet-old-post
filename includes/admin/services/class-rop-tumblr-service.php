@@ -411,6 +411,34 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Extract the hashtags from custom share variation if it exists.
+	 *
+	 * Also remove the hashtags from the content since they are not clickable.
+	 *
+	 * @param array $post_details The post details array for the post that is being shared.
+	 * @return string
+	 */
+	private function get_custom_share_variation_hashtags( $post_details ) {
+
+		$custom_content = get_post_meta( $post_details['post_id'], 'rop_custom_messages_group' );
+
+		// If there's no variations in the DB for this post bail.
+		if ( empty( $custom_content ) ) {
+			return;
+		}
+
+		$content = $post_details['content'];
+
+		preg_match_all( '/#(\w+)/', $content, $hashtags );
+
+		$hashtags_array = $hashtags[0];
+
+		$hashtags_string = implode( ' ', $hashtags_array );
+
+		return $hashtags_string;
+	}
+
+	/**
 	 * Method for publishing with Twitter service.
 	 *
 	 * @since   8.0.0
@@ -430,13 +458,23 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		$api = $this->get_api( $args['credentials']['consumer_key'], $args['credentials']['consumer_secret'], $args['credentials']['oauth_token'], $args['credentials']['oauth_token_secret'] );
 
-		$post_type = new Rop_Posts_Selector_Model();
-		$post_id   = $post_details['post_id'];
-
-		$model       = new Rop_Post_Format_Model;
+		$model       = new Rop_Post_Format_Model();
 		$post_format = $model->get_post_format( $post_details['account_id'] );
 
-		$hashtags = $post_details['hashtags'];
+		$settings = new Rop_Settings_Model();
+		$post_id   = $post_details['post_id'] ?? '';
+
+		/*
+		 * If the Share Variations feature is turned off, check for hashtags in the post_details array,
+		 * Otherwise check for it inside the custom share message.
+		 */
+		if ( empty( $settings->get_custom_messages() ) ) {
+			$hashtags = $post_details['hashtags'];
+		} else {
+			$hashtags = $this->get_custom_share_variation_hashtags( $post_details );
+			// Users might want the hashtags to be removed from the content. Provide a filter for custom manipulation.
+			$post_details = apply_filters( 'rop_tumblr_custom_post_details', $post_details, $hashtags );
+		}
 
 		if ( ! empty( $post_format['hashtags_randomize'] ) && $post_format['hashtags_randomize'] ) {
 			$hashtags = $this->shuffle_hashtags( $hashtags );
