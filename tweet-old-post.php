@@ -56,52 +56,6 @@ if ( defined( 'PHP_VERSION' ) ) {
 }
 
 /**
- * Shows a notice with a doc link to a fix for sites which have Buffer connected.
- *
- * @since    8.6.2
- */
-function rop_buffer_present_notice() {
-	?>
-
-	<div class="notice notice-error is-dismissible">
-		<?php echo sprintf( __( '%1$s %2$sRevive Old Posts:%3$s You have Buffer account(s) connected to Revive Old Posts. You need to remove these accounts to avoid issues with the plugin. Plugin has been deactivated. %4$sClick here to read the article with the fix.%5$s %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1318-fix-php-fatal-error-uncaught-exception-invalid-service-name-given" target="_blank">', '</a>', '</p>' ); ?>
-	</div>
-	<?php
-}
-
-/**
- * Detects if there's a buffer account connected to ROP.
- *
- * Disables ROP if any are found
- *
- * @since    8.6.2
- */
-function rop_buffer_present() {
-
-	$rop_data = get_option( 'rop_data' );
-
-	if ( empty( $rop_data['services'] ) ) {
-		return;
-	}
-
-	$services = $rop_data['services'];
-
-	foreach ( $services as $service ) {
-
-		if ( strpos( $service['service'], 'buffer' ) !== false ) {
-			add_action( 'admin_notices', 'rop_buffer_present_notice' );
-
-			if ( ! function_exists( 'deactivate_plugins' ) ) {
-				require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-			}
-			deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
-			return;
-		}
-	}
-}
-add_action( 'init', 'rop_buffer_present', 1 );
-
-/**
  * Shows a notice for sites running PHP less than 5.6.
  *
  * @since    8.1.4
