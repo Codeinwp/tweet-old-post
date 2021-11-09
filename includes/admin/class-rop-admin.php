@@ -1148,6 +1148,8 @@ class Rop_Admin {
 
 								if ( $duplicate === false ) {
 									$response = $service->share( $post_data, $account_data );
+								}else{
+									$logger->info( Rop_I18n::get_labels( 'sharing.post_already_shared' ), array( 'extra' => $post_data ) );
 								}
 
 								if ( $revive_network_active ) {

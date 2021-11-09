@@ -311,7 +311,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					}
 
 					/*
-					 Prevents queue from showing posts that do not exist
+					* Prevents queue from showing posts that do not exist
 					* on the website. This can occur when a post is deleted
 					* and queue hasn't yet refreshed.
 					*/
