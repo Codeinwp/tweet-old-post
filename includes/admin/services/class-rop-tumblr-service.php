@@ -411,6 +411,25 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * 
+	 * Check if a post has custom variations saved for it.
+	 * 
+	 * @param mixed $post_id 
+	 * @return bool 
+	 */
+	private function has_custom_share_variations( $post_id ){
+
+		$custom_content = get_post_meta( $post_id, 'rop_custom_messages_group' );
+
+		// If there's no variations in the DB for this post bail.
+		if ( empty( $custom_content ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Extract the hashtags from custom share variation if it exists.
 	 *
 	 * Also remove the hashtags from the content since they are not clickable.
@@ -420,10 +439,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 */
 	private function get_custom_share_variation_hashtags( $post_details ) {
 
-		$custom_content = get_post_meta( $post_details['post_id'], 'rop_custom_messages_group' );
-
 		// If there's no variations in the DB for this post bail.
-		if ( empty( $custom_content ) ) {
+		if ( empty( $this->has_custom_share_variations( $post_details['post_id'] ) ) ) {
 			return;
 		}
 
@@ -465,10 +482,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$post_id   = $post_details['post_id'] ?? '';
 
 		/*
-		 * If the Share Variations feature is turned off, check for hashtags in the post_details array,
+		 * If the Share Variations feature is turned off, or the post does not have share variations, check for hashtags in the post_details array,
 		 * Otherwise check for it inside the custom share message.
 		 */
-		if ( empty( $settings->get_custom_messages() ) ) {
+		if ( empty( $settings->get_custom_messages() ) || $this->has_custom_share_variations( $post_id ) === false ) {
 			$hashtags = $post_details['hashtags'];
 		} else {
 			$hashtags = $this->get_custom_share_variation_hashtags( $post_details );
