@@ -411,13 +411,13 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * 
+	 *
 	 * Check if a post has custom variations saved for it.
-	 * 
-	 * @param mixed $post_id 
-	 * @return bool 
+	 *
+	 * @param mixed $post_id The Post ID.
+	 * @return bool
 	 */
-	private function has_custom_share_variations( $post_id ){
+	private function has_custom_share_variations( $post_id ) {
 
 		$custom_content = get_post_meta( $post_id, 'rop_custom_messages_group' );
 
