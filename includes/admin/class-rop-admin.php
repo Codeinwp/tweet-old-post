@@ -1134,13 +1134,25 @@ class Rop_Admin {
 										$revive_network_settings = Revive_Network_Rop_Post_Helper::revive_network_get_plugin_settings();
 										$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
 
-										// adjust post data to suit Revive Network
+										// Adjust post data to suit Revive Network
 										$post_data = Revive_Network_Rop_Post_Helper::revive_network_prepare_revive_network_share( $post_data );
 									}
 								}
 
+								$response = false;
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
-								$response = $service->share( $post_data, $account_data );
+
+								/*
+								 * On rare instances some sites try to share posts that have already been shared.
+								 * Here we're making sure the post isn't already in the buffer for the given account.
+								 */
+								$duplicate = $posts_selector_model->buffer_has_post_id( $account, $post );
+
+								if ( $duplicate === false ) {
+									$response = $service->share( $post_data, $account_data );
+								} else {
+									$logger->info( Rop_I18n::get_labels( 'sharing.post_already_shared' ), array( 'extra' => $post_data ) );
+								}
 
 								if ( $revive_network_active ) {
 
@@ -1709,4 +1721,6 @@ HTML;
 		}
 
 	}
+
+
 }
