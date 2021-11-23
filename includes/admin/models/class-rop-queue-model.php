@@ -250,18 +250,27 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 						break;
 					}
 					$rand_key      = rand( 0, count( $post_pool ) - 1 );
-					// Below is a second layer of randomness to choosing posts to add to queue
+					// Grab a random post id from the pool to add to the queue.
 					$post_id       = $post_pool[ $rand_key ];
 
 					$event_queue[] = $post_id;
-					$i++;
 					unset( $post_pool[ $rand_key ] );
 
 					$post_pool = array_values( $post_pool );
+					$i++;
 
 				}
 
-				$normalized_queue[ $account_id ][ $index ] = $event_queue;
+				$current_normalized_queue = $normalized_queue[ $account_id ];
+				// Get the last 2 items in the queue.
+				$last_two = array_slice( $current_normalized_queue, apply_filters( 'rop_allowed_consecutive_posts', -2 ) );
+
+				$is_consecutive = array_search( $event_queue, $last_two );
+
+				// If the new entry is is not the same as any of the last two items, then add it to the queue.
+				if ( $is_consecutive === false ) {
+					$normalized_queue[ $account_id ][ $index ] = $event_queue;
+				}
 
 				// Below causes more issues with post stacking. Solution
 				// Is to regen account queue keys

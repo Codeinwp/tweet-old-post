@@ -446,7 +446,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @param array  $tax_queries The taxonomies query array.
 	 * @param array  $excluded_by_user Excluded post ID's by the user.
 	 *
-	 * @return mixed
+	 * @return array
 	 * @since   8.0.0
 	 * @access  private
 	 */
@@ -472,11 +472,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 * Reset indexes to avoid missing ones.
 		 */
 		$posts = array_values( $posts );
-
-		/**
-		 * Shuffle retrieved posts
-		 */
-		shuffle( $posts );
 
 		if ( function_exists( 'icl_object_id' ) ) {
 			$posts = $this->rop_wpml_id( $posts, $account_id );
@@ -619,7 +614,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	public function buffer_has_post_id( $account_id, $post_id ) {
 
 		$buffer = $this->get_buffer();
-		$account_posts = $buffer[ $account_id ] ?? '';
+		$account_posts = $buffer[ $account_id ] ?? array();
 
 		$post_ids = array_values( $account_posts );
 

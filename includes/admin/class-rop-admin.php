@@ -1139,6 +1139,7 @@ class Rop_Admin {
 									}
 								}
 
+								$response = false;
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
 								/*
 								 * On rare instances some sites try to share posts that have already been shared.
@@ -1148,7 +1149,7 @@ class Rop_Admin {
 
 								if ( $duplicate === false ) {
 									$response = $service->share( $post_data, $account_data );
-								}else{
+								} else {
 									$logger->info( Rop_I18n::get_labels( 'sharing.post_already_shared' ), array( 'extra' => $post_data ) );
 								}
 
