@@ -1141,6 +1141,7 @@ class Rop_Admin {
 
 								$response = false;
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
+
 								/*
 								 * On rare instances some sites try to share posts that have already been shared.
 								 * Here we're making sure the post isn't already in the buffer for the given account.
