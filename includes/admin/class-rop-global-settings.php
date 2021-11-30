@@ -386,7 +386,7 @@ class Rop_Global_Settings {
 				self::$instance->services_defaults
 			);
 
-			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 0.5 );
+			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.05 : 0.5 );
 			self::$instance->settings_defaults['step_interval'] = apply_filters( 'rop_min_interval_bw_shares_step', 0.1 );
 
 			self::$instance->settings = apply_filters(

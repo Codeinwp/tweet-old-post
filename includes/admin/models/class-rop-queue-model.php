@@ -238,10 +238,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					continue;
 				}
 
-				if ( empty( $post_pool ) ) {
-					continue;
-				}
-
 				$items_needed = $no_of_posts - count( $event_queue );
 				$i            = 0;
 
@@ -262,22 +258,18 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				}
 
 				$current_normalized_queue = $normalized_queue[ $account_id ];
-				// Get the last 2 items in the queue.
-				$last_two = array_slice( $current_normalized_queue, apply_filters( 'rop_allowed_consecutive_posts', -2 ) );
+				// Get the last 4 items in the queue.
+				$last_four = array_slice( $current_normalized_queue, apply_filters( 'rop_allowed_consecutive_posts', -4 ) );
 
-				$is_consecutive = array_search( $event_queue, $last_two );
+				$is_consecutive = array_search( $event_queue, $last_four );
 
-				// If the new entry is is not the same as any of the last two items, then add it to the queue.
-				if ( $is_consecutive === false ) {
+				/**
+				* If the new entry is not the same as any of the last 4 items, then add it to the queue.
+				* Here we're preventing posts from being scheduled too close to each other for any specific account.
+				*/
+				if ( $is_consecutive === false && ! empty( $event_queue ) ) {
 					$normalized_queue[ $account_id ][ $index ] = $event_queue;
 				}
-
-				// Below causes more issues with post stacking. Solution
-				// Is to regen account queue keys
-				// $new_queue = array_merge( $account_queue, array($event_queue) );
-				// $normalized_queue[ $account_id ] = $new_queue;
-				// $account_queue  = $new_queue;
-
 			}
 		}
 
