@@ -1143,8 +1143,8 @@ class Rop_Admin {
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
 
 								/*
-								 * On rare instances some sites try to share posts that have already been shared.
-								 * Here we're making sure the post isn't already in the buffer for the given account.
+								 * Extra check to make sure the post isn't already in the buffer for the given account.
+								 * If it is then don't share it again until the buffer is cleared.
 								 */
 								$duplicate = $posts_selector_model->buffer_has_post_id( $account, $post );
 
