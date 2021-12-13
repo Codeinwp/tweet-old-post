@@ -1,7 +1,14 @@
 name: Test PHP
 
-on: [pull_request]
+concurrency: 
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
 
+on:
+  pull_request:
+    branches: 
+      - master 
+      - development
 jobs:
   code-sniff:
     runs-on: ubuntu-latest
@@ -42,6 +49,7 @@ jobs:
        uses: shivammathur/setup-php@v2
        with:
           php-version: '7.2'
+          tools: phpunit-polyfills
      - name: Install WordPress Test Suite
        run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1:${{ job.services.mysql.ports['3306'] }}
      - name: Install composer

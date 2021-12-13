@@ -446,8 +446,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @param array  $tax_queries The taxonomies query array.
 	 * @param array  $excluded_by_user Excluded post ID's by the user.
 	 *
-	 * @return mixed
+	 * @return array
 	 * @since   8.0.0
+	 * @since   9.0.6 Added code to prevent posts from being scheduled if they are already in the queue when there's more than enough unique posts available to schedule.
 	 * @access  private
 	 */
 	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
@@ -468,15 +469,26 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 */
 		$posts = array_diff( $posts, $exclude );
 
+		$number_of_posts_to_share = ( new Rop_Settings_Model )->get_number_of_posts();
+		$events_per_account = Rop_Scheduler_Model::EVENTS_PER_ACCOUNT;
+
+		/**
+		 * If the number of available posts(post pool) is greater than whats allowed per account(10),
+		 * Then drop posts that are already scheduled in favor of having a posts pool comprising of posts that are not scheduled yet.
+		 */
+		if ( count( $posts ) > ( $number_of_posts_to_share * $events_per_account ) ) {
+			$queue = get_option( 'rop_queue', array() );
+			$account_queue = $queue['queue'][ $account_id ] ?? '';
+			if ( ! empty( $account_queue ) ) {
+				$current_account_queue = array_unique( array_merge( ...$account_queue ) );
+				$posts = array_diff( $posts, $current_account_queue );
+			}
+		}
+
 		/**
 		 * Reset indexes to avoid missing ones.
 		 */
 		$posts = array_values( $posts );
-
-		/**
-		 * Shuffle retrieved posts
-		 */
-		shuffle( $posts );
 
 		if ( function_exists( 'icl_object_id' ) ) {
 			$posts = $this->rop_wpml_id( $posts, $account_id );
@@ -594,6 +606,41 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	public function has_buffer_items( $account_id ) {
 		$this->buffer = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
 		return ( isset( $this->buffer[ $account_id ] ) ) ? true : false;
+	}
+
+	/**
+	 * Get the current buffer in the Database.
+	 *
+	 * @since 9.0.6
+	 * @return array An array of Accounts and the post IDs that have been shared.
+	 */
+	public function get_buffer() {
+		return $this->get( 'posts_buffer' );
+	}
+
+	/**
+	 * Check if a post has already been shared to an account.
+	 *
+	 * Checks the account buffer for a given Post ID.
+	 *
+	 * @since 9.0.6
+	 * @param mixed $account_id The account ID to check.
+	 * @param mixed $post_id The Post ID to look for.
+	 * @return bool Wher or not the post ID exists in the buffer(meaning if it has already been shared).
+	 */
+	public function buffer_has_post_id( $account_id, $post_id ) {
+
+		$buffer = $this->get_buffer();
+		$account_posts = $buffer[ $account_id ] ?? array();
+
+		$post_ids = array_values( $account_posts );
+
+		if ( in_array( $post_id, $post_ids ) ) {
+			return true;
+		}
+
+		return false;
+
 	}
 
 	/**

@@ -127,7 +127,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 
 		if ( isset( $schedule_data['interval_r'] ) ) {
 
-			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 0.5 );
+			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.05 : 0.5 );
 
 			if ( $schedule_data['interval_r'] < $min_allowed ) {
 				$this->logger->alert_error( sprintf( Rop_I18n::get_labels( 'misc.min_recurring_schedule_interval' ), $min_allowed * 60 ) );

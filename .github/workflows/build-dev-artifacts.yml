@@ -2,6 +2,8 @@ name: Build Artifact
 
 on:
   pull_request:
+    branches: 
+      - master 
     types: [opened, synchronize, ready_for_review]
 
 

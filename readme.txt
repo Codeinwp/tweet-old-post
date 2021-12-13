@@ -73,6 +73,10 @@ Once set, the plugin will then be able to determine which content to auto share 
 
 With our Revive Network addon, you can share posts from any RSS feed to Facebook, Twitter, Linkedin, Tumblr, Google My Business, Vkontakte(VK) or Instagram (imported post needs to have an image).
 
+### A WP Auto Republish Plugin
+
+Revive Old Posts can work as a WP Auto Republish plugin that updates your post's publish date after it has been shared to your connected social media accounts.
+
 ---
 
 Revive Old Posts isn't like every other social media marketing tool. We've tailored its features while keeping the following in mind:
@@ -142,6 +146,8 @@ Some of the available networks and features require the Pro version of the plugi
 - Post to Vk Profiles [Pro]
 
 - Post to Vk Communities [Pro]
+
+- WordPress Auto Republish post after sharing [Pro]
 
 - Share multilingual posts to respective pages with WPML example, share English Posts to your English social media accounts and Spanish posts to your Spanish social media accounts. [Pro]
 

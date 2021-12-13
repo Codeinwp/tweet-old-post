@@ -158,8 +158,8 @@ class Rop_Logger {
 	 * @return mixed
 	 */
 	public function translate_messages( $direct_message ) {
-	
-		if( ! is_string( $direct_message ) ){
+
+		if ( ! is_string( $direct_message ) ) {
 			return;
 		}
 

@@ -238,10 +238,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					continue;
 				}
 
-				if ( empty( $post_pool ) ) {
-					continue;
-				}
-
 				$items_needed = $no_of_posts - count( $event_queue );
 				$i            = 0;
 
@@ -250,25 +246,30 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 						break;
 					}
 					$rand_key      = rand( 0, count( $post_pool ) - 1 );
-					// Below is a second layer of randomness to choosing posts to add to queue
+					// Grab a random post id from the pool to add to the queue.
 					$post_id       = $post_pool[ $rand_key ];
 
 					$event_queue[] = $post_id;
-					$i++;
 					unset( $post_pool[ $rand_key ] );
 
 					$post_pool = array_values( $post_pool );
+					$i++;
 
 				}
 
-				$normalized_queue[ $account_id ][ $index ] = $event_queue;
+				$current_normalized_queue = $normalized_queue[ $account_id ];
+				// Get the last 4 items in the queue.
+				$last_four = array_slice( $current_normalized_queue, apply_filters( 'rop_allowed_consecutive_posts', -4 ) );
 
-				// Below causes more issues with post stacking. Solution
-				// Is to regen account queue keys
-				// $new_queue = array_merge( $account_queue, array($event_queue) );
-				// $normalized_queue[ $account_id ] = $new_queue;
-				// $account_queue  = $new_queue;
+				$is_consecutive = array_search( $event_queue, $last_four );
 
+				/**
+				* If the new entry is not the same as any of the last 4 items, then add it to the queue.
+				* Here we're preventing posts from being scheduled too close to each other for any specific account.
+				*/
+				if ( $is_consecutive === false && ! empty( $event_queue ) ) {
+					$normalized_queue[ $account_id ][ $index ] = $event_queue;
+				}
 			}
 		}
 
@@ -311,7 +312,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					}
 
 					/*
-					 Prevents queue from showing posts that do not exist
+					* Prevents queue from showing posts that do not exist
 					* on the website. This can occur when a post is deleted
 					* and queue hasn't yet refreshed.
 					*/

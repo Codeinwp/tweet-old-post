@@ -1134,13 +1134,25 @@ class Rop_Admin {
 										$revive_network_settings = Revive_Network_Rop_Post_Helper::revive_network_get_plugin_settings();
 										$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
 
-										// adjust post data to suit Revive Network
+										// Adjust post data to suit Revive Network
 										$post_data = Revive_Network_Rop_Post_Helper::revive_network_prepare_revive_network_share( $post_data );
 									}
 								}
 
+								$response = false;
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
-								$response = $service->share( $post_data, $account_data );
+
+								/*
+								 * Extra check to make sure the post isn't already in the buffer for the given account.
+								 * If it is then don't share it again until the buffer is cleared.
+								 */
+								$duplicate = $posts_selector_model->buffer_has_post_id( $account, $post );
+
+								if ( $duplicate === false ) {
+									$response = $service->share( $post_data, $account_data );
+								} else {
+									$logger->info( Rop_I18n::get_labels( 'sharing.post_already_shared' ), array( 'extra' => $post_data ) );
+								}
 
 								if ( $revive_network_active ) {
 
@@ -1154,12 +1166,12 @@ class Rop_Admin {
 									}
 								}
 
-								if ( $response === true ) {
-									update_option( 'rop_last_post_shared', $post_shared );
-								}
-
 								$posts_selector_model->update_buffer( $account, $post_data['post_id'] );
 
+								if ( $response === true ) {
+									update_option( 'rop_last_post_shared', $post_shared );
+									do_action( 'rop_after_share', $post_data );
+								}
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
@@ -1657,38 +1669,40 @@ class Rop_Admin {
 		if ( version_compare( $installed_at_version, '9.0.3', '>' ) ) {
 			return;
 		}
-		
+
 		$user_id = get_current_user_id();
 
 		if ( get_user_meta( $user_id, 'rop-remove-remote-cron-notice-dismissed' ) ) {
 			return;
 		}
 
-		$using_remote_cron = (bool) get_option('rop_use_remote_cron');
+		$using_remote_cron = (bool) get_option( 'rop_use_remote_cron' );
 
-		if( $using_remote_cron ){
+		if ( $using_remote_cron ) {
 			delete_option( 'rop_use_remote_cron' );
 		}
 
-		$dismiss_link = add_query_arg( array(
-			'rop-remove-remote-cron-notice-dismissed' => '1',
-		));
+		$dismiss_link = add_query_arg(
+			array(
+				'rop-remove-remote-cron-notice-dismissed' => '1',
+			)
+		);
 
-		$rop = __('Revive Old Posts: ', 'tweet-old-post');
-		$admin_url = admin_url('admin.php?page=TweetOldPost');
-		$notice_text = sprintf( __('We\'ve removed the Remote Cron service feature of Revive Old Posts. If you used this option in the past, then please %1$shead to the Revive Old Posts dashboard%2$s to start sharing using the default WordPress cron. If post sharing is not working for you, then please see %3$shere for solutions.%2$s', 'tweet-old-post'), "<a href='$admin_url'>", "</a>", "<a href='https://docs.revive.social/article/686-fix-revive-old-post-not-posting' target='blank'>" );
+		$rop = __( 'Revive Old Posts: ', 'tweet-old-post' );
+		$admin_url = admin_url( 'admin.php?page=TweetOldPost' );
+		$notice_text = sprintf( __( 'We\'ve removed the Remote Cron service feature of Revive Old Posts. If you used this option in the past, then please %1$shead to the Revive Old Posts dashboard%2$s to start sharing using the default WordPress cron. If post sharing is not working for you, then please see %3$shere for solutions.%2$s', 'tweet-old-post' ), "<a href='$admin_url'>", '</a>', "<a href='https://docs.revive.social/article/686-fix-revive-old-post-not-posting' target='blank'>" );
 
-		$message = <<<MSG
+		$message = <<<HTML
 		<p style="font-size: 14px">
 		<b>$rop</b> $notice_text 
 		<a style='float: right;' href='$dismiss_link'>Dismiss</a>
 		</p>
-MSG;
+HTML;
 
 		?>
 
 		<div class="notice notice-error">
-			<?php echo $message ?>
+			<?php echo $message; ?>
 		</div>
 		<?php
 
@@ -1707,4 +1721,6 @@ MSG;
 		}
 
 	}
+
+
 }

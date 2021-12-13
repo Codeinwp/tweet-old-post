@@ -23,5 +23,9 @@ key.enc
 package-lock.json
 vue
 .github
+.vscode
+.wordpress-org
+.releaserc.yml
+.stylelintrc
 webpack.config.js
 docker-compose.yml
