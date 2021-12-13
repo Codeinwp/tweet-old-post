@@ -1,3 +1,8 @@
+##### [Version 9.0.6](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.5...v9.0.6) (2021-12-13)
+
+### Fixes
+- The same post would some times get shared too soon after it had previously been shared.
+
 ##### [Version 9.0.5](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.4...v9.0.5) (2021-08-17)
 
 ### Changes
