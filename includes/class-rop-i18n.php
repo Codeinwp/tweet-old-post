@@ -297,7 +297,7 @@ class Rop_I18n {
 				'sharing_not_started'      => __( 'Sharing is not started!', 'tweet-old-post' ),
 				'sharing_not_started_desc' => __( 'You need to start sharing in order to see any posts in the queue.', 'tweet-old-post' ),
 				'queue_desc'               => __( 'You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.', 'tweet-old-post' ),
-				'business_or_higher_only'  => sprintf( __( 'You can edit the posts from the queue only the Business and Marketer versions of the plugin. View more details %1$shere%2$s.', 'tweet-old-post' ), '<a href="' . self::UPSELL_LINK . '" target="_blank">', '</a>' ),
+				'business_or_higher_only'  => sprintf( __( 'You can edit the posts from the queue with the Business or Marketer versions of the plugin. View more details %1$shere%2$s.', 'tweet-old-post' ), '<a href="' . self::UPSELL_LINK . '" target="_blank">', '</a>' ),
 				'no_posts'                 => __( 'No queued posts!', 'tweet-old-post' ),
 				'no_posts_desc'            => __( 'Check if you have at least an <b>"Active account"</b>, what posts and pages are selected in <b>"General Settings"</b> and if a <b>"Schedule"</b> is defined.', 'tweet-old-post' ),
 				'refresh_btn'              => __( 'Refresh Queue', 'tweet-old-post' ),
