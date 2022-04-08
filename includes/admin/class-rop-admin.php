@@ -1125,6 +1125,7 @@ class Rop_Admin {
 									continue;
 								}
 
+								do_action( 'rop_before_prepare_post', $post );
 								$post_data = $queue->prepare_post_object( $post, $account );
 
 								if ( $revive_network_active ) {
@@ -1149,6 +1150,7 @@ class Rop_Admin {
 								$duplicate = $posts_selector_model->buffer_has_post_id( $account, $post );
 
 								if ( $duplicate === false ) {
+									do_action( 'rop_before_share', $post_data );
 									$response = $service->share( $post_data, $account_data );
 								} else {
 									$logger->info( Rop_I18n::get_labels( 'sharing.post_already_shared' ), array( 'extra' => $post_data ) );
