@@ -89,12 +89,35 @@ if ( ! empty( $housekeeping ) ) {
 		'rop_facebook_via_rs_app',
 		'rop_twitter_via_rs_app',
 		'rop_linkedin_via_rs_app',
+		'rop_db_version',
+		'rop_pro_db_version',
+		'rop_first_install_date',
 		'rop_first_install_version',
 		'rop_linkedin_refresh_token_notice',
 		'rop_buffer_via_rs_app',
 		'rop_tumblr_via_rs_app',
 		'rop_data_migrated_tax',
 		'rop_changed_shortener',
+		/**
+		 * Old ROP options
+		 */
+		'cwp_topnew_active_status',
+		'cwp_topnew_notice',
+		'cwp_top_app_id',
+		'cwp_top_app_secret',
+		'cwp_top_consumer_key_tumblr',
+		'cwp_top_consumer_secret_tumblr',
+		'cwp_top_consumer_url_tumblr',
+		'cwp_top_global_schedule',
+		'cwp_top_lk_app_id',
+		'cwp_top_lk_app_secret',
+		'cwp_top_logged_in_users',
+		'cwp_top_oauth_token',
+		'cwp_top_oauth_token_secret',
+		'cwp_top_oauth_token_secret_tumblr',
+		'cwp_top_oauth_token_tumblr',
+		'top_settings',
+
 		/**
 		 * Related functions
 		 *
