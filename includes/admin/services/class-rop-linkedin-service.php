@@ -250,6 +250,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$api = $this->get_api( $args['client_id'], $args['secret'] );
 
+		if( ! is_object( $api ) ){
+			return false;
+		}
+
 		$this->credentials['token']     = $token;
 		$this->credentials['client_id'] = $args['client_id'];
 		$this->credentials['secret']    = $args['secret'];
