@@ -305,6 +305,16 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.0.7](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.6...v9.0.7) (2022-04-21)
+
+### Info
+- Update WP tested up to version
+- Added two new hooks  and  that fire before post is shared
+- Clean up some old options from version < 8.0 when housekeeping option is turned on
+
+
+
+
 ##### [Version 9.0.6](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.5...v9.0.6) (2021-12-13)
 
 ### Fixes
