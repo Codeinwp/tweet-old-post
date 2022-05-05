@@ -218,15 +218,22 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$rop_data = get_option( 'rop_data' );
 		$rop_services_data  = $rop_data['services'];
 
-		foreach ( $rop_services_data as $service => $service_data ) {
 
+		$id = '';
+		$access_token = '';
+		$created = '';
+		$expires_in = '';
+		$gmb_service_id = '';
+		$refresh_token = '';
+
+		foreach ( $rop_services_data as $service => $service_data ) {
 			if ( $service_data['service'] === 'gmb' ) {
+				$id = $service_data['id'];
+				$access_token = $service_data['credentials']['access_token'];
 				$created = $service_data['credentials']['created'];
 				$expires_in = $service_data['credentials']['expires_in'];
-				$access_token = $service_data['credentials']['access_token'];
-				$refresh_token = $service_data['credentials']['refresh_token'];
-				$id = $service_data['id'];
 				$gmb_service_id = $service;
+				$refresh_token = $service_data['credentials']['refresh_token'];
 				break;
 			}
 		}
