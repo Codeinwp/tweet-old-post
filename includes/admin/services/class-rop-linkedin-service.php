@@ -308,7 +308,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 */
-	private function get_users( $data = null, $api ) {
+	private function get_users( $data, $api ) {
 		if ( empty( $data ) ) {
 			return array();
 		}
