@@ -661,6 +661,210 @@ a.active {
     color: #031728;
 }
 
+
+#rop_core .btn.btn-facebook {
+    border-color: #37538d;
+    color: #fff;
+    background: #3b5998;
+}
+
+#rop_core .btn.btn-facebook:focus {
+    box-shadow: 0 0 0 0.1rem rgba(59, 89, 152, 0.2);
+}
+
+#rop_core .btn.btn-facebook:focus,
+#rop_core .btn.btn-facebook:hover {
+    border-color: #344e86;
+    color: #fff;
+    background: #0074ab;
+}
+
+#rop_core .btn.btn-facebook:active,
+#rop_core .btn.btn-facebook.active {
+    border-color: #2d4373;
+    color: #fff;
+    background: #314a7e;
+}
+
+#rop_core .btn.btn-facebook.loading::after {
+    border-bottom-color: #fff;
+    border-left-color: #fff;
+}
+
+#rop_core .btn.btn-twitter {
+    border-color: #47a5ed;
+    color: #fff;
+    background: #55acee;
+}
+
+#rop_core .btn.btn-twitter:focus {
+    box-shadow: 0 0 0 0.1rem rgba(85, 172, 238, 0.2);
+}
+
+#rop_core .btn.btn-twitter:focus,
+#rop_core .btn.btn-twitter:hover {
+    border-color: #3ea1ec;
+    color: #fff;
+    background: #0074ab;
+}
+
+#rop_core .btn.btn-twitter:active,
+#rop_core .btn.btn-twitter.active {
+    border-color: #2795e9;
+    color: #fff;
+    background: #359ceb;
+}
+
+#rop_core .btn.btn-twitter.loading::after {
+    border-bottom-color: #fff;
+    border-left-color: #fff;
+}
+
+#rop_core .btn.btn-tumblr {
+    border-color: #304d69;
+    color: #fff;
+    background: #32506d;
+}
+
+#rop_core .btn.btn-tumblr:focus {
+    box-shadow: 0 0 0 0.1rem rgba(221, 75, 57, 0.2);
+}
+
+#rop_core .btn.btn-tumblr:focus,
+#rop_core .btn.btn-tumblr:hover {
+    border-color: #355473;
+    color: #fff;
+    background: #0074ab;
+}
+
+#rop_core .btn.btn-tumblr:active,
+#rop_core .btn.btn-tumblr.active {
+    border-color: #395c7d;
+    color: #fff;
+    background: #3a5e7f;
+}
+
+#rop_core .btn.btn-tumblr.loading::after {
+    border-bottom-color: #fff;
+    border-left-color: #fff;
+}
+
+#rop_core .btn.btn-linkedin {
+    border-color: #0071a6;
+    color: #fff;
+    background: #007bb5;
+}
+
+#rop_core .btn.btn-linkedin:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-linkedin:focus,
+#rop_core .btn.btn-linkedin:hover {
+    border-color: #006a9c;
+    color: #fff;
+    background: #0074ab;
+}
+
+#rop_core .btn.btn-linkedin:active,
+#rop_core .btn.btn-linkedin.active {
+    border-color: #005882;
+    color: #fff;
+    background: #006391;
+}
+
+#rop_core .btn.btn-linkedin.loading::after {
+    border-bottom-color: #fff;
+    border-left-color: #fff;
+}
+
+#rop_core .btn.btn-pinterest {
+    border-color: #0071a6;
+    color: #fff;
+    background: #bd081c;
+}
+
+#rop_core .btn.btn-pinterest:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-pinterest:focus,
+#rop_core .btn.btn-pinterest:hover {
+    border-color: #006a9c;
+    color: #fff;
+    background: #0074ab;
+}
+
+#rop_core .btn.btn-pinterest:active,
+#rop_core .btn.btn-pinterest.active {
+    border-color: #005882;
+    color: #fff;
+    background: #006391;
+}
+
+#rop_core .btn.btn-pinterest.loading::after {
+    border-bottom-color: #fff;
+    border-left-color: #fff;
+}
+
+#rop_core .btn.btn-gmb {
+    border-color: #0071a6;
+    color: #fff;
+    background: #323b43;
+}
+
+#rop_core .btn.btn-gmb:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-gmb:focus,
+#rop_core .btn.btn-gmb:hover {
+    border-color: #006a9c;
+    color: #fff;
+    background: #0074ab;
+}
+
+#rop_core .btn.btn-gmb:active,
+#rop_core .btn.btn-gmb.active {
+    border-color: #005882;
+    color: #fff;
+    background: #006391;
+}
+
+#rop_core .btn.btn-gmb.loading::after {
+    border-bottom-color: #fff;
+    border-left-color: #fff;
+}
+
+#rop_core .btn.btn-vk {
+    border-color: #0071a6;
+    color: #fff;
+    background: #45668e;
+}
+
+#rop_core .btn.btn-vk:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-vk:focus,
+#rop_core .btn.btn-vk:hover {
+    border-color: #006a9c;
+    color: #fff;
+    background: #0074ab;
+}
+
+#rop_core .btn.btn-vk:active,
+#rop_core .btn.btn-vk.active {
+    border-color: #005882;
+    color: #fff;
+    background: #006391;
+}
+
+#rop_core .btn.btn-vk.loading::after {
+    border-bottom-color: #fff;
+    border-left-color: #fff;
+}
+
 #rop_core .btn.btn-sm {
     height: 1.2rem;
     padding: 0.05rem 0.3rem;
@@ -3945,6 +4149,16 @@ a.active {
     background-color: #32506d;
 }
 
+.vk,
+.icon_box .fa-vk {
+    background-color: #45668e;
+}
+
+.google,
+.icon_box .fa-google {
+    background-color: #4285f4;
+}
+
 .pinterest,
 .icon_box .fa-pinterest {
     background-color: #bd081c;
@@ -3978,6 +4192,10 @@ a.active {
     color: #3b5998;
 }
 
+#rop_core .service.instagram {
+    color: #c13584;
+}
+
 #rop_core .service.twitter {
     color: #55acee;
 }
@@ -3988,6 +4206,14 @@ a.active {
 
 #rop_core .service.tumblr {
     color: #32506d;
+}
+
+#rop_core .service.vk {
+    color: #45668e;
+}
+
+#rop_core .service.google {
+    color: #4285f4;
 }
 
 #rop_core .rop-selector-account-container.active {
@@ -4225,6 +4451,10 @@ a.active {
     margin-bottom: 30px;
 }
 
+#rop_core .sidebar .rop-sidebar-action-btns{
+    margin-bottom: 10px;
+}
+
 #rop_core .rop-container-start .tooltip::after {
     white-space: initial;
     text-overflow: initial;
@@ -4366,4 +4596,207 @@ a.active {
 
 #rop_vid_tuts:hover{
     text-decoration: none;
+}
+
+
+#rop_core .powered {
+    color: #50596c;
+}
+
+#rop_core .powered a {
+    color: #50596c;
+}
+
+#rop_core .powered a:hover {
+    cursor: pointer;
+}
+
+#rop_core .title-panel {
+    border-top: 4px solid #e85407;
+}
+
+#rop_core .card {
+    max-width: 100%;
+    margin: 10px 0;
+}
+
+#rop_core #staging-status {
+    display: block;
+    width: 100%;
+    margin-top: 3px;
+    padding: 0.4rem;
+    border-radius: 0.1rem;
+    color: #fff;
+    background: #e85600;
+}
+
+#rop_core .vertical-align {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: column;
+
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+#rop_core .rop-image-placeholder .figure {
+    max-height: 250px;
+    margin: 0;
+}
+
+#rop_core .rop-image-placeholder {
+    margin: 0 auto;
+}
+
+#rop_core .rop-queue-tab-container .upsell,
+#rop_core .rop-schedule-tab-container .upsell {
+    padding: 5px 10px;
+    color: #fff;
+    background: #8492a0;
+    text-align: center;
+}
+
+#rop_core .upsell {
+    margin-bottom: 0;
+    border-radius: 0.1rem;
+}
+
+#rop_core .panel-body h3 {
+    padding: 10px 0;
+}
+
+#rop_core .plugin-title {
+    margin: 0;
+    margin-right: 5px;
+    font-size: 30px;
+}
+
+#rop_core .plugin-logo {
+    margin-right: 10px;
+    margin-bottom: 15px;
+}
+
+.rop-tab-state-true {
+    opacity: 0.2;
+}
+
+.rop-tab-state-false {
+    opacity: 1;
+}
+
+#rop_core .sidebar-top {
+    display: none;
+}
+
+#rop_core .fade-enter-active,
+#rop_core .fade-leave-active {
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+}
+
+#rop_core .fade-enter,
+#rop_core .fade-leave-to {
+    opacity: 0;
+}
+
+@media (max-width: 960px) {
+    #rop_core .panel .panel-header h1 {
+        font-size: 21px;
+    }
+
+    #rop_core .sidebar.column {
+        margin-top: 20px;
+        padding: 0;
+    }
+}
+
+@media (max-width: 1000px) {
+    #rop_core .sidebar.column {
+        width: 100%;
+        margin-top: 20px;
+        padding: 0;
+    }
+
+    #rop_core .panel {
+        width: 100%;
+    }
+
+    #rop_core .rop-upsell-business-card img.img-responsive,
+    #rop_core .rop-upsell-pro-card img.img-responsive {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1280px) {
+    #rop_core .sidebar {
+        display: none;
+    }
+
+    #rop_core .sidebar-top {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+    }
+}
+
+@media (max-width: 840px) {
+
+    #rop_core .sidebar {
+        display: block;
+    }
+
+    #rop_core .sidebar-top {
+        display: none;
+    }
+}
+
+.modal-footer a,
+.rop-post-type-badge a {
+    text-decoration: underline;
+}
+
+.auth-app {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 15px;
+    text-align: center;
+}
+
+#rop_core .btn.btn-primary.big-btn {
+    width: 92%;
+    height: 45px;
+    margin: 0 4% 20px;
+    font-size: 15px;
+}
+
+.auth-app .text-center {
+    font-weight: 600;
+}
+
+#rop-advanced-config{
+    text-align: center;
+}
+
+#rop-sign-in-area button.btn{
+margin: 2px;
+padding: 0 20px;
+}
+
+.rop-spacer{
+    margin: 5px;
+}
+
+
+.tile-action div {
+    display: inline-block;
+    vertical-align: middle;
 }
