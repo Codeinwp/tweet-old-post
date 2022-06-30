@@ -476,53 +476,6 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Legacy auth callback.
-	 */
-	public function legacy_auth() {
-		// TODO Remove this method if we're only going to allow simple
-		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
-		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
-		$network = sanitize_text_field( isset( $_GET['network'] ) ? $_GET['network'] : '' );
-		/**
-		 * For twitter we don't have code/state params.
-		 */
-		if ( ( empty( $code ) && empty( $state ) ) && $network !== 'twitter' ) {
-			return;
-		}
-
-		$oauth_token    = sanitize_text_field( isset( $_GET['oauth_token'] ) ? $_GET['oauth_token'] : '' );
-		$oauth_verifier = sanitize_text_field( isset( $_GET['oauth_verifier'] ) ? $_GET['oauth_verifier'] : '' );
-		/**
-		 * For twitter we don't have code/state params.
-		 */
-		if ( ( empty( $oauth_token ) || empty( $oauth_verifier ) ) && $network === 'twitter' ) {
-			return;
-		}
-
-		switch ( $network ) {
-			case 'linkedin':
-				$lk_service = new Rop_Linkedin_Service();
-				$lk_service->authorize();
-				break;
-			case 'twitter':
-				$twitter_service = new Rop_Twitter_Service();
-				$twitter_service->authorize();
-				break;
-			case 'pinterest':
-				$pinterest_service = new Rop_Pinterest_Service();
-				$pinterest_service->authorize();
-				break;
-			case 'buffer':
-				$buffer_service = new Rop_Buffer_Service();
-				$buffer_service->authorize();
-				break;
-			default:
-				$fb_service = new Rop_Facebook_Service();
-				$fb_service->authorize();
-		}
-	}
-
-	/**
 	 * The display method for the main dashboard of ROP.
 	 *
 	 * @since   8.0.0
@@ -1036,7 +989,9 @@ class Rop_Admin {
 				$account_data = $services_model->find_account( $account );
 				try {
 					$service = $service_factory->build( $account_data['service'] );
-					$service->set_credentials( $account_data['credentials'] );
+					if( method_exists($service, 'set_credentials') ){
+						$service->set_credentials( $account_data['credentials'] );
+					}
 					foreach ( $post as $post_id ) {
 						$post_data = $queue->prepare_post_object( $post_id, $account );
 						$custom_instant_share_message = $message;
@@ -1115,7 +1070,9 @@ class Rop_Admin {
 						$account_data = $services_model->find_account( $account );
 						try {
 							$service = $service_factory->build( $account_data['service'] );
-							$service->set_credentials( $account_data['credentials'] );
+							if( method_exists($service, 'set_credentials') ){
+								$service->set_credentials( $account_data['credentials'] );
+							}
 
 							foreach ( $posts as $post ) {
 								$post_shared = $account . '_post_id_' . $post;
