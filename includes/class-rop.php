@@ -279,7 +279,6 @@ class Rop {
 
 			try {
 				${$service . '_service'} = $factory->build( $service );
-				${$service . '_service'}->expose_endpoints();
 			} catch ( Exception $exception ) {
 				// Service can't be built. Not found or otherwise. Maybe log this.
 				$log = new Rop_Logger();
