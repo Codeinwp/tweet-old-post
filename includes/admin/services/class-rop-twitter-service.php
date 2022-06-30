@@ -30,31 +30,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	protected $service_name = 'twitter';
 
 	/**
-	 * Holds the Twitter APP Consumer Key.
-	 *
-	 * Deprecated value, will be used as legacy app as twitter now no longer supports this, due to the restrictions
-	 * of the callback URL.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     string $consumer_key The Twitter APP Consumer Key.
-	 */
-	private $consumer_key = 'ofaYongByVpa3NDEbXa2g';
-
-	/**
-	 * Holds the Twitter APP Consumer Secret.
-	 *
-	 * Deprecated value, will be used as legacy app as twitter now no longer supports this, due to the restrictions
-	 * of the callback URL.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     string $consumer_secret The Twitter APP Consumer Secret.
-	 */
-	private $consumer_secret = 'vTzszlMujMZCY3mVtTE6WovUKQxqv3LVgiVku276M';
-
-
-	/**
 	 * Method to inject functionality into constructor.
 	 * Defines the defaults and settings for this service.
 	 *
@@ -63,54 +38,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	public function init() {
 		$this->display_name = 'Twitter';
-	}
-
-	/**
-	 * Method to expose desired endpoints.
-	 * This should be invoked by the Factory class
-	 * to register all endpoints at once.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 */
-	public function expose_endpoints() {
-		$this->register_endpoint( 'authorize', 'authorize' );
-		$this->register_endpoint( 'authenticate', 'maybe_authenticate' );
-	}
-
-	/**
-	 * Method for authorizing the service.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 */
-	public function authorize() {
-		header( 'Content-Type: text/html' );
-		if ( ! session_id() ) {
-			session_start();
-		}
-
-		if ( ! $this->is_set_not_empty(
-			$_SESSION,
-			array(
-				'rop_twitter_request_token',
-			)
-		) ) {
-			return false;
-		}
-
-		$request_token = $_SESSION['rop_twitter_request_token'];
-
-		$api = $this->get_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
-
-		$access_token = $api->oauth( 'oauth/access_token', array( 'oauth_verifier' => $_GET['oauth_verifier'] ) );
-
-		$_SESSION['rop_twitter_oauth_token'] = $access_token;
-
-		parent::authorize();
-		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
 	/**
@@ -158,101 +85,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		$this->api = new \Abraham\TwitterOAuth\TwitterOAuth( $this->strip_whitespace( $consumer_key ), $this->strip_whitespace( $consumer_secret ), $this->strip_whitespace( $oauth_token ), $this->strip_whitespace( $oauth_token_secret ) );
-
-	}
-
-	/**
-	 * Check if we need to authenticate the user.
-	 *
-	 * @return bool
-	 */
-	public function maybe_authenticate() {
-		if ( ! session_id() ) {
-			session_start();
-		}
-		if ( ! $this->is_set_not_empty(
-			$_SESSION,
-			array(
-				'rop_twitter_oauth_token',
-				'rop_twitter_credentials',
-			)
-		) ) {
-			return false;
-		}
-		$token                    = $_SESSION['rop_twitter_oauth_token'];
-		$token['consumer_key']    = $_SESSION['rop_twitter_credentials']['consumer_key'];
-		$token['consumer_secret'] = $_SESSION['rop_twitter_credentials']['consumer_secret'];
-		unset( $_SESSION['rop_twitter_oauth_token'] );
-		unset( $_SESSION['rop_twitter_request_token'] );
-		unset( $_SESSION['rop_twitter_credentials'] );
-
-		return $this->authenticate( $token );
-	}
-
-	/**
-	 * Method for authenticate the service.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return bool
-	 */
-	public function authenticate( $args = array() ) {
-
-		if ( ! $this->is_set_not_empty(
-			$args,
-			array(
-				'oauth_token',
-				'oauth_token_secret',
-				'consumer_key',
-				'consumer_secret',
-			)
-		) ) {
-			return false;
-		}
-		$this->set_api( $args['oauth_token'], $args['oauth_token_secret'], $args['consumer_key'], $args['consumer_secret'] );
-		$api                   = $this->get_api();
-		$this->consumer_secret = $args['consumer_secret'];
-		$this->consumer_key    = $args['consumer_key'];
-
-		$this->set_credentials(
-			array_intersect_key(
-				$args,
-				array(
-					'oauth_token'        => '',
-					'oauth_token_secret' => '',
-					'consumer_key'       => '',
-					'consumer_secret'    => '',
-				)
-			)
-		);
-
-		$response = $api->get( 'account/verify_credentials' );
-
-		if ( ! isset( $response->id ) ) {
-			return false;
-		}
-		$this->service = array(
-			'id'                 => $response->id,
-			'service'            => $this->service_name,
-			'credentials'        => $this->credentials,
-			'public_credentials' => array(
-				'consumer_key'    => array(
-					'name'    => 'API Key',
-					'value'   => $this->consumer_key,
-					'private' => false,
-				),
-				'consumer_secret' => array(
-					'name'    => 'API secret key',
-					'value'   => $this->consumer_secret,
-					'private' => true,
-				),
-			),
-			'available_accounts' => $this->get_users( $response ),
-		);
-
-		return true;
 
 	}
 
@@ -322,83 +154,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	public function get_service() {
 		return $this->service;
-	}
-
-	/**
-	 * Generate the sign in URL.
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $data The data from the user.
-	 *
-	 * @return mixed
-	 */
-	public function sign_in_url( $data ) {
-		$credentials = $data['credentials'];
-		if ( ! session_id() ) {
-			session_start();
-		}
-		if ( empty( $credentials ) ) {
-			return $this->get_legacy_url();
-		}
-		if ( ! empty( $credentials['consumer_key'] ) ) {
-			$this->consumer_key = trim( $credentials['consumer_key'] );
-		}
-		if ( ! empty( $credentials['consumer_secret'] ) ) {
-			$this->consumer_secret = trim( $credentials['consumer_secret'] );
-		}
-		$_SESSION['rop_twitter_credentials'] = $credentials;
-
-		$request_token = $this->request_api_token();
-		if ( empty( $request_token ) ) {
-			return $this->get_legacy_url();
-		}
-		$this->set_api( $request_token['oauth_token'], $request_token['oauth_token_secret'], $credentials['consumer_key'], $credentials['consumer_secret'] );
-		$api = $this->get_api();
-
-		$url = $api->url(
-			'oauth/authorize',
-			array(
-				'oauth_token' => $request_token['oauth_token'],
-				'force_login' => false,
-			)
-		);
-		if ( empty( $url ) ) {
-			return $this->get_legacy_url();
-		}
-
-		// $url = $api->url("oauth/authorize", ["oauth_token" => $request_token['oauth_token'] , 'force_login' => true ]);
-		return $url;
-	}
-
-	/**
-	 * Method to request a token from api.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @return mixed
-	 */
-	public function request_api_token() {
-		if ( ! session_id() ) {
-			session_start();
-		}
-
-		$api = $this->get_api();
-		try {
-			$request_token = $api->oauth( 'oauth/request_token', array( 'oauth_callback' => $this->get_legacy_url( 'twitter' ) ) );
-		} catch ( Exception $e ) {
-			$this->logger->alert_error( 'Error connecting twitter ' . $e->getMessage() );
-
-			return '';
-		}
-		$_SESSION['rop_twitter_request_token'] = $request_token;
-
-		return $request_token;
 	}
 
 	/**
