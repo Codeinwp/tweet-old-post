@@ -117,36 +117,6 @@ abstract class Rop_Services_Abstract {
 	public abstract function init();
 
 	/**
-	 * Method to expose desired endpoints.
-	 * This should be invoked by the Factory class
-	 * to register all endpoints at once.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public abstract function expose_endpoints();
-
-	/**
-	 * Method to retrieve the api object.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public abstract function get_api();
-
-	/**
-	 * Method to define the api.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public abstract function set_api();
-
-
-	/**
 	 * Method to populate additional data.
 	 *
 	 * @since   8.5.13
@@ -157,55 +127,6 @@ abstract class Rop_Services_Abstract {
 	public abstract function populate_additional_data( $account );
 
 	/**
-	 * Method for authorizing the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public function authorize() {
-
-		try {
-
-			$authenticated = $this->maybe_authenticate();
-
-			if ( $authenticated ) {
-				$service = $this->get_service();
-
-				if ( 'linkedin' === $service['service'] ) {
-
-					/**
-					 * For LinkedIn, it seems they include '_' char into the service id and
-					 * we need to replace with something else in order to not mess with the way we store the indices.
-					 */
-					$service_id = $service['service'] . '_' . $this->treat_underscore_exception( $service['id'] );
-				} else {
-					$service_id = $service['service'] . '_' . $this->strip_underscore( $service['id'] );
-				}
-
-				$new_service[ $service_id ] = $service;
-			}
-
-			$model = new Rop_Services_Model();
-			$model->add_authenticated_service( $new_service );
-
-		} catch ( Exception $exception ) {
-			$this->error->throw_exception( 'Error', sprintf( 'The service "' . $this->display_name . '" can not be authorized %s', $exception->getMessage() ) );
-		}
-
-		exit( wp_redirect( admin_url( 'admin.php?page=TweetOldPost' ) ) );
-	}
-
-	/**
-	 * Method for checking authentication the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public abstract function maybe_authenticate();
-
-	/**
 	 * Returns information for the current service.
 	 *
 	 * @since   8.0.0
@@ -213,25 +134,6 @@ abstract class Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public abstract function get_service();
-
-	/**
-	 * Method for authenticate the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public abstract function authenticate( $args );
-
-	/**
-	 * Method to register credentials for the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $args The credentials array.
-	 */
-	public abstract function set_credentials( $args );
 
 	/**
 	 * Method for publishing with the service.
@@ -319,15 +221,6 @@ abstract class Rop_Services_Abstract {
 		}
 
 	}
-
-	/**
-	 * Method to request a token from api.
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @return mixed
-	 */
-	protected abstract function request_api_token();
 
 	/**
 	 * Method to generate url for service post share.
