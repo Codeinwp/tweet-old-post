@@ -989,7 +989,7 @@ class Rop_Admin {
 				$account_data = $services_model->find_account( $account );
 				try {
 					$service = $service_factory->build( $account_data['service'] );
-					if( method_exists($service, 'set_credentials') ){
+					if ( method_exists( $service, 'set_credentials' ) ) {
 						$service->set_credentials( $account_data['credentials'] );
 					}
 					foreach ( $post as $post_id ) {
@@ -1070,7 +1070,7 @@ class Rop_Admin {
 						$account_data = $services_model->find_account( $account );
 						try {
 							$service = $service_factory->build( $account_data['service'] );
-							if( method_exists($service, 'set_credentials') ){
+							if ( method_exists( $service, 'set_credentials' ) ) {
 								$service->set_credentials( $account_data['credentials'] );
 							}
 
