@@ -346,29 +346,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method used to decide whether or not to show Tumblr button
-	 *
-	 * @since   8.5.6
-	 * @access  public
-	 *
-	 * @return  bool
-	 */
-	public function rop_show_tmblr_app_btn() {
-
-		$installed_at_version = get_option( 'rop_first_install_version' );
-
-		if ( empty( $installed_at_version ) ) {
-			return false;
-		}
-
-		if ( version_compare( $installed_at_version, '8.5.0', '>=' ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * This method will load and prepare the account data for Tumblr user.
 	 * Used in Rest Api.
 	 *

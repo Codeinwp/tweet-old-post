@@ -490,25 +490,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method used to decide whether or not to show Linked button
-	 *
-	 * @return  bool
-	 * @since   8.5.0
-	 * @access  public
-	 */
-	public function rop_show_li_app_btn() {
-		$installed_at_version = get_option( 'rop_first_install_version' );
-		if ( empty( $installed_at_version ) ) {
-			return false;
-		}
-		if ( version_compare( $installed_at_version, '8.5.0', '>=' ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Method used to notify user that they should refresh their LinkedIn token
 	 *
 	 * @since   8.5.0

@@ -25,73 +25,26 @@
 					<div class="content">
 						<div class="auth-app" v-if="isFacebook">
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
-							<div v-if="!hideOwnAppOption">
-							<span class="text-center">{{labels.app_option_signin}}</span>
-							</div>
 						</div>
 						<div class="auth-app" v-if="isTwitter">
 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
-							<div v-if="!hideOwnAppOption">
-							<span class="text-center">{{labels.app_option_signin}}</span>
-							</div>
 						</div>
 						<div class="auth-app" v-if="isLinkedIn">
 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
-							<div v-if="!hideOwnAppOption">
-							<span class="text-center">{{labels.app_option_signin}}</span>
-							</div>
-
 						</div>
-						<div class="auth-app" v-if="isTumblr && isAllowedTumblr">
+						<div class="auth-app" v-if="isTumblr">
 							<button class="btn btn-primary big-btn" @click="openPopupTumblr()">{{labels.tumblr_app_signin_btn}}</button>
-							<div v-if="!hideOwnAppOption">
-							<span class="text-center">{{labels.app_option_signin}}</span>
-							</div>
 						</div>
 						<div class="auth-app" v-if="isGmb">
 							<button class="btn btn-primary big-btn" id="gmb-btn" @click="openPopupGmb()">{{labels.gmb_app_signin_btn}}</button>
 						</div>
-						
 						<div class="auth-app" v-if="isVk">
 							<button class="btn btn-primary big-btn" id="vk-btn" @click="openPopupVk()">{{labels.vk_app_signin_btn}}</button>
 						</div>
-
-						<div v-if="!hideOwnAppOption">
-						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr)">
-						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
-					 </div>
-						<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr) )">
-						<div class="form-group" v-for="( field, id ) in modal.data">
-							<label class="form-label" :for="field.id">{{ field.name }}</label>
-							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
-								   :placeholder="field.name"/>
-							<small class="text-error" v-if="field.error">{{labels.field_required}}</small>
-							<p class="text-gray">{{ field.description }}</p>
-						</div>
-					</div>
-					</div>
-						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)">
-						<div class="form-group" v-for="( field, id ) in modal.data">
-							<label class="form-label" :for="field.id">{{ field.name }}</label>
-							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
-								   :placeholder="field.name"/>
-							<small class="text-error" v-if="field.error">{{labels.field_required}}</small>
-							<p class="text-gray">{{ field.description }}</p>
-						</div>
-						</div>
 					</div>
 				</div>
-				
-				<div v-if="isFacebook || isTwitter || isLinkedIn || isGmb || isVk ||(isTumblr && isAllowedTumblr)" class="modal-footer">
+				<div v-if="isFacebook || isTwitter || isLinkedIn || isGmb || isVk || isTumblr" class="modal-footer">
 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
-				</div>
-				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)" class="modal-footer">
-					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
-					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
-				</div>
-				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
-					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
-					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
 			</div>
 		</div>
@@ -111,7 +64,6 @@
 					description: '',
 					data: {}
 				},
-				showAdvanceConfig: false,
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
 				activePopup: '',
@@ -128,10 +80,6 @@
 				appSignature: ropAuthAppData.authSignature,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
-				showLiAppBtn: ropApiSettings.show_li_app_btn,
-				showTmblrAppBtn: ropApiSettings.show_tmblr_app_btn,
-				hideOwnAppOption: ropApiSettings.hide_own_app_option,
-				showBtn: false
 			}
 		},
 		methods: {
@@ -545,14 +493,6 @@
             isPinterest() {
                 return this.modal.serviceName === 'Pinterest';
 			},
-			
-			isAllowedTumblr: function () {
-				let showButton = true;
-				if (!this.showTmblrAppBtn) {
-						showButton = false;
-				}
-				return showButton;
-		},
 
 	}
 }
