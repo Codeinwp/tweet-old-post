@@ -133,37 +133,6 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Show notice to upgrade bitly.
-	 *
-	 * @since    8.1.5
-	 */
-	public function bitly_shortener_upgrade_notice() {
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
-		if ( ! $this->check_shortener_service( 'bit.ly' ) ) {
-			return;
-		}
-
-		$bitly = get_option( 'rop_shortners_bitly' );
-
-		if ( ! is_array( $bitly ) ) {
-			return;
-		}
-
-		if ( array_key_exists( 'generic_access_token', $bitly['bitly_credentials'] ) ) {
-			return;
-		}
-		?>
-		<div class="notice notice-error is-dismissible">
-			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
-		</div>
-		<?php
-	}
-
-	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    8.1.5
@@ -1138,72 +1107,6 @@ class Rop_Admin {
 			}
 		}
 		$cron->create_cron( false );
-	}
-
-	/**
-	 * Linkedin API upgrade notice.
-	 *
-	 * @since   8.2.3
-	 * @access  public
-	 */
-	public function rop_linkedin_api_v2_notice() {
-
-		if ( ! current_user_can( 'install_plugins' ) ) {
-			return;
-		}
-
-		// This option was introduced the same time we updated Linkedin API to v2.
-		// Gets created on plugin activation hook, old installs would not have this option.
-		// So we return in case this is a brand new install.
-		if ( ! empty( get_option( 'rop_first_install_version' ) ) ) {
-			return;
-		}
-
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed' ) ) {
-			return;
-		}
-
-		$show_notice = false;
-
-		$services_model = new Rop_Services_Model();
-
-		$services = $services_model->get_authenticated_services();
-
-		foreach ( $services as $key => $value ) {
-
-			if ( $value['service'] == 'linkedin' ) {
-				$show_notice = true;
-				break;
-			}
-		}
-
-		if ( $show_notice === false ) {
-			return;
-		}
-
-		?>
-		<div class="notice notice-error">
-			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
-
-		</div>
-		<?php
-
-	}
-
-	/**
-	 * Dismiss Linkedin API upgrade notice.
-	 *
-	 * @since   8.2.3
-	 * @access  public
-	 */
-	public function rop_dismiss_linkedin_api_v2_notice() {
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-linkedin-api-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed', 'true', true );
-		}
-
 	}
 
 	/**

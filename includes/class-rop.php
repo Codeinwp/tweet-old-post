@@ -139,9 +139,6 @@ class Rop {
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_remove_remote_cron_notice' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_remove_remote_cron' );
 
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_linkedin_api_v2_notice' );
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'bitly_shortener_upgrade_notice' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_cron_disabled_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_wp_cron_notice' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'migrate_taxonomies_to_post_format' );
