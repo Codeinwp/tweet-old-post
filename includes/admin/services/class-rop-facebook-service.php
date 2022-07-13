@@ -49,65 +49,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method to retrieve the api object.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $app_id The Facebook APP ID. Default empty.
-	 * @param   string $secret The Facebook APP Secret. Default empty.
-	 *
-	 * @return \Facebook\Facebook
-	 */
-	public function get_api( $app_id = '', $secret = '' ) {
-		if ( $this->api == null ) {
-			$this->set_api( $app_id, $secret );
-		}
-
-		return $this->api;
-	}
-
-	/**
-	 * Method to define the api.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $app_id The Facebook APP ID. Default empty.
-	 * @param   string $secret The Facebook APP Secret. Default empty.
-	 *
-	 * @return mixed
-	 */
-	public function set_api( $app_id = '', $secret = '' ) {
-		try {
-			if ( empty( $app_id ) || empty( $secret ) ) {
-				return false;
-			}
-			$this->api = new \Facebook\Facebook(
-				array(
-					'app_id'                => $this->strip_whitespace( $app_id ),
-					'app_secret'            => $this->strip_whitespace( $secret ),
-					'default_graph_version' => 'v7.0',
-				)
-			);
-		} catch ( Exception $exception ) {
-			$this->logger->alert_error( 'Can not load Facebook api. Error: ' . $exception->getMessage() );
-		}
-	}
-
-	/**
-	 * Method to register credentials for the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $args The credentials array.
-	 */
-	public function set_credentials( $args ) {
-		$this->credentials = $args;
-	}
-
-	/**
 	 * Returns information for the current service.
 	 *
 	 * @since   8.0.0
@@ -173,12 +114,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( strpos( $args['user'], 'Facebook Group:' ) !== false && $global_settings->license_type() < 1 ) {
 			$this->logger->alert_error( sprintf( Rop_I18n::get_labels( 'errors.license_not_active' ), $args['user'] ) );
 			return false;
-		}
-
-		$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
-
-		if ( empty( $installed_with_app ) ) {
-			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		}
 
 		// FB link post
@@ -349,8 +284,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 */
 	private function try_post( $new_post, $page_id, $token, $post_id, $posting_type ) {
 
-		$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
-
 		$path = '/' . $page_id . '/feed';
 		switch ( $posting_type ) {
 			case 'photo':
@@ -363,217 +296,150 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				break;
 		}
 
-		if ( empty( $installed_with_app ) ) {
-			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
-		}
-
-		if ( $this->get_api() && empty( $installed_with_app ) ) {
-			// Page was added using user application (old method)
-			// Try post via Facebook Graph SDK
-			$api = $this->get_api();
-			try {
-
-				// Scrape post URL before sharing
-				if ( isset( $new_post['link'] ) ) {
-					$this->rop_fb_scrape_url( $posting_type, $post_id, $token );
-				}
-
-				$api->post( $path, $new_post, $token );
-
-				return true;
-			} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-				$error_message = $e->getMessage();
-
-				if (
-					strpos( $error_message, '(#100)' ) !== false &&
-					(
-						! empty( $new_post['name'] ) ||
-						( ! empty( $new_post['link'] ) && isset( $new_post['message'] ) )
-					)
-				) {
-					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
-					// retry without name and with link inside message.
-					if ( isset( $new_post['name'] ) ) {
-						unset( $new_post['name'] );
-					}
-					if ( ! empty( $new_post['link'] ) && isset( $new_post['message'] ) ) {
-						$new_post['message'] .= $new_post['link'];
-						unset( $new_post['link'] );
-					}
-
-					try {
-						$api->post( $path, $new_post, $token );
-
-						return true;
-					} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-						$this->logger->alert_error( 'Unable to share post for facebook. (FacebookResponseException) Error: ' . $e->getMessage() );
-						$this->rop_get_error_docs( $e->getMessage() );
-
-						return false;
-					} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-						$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
-						$this->rop_get_error_docs( $e->getMessage() );
-
-						return false;
-					}
-				} else {
-					$this->logger->alert_error( 'Unable to share post for facebook. (FacebookResponseException) Error: ' . $error_message );
-					$this->rop_get_error_docs( $e->getMessage() );
-
-					return false;
-				}
-			} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-				$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
-				$this->rop_get_error_docs( $e->getMessage() );
-
-				return false;
-			}
-		} else {
-			// Page was added using ROP application (new method)
 			$post_data                 = $new_post;
 			$post_data['access_token'] = $token;
 
-			if ( 'video' === $posting_type ) {
-				$url = 'https://graph-video.facebook.com/v7.0' . $path;
-			} else {
-				$url = 'https://graph.facebook.com/v7.0' . $path;
-			}
+		if ( 'video' === $posting_type ) {
+			$url = 'https://graph-video.facebook.com/v7.0' . $path;
+		} else {
+			$url = 'https://graph.facebook.com/v7.0' . $path;
+		}
 
 			// Scrape post URL before sharing
-			if ( isset( $post_data['link'] ) ) {
-				$this->rop_fb_scrape_url( $posting_type, $post_id, $token );
-			}
+		if ( isset( $post_data['link'] ) ) {
+			$this->rop_fb_scrape_url( $posting_type, $post_id, $token );
+		}
 
 			// Hold this value for now
 			$attachment_url  = '';
 			$attachment_path = '';
 
-			if ( isset( $post_data['url'] ) ) {
-				$attachment_url = trim( $post_data['url'] );
-				unset( $post_data['url'] ); // Unset from posting parameters
-			}
+		if ( isset( $post_data['url'] ) ) {
+			$attachment_url = trim( $post_data['url'] );
+			unset( $post_data['url'] ); // Unset from posting parameters
+		}
 
-			if ( isset( $post_data['source'] ) ) {
-				$attachment_path = $post_data['source'];
-				unset( $post_data['source'] ); // Remove image path as it's not needed and it might create an error.
-			}
+		if ( isset( $post_data['source'] ) ) {
+			$attachment_path = $post_data['source'];
+			unset( $post_data['source'] ); // Remove image path as it's not needed and it might create an error.
+		}
 
 			// If the cURL library is installed and usable
-			if ( $this->is_curl_active() && ! empty( $attachment_path ) && false === $this->is_remote_file( $attachment_path ) ) {
-				$post_data['source'] = new CurlFile( realpath( $attachment_path ), mime_content_type( $attachment_path ) );
+		if ( $this->is_curl_active() && ! empty( $attachment_path ) && false === $this->is_remote_file( $attachment_path ) ) {
+			$post_data['source'] = new CurlFile( realpath( $attachment_path ), mime_content_type( $attachment_path ) );
 
-				// Send the request via cURL
-				$body     = $this->remote_post_curl( $url, $post_data );
-				$response = $body; // Compatible with the code before.
+			// Send the request via cURL
+			$body     = $this->remote_post_curl( $url, $post_data );
+			$response = $body; // Compatible with the code before.
 
-				// If the previous request failed, let's try over HTTP request.
-				if ( isset( $body['error'] ) ) {
-					if ( ! empty( $attachment_url ) ) {
-						$post_data['url'] = $attachment_url; // To use HTTP request, we need image url back.
-					}
-					if ( isset( $post_data['source'] ) ) {
-						unset( $post_data['source'] );
-					}
-
-					// Send the request via http request.
-					$sent_request = $this->remote_post_http( $url, $post_data );
-					$response     = $sent_request['response'];
-					$body         = $sent_request['body'];
-				}
-			} else {
-
+			// If the previous request failed, let's try over HTTP request.
+			if ( isset( $body['error'] ) ) {
 				if ( ! empty( $attachment_url ) ) {
 					$post_data['url'] = $attachment_url; // To use HTTP request, we need image url back.
 				}
+				if ( isset( $post_data['source'] ) ) {
+					unset( $post_data['source'] );
+				}
+
 				// Send the request via http request.
 				$sent_request = $this->remote_post_http( $url, $post_data );
 				$response     = $sent_request['response'];
 				$body         = $sent_request['body'];
 			}
+		} else {
 
-			if ( ! empty( $body['id'] ) ) {
-				return true;
-			} elseif ( ! empty( $body['error']['message'] ) ) {
-				if (
-					strpos( $body['error']['message'], '(#100)' ) !== false &&
-					(
-						! empty( $post_data['name'] ) ||
-						( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) )
-					)
-				) {
-					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
-					// retry without name and with link inside message.
-					if ( isset( $post_data['name'] ) ) {
-						unset( $post_data['name'] );
-					}
-					if ( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) ) {
-						$post_data['message'] .= $post_data['link'];
-						unset( $post_data['link'] );
-					}
+			if ( ! empty( $attachment_url ) ) {
+				$post_data['url'] = $attachment_url; // To use HTTP request, we need image url back.
+			}
+			// Send the request via http request.
+			$sent_request = $this->remote_post_http( $url, $post_data );
+			$response     = $sent_request['response'];
+			$body         = $sent_request['body'];
+		}
 
-					if ( isset( $post_data['source'] ) ) {
-						unset( $post_data['source'] );
-					}
-					if ( isset( $post_data['url'] ) ) {
-						unset( $post_data['url'] );
-					}
+		if ( ! empty( $body['id'] ) ) {
+			return true;
+		} elseif ( ! empty( $body['error']['message'] ) ) {
+			if (
+				strpos( $body['error']['message'], '(#100)' ) !== false &&
+				(
+					! empty( $post_data['name'] ) ||
+					( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) )
+				)
+			) {
+				// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
+				// retry without name and with link inside message.
+				if ( isset( $post_data['name'] ) ) {
+					unset( $post_data['name'] );
+				}
+				if ( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) ) {
+					$post_data['message'] .= $post_data['link'];
+					unset( $post_data['link'] );
+				}
 
-					// If the cURL library is installed and usable
-					if ( $this->is_curl_active() && ! empty( $attachment_path ) && false === $this->is_remote_file( $attachment_path ) ) {
-						$post_data['source'] = new CurlFile( realpath( $attachment_path ), mime_content_type( $attachment_path ) );
+				if ( isset( $post_data['source'] ) ) {
+					unset( $post_data['source'] );
+				}
+				if ( isset( $post_data['url'] ) ) {
+					unset( $post_data['url'] );
+				}
 
-						// Send the request via cURL
-						$body     = $this->remote_post_curl( $url, $post_data );
-						$response = $body; // Compatible with the code before.
+				// If the cURL library is installed and usable
+				if ( $this->is_curl_active() && ! empty( $attachment_path ) && false === $this->is_remote_file( $attachment_path ) ) {
+					$post_data['source'] = new CurlFile( realpath( $attachment_path ), mime_content_type( $attachment_path ) );
 
-						// If the previous request failed, let's try over HTTP request.
-						if ( isset( $body['error'] ) ) {
-							if ( ! empty( $attachment_url ) ) {
-								$post_data['url'] = $attachment_url; // To use HTTP request, we need image url back.
-							}
-							if ( isset( $post_data['source'] ) ) {
-								unset( $post_data['source'] );
-							}
-							// Send the request via http request.
-							$sent_request = $this->remote_post_http( $url, $post_data );
-							$response     = $sent_request['response'];
-							$body         = $sent_request['body'];
-						}
-					} else {
+					// Send the request via cURL
+					$body     = $this->remote_post_curl( $url, $post_data );
+					$response = $body; // Compatible with the code before.
 
+					// If the previous request failed, let's try over HTTP request.
+					if ( isset( $body['error'] ) ) {
 						if ( ! empty( $attachment_url ) ) {
 							$post_data['url'] = $attachment_url; // To use HTTP request, we need image url back.
+						}
+						if ( isset( $post_data['source'] ) ) {
+							unset( $post_data['source'] );
 						}
 						// Send the request via http request.
 						$sent_request = $this->remote_post_http( $url, $post_data );
 						$response     = $sent_request['response'];
 						$body         = $sent_request['body'];
 					}
-
-					if ( ! empty( $body['id'] ) ) {
-						return true;
-					} elseif ( ! empty( $body['error']['message'] ) ) {
-						$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
-						$this->rop_get_error_docs( $body['error']['message'] );
-
-						return false;
-					} else {
-						$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
-
-						return false;
-					}
 				} else {
+
+					if ( ! empty( $attachment_url ) ) {
+						$post_data['url'] = $attachment_url; // To use HTTP request, we need image url back.
+					}
+					// Send the request via http request.
+					$sent_request = $this->remote_post_http( $url, $post_data );
+					$response     = $sent_request['response'];
+					$body         = $sent_request['body'];
+				}
+
+				if ( ! empty( $body['id'] ) ) {
+					return true;
+				} elseif ( ! empty( $body['error']['message'] ) ) {
 					$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
 					$this->rop_get_error_docs( $body['error']['message'] );
 
 					return false;
+				} else {
+					$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
+
+					return false;
 				}
 			} else {
-				$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
+				$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
+				$this->rop_get_error_docs( $body['error']['message'] );
 
 				return false;
 			}
+		} else {
+			$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
+
+			return false;
 		}
+
 	}
 
 
