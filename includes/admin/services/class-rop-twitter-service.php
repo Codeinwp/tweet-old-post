@@ -51,9 +51,9 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 *
 	 * @return mixed
 	 */
-	public function get_api( $oauth_token = '', $oauth_token_secret = '' ) {
+	public function get_api( $oauth_token = '', $oauth_token_secret = '', $consumer_key = '', $consumer_secret = '' ) {
 		if ( $this->api == null ) {
-			$this->set_api( $oauth_token, $oauth_token_secret );
+			$this->set_api( $oauth_token, $oauth_token_secret, $consumer_key, $consumer_secret );
 		}
 
 		return $this->api;
@@ -321,13 +321,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$this->set_api(
-			$this->credentials['oauth_token'],
-			$this->credentials['oauth_token_secret'],
-			isset( $this->credentials['consumer_key'] ) ? $this->credentials['consumer_key'] : '',
-			isset( $this->credentials['consumer_secret'] ) ? $this->credentials['consumer_secret'] : ''
-		);
-		$api      = $this->get_api();
+		$api = $this->get_api( $args['credentials']['oauth_token'], $args['credentials']['oauth_token_secret'], $args['credentials']['consumer_key'], $args['credentials']['consumer_secret'] );
+
 		$new_post = array();
 
 		$post_id = $post_details['post_id'];
@@ -402,30 +397,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( ! $this->is_set_not_empty( $account_data, array( 'id' ) ) ) {
 			return false;
 		}
-		$the_id       = $account_data['id'];
+
 		$account_data = $account_data['pages'];
 
 		$this->set_api( $account_data['credentials']['oauth_token'], $account_data['credentials']['oauth_token_secret'], $account_data['credentials']['consumer_key'], $account_data['credentials']['consumer_secret'] );
 		$api = $this->get_api();
-
-		$args = array(
-			'oauth_token'        => $account_data['credentials']['oauth_token'],
-			'oauth_token_secret' => $account_data['credentials']['oauth_token_secret'],
-			'consumer_key'       => $account_data['credentials']['consumer_key'],
-			'consumer_secret'    => $account_data['credentials']['consumer_secret'],
-		);
-
-		$this->set_credentials(
-			array_intersect_key(
-				$args,
-				array(
-					'oauth_token'        => '',
-					'oauth_token_secret' => '',
-					'consumer_key'       => '',
-					'consumer_secret'    => '',
-				)
-			)
-		);
 
 		$response = $api->get( 'account/verify_credentials' );
 
@@ -436,18 +412,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$this->service = array(
 			'id'                 => $response->id,
 			'service'            => $this->service_name,
-			'credentials'        => $this->credentials,
-			'public_credentials' => array(
-				'consumer_key'    => array(
-					'name'    => 'API Key',
-					'value'   => $account_data['credentials']['consumer_key'],
-					'private' => false,
-				),
-				'consumer_secret' => array(
-					'name'    => 'API secret key',
-					'value'   => $account_data['credentials']['consumer_secret'],
-					'private' => true,
-				),
+			'credentials' => array(
+				'oauth_token'        => $account_data['credentials']['oauth_token'],
+				'oauth_token_secret' => $account_data['credentials']['oauth_token_secret'],
+				'consumer_key'       => $account_data['credentials']['consumer_key'],
+				'consumer_secret'    => $account_data['credentials']['consumer_secret'],
 			),
 			'available_accounts' => $this->get_users( $response ),
 		);
