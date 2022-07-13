@@ -78,7 +78,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 *
 	 * @return mixed
 	 */
-	public function set_api(  $oauth_token = '', $oauth_token_secret = '', $consumer_key = '', $consumer_secret = '' ) {
+	public function set_api( $oauth_token = '', $oauth_token_secret = '', $consumer_key = '', $consumer_secret = '' ) {
 		if ( ! class_exists( 'Tumblr\API\Client' ) ) {
 			return false;
 		}
