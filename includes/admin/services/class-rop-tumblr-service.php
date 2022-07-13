@@ -29,7 +29,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 */
 	protected $service_name = 'tumblr';
 
-
 	/**
 	 * Method to inject functionality into constructor.
 	 * Defines the defaults and settings for this service.
@@ -47,21 +46,21 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $consumer_key The Consumer Key. Default empty.
-	 * @param   string $consumer_secret The Consumer Secret. Default empty.
-	 * @param   string $token The Consumer Key. Default NULL.
-	 * @param   string $token_secret The Consumer Secret. Default NULL.
+	 * @param   string $oauth_token The OAuth Token. Default empty.
+	 * @param   string $oauth_token_secret The OAuth Token Secret. Default empty.
+	 * @param   string $consumer_key The consumer key. Default empty.
+	 * @param   string $consumer_secret The consumer secret. Default empty.
 	 *
 	 * @return mixed
 	 */
-	public function get_api( $consumer_key = '', $consumer_secret = '', $token = null, $token_secret = null ) {
+	public function get_api( $oauth_token = '', $oauth_token_secret = '', $consumer_key = '', $consumer_secret = '' ) {
 		if ( empty( $consumer_key ) ) {
 			return $this->api;
 		}
 		if ( empty( $consumer_secret ) ) {
 			return $this->api;
 		}
-		$this->set_api( $consumer_key, $consumer_secret, $token, $token_secret );
+		$this->set_api( $oauth_token, $oauth_token_secret, $consumer_key, $consumer_secret );
 
 		return $this->api;
 	}
@@ -72,21 +71,21 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $consumer_key The Consumer Key. Default empty.
-	 * @param   string $consumer_secret The Consumer Secret. Default empty.
-	 * @param   string $token The Consumer Key. Default NULL.
-	 * @param   string $token_secret The Consumer Secret. Default NULL.
+	 * @param   string $oauth_token The OAuth Token. Default empty.
+	 * @param   string $oauth_token_secret The OAuth Token Secret. Default empty.
+	 * @param   string $consumer_key The consumer key. Default empty.
+	 * @param   string $consumer_secret The consumer secret. Default empty.
 	 *
 	 * @return mixed
 	 */
-	public function set_api( $consumer_key = '', $consumer_secret = '', $token = null, $token_secret = null ) {
+	public function set_api(  $oauth_token = '', $oauth_token_secret = '', $consumer_key = '', $consumer_secret = '' ) {
 		if ( ! class_exists( 'Tumblr\API\Client' ) ) {
 			return false;
 		}
 		if ( ! function_exists( 'curl_reset' ) ) {
 			return false;
 		}
-		$this->api = new \Tumblr\API\Client( $this->strip_whitespace( $consumer_key ), $this->strip_whitespace( $consumer_secret ), $this->strip_whitespace( $token ), $this->strip_whitespace( $token_secret ) );
+		$this->api = new \Tumblr\API\Client( $this->strip_whitespace( $consumer_key ), $this->strip_whitespace( $consumer_secret ), $this->strip_whitespace( $oauth_token ), $this->strip_whitespace( $oauth_token_secret ) );
 
 	}
 
@@ -120,18 +119,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		return $users;
-	}
-
-	/**
-	 * Method to register credentials for the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $args The credentials array.
-	 */
-	public function set_credentials( $args ) {
-		$this->credentials = $args;
 	}
 
 	/**
@@ -208,7 +195,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$api = $this->get_api( $args['credentials']['consumer_key'], $args['credentials']['consumer_secret'], $args['credentials']['oauth_token'], $args['credentials']['oauth_token_secret'] );
+		$api = $this->get_api( $args['credentials']['oauth_token'], $args['credentials']['oauth_token_secret'], $args['credentials']['consumer_key'], $args['credentials']['consumer_secret'] );
 
 		$model       = new Rop_Post_Format_Model();
 		$post_format = $model->get_post_format( $post_details['account_id'] );
@@ -364,41 +351,15 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$the_id         = unserialize( base64_decode( $account_data['id'] ) );
 		$accounts_array = unserialize( base64_decode( $account_data['pages'] ) );
 
-		$args = array(
-			'oauth_token'        => $accounts_array[0]['credentials']['oauth_token'],
-			'oauth_token_secret' => $accounts_array[0]['credentials']['oauth_token_secret'],
-			'consumer_key'       => $accounts_array[0]['credentials']['consumer_key'],
-			'consumer_secret'    => $accounts_array[0]['credentials']['consumer_secret'],
-		);
-
-		$this->set_credentials(
-			array_intersect_key(
-				$args,
-				array(
-					'oauth_token'        => '',
-					'oauth_token_secret' => '',
-					'consumer_key'       => '',
-					'consumer_secret'    => '',
-				)
-			)
-		);
-
 		// Prepare the data that will be saved as new account added.
 		$this->service = array(
 			'id'                 => $the_id,
 			'service'            => $this->service_name,
-			'credentials'        => $this->credentials,
-			'public_credentials' => array(
-				'consumer_key'    => array(
-					'name'    => 'API Key',
-					'value'   => $accounts_array[0]['credentials']['consumer_key'],
-					'private' => false,
-				),
-				'consumer_secret' => array(
-					'name'    => 'API secret key',
-					'value'   => $accounts_array[0]['credentials']['consumer_secret'],
-					'private' => true,
-				),
+			'credentials' => array(
+				'oauth_token'        => $accounts_array[0]['credentials']['oauth_token'],
+				'oauth_token_secret' => $accounts_array[0]['credentials']['oauth_token_secret'],
+				'consumer_key'       => $accounts_array[0]['credentials']['consumer_key'],
+				'consumer_secret'    => $accounts_array[0]['credentials']['consumer_secret'],
 			),
 			'available_accounts' => $this->get_users_rs_app( $accounts_array ),
 		);
