@@ -40,7 +40,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 if ( function_exists( 'phpversion' ) ) {
 
-	if ( version_compare( phpversion(), '7.1', '<' ) ) {
+	if ( version_compare( phpversion(), '7.2', '<' ) ) {
 		add_action( 'admin_notices', 'rop_php_notice' );
 		add_action( 'admin_init', 'deactivate_rop', 1 );
 		return;
@@ -48,7 +48,7 @@ if ( function_exists( 'phpversion' ) ) {
 }
 
 if ( defined( 'PHP_VERSION' ) ) {
-	if ( version_compare( PHP_VERSION, '7.1', '<' ) ) {
+	if ( version_compare( PHP_VERSION, '7.2', '<' ) ) {
 		add_action( 'admin_notices', 'rop_php_notice' );
 		add_action( 'admin_init', 'deactivate_rop', 1 );
 		return;
