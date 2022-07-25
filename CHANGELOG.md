@@ -1,3 +1,12 @@
+##### [Version 9.0.9](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.8...v9.0.9) (2022-07-25)
+
+- [New Pro] Option to automatically crop Instagram Images if they do not meet the Instagram supported aspect ratios
+- [Fix] PHP 8 related errors
+- [Fix] Long taxonomy names were overflowing their container in multiselect fields
+- [Info] Tested on WP 6.0
+- [Info] Minimum PHP version has been changed to 7.2 to address composer dependency PHP errors
+- [Info] Updated Themeisle SDK
+
 ##### [Version 9.0.8](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.7...v9.0.8) (2022-04-22)
 
 ### Info
