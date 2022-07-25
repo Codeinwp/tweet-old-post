@@ -512,10 +512,6 @@ class Rop_Admin {
 				$pinterest_service = new Rop_Pinterest_Service();
 				$pinterest_service->authorize();
 				break;
-			case 'buffer':
-				$buffer_service = new Rop_Buffer_Service();
-				$buffer_service->authorize();
-				break;
 			default:
 				$fb_service = new Rop_Facebook_Service();
 				$fb_service->authorize();
