@@ -486,6 +486,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			// **** Instagram Sharing ***** //
 			if ( $args['account_type'] === 'instagram_account' && class_exists( 'Rop_Pro_Instagram_Service' ) ) {
 
+				$args['correct_aspect_ratio'] = $post_format['correct_aspect_ratio'];
+				
 				$response = Rop_Pro_Instagram_Service::share( $post_details, $hashtags, $args );
 
 				return $response;

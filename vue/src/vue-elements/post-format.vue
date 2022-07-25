@@ -309,6 +309,23 @@
             </div>
         </div>
 
+        <span v-if="is_instagram_account" class="divider"></span>
+
+        <div v-if="is_instagram_account" class="columns py-2" :class="'rop-control-container-'+isPro">
+            <div class="column col-6 col-sm-12 vertical-align rop-control">
+                <b>{{labels.image_aspect_ratio_title}}</b>
+                <p class="text-gray"><span v-html="labels.image_aspect_ratio_title_desc"></span></p>
+            </div>
+            <div class="column col-6 col-sm-12 vertical-align">
+                <div class="input-group">
+                    <label class="form-checkbox">
+                        <input v-if="is_instagram_account" type="checkbox" v-model="post_format.correct_aspect_ratio"/>
+                        <i class="form-icon"></i> {{labels.yes_text}}
+                    </label>
+                </div>
+            </div>
+        </div>
+
         <div class="columns " v-if="!isPro">
             <div class="column text-center">
                 <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.image_upsell}}</p>

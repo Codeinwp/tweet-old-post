@@ -254,6 +254,8 @@ class Rop_I18n {
 				'hashtags_randomize_desc'           => __( 'Randomize the list of hashtags on every successful share. You won\'t see this change in the Sharing Queue, the randomization happens at share time.', 'tweet-old-post' ),
 				'image_title'                       => __( 'Share As Image Post', 'tweet-old-post' ),
 				'image_desc'                        => __( 'Should ROP share your posts as an image post? <a href="https://docs.revive.social/article/958-how-to-share-posts-as-image-posts-to-social-accounts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'image_aspect_ratio_title'          => __( 'Automatically correct aspect ratio', 'tweet-old-post' ),
+				'image_aspect_ratio_title_desc'     => __( 'Should ROP automatically crop images with the wrong aspect ratio? <a href="https://docs.revive.social/article/1661-how-to-fix-invalid-aspect-ratio-when-posting-to-instagram" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'utm_campaign_medium'               => __( 'Campaign Medium', 'tweet-old-post' ),
 				'utm_campaign_medium_desc'          => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
 				'utm_campaign_name'                 => __( 'Campaign Name', 'tweet-old-post' ),

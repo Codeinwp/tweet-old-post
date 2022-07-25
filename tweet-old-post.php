@@ -19,13 +19,13 @@
  * Version:           9.0.8
  * Author:            revive.social
  * Author URI:        https://revive.social/
- * Requires at least: 3.5
- * Tested up to:      5.9
+ * Requires at least: 4.7
+ * Tested up to:      6.0
  * Stable tag:        trunk
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
  * Requires License:    no
- * Requires PHP: 7.1
+ * Requires PHP: 7.2
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: tweet-old-post
@@ -40,7 +40,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 if ( function_exists( 'phpversion' ) ) {
 
-	if ( version_compare( phpversion(), '7.1', '<' ) ) {
+	if ( version_compare( phpversion(), '7.2', '<' ) ) {
 		add_action( 'admin_notices', 'rop_php_notice' );
 		add_action( 'admin_init', 'deactivate_rop', 1 );
 		return;
@@ -48,7 +48,7 @@ if ( function_exists( 'phpversion' ) ) {
 }
 
 if ( defined( 'PHP_VERSION' ) ) {
-	if ( version_compare( PHP_VERSION, '7.1', '<' ) ) {
+	if ( version_compare( PHP_VERSION, '7.2', '<' ) ) {
 		add_action( 'admin_notices', 'rop_php_notice' );
 		add_action( 'admin_init', 'deactivate_rop', 1 );
 		return;
