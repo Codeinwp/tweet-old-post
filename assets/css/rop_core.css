@@ -3328,7 +3328,7 @@ a.active {
     border-color: #454d5d;
     border-radius: 0.1rem;
     color: #fff;
-    background: rgba(69, 77, 93, 0.9);
+    background: #172a52;
 }
 
 #rop_core .toast.toast-primary {
