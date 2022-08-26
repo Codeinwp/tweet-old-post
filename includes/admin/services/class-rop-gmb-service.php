@@ -218,7 +218,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$rop_data = get_option( 'rop_data' );
 		$rop_services_data  = $rop_data['services'];
 
-
 		$id = '';
 		$access_token = '';
 		$created = '';
