@@ -1049,7 +1049,7 @@ class Rop_Admin {
 					}
 				} catch ( Exception $exception ) {
 					$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
-					$logger->alert_error( $error_message . ' Error: ' . print_r( $exception->getTrace(), true ) );
+					$logger->alert_error( $error_message . ' Error: ' . print_r( $exception->getMessage(), true ) );
 				}
 			}
 		}
