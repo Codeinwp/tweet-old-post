@@ -512,10 +512,6 @@ class Rop_Admin {
 				$pinterest_service = new Rop_Pinterest_Service();
 				$pinterest_service->authorize();
 				break;
-			case 'buffer':
-				$buffer_service = new Rop_Buffer_Service();
-				$buffer_service->authorize();
-				break;
 			default:
 				$fb_service = new Rop_Facebook_Service();
 				$fb_service->authorize();
@@ -1053,7 +1049,7 @@ class Rop_Admin {
 					}
 				} catch ( Exception $exception ) {
 					$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
-					$logger->alert_error( $error_message . ' Error: ' . print_r( $exception->getTrace(), true ) );
+					$logger->alert_error( $error_message . ' Error: ' . print_r( $exception->getMessage(), true ) );
 				}
 			}
 		}

@@ -250,7 +250,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$api = $this->get_api( $args['client_id'], $args['secret'] );
 
-		if( ! is_object( $api ) ){
+		if ( ! is_object( $api ) ) {
 			return false;
 		}
 
