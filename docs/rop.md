@@ -25,7 +25,11 @@ Though some of ROP's networks had this functionality before (users being able to
 
 [A pull request](https://github.com/Codeinwp/tweet-old-post/pull/849) exists where most of the dead code relating to the old way of connecting apps have been removed. It has not yet been merged out of concerns that some users are still using the old method.
 
-### 2) Rewrite the Auth Service App
+### 2) Remove or work on remote cron features
+
+The ROP plugin has code to faciliate a remote cron system that we piloted but had to stop because of multiple issues and bugs. The code for this cron system still exists in the plugin but it's not currently doing anything. The goal was to create a system that would send out pings to user's websites to fire the ROP share instead of relying on their WP CRON thus enhancing the user experience for sites with low traffic. The accompanying plugin for this exists on app.revive.social and it as well is disabled.
+
+### 3) Rewrite the Auth Service App
 
 As mentioned previously, when a user connects their social media account to the ROP plugin, the request goes through app.revive.social where the tokens are created and sent back to the user's website where it is saved.
 
@@ -35,7 +39,7 @@ The plugin was first created to only facilitate the connecting of Facebook accou
 
 [The repository can be found here.](https://github.com/Codeinwp/rop-auth-service)
 
-### 3) Improve the Revive Network Plugin
+### 4) Improve the Revive Network Plugin
 
 Revive Network was a totally separate plugin introduced to the Revive Social lineup. However, it fell by the wayside as ROP gained far more popularity than it.
 
@@ -44,6 +48,19 @@ The plugin was reimagined and rewritten in [v2.0.0](https://github.com/Codeinwp/
 It's main purpose now is to pull in items from RSS feeds, save them to the website as a Custom Post Type, and then in ROP those posts can be shared to social media by selecting the post type from the General Settings of ROP.
 
 This introduced new opportunities for ROP to grow and bring out the idea of keeping social media followers engaged with not only content from the website owner but also any other website with an RSS feed.
+
+### 5) Automatically refresh LinkedIn Tokens.
+
+Right now a user needs to go back to their ROP dashboard and refresh the LinkedIn token after it has expired. This is because there was no way to automatically refresh a LinkedIn token automatically at the time the network was added to ROP.
+
+This is now possible, but the current library we are using for LinkedIn, does not support it. There is a pull request available on the library to allow this, but the library looks abandoned: https://github.com/zoonman/linkedin-api-php-client/pull/56
+
+Two possible solutions exist here:
+
+1 - Use the a forked version of the library that has the refresh token capability. 
+2 - Implement this manually with code and abandon using the library since it seems to be abandoned. We are already doing some LinkedIn API work manually in some parts of the ROP Auth Plugin.
+
+An issue for this was created here: https://github.com/Codeinwp/tweet-old-post-pro/issues/397
 
 # The Rundown
 
@@ -132,3 +149,12 @@ The post buffer acts as a "bucket" for all the posts that have been shared to th
 The ROP dashboard is built using VueJS. The saving of the options are done using the WP REST API. This means that if the WP REST API is not working on the user's website, or a security plugin is blocking access, then ROP settings would not be saved.
 
 The class responsible for faciliating clientside interations with the server is `Rop_Rest_Api`
+# Quirks
+
+## Log error about no posts gets triggered repeatedly.
+
+When no posts are available to be used by ROP, logs an error. Since the cron job for triggering shares fires every 5 minutes, this error also shows over and over in the log until posts become available:
+
+![repeated errors](images/no-posts.png)
+
+This error is triggered [here.](https://github.com/Codeinwp/tweet-old-post/blob/v9.0.9/includes/admin/models/class-rop-queue-model.php#L219)
