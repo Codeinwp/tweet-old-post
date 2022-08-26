@@ -1,3 +1,8 @@
+##### [Version 9.0.10](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.9...v9.0.10) (2022-08-26)
+
+- [Dev] Remove old buffer service that doesn't exist anymore.
+- [Dev] Less cumbersome error messages when services fail to build by using getMessage() instead of getTrace()
+
 ##### [Version 9.0.9](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.8...v9.0.9) (2022-07-25)
 
 - [New Pro] Option to automatically crop Instagram Images if they do not meet the Instagram supported aspect ratios
