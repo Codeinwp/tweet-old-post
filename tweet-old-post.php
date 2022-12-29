@@ -88,7 +88,7 @@ function rop_buffer_present() {
 
 	foreach ( $services as $service ) {
 
-		if ( strpos( $service['service'], 'buffer' ) !== false ) {
+		if ( isset( $service['service'] ) && strpos( $service['service'], 'buffer' ) !== false ) {
 			add_action( 'admin_notices', 'rop_buffer_present_notice' );
 
 			if ( ! function_exists( 'deactivate_plugins' ) ) {
