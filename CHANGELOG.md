@@ -1,3 +1,7 @@
+##### [Version 9.0.11](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.10...v9.0.11) (2023-01-03)
+
+- Harden security of the plugin
+
 ##### [Version 9.0.10](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.9...v9.0.10) (2022-08-26)
 
 - [Dev] Remove old buffer service that doesn't exist anymore.
