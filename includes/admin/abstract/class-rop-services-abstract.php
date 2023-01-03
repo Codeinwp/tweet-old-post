@@ -390,6 +390,10 @@ abstract class Rop_Services_Abstract {
 
 				return false;
 			}
+
+			if ( ! $this->is_valid_serialize_data( $array[ $key ] ) ) {
+				return false;
+			}
 		}
 
 		return true;
@@ -871,6 +875,38 @@ abstract class Rop_Services_Abstract {
 		$hashtags = ' ' . implode( ' ', $hashtags );
 
 		return $hashtags;
+	}
+
+	/**
+	 * Check is valid serialize data.
+	 *
+	 * @param string $data serialize string.
+	 * @return bool
+	 */
+	protected function is_valid_serialize_data( $data ) {
+		$valid = true;
+		if ( is_array( $data ) ) {
+			$data = array_map(
+				function( $d ) {
+					$d = base64_decode( $d, true );
+					$d = unserialize( $d, array( 'allowed_classes' => false ) );
+					if ( $d instanceof \__PHP_Incomplete_Class ) {
+						return false;
+					}
+					return true;
+				},
+				$data
+			);
+			$data  = array_filter( $data );
+			$valid = empty( $data ) ? false : true;
+		} else {
+			$data = base64_decode( $data, true );
+			$data = unserialize( $data, array( 'allowed_classes' => false ) );
+			if ( $data instanceof \__PHP_Incomplete_Class ) {
+				$valid = false;
+			}
+		}
+		return $valid;
 	}
 
 }

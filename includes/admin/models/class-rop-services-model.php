@@ -121,7 +121,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		if ( false === $remove_toast_option ) {
 			$fb_valid_accounts = 0;
 			foreach ( $accounts_list as $service_key => $service_data ) {
-				if ( 'facebook' === $service_data['service'] ) {
+				if ( isset( $service_data['service'] ) && 'facebook' === $service_data['service'] ) {
 					if ( ! empty( $service_data['available_accounts'] ) ) {
 						foreach ( $service_data['available_accounts'] as $account_key => $value ) {
 							if ( true === filter_var( $value['active'], FILTER_VALIDATE_BOOLEAN ) ) {
@@ -159,7 +159,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 
 		foreach ( $new_auth_services as $service_key => $service_data ) {
 			$accounts = array();
-			if ( ! is_array( $service_data['available_accounts'] ) ) {
+			if ( ! isset( $service_data['available_accounts'] ) || ! is_array( $service_data['available_accounts'] ) ) {
 				$service_data['available_accounts'] = array();
 			}
 			foreach ( $service_data['available_accounts'] as $account ) {
