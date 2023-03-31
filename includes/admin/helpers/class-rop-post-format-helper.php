@@ -441,7 +441,7 @@ class Rop_Post_Format_Helper {
 				$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
 				$hashtags_length --; // subtract 1 for the # we added to $content
 			} elseif ( $this->string_length( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
-				$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
+				$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', $hashtag );
 			}
 		}
 
