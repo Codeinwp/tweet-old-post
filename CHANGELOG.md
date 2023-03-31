@@ -1,3 +1,9 @@
+##### [Version 9.0.13](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.12...v9.0.13) (2023-03-31)
+
+- Fixed hashtags issue with camel case text [#860](https://github.com/Codeinwp/tweet-old-post/issues/860)
+- WordPress core tested up to version 6.2
+- Fixed instant sharing regression [#861](https://github.com/Codeinwp/tweet-old-post/issues/861)
+
 ##### [Version 9.0.12](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.11...v9.0.12) (2023-01-31)
 
 * Improved query strings encoding
