@@ -250,11 +250,11 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - Yes, in the free plugin you can set how many hours you’d like between each share(e.g 6 hours), ROP will automatically post to your social networks when the countdown is up. To set the days and time of the week this would require the [Pro plugin](https://revive.social/plugins/revive-old-post/).
 
-**Is the Auto Publish (aka Auto Post) feature free?.**
+**Is the Auto Publish (aka Auto Post) feature free?**
 
 - Yes, this feature is free for the accounts that can be connected via the free plugin (Facebook and Twitter). Once you check the option to post on publish, our plugin will do the rest.
 
-**Can I share RSS feeds to social media?.**
+**Can I share RSS feeds to social media?**
 
 - Yes, you will need our Revive Network addon which is currently in the beta stages of testing for Pro users.
 
@@ -262,7 +262,7 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - This issue is normally caused by an antimalware or firewall plugin. Please try disabling all plugins(except Revive Old Posts) to see if the issue persists. If not then enable each plugin one by one while checking Revive Old Posts dashboard to see if the issue returns, that will help you determine the conflicting plugin.
 
-**Why isn't sharing working?.**
+**Why isn't sharing working?**
 
 - Your website Cron might be faulty. This is a common WordPress issue with many plugins, see our solution doc [here](https://docs.revive.social/article/686-fix-revive-old-post-not-posting) for fixing the issue.
 
@@ -282,13 +282,9 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - Yes, ROP can share to LinkedIn business pages as well as personal profiles.
 
-**Any more questions or doubts?**
-
-- Contact us at [HERE.](http://revive.social/support/) (enter "free" in the license field)
-
 == Screenshots ==
 
-1. Revive Old Posts dashboard(no accounts connected).
+1. Revive Old Posts dashboard (no accounts connected).
 2. Add account modal
 3. Facebook page and Twitter account connected
 4. General settings tab, only a few of the available settings are shown in this screenshot
