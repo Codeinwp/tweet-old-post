@@ -219,7 +219,7 @@ function run_rop() {
 				'location'         => 'TweetOldPost',
 				'has_upgrade_menu' => $global_settings->license_type() < 1,
 				'upgrade_text'     => esc_html__( 'Upgrade to Pro', 'tweet-old-post' ),
-				'upgrade_link'     => tsdk_utmify( Rop_I18n::UPSELL_LINK, 'aboutUsPage' ),
+				'upgrade_link'     => Rop_I18n::UPSELL_LINK,
 			);
 		}
 	);
