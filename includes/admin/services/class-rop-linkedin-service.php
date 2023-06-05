@@ -178,7 +178,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 		$this->api = new \LinkedIn\Client( $this->strip_whitespace( $client_id ), $this->strip_whitespace( $client_secret ) );
 
-		$this->api->setApiRoot( 'https://api.linkedin.com/v2/' );
+		$this->api->setApiRoot( 'https://api.linkedin.com/rest/' );
 
 		$this->api->setRedirectUrl( $this->get_legacy_url( 'linkedin' ) );
 	}
@@ -558,16 +558,17 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return;
 		}
 
-		$api_url = 'https://api.linkedin.com/v2/ugcPosts';
+		$api_url  = 'https://api.linkedin.com/rest/posts';
 		$response = wp_remote_post(
 			$api_url,
 			array(
 				'body'    => json_encode( $new_post ),
 				'headers' => array(
-					'Content-Type' => 'application/json',
-					'x-li-format' => 'json',
+					'Content-Type'              => 'application/json',
+					'x-li-format'               => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
-					'Authorization' => 'Bearer ' . $token,
+					'Authorization'             => 'Bearer ' . $token,
+					'Linkedin-Version'          => 202208,
 				),
 			)
 		);
@@ -580,12 +581,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( array_key_exists( 'id', $body ) ) {
+		if ( null === $body ) {
 
+			$title = isset( $new_post['content']['media']['title'] ) ? $new_post['content']['media']['title'] : $new_post['content']['article']['title'];
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+					$title,
 					$args['user'],
 					$post_details['service']
 				)
@@ -620,32 +622,33 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
+		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags;
+		$commentary = preg_replace_callback(
+			'/([\(\)\{\}\[\]])|([@*<>\\\\\_~])/m',
+			function ( $matches ) {
+				return '\\' . $matches[0];
+			},
+			$commentary
+		);
+
 		$new_post = array(
-			'author'          => $author_urn . $args['id'],
-			'lifecycleState'  => 'PUBLISHED',
-			'specificContent' =>
-				array(
-					'com.linkedin.ugc.ShareContent' =>
-						array(
-							'shareCommentary'    =>
-								array(
-									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags,
-								),
-							'shareMediaCategory' => 'ARTICLE',
-							'media'              =>
-								array(
-									0 =>
-										array(
-											'status'      => 'READY',
-											'originalUrl' => trim( $this->get_url( $post_details ) ),
-										),
-								),
-						),
+			'author'                    => $author_urn . $args['id'],
+			'lifecycleState'            => 'PUBLISHED',
+			'visibility'                => 'PUBLIC',
+			'isReshareDisabledByAuthor' => false,
+			'commentary'                => html_entity_decode( $commentary ),
+			'distribution'              => array(
+				'feedDistribution'               => 'MAIN_FEED',
+				'targetEntities'                 => array(),
+				'thirdPartyDistributionChannels' => array(),
+			),
+			'content'                   => array(
+				'article' => array(
+					'source'      => $post_details['post_url'],
+					'title'       => $post_details['title'],
+					'description' => html_entity_decode( $commentary ),
 				),
-			'visibility'      =>
-				array(
-					'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC',
-				),
+			),
 		);
 
 		return $new_post;
@@ -667,24 +670,33 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
+		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags;
+		$commentary = preg_replace_callback(
+			'/([\(\)\{\}\[\]])|([@*<>\\\\\_~])/m',
+			function ( $matches ) {
+				return '\\' . $matches[0];
+			},
+			$commentary
+		);
+
 		$new_post = array(
-			'author'          => $author_urn . $args['id'],
-			'lifecycleState'  => 'PUBLISHED',
-			'specificContent' =>
-				array(
-					'com.linkedin.ugc.ShareContent' =>
-						array(
-							'shareCommentary'    =>
-								array(
-									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags,
-								),
-							'shareMediaCategory' => 'NONE',
-						),
+			'author'                    => $author_urn . $args['id'],
+			'lifecycleState'            => 'PUBLISHED',
+			'visibility'                => 'PUBLIC',
+			'isReshareDisabledByAuthor' => false,
+			'commentary'                => html_entity_decode( $commentary ),
+			'distribution'              => array(
+				'feedDistribution'               => 'MAIN_FEED',
+				'targetEntities'                 => array(),
+				'thirdPartyDistributionChannels' => array(),
+			),
+			'content'                   => array(
+				'article' => array(
+					'source'      => $post_details['post_url'],
+					'title'       => $post_details['title'],
+					'description' => html_entity_decode( $commentary ),
 				),
-			'visibility'      =>
-				array(
-					'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC',
-				),
+			),
 		);
 
 		return $new_post;
@@ -720,34 +732,22 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
 		$register_image = array(
-			'registerUploadRequest' =>
-				array(
-					'recipes'              =>
-						array(
-							0 => 'urn:li:digitalmediaRecipe:feedshare-image',
-						),
-					'owner'                => $author_urn . $args['id'],
-					'serviceRelationships' =>
-						array(
-							0 =>
-								array(
-									'relationshipType' => 'OWNER',
-									'identifier'       => 'urn:li:userGeneratedContent',
-								),
-						),
-				),
+			'initializeUploadRequest' => array(
+				'owner' => $author_urn . $args['id'],
+			),
 		);
 
-		$api_url = 'https://api.linkedin.com/v2/assets?action=registerUpload';
+		$api_url  = 'https://api.linkedin.com/rest/images?action=initializeUpload';
 		$response = wp_remote_post(
 			$api_url,
 			array(
-				'body'    => json_encode( $register_image ),
+				'body'    => wp_json_encode( $register_image ),
 				'headers' => array(
-					'Content-Type' => 'application/json',
-					'x-li-format' => 'json',
+					'Content-Type'              => 'application/json',
+					'x-li-format'               => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
-					'Authorization' => 'Bearer ' . $token,
+					'Authorization'             => 'Bearer ' . $token,
+					'Linkedin-Version'          => 202208,
 				),
 			)
 		);
@@ -760,18 +760,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( empty( $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'] ) ) {
+		if ( empty( $body['value']['uploadUrl'] ) ) {
 			$this->logger->alert_error( 'Cannot share to LinkedIn, empty upload url' );
 			return false;
 		}
 
-		if ( empty( $body['value']['asset'] ) ) {
-			$this->logger->alert_error( 'Cannot share to LinkedIn, empty asset' );
-			return false;
-		}
-
-		$upload_url = $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
-		$asset      = $body['value']['asset'];
+		$upload_url = $body['value']['uploadUrl'];
+		$asset      = $body['value']['image'];
 
 		if ( function_exists( 'exif_imagetype' ) ) {
 			$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
@@ -786,7 +781,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$upload_url,
 			array(
 				'method'  => 'PUT',
-				'headers' => array( 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type, 'Content-Length' => $img_length ),
+				'headers' => array(
+					'Authorization'  => 'Bearer ' . $token,
+					'Content-type'   => $img_mime_type,
+					'Content-Length' => $img_length,
+				),
 				'body'    => $img_data,
 			)
 		);
@@ -805,40 +804,32 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags;
+		$commentary = preg_replace_callback(
+			'/([\(\)\{\}\[\]])|([@*<>\\\\\_~])/m',
+			function ( $matches ) {
+				return '\\' . $matches[0];
+			},
+			$commentary
+		);
+
 		$new_post = array(
-			'author'          => $author_urn . $args['id'],
-			'lifecycleState'  => 'PUBLISHED',
-			'specificContent' =>
-				array(
-					'com.linkedin.ugc.ShareContent' =>
-						array(
-							'shareCommentary'    =>
-								array(
-									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags,
-								),
-							'shareMediaCategory' => 'IMAGE',
-							'media'              =>
-								array(
-									0 =>
-										array(
-											'status'      => 'READY',
-											'description' =>
-												array(
-													'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
-												),
-											'media'       => $asset,
-											'title'       =>
-												array(
-													'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
-												),
-										),
-								),
-						),
+			'author'                    => $author_urn . $args['id'],
+			'lifecycleState'            => 'PUBLISHED',
+			'visibility'                => 'PUBLIC',
+			'isReshareDisabledByAuthor' => false,
+			'commentary'                => html_entity_decode( $commentary ),
+			'distribution'              => array(
+				'feedDistribution'               => 'MAIN_FEED',
+				'targetEntities'                 => array(),
+				'thirdPartyDistributionChannels' => array(),
+			),
+			'content'                   => array(
+				'media' => array(
+					'title' => $post_details['title'],
+					'id'    => $asset,
 				),
-			'visibility'      =>
-				array(
-					'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC',
-				),
+			),
 		);
 
 		return $new_post;
