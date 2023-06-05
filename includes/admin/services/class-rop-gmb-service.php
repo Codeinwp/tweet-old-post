@@ -519,7 +519,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		$response = $post_creator->create( $location, $new_post );
 
-		if ( $response->state === 'LIVE' ) {
+		if ( in_array( $response->state, array( 'LIVE', 'PROCESSING' ), true ) ) {
 
 			$this->logger->alert_success(
 				sprintf(
