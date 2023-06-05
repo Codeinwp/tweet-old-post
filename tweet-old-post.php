@@ -210,6 +210,20 @@ function run_rop() {
 		}
 	);
 
+	add_filter(
+		'tweet_old_post_about_us_metadata',
+		function() {
+			$global_settings = new \Rop_Global_Settings();
+			return array(
+				'logo'             => ROP_LITE_URL . 'assets/img/logo_rop.png',
+				'location'         => 'TweetOldPost',
+				'has_upgrade_menu' => $global_settings->license_type() < 1,
+				'upgrade_text'     => esc_html__( 'Upgrade to Pro', 'tweet-old-post' ),
+				'upgrade_link'     => function_exists( 'tsdk_utmify' ) ? tsdk_utmify( Rop_I18n::UPSELL_LINK, 'aboutUsPage' ) : esc_url( Rop_I18n::UPSELL_LINK ),
+			);
+		}
+	);
+
 	$plugin = new Rop();
 	$plugin->run();
 
