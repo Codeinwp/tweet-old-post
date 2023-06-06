@@ -1,3 +1,9 @@
+##### [Version 9.0.14](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.13...v9.0.14) (2023-06-06)
+
+- Added LinkedIn new API support
+- Added About Us page integration
+- Fixed post sharing issue with GMB
+
 ##### [Version 9.0.13](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.12...v9.0.13) (2023-03-31)
 
 - Fixed hashtags issue with camel case text [#860](https://github.com/Codeinwp/tweet-old-post/issues/860)
