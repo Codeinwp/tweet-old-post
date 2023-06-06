@@ -78,6 +78,7 @@ class Rop_Post_Format_Helper {
 		$content                            = $this->build_content( $post_id );
 		$filtered_post                      = array();
 		$filtered_post['post_id']           = $post_id;
+		$filtered_post['title']             = html_entity_decode( get_the_title( $post_id ) );
 		$filtered_post['account_id']        = $this->account_id;
 		$filtered_post['service']           = $service;
 		$filtered_post['content']           = apply_filters( 'rop_content_filter', $content['display_content'], $post_id, $account_id, $service );
