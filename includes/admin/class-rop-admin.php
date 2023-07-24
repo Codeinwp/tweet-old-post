@@ -355,7 +355,7 @@ class Rop_Admin {
 		$array_nonce['rop_cron_remote_agreement'] = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
-		$token     = get_option( 'ROP_INSTALL_TOKEN_OPTION' );
+		$token     = get_option( ROP_INSTALL_TOKEN_OPTION );
 		$signature = md5( $admin_url . $token );
 
 		$rop_auth_app_data = array(
