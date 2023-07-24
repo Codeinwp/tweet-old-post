@@ -359,7 +359,7 @@ class Rop_Admin {
 		$signature = md5( $admin_url . $token );
 
 		$rop_auth_app_data = array(
-			'adminEmail'          => base64_encode( get_option( 'admin_email' ) ),
+			'adminEmail'          => rawurlencode( base64_encode( get_option( 'admin_email' ) ) ),
 			'authAppUrl'          => ROP_AUTH_APP_URL,
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
