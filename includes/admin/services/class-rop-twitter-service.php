@@ -39,7 +39,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @access  private
 	 * @var     string $consumer_key The Twitter APP Consumer Key.
 	 */
-	private $consumer_key = 'ofaYongByVpa3NDEbXa2g';
+	private $consumer_key = 'OE9PNEEzMFZBTHNvOE02T3pOUmc6MTpjaQ';
 
 	/**
 	 * Holds the Twitter APP Consumer Secret.
@@ -51,7 +51,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @access  private
 	 * @var     string $consumer_secret The Twitter APP Consumer Secret.
 	 */
-	private $consumer_secret = 'vTzszlMujMZCY3mVtTE6WovUKQxqv3LVgiVku276M';
+	private $consumer_secret = 'P9zJ8jKGBM_tdIP_RzAUGkos6fwKPYr-ezVqwa8rXKOCI_ndbT';
 
 
 	/**
@@ -413,7 +413,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	private function twitter_article_post( $post_details ) {
 
-		$new_post['status'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
+		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
 
 		return $new_post;
 	}
@@ -430,7 +430,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	private function twitter_text_post( $post_details ) {
 
-		$new_post['status'] = $this->strip_excess_blank_lines( $post_details['content'] );
+		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] );
 
 		return $new_post;
 	}
@@ -508,6 +508,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		$this->logger->info( 'Before upload to twitter . ' . json_encode( $upload_args ) );
+		$api->setTimeouts( 10, 60 );
+		$api->setApiVersion( '1.1' );
 		$media_response = $api->upload( 'media/upload', $upload_args, true );
 
 		if ( isset( $media_response->media_id_string ) ) {
@@ -531,7 +533,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			} while ( $upload_status->processing_info->state !== 'succeeded' && $limit <= 10 );
 
 			if ( ! empty( $media_id ) ) {
-				$new_post['media_ids'] = $media_id;
+				$new_post['media']['media_ids'][] = (string) $media_id;
 			}
 		} else {
 			$this->logger->alert_error( sprintf( 'Can not upload media to twitter. Error: %s', json_encode( $media_response ) ) );
@@ -543,7 +545,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			wp_delete_file( $media_path );
 		}
 
-		$new_post['status'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
+		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
 
 		return $new_post;
 	}
@@ -608,12 +610,14 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$hashtags = $this->shuffle_hashtags( $hashtags );
 		}
 
-		$new_post['status'] = $new_post['status'] . $hashtags;
+		$new_post['text'] = $new_post['text'] . $hashtags;
 
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 
-		$response = $api->post( 'statuses/update', $new_post );
-		if ( isset( $response->id ) ) {
+		$api->setApiVersion( '2' );
+		$response = $api->post( 'tweets', $new_post, true );
+
+		if ( isset( $response->data->id ) ) {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
