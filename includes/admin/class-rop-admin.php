@@ -1023,7 +1023,6 @@ class Rop_Admin {
 		} else {
 			$logger->info( 'Fetching publish now queue: ' . print_r( $queue_stack, true ) );
 		}
-
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
 				$post    = $event['post'];

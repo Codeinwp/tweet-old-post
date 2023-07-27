@@ -534,7 +534,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		// LinkedIn link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
-			$new_post = $this->linkedin_article_post( $post_details, $hashtags, $args );
+			$new_post = $this->linkedin_article_post( $post_details, $hashtags, $args, $token );
 		}
 
 		// LinkedIn plain text post
@@ -547,7 +547,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			// Linkedin Api v2 doesn't support video upload. Share as article post
 			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) !== false ) {
-				$new_post = $this->linkedin_article_post( $post_details, $hashtags, $args );
+				$new_post = $this->linkedin_article_post( $post_details, $hashtags, $args, $token );
 			} else {
 				$new_post = $this->linkedin_image_post( $post_details, $hashtags, $args, $token );
 			}
@@ -618,7 +618,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.2.3
 	 * @access  private
 	 */
-	private function linkedin_article_post( $post_details, $hashtags, $args ) {
+	private function linkedin_article_post( $post_details, $hashtags, $args, $token = '' ) {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
@@ -630,6 +630,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			},
 			$commentary
 		);
+
+		// Assets upload to linkedin.
+		$img        = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+		$asset_data = $this->linkedin_upload_assets( $img, $args, $token );
 
 		$new_post = array(
 			'author'                    => $author_urn . $args['id'],
@@ -650,6 +654,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				),
 			),
 		);
+
+		if ( ! empty( $asset_data['value']['image'] ) ) {
+			$new_post['content']['article']['thumbnail'] = $asset_data['value']['image'];
+		}
 
 		return $new_post;
 
@@ -729,81 +737,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return $this->linkedin_article_post( $post_details, $hashtags, $args );
 		}
 
-		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
-
-		$register_image = array(
-			'initializeUploadRequest' => array(
-				'owner' => $author_urn . $args['id'],
-			),
-		);
-
-		$api_url  = 'https://api.linkedin.com/rest/images?action=initializeUpload';
-		$response = wp_remote_post(
-			$api_url,
-			array(
-				'body'    => wp_json_encode( $register_image ),
-				'headers' => array(
-					'Content-Type'              => 'application/json',
-					'x-li-format'               => 'json',
-					'X-Restli-Protocol-Version' => '2.0.0',
-					'Authorization'             => 'Bearer ' . $token,
-					'Linkedin-Version'          => 202208,
-				),
-			)
-		);
-
-		if ( is_wp_error( $response ) ) {
-			$error_string = $response->get_error_message();
-			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
-			return false;
+		// Assets upload to linkedin.
+		$asset_data = $this->linkedin_upload_assets( $img, $args, $token );
+		if ( empty( $asset_data['value']['image'] ) ) {
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
+			return $this->linkedin_article_post( $post_details, $hashtags, $args );
 		}
 
-		$body = json_decode( wp_remote_retrieve_body( $response ), true );
-
-		if ( empty( $body['value']['uploadUrl'] ) ) {
-			$this->logger->alert_error( 'Cannot share to LinkedIn, empty upload url' );
-			return false;
-		}
-
-		$upload_url = $body['value']['uploadUrl'];
-		$asset      = $body['value']['image'];
-
-		if ( function_exists( 'exif_imagetype' ) ) {
-			$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
-		} else {
-			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.linkedin_missing_exif_imagetype' ) );
-			return false;
-		}
-		$img_data   = file_get_contents( $img );
-		$img_length = strlen( $img_data );
-
-		$wp_img_put = wp_remote_request(
-			$upload_url,
-			array(
-				'method'  => 'PUT',
-				'headers' => array(
-					'Authorization'  => 'Bearer ' . $token,
-					'Content-type'   => $img_mime_type,
-					'Content-Length' => $img_length,
-				),
-				'body'    => $img_data,
-			)
-		);
-
-		if ( is_wp_error( $wp_img_put ) ) {
-			$error_string = $wp_img_put->get_error_message();
-			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
-			return false;
-		}
-
-		$response_code = $wp_img_put['response']['code'];
-
-		if ( $response_code !== 201 ) {
-			$response_message = $wp_img_put['response']['message'];
-			$this->logger->alert_error( 'Cannot share to LinkedIn. Error:  ' . $response_code . ' ' . $response_message );
-			return false;
-		}
-
+		$asset      = $asset_data['value']['image'];
 		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags;
 		$commentary = preg_replace_callback(
 			'/([\(\)\{\}\[\]])|([@*<>\\\\\_~])/m',
@@ -990,6 +931,98 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$account['link'] = 'https://linkedin.com/feed/';
 		}
 		return $account;
+	}
+
+	/**
+	 * Linkedin upload media assets.
+	 *
+	 * @param string $image_url Post image URL.
+	 * @param array  $args Arguments needed by the method.
+	 * @param string $token The user token.
+	 *
+	 * @return string|bool
+	 */
+	private function linkedin_upload_assets( $image_url, $args, $token ) {
+		if ( empty( $image_url ) ) {
+			$this->logger->alert_error( 'Cannot upload image to LinkedIn, empty upload url' );
+			return false;
+		}
+		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
+
+		$register_image = array(
+			'initializeUploadRequest' => array(
+				'owner' => $author_urn . $args['id'],
+			),
+		);
+
+		$api_url  = 'https://api.linkedin.com/rest/images?action=initializeUpload';
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'body'    => wp_json_encode( $register_image ),
+				'headers' => array(
+					'Content-Type'              => 'application/json',
+					'x-li-format'               => 'json',
+					'X-Restli-Protocol-Version' => '2.0.0',
+					'Authorization'             => 'Bearer ' . $token,
+					'Linkedin-Version'          => 202208,
+				),
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			$error_string = $response->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return false;
+		}
+
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( empty( $body['value']['uploadUrl'] ) ) {
+			$this->logger->alert_error( 'Cannot share to LinkedIn, empty upload url' );
+			return false;
+		}
+
+		$upload_url = $body['value']['uploadUrl'];
+		$asset      = $body['value']['image'];
+
+		if ( function_exists( 'exif_imagetype' ) ) {
+			$img_mime_type = image_type_to_mime_type( exif_imagetype( $image_url ) );
+		} else {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.linkedin_missing_exif_imagetype' ) );
+			return false;
+		}
+		$img_data   = file_get_contents( $image_url );
+		$img_length = strlen( $img_data );
+
+		$wp_img_put = wp_remote_request(
+			$upload_url,
+			array(
+				'method'  => 'PUT',
+				'headers' => array(
+					'Authorization'  => 'Bearer ' . $token,
+					'Content-type'   => $img_mime_type,
+					'Content-Length' => $img_length,
+				),
+				'body'    => $img_data,
+			)
+		);
+
+		if ( is_wp_error( $wp_img_put ) ) {
+			$error_string = $wp_img_put->get_error_message();
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.wordpress_api_error' ) . $error_string );
+			return false;
+		}
+
+		$response_code = $wp_img_put['response']['code'];
+
+		if ( 201 !== $response_code ) {
+			$response_message = $wp_img_put['response']['message'];
+			$this->logger->alert_error( 'Cannot share to LinkedIn. Error:  ' . $response_code . ' ' . $response_message );
+			return false;
+		}
+
+		return $body;
 	}
 
 }
