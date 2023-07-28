@@ -1,3 +1,42 @@
+##### [Version 9.0.14](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.13...v9.0.14) (2023-06-06)
+
+- Added LinkedIn new API support
+- Added About Us page integration
+- Fixed post sharing issue with GMB
+
+##### [Version 9.0.13](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.12...v9.0.13) (2023-03-31)
+
+- Fixed hashtags issue with camel case text [#860](https://github.com/Codeinwp/tweet-old-post/issues/860)
+- WordPress core tested up to version 6.2
+- Fixed instant sharing regression [#861](https://github.com/Codeinwp/tweet-old-post/issues/861)
+
+##### [Version 9.0.12](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.11...v9.0.12) (2023-01-31)
+
+* Improved query strings encoding
+
+##### [Version 9.0.11](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.10...v9.0.11) (2023-01-03)
+
+- Harden security of the plugin
+
+##### [Version 9.0.10](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.9...v9.0.10) (2022-08-26)
+
+- [Dev] Remove old buffer service that doesn't exist anymore.
+- [Dev] Less cumbersome error messages when services fail to build by using getMessage() instead of getTrace()
+
+##### [Version 9.0.9](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.8...v9.0.9) (2022-07-25)
+
+- [New Pro] Option to automatically crop Instagram Images if they do not meet the Instagram supported aspect ratios
+- [Fix] PHP 8 related errors
+- [Fix] Long taxonomy names were overflowing their container in multiselect fields
+- [Info] Tested on WP 6.0
+- [Info] Minimum PHP version has been changed to 7.2 to address composer dependency PHP errors
+- [Info] Updated Themeisle SDK
+
+##### [Version 9.0.8](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.7...v9.0.8) (2022-04-22)
+
+### Info
+- Update tested up to version
+
 ##### [Version 9.0.7](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.6...v9.0.7) (2022-04-21)
 
 ### Info
