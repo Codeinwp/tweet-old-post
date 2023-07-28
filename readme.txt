@@ -301,6 +301,14 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.0.15](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.14...v9.0.15) (2023-07-28)
+
+- Fixed post-sharing issue with post image
+- Added Twitter v2 API support
+
+
+
+
 ##### [Version 9.0.14](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.13...v9.0.14) (2023-06-06)
 
 - Added LinkedIn new API support
