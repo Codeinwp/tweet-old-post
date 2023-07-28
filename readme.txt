@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags: share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing
 Requires at least: 4.7
-Tested up to: 6.0
+Tested up to: 6.2
 Requires PHP: 7.2
 Stable tag: trunk
 
@@ -250,11 +250,11 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - Yes, in the free plugin you can set how many hours you’d like between each share(e.g 6 hours), ROP will automatically post to your social networks when the countdown is up. To set the days and time of the week this would require the [Pro plugin](https://revive.social/plugins/revive-old-post/).
 
-**Is the Auto Publish (aka Auto Post) feature free?.**
+**Is the Auto Publish (aka Auto Post) feature free?**
 
 - Yes, this feature is free for the accounts that can be connected via the free plugin (Facebook and Twitter). Once you check the option to post on publish, our plugin will do the rest.
 
-**Can I share RSS feeds to social media?.**
+**Can I share RSS feeds to social media?**
 
 - Yes, you will need our Revive Network addon which is currently in the beta stages of testing for Pro users.
 
@@ -262,7 +262,7 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - This issue is normally caused by an antimalware or firewall plugin. Please try disabling all plugins(except Revive Old Posts) to see if the issue persists. If not then enable each plugin one by one while checking Revive Old Posts dashboard to see if the issue returns, that will help you determine the conflicting plugin.
 
-**Why isn't sharing working?.**
+**Why isn't sharing working?**
 
 - Your website Cron might be faulty. This is a common WordPress issue with many plugins, see our solution doc [here](https://docs.revive.social/article/686-fix-revive-old-post-not-posting) for fixing the issue.
 
@@ -282,13 +282,9 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - Yes, ROP can share to LinkedIn business pages as well as personal profiles.
 
-**Any more questions or doubts?**
-
-- Contact us at [HERE.](http://revive.social/support/) (enter "free" in the license field)
-
 == Screenshots ==
 
-1. Revive Old Posts dashboard(no accounts connected).
+1. Revive Old Posts dashboard (no accounts connected).
 2. Add account modal
 3. Facebook page and Twitter account connected
 4. General settings tab, only a few of the available settings are shown in this screenshot
@@ -304,6 +300,66 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+
+##### [Version 9.0.14](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.13...v9.0.14) (2023-06-06)
+
+- Added LinkedIn new API support
+- Added About Us page integration
+- Fixed post sharing issue with GMB
+
+
+
+
+##### [Version 9.0.13](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.12...v9.0.13) (2023-03-31)
+
+- Fixed hashtags issue with camel case text [#860](https://github.com/Codeinwp/tweet-old-post/issues/860)
+- WordPress core tested up to version 6.2
+- Fixed instant sharing regression [#861](https://github.com/Codeinwp/tweet-old-post/issues/861)
+
+
+
+
+##### [Version 9.0.12](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.11...v9.0.12) (2023-01-31)
+
+* Improved query strings encoding
+
+
+
+
+##### [Version 9.0.11](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.10...v9.0.11) (2023-01-03)
+
+- Harden security of the plugin
+
+
+
+
+##### [Version 9.0.10](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.9...v9.0.10) (2022-08-26)
+
+- [Dev] Remove old buffer service that doesn't exist anymore.
+- [Dev] Less cumbersome error messages when services fail to build by using getMessage() instead of getTrace()
+
+
+
+
+##### [Version 9.0.9](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.8...v9.0.9) (2022-07-25)
+
+- [New Pro] Option to automatically crop Instagram Images if they do not meet the Instagram supported aspect ratios
+- [Fix] PHP 8 related errors
+- [Fix] Long taxonomy names were overflowing their container in multiselect fields
+- [Info] Tested on WP 6.0
+- [Info] Minimum PHP version has been changed to 7.2 to address composer dependency PHP errors
+- [Info] Updated Themeisle SDK
+
+
+
+
+##### [Version 9.0.8](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.7...v9.0.8) (2022-04-22)
+
+### Info
+- Update tested up to version
+
+
+
 
 ##### [Version 9.0.7](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.6...v9.0.7) (2022-04-21)
 
