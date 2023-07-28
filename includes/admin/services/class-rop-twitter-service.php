@@ -105,7 +105,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$api = $this->get_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
 
-		$access_token = $api->oauth( 'oauth/access_token', array( 'oauth_verifier' => $_GET['oauth_verifier'] ) );
+		$access_token = $api->oauth(
+			'oauth/access_token',
+			array(
+				'oauth_verifier' => $_GET['oauth_verifier'],
+			)
+		);
 
 		$_SESSION['rop_twitter_oauth_token'] = $access_token;
 
