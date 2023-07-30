@@ -3,7 +3,7 @@ Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisl
 Tags: share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing
 Requires at least: 4.7
 Tested up to: 6.2
-Requires PHP: 7.2
+Requires PHP: 7.4
 Stable tag: trunk
 
 
