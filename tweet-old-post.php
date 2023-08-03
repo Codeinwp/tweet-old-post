@@ -110,7 +110,7 @@ function rop_php_notice() {
 	?>
 
 	<div class="notice notice-error is-dismissible">
-		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 7.1! Revive Old Posts requires at least %2$sPHP 7.1%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 7.4! Revive Old Posts requires at least %2$sPHP 7.4%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
 	</div>
 	<?php
 }
