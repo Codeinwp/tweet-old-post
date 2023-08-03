@@ -301,6 +301,13 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.0.17](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.16...v9.0.17) (2023-08-03)
+
+PHP version required updated to 7.4
+
+
+
+
 ##### [Version 9.0.16](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.15...v9.0.16) (2023-08-03)
 
 - Updated the required PHP version to 7.4
