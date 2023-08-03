@@ -25,7 +25,7 @@
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
  * Requires License:    no
- * Requires PHP: 7.2
+ * Requires PHP: 7.4
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: tweet-old-post
@@ -40,7 +40,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 if ( function_exists( 'phpversion' ) ) {
 
-	if ( version_compare( phpversion(), '7.2', '<' ) ) {
+	if ( version_compare( phpversion(), '7.4', '<' ) ) {
 		add_action( 'admin_notices', 'rop_php_notice' );
 		add_action( 'admin_init', 'deactivate_rop', 1 );
 		return;
@@ -48,7 +48,7 @@ if ( function_exists( 'phpversion' ) ) {
 }
 
 if ( defined( 'PHP_VERSION' ) ) {
-	if ( version_compare( PHP_VERSION, '7.2', '<' ) ) {
+	if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
 		add_action( 'admin_notices', 'rop_php_notice' );
 		add_action( 'admin_init', 'deactivate_rop', 1 );
 		return;
