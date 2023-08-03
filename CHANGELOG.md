@@ -1,3 +1,7 @@
+##### [Version 9.0.16](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.15...v9.0.16) (2023-08-03)
+
+- Updated the required PHP version to 7.4
+
 ##### [Version 9.0.15](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.14...v9.0.15) (2023-07-28)
 
 - Fixed post-sharing issue with post image
