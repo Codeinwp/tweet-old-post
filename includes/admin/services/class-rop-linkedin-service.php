@@ -43,7 +43,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  protected
 	 * @var     array $scopes The scopes to authorize with LinkedIn.
 	 */
-	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin' );
+	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin', 'w_share', 'r_basicprofile' );
 
 	/**
 	 * Old permissions required by custom user apps.
