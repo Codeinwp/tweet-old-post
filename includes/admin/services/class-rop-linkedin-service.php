@@ -558,6 +558,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return;
 		}
 
+		if ( isset( $new_post['author'] ) ) {
+			$author_urn         = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
+			$new_post['author'] = $author_urn . $args['id'];
+		}
+
 		$api_url  = 'https://api.linkedin.com/rest/posts';
 		$response = wp_remote_post(
 			$api_url,
