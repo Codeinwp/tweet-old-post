@@ -43,7 +43,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  protected
 	 * @var     array $scopes The scopes to authorize with LinkedIn.
 	 */
-	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin' );
+	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin', 'w_share', 'r_basicprofile' );
 
 	/**
 	 * Old permissions required by custom user apps.
@@ -556,6 +556,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		if ( empty( $new_post ) ) {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
 			return;
+		}
+
+		if ( isset( $new_post['author'] ) ) {
+			$author_urn         = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
+			$new_post['author'] = $author_urn . $args['id'];
 		}
 
 		$api_url  = 'https://api.linkedin.com/rest/posts';
