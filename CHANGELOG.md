@@ -1,3 +1,7 @@
+##### [Version 9.0.18](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.17...v9.0.18) (2023-08-17)
+
+- Added new authentication permissions scope for LinkedIn
+
 ##### [Version 9.0.17](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.16...v9.0.17) (2023-08-03)
 
 PHP version required updated to 7.4
