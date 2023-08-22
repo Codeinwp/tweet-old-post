@@ -573,7 +573,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'x-li-format'               => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
 					'Authorization'             => 'Bearer ' . $token,
-					'Linkedin-Version'          => 202208,
+					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : 202304,
 				),
 			)
 		);
@@ -636,10 +636,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$commentary
 		);
 
-		// Assets upload to linkedin.
-		$img        = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
-		$asset_data = $this->linkedin_upload_assets( $img, $args, $token );
-
 		$new_post = array(
 			'author'                    => $author_urn . $args['id'],
 			'lifecycleState'            => 'PUBLISHED',
@@ -660,8 +656,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			),
 		);
 
-		if ( ! empty( $asset_data['value']['image'] ) ) {
-			$new_post['content']['article']['thumbnail'] = $asset_data['value']['image'];
+		$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+		if ( ! empty( $img ) ) {
+			$asset_data = $this->linkedin_upload_assets( $img, $args, $token );
+			if ( ! empty( $asset_data['value']['image'] ) ) {
+				// Assets upload to linkedin.
+				$new_post['content']['article']['thumbnail'] = $asset_data['value']['image'];
+			}
 		}
 
 		return $new_post;
@@ -970,7 +971,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'x-li-format'               => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
 					'Authorization'             => 'Bearer ' . $token,
-					'Linkedin-Version'          => 202208,
+					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : 202304,
 				),
 			)
 		);
