@@ -1,3 +1,7 @@
+##### [Version 9.0.19](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.18...v9.0.19) (2023-08-23)
+
+- Fixed LinkedIn sharing (API version changed)
+
 ##### [Version 9.0.18](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.17...v9.0.18) (2023-08-17)
 
 - Added new authentication permissions scope for LinkedIn
