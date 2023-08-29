@@ -573,6 +573,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		if ( Rop_Admin::rop_check_reached_sharing_limit( 'tw' ) ) {
+			$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', Rop_I18n::get_labels( 'sharing.reached_sharing_limit' ) ) );
+			return false;
+		}
+
 		$this->set_api(
 			$this->credentials['oauth_token'],
 			$this->credentials['oauth_token_secret'],

@@ -1719,5 +1719,42 @@ HTML;
 
 	}
 
+	/**
+	 * Check the post sharing limit before sharing the post.
+	 *
+	 * @param string $sharing_type Post sharing type.
+	 * @return bool
+	 */
+	public static function rop_check_reached_sharing_limit( $sharing_type = 'tw' ) {
+		$license_key = '';
+		if ( 'valid' === apply_filters( 'product_rop_license_status', 'invalid' ) ) {
+			$license_key = apply_filters( 'product_rop_license_key', '' );
+		}
+		// Send API request.
+		$response = wp_remote_post(
+			ROP_POST_SHARING_CONTROL_API,
+			apply_filters(
+				'rop_post_sharing_limit_api_args',
+				array(
+					'timeout' => 100,
+					'body'    => array_merge(
+						array(
+							'sharing_type' => $sharing_type,
+							'license'      => $license_key,
+							'site_url'     => get_site_url(),
+						)
+					),
+				)
+			)
+		);
 
+		if ( ! is_wp_error( $response ) ) {
+			$body          = json_decode( wp_remote_retrieve_body( $response ) );
+			$response_code = wp_remote_retrieve_response_code( $response );
+			if ( 200 === $response_code ) {
+				return ! $body->is_valid;
+			}
+		}
+		return true;
+	}
 }

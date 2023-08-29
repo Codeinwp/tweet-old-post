@@ -187,6 +187,7 @@ function run_rop() {
 	define( 'ROP_APP_GMB_PATH', '/gmb_auth' );
 	define( 'ROP_APP_VK_PATH', '/vk_auth' );
 	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
+	define( 'ROP_POST_SHARING_CONTROL_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/post-sharing-control' );
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {

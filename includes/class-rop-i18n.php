@@ -404,6 +404,7 @@ You can try to disable any of the security plugins that you use in order to see 
 			'sharing' => array(
 				'post_already_shared' => __( 'This post went out on the last share event and might be a duplicate. Skipping...', 'tweet-old-post' ),
 				'share_attempted_on_staging' => __( 'ROP has detected that this is a development website. Share process skipped.', 'tweet-old-post' ),
+				'reached_sharing_limit' => __( 'You have reached the per day post sharing limit.', 'tweet-old-post' ),
 			),
 			'errors' => array(
 				'wordpress_api_error' => __( 'Cannot post to network. WordPress Error: ', 'tweet-old-post' ),
