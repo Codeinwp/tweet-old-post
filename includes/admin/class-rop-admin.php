@@ -1727,8 +1727,10 @@ HTML;
 	 */
 	public static function rop_check_reached_sharing_limit( $sharing_type = 'tw' ) {
 		$license_key = '';
+		$plan_id     = 0;
 		if ( 'valid' === apply_filters( 'product_rop_license_status', 'invalid' ) ) {
 			$license_key = apply_filters( 'product_rop_license_key', '' );
+			$plan_id     = apply_filters( 'product_rop_license_plan', 0 );
 		}
 		// Send API request.
 		$response = wp_remote_post(
@@ -1741,6 +1743,7 @@ HTML;
 						array(
 							'sharing_type' => $sharing_type,
 							'license'      => $license_key,
+							'plan_id'      => $plan_id,
 							'site_url'     => get_site_url(),
 						)
 					),
@@ -1752,9 +1755,9 @@ HTML;
 			$body          = json_decode( wp_remote_retrieve_body( $response ) );
 			$response_code = wp_remote_retrieve_response_code( $response );
 			if ( 200 === $response_code ) {
-				return ! $body->is_valid;
+				return $body;
 			}
 		}
-		return true;
+		return false;
 	}
 }
