@@ -41,7 +41,7 @@
     ]
   },
   "require": {
-    "facebook/graph-sdk": "5.7",
+    "facebook/graph-sdk": "^5.7",
     "abraham/twitteroauth": "^4.0",
     "codeinwp/themeisle-sdk": "^3.3",
     "vkcom/vk-php-sdk": "5.101.0"
@@ -54,5 +54,10 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
     "phpunit/phpunit": "5.*",
     "yoast/phpunit-polyfills": "^1.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }
