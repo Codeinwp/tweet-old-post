@@ -301,6 +301,13 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.0.21](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.20...v9.0.21) (2023-09-27)
+
+ - Implemented post-sharing limit API to prevent sharing errors
+
+
+
+
 ##### [Version 9.0.20](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.19...v9.0.20) (2023-09-19)
 
 - Fixed Facebook login issue by upgrading Graph API version v7.0 to v12.0
