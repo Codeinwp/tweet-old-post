@@ -780,8 +780,9 @@ class Rop_Admin {
 	public function publish_now_attributes( $default ) {
 		global $post;
 
-		if ( 'publish' === $post->post_status ) {
-			$default['action'] = 'yes' === get_post_meta( $post->ID, 'rop_publish_now', true );
+		if ( in_array( $post->post_status, array( 'future', 'publish' ), true ) ) {
+			$default['action']                   = 'yes' === get_post_meta( $post->ID, 'rop_publish_now', true );
+			$default['instant_share_by_default'] = $default['action'];
 		}
 		$default['active'] = get_post_meta( $post->ID, 'rop_publish_now_accounts', true );
 
@@ -794,15 +795,21 @@ class Rop_Admin {
 	 * @param int $post_id The post ID.
 	 */
 	public function maybe_publish_now( $post_id ) {
-		if ( ! isset( $_POST['rop_publish_now_nonce'] ) || ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
+		if ( empty( $_POST['rop_publish_now_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
 			return;
 		}
 
-		if ( empty( $_POST['publish_now_accounts'] ) ) {
+		if ( empty( $_POST['publish_now_accounts'] ) || empty( $_POST['publish_now'] ) ) {
+			delete_post_meta( $post_id, 'rop_publish_now' );
+			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
 			return;
 		}
 
-		if ( get_post_status( $post_id ) !== 'publish' ) {
+		$post_status = get_post_status( $post_id );
+		if ( ! in_array( $post_status, array( 'future', 'publish' ), true ) ) {
 			return;
 		}
 
@@ -811,13 +818,6 @@ class Rop_Admin {
 		}
 
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return;
-		}
-
-		if ( ! isset( $_POST['publish_now'] ) || empty( $_POST['publish_now'] ) ) {
-			delete_post_meta( $post_id, 'rop_publish_now' );
-			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
-
 			return;
 		}
 
@@ -830,7 +830,7 @@ class Rop_Admin {
 		$services = new Rop_Services_Model();
 		$settings = new Rop_Settings_Model();
 
-		$active   = array_keys( $services->get_active_accounts() );
+		$active = array_keys( $services->get_active_accounts() );
 		// has something been added extra?
 		$extra = array_diff( $enabled, $active );
 		// reject the extra.
@@ -839,18 +839,18 @@ class Rop_Admin {
 		$instant_share_custom_content = array();
 
 		foreach ( $enabled as $account_id ) {
-				$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
-				$instant_share_custom_content[ $account_id ] = $custom_message;
+			$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
+			$instant_share_custom_content[ $account_id ] = $custom_message;
 		}
+
+		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', $instant_share_custom_content );
 
 		// If user wants to run this operation on page refresh instead of via Cron.
 		if ( $settings->get_true_instant_share() ) {
 			$this->rop_cron_job_publish_now( $post_id, $instant_share_custom_content );
 			return;
 		}
-
-		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
-		update_post_meta( $post_id, 'rop_publish_now_accounts', $instant_share_custom_content );
 
 		if ( empty( $enabled ) ) {
 			return;

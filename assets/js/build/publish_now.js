@@ -936,7 +936,8 @@ module.exports = (0, _defineProperty3.default)({
 			share_on_update_by_default: this.$store.state.publish_now.instant_share_by_default,
 			choose_accounts_manually: this.$store.state.publish_now.choose_accounts_manually,
 			showField: fields,
-			toggle_accounts: this.$store.state.publish_now.instant_share_by_default
+			toggle_accounts: this.$store.state.publish_now.instant_share_by_default,
+			active_accounts: this.$store.state.publish_now.active
 		};
 	},
 	components: {
@@ -968,6 +969,16 @@ module.exports = (0, _defineProperty3.default)({
 		togglefields: function togglefields(value) {
 			var self = this;
 			return self.showField[value] = !self.showField[value];
+		},
+
+		containsKey: function containsKey(obj, key) {
+			return (0, _keys2.default)(obj).includes(key);
+		},
+
+
+		isActiveAccount: function isActiveAccount(key) {
+			var self = this;
+			return this.containsKey(self.active_accounts, key);
 		}
 
 	}
@@ -1018,7 +1029,7 @@ module.exports = (0, _defineProperty3.default)({
 //
 // 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="toggle_accounts" v-for="(account, key) in accounts" :id="key" v-bind:key="key">
 // 				<label class="form-checkbox rop-publish-now-account" :id="key">
-// 					<input type="checkbox" :checked="share_on_update_by_default && !choose_accounts_manually" :value="key" v-on:click="toggleServices($event, key)" name="publish_now_accounts[]" class="rop-account-names"/>
+// 					<input type="checkbox" :checked="isActiveAccount(key)" :value="key" v-on:click="toggleServices($event, key)" name="publish_now_accounts[]" class="rop-account-names"/>
 // 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
 // 				</label>
 // 				<span v-on:click="togglefields(key)" :id="key" class="rop-edit-custom-instant-share-message-text">{{ showField[key] ? 'done' : 'edit message' }}</span>
@@ -1292,7 +1303,7 @@ $export($export.S + $export.F * !__webpack_require__(5), 'Object', { definePrope
 /***/ 333:
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"rop-control-container\">\n\t\t\t<p v-if=\"Object.keys(accounts).length < 1\">{{labels.add_account_to_use_instant_share}}</p>\n\t\t<!-- Share on publish/update -->\n\t\t<fieldset v-if=\"Object.keys(accounts).length > 0\">\n\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_by_default\" v-on:click=\"toggle_accounts = !toggle_accounts\" name=\"publish_now\" value=\"1\"/>\n\t\t\t\t<span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"toggle_accounts\" v-for=\"(account, key) in accounts\" :id=\"key\" v-bind:key=\"key\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\" :id=\"key\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_by_default && !choose_accounts_manually\" :value=\"key\" v-on:click=\"toggleServices($event, key)\" name=\"publish_now_accounts[]\" class=\"rop-account-names\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t\t<span v-on:click=\"togglefields(key)\" :id=\"key\" class=\"rop-edit-custom-instant-share-message-text\">{{ showField[key] ? 'done' : 'edit message' }}</span>\n\t\t\t\t<p v-show=\"showField[key]\" class=\"rop-custom-instant-share-message-text\">Custom share message:</p>\n\t\t\t\t<textarea v-show=\"showField[key]\" :name=\"key\" :disabled=\"!isPro\" class=\"rop-custom-instant-share-message-area\"></textarea>\n\t\t\t\t<p v-if=\"!isPro && showField[key]\" v-html=\"labels.custom_instant_share_messages_upsell\" class=\"custom-instant-share-upsell\"></p>\n\t\t\t</div>\n\t\t</fieldset>\n\n\t</div>\n";
+module.exports = "\n\t<div class=\"rop-control-container\">\n\t\t\t<p v-if=\"Object.keys(accounts).length < 1\">{{labels.add_account_to_use_instant_share}}</p>\n\t\t<!-- Share on publish/update -->\n\t\t<fieldset v-if=\"Object.keys(accounts).length > 0\">\n\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_by_default\" v-on:click=\"toggle_accounts = !toggle_accounts\" name=\"publish_now\" value=\"1\"/>\n\t\t\t\t<span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"toggle_accounts\" v-for=\"(account, key) in accounts\" :id=\"key\" v-bind:key=\"key\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\" :id=\"key\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"isActiveAccount(key)\" :value=\"key\" v-on:click=\"toggleServices($event, key)\" name=\"publish_now_accounts[]\" class=\"rop-account-names\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t\t<span v-on:click=\"togglefields(key)\" :id=\"key\" class=\"rop-edit-custom-instant-share-message-text\">{{ showField[key] ? 'done' : 'edit message' }}</span>\n\t\t\t\t<p v-show=\"showField[key]\" class=\"rop-custom-instant-share-message-text\">Custom share message:</p>\n\t\t\t\t<textarea v-show=\"showField[key]\" :name=\"key\" :disabled=\"!isPro\" class=\"rop-custom-instant-share-message-area\"></textarea>\n\t\t\t\t<p v-if=\"!isPro && showField[key]\" v-html=\"labels.custom_instant_share_messages_upsell\" class=\"custom-instant-share-upsell\"></p>\n\t\t\t</div>\n\t\t</fieldset>\n\n\t</div>\n";
 
 /***/ }),
 
