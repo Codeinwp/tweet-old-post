@@ -382,6 +382,11 @@ class Rop_Admin {
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropAuthAppData', $rop_auth_app_data );
 		wp_enqueue_script( $this->plugin_name . '-' . $page );
 
+		// Deregister the LMS vue-libs script for the ROP dashboard and exclude the page.
+		if ( function_exists( 'learn_press_get_current_version' ) && wp_script_is( $this->plugin_name . '-' . $page ) ) {
+			wp_deregister_script( 'vue-libs' );
+		}
+
 	}
 
 	/**

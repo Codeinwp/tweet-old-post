@@ -34669,9 +34669,6 @@ module.exports = {
             }
             return labels.status + ': ' + status_label_display;
         },
-        status_is_error_display: function status_is_error_display() {
-            return this.status_is_error_display;
-        },
         /**
          * Check if we have accounts connected.
          *

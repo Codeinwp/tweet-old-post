@@ -180,9 +180,6 @@
                 }
                 return labels.status + ': ' + status_label_display;
             },
-            status_is_error_display: function () {
-                return this.status_is_error_display;
-            },
             /**
              * Check if we have accounts connected.
              *
