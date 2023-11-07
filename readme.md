@@ -2,7 +2,7 @@
 **Contributors:** [codeinwp](https://profiles.wordpress.org/codeinwp), [marius2012](https://profiles.wordpress.org/marius2012), [marius_codeinwp](https://profiles.wordpress.org/marius_codeinwp), [hardeepasrani](https://profiles.wordpress.org/hardeepasrani), [Madalin_Themeisle](https://profiles.wordpress.org/Madalin_Themeisle), [rsocial](https://profiles.wordpress.org/rsocial), [uriahs-victor](https://profiles.wordpress.org/uriahs-victor)  
 **Tags:** share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing  
 **Requires at least:** 4.7  
-**Tested up to:** 5.7  
+**Tested up to:** 6.4  
 **Requires PHP:** 7.1  
 **Stable tag:** trunk  
 
