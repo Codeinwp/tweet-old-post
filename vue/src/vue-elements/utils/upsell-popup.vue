@@ -1,6 +1,6 @@
 <template>
 	<div id="rop-twitter-upsell-popup" v-if="twitterDismissLink">
-		<popup ref="popup" @closed="deactivateNotice" :close-when-clicked-outside=false>
+		<popup ref="popup" @closed="deactivateTwitterNotice" :close-when-clicked-outside=false>
 			<snackbar-notice>
 				<h6>
 					<strong>
@@ -35,7 +35,7 @@
 <script>
 /**
  * Display up-sell popup.
- * 
+ *
  * Implement up-sell popup for new Twitter posting limit.
  */
 
@@ -76,15 +76,15 @@ export default {
 
 <style scoped>
 
-#rop-upsell-popup h6 {
+#rop-twitter-upsell-popup h6 {
 	margin: 0;
 }
 
-#rop-upsell-popup :is(p, li) {
+#rop-twitter-upsell-popup :is(p, li) {
 	font-size: 14px;
 }
 
-#rop-upsell-popup ul {
+#rop-twitter-upsell-popup ul {
 	padding: 0;
 	margin-left: 0;
 	list-style: none;

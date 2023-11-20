@@ -1,6 +1,7 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
+			<twitter-notice></twitter-notice>
 			<div class=" columns mt-2" v-if="logs_no > 0">
 				<div class="column  col-12 text-right ">
 					<button class="btn  btn-secondary " @click="getLogs(true)">
@@ -37,6 +38,7 @@
 <script>
 
 	import moment from 'moment'
+	import TwitterNotification from "./utils/twitter-notification.vue";
 
 	module.exports = {
 		name: 'logs-view',
@@ -102,6 +104,9 @@
 			},
 
 		},
+		components: {
+			'twitter-notice': TwitterNotification,
+		}
 	}
 </script>
 <style type="text/css" scoped>

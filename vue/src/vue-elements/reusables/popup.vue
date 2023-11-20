@@ -32,7 +32,6 @@ export default {
 			this.$emit('closed');
 		},
 		handleClickOutside(event) {
-			console.log( this.closeWhenClickedOutside, this.isVisible , !this.$refs.popup.contains(event.target))
 			if ( this.closeWhenClickedOutside && this.isVisible && !this.$refs.popup.contains(event.target)) {
 				this.closePopup();
 			}

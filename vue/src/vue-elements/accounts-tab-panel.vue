@@ -1,11 +1,8 @@
 <template>
     <div class="tab-view">
         <div class="panel-body">
-            <twitter-component></twitter-component>
-	        <upsell-notification></upsell-notification>
-            <div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
-
-            </div>
+	        <twitter-notice ></twitter-notice>
+	        <upsell-notification ></upsell-notification>
             <div class="container">
                 <div class="columns" :class="'rop-tab-state-'+is_loading">
                     <div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
@@ -157,7 +154,7 @@
             ServiceUserTile,
             AddAccountTile,
             'vue_spinner': vue_spinner,
-            'twitter-component': TwitterNotice,
+            'twitter-notice': TwitterNotice,
             'upsell-notification': UpsellNotifcation
         }
     }

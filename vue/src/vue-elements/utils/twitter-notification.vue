@@ -1,7 +1,6 @@
 <template>
 	<snackbar-notice variation="warning" v-if="limit" :close-notice="closeNotice">
-		<span class="notice-msg">{{ message }}</span>
-		<a class="notice-link" :href="upsellLink">Upgrade Now</a>
+		<span class="notice-msg">{{ message }} <a class="notice-link" :href="upsellLink">Upgrade Now</a> </span>
 	</snackbar-notice>
 </template>
 
@@ -31,9 +30,6 @@ export default {
 	methods: {
 		closeNotice() {
 			const closeUrl = this.$store.state.notifications.twitter_limit_close_url;
-
-			console.log( closeUrl );
-
 			if ( closeUrl ) {
 				fetch( closeUrl, { method: 'GET' })
 					.then( () => {

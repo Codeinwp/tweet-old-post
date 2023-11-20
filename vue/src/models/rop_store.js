@@ -257,7 +257,7 @@ export default new Vuex.Store({
                     state.notifications.twitter_limit = false;
                     break;
                 case 'close_twitter_limit_promotion':
-                    state.notifications.twitter_X_limit_promotion_close_url = false;
+                    state.notifications.twitter_limit_promotion_close_url = false;
                     break;
                 default:
                     Vue.$log.error('No state request for ', requestName);
