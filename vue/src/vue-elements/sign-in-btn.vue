@@ -51,7 +51,7 @@
 						<div class="auth-app" v-if="isGmb">
 							<button class="btn btn-primary big-btn" id="gmb-btn" @click="openPopupGmb()">{{labels.gmb_app_signin_btn}}</button>
 						</div>
-						
+
 						<div class="auth-app" v-if="isVk">
 							<button class="btn btn-primary big-btn" id="vk-btn" @click="openPopupVk()">{{labels.vk_app_signin_btn}}</button>
 						</div>
@@ -81,7 +81,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div v-if="isFacebook || isTwitter || isLinkedIn || isGmb || isVk ||(isTumblr && isAllowedTumblr)" class="modal-footer">
 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 				</div>
@@ -126,7 +126,7 @@
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
 				appSignature: ropAuthAppData.authSignature,
-				windowParameters: 'top=20,left=100,width=560,height=670',
+				windowParameters: 'top=20,left=100,width=560,height=670,popup=true',
 				authPopupWindow: null,
 				showLiAppBtn: ropApiSettings.show_li_app_btn,
 				showTmblrAppBtn: ropApiSettings.show_tmblr_app_btn,
@@ -397,9 +397,9 @@
 				});
 			},
 			getChildWindowMessage: function (event) {
-			
+
 			if (~event.origin.indexOf(this.appOrigin)) {
-			
+
 			if ('Twitter' === this.modal.serviceName) {
             this.addAccountTW(JSON.parse(event.data));
             } else if ('Facebook' === this.modal.serviceName) {
@@ -545,7 +545,7 @@
             isPinterest() {
                 return this.modal.serviceName === 'Pinterest';
 			},
-			
+
 			isAllowedTumblr: function () {
 				let showButton = true;
 				if (!this.showTmblrAppBtn) {

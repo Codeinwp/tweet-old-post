@@ -198,6 +198,7 @@ class Rop_I18n {
 				'exclude_single_post'         => __( 'Exclude this post', 'tweet-old-post' ),
 				'no_posts_found'              => __( 'No posts found.', 'tweet-old-post' ),
 				'load_more_posts'             => __( 'Load more posts.', 'tweet-old-post' ),
+				'close_notification'          => __( 'Close notification', 'tweet-old-post' ),
 			),
 			'post_format' => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),

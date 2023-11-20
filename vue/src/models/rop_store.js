@@ -104,6 +104,11 @@ export default new Vuex.Store({
          */
         rop_cron_remote: ropApiSettings.rop_cron_remote,
         dom_updated: false,
+        notifications: {
+            twitter_limit: ropApiSettings.twitter_limit ? ropApiSettings.twitter_limit : false,
+            twitter_limit_close_url: ropApiSettings.twitter_limit_close ? ropApiSettings.twitter_limit_close : false,
+            twitter_limit_promotion_close_url: ropApiSettings.twitter_limit_promotion_close ? ropApiSettings.twitter_limit_promotion_close : false
+        },
     },
     mutations: {
 
@@ -248,6 +253,12 @@ export default new Vuex.Store({
                 case 'exclude_post_batch':
 
                     break
+                case 'close_twitter_limit_notification':
+                    state.notifications.twitter_limit = false;
+                    break;
+                case 'close_twitter_limit_promotion':
+                    state.notifications.twitter_X_limit_promotion_close_url = false;
+                    break;
                 default:
                     Vue.$log.error('No state request for ', requestName);
             }

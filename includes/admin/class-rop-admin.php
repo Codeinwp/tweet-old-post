@@ -303,11 +303,11 @@ class Rop_Admin {
 		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 
-		$array_nonce = array(
+		$rop_api_settings = array(
 			'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 		);
 		if ( current_user_can( 'manage_options' ) ) {
-			$array_nonce = array(
+			$rop_api_settings = array(
 				'root'  => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 			);
@@ -327,32 +327,52 @@ class Rop_Admin {
 		$global_settings = new Rop_Global_Settings();
 		$settings        = new Rop_Settings_Model();
 
-		$array_nonce['license_type']            = $global_settings->license_type();
-		$array_nonce['fb_domain_toast_display'] = $this->facebook_exception_toast_display();
-		$array_nonce['labels']                  = Rop_I18n::get_labels();
-		$array_nonce['upsell_link']             = Rop_I18n::UPSELL_LINK;
-		$array_nonce['pro_installed']           = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
-		$array_nonce['staging']                 = $this->rop_site_is_staging();
-		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
-		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
-		$array_nonce['rop_get_wpml_active_status']  = $this->rop_get_wpml_active_status();
-		$array_nonce['rop_get_yoast_seo_active_status']  = $this->rop_get_yoast_seo_active_status();
-		$array_nonce['rop_is_edit_post_screen']  = $this->rop_is_edit_post_screen();
-		$array_nonce['rop_get_wpml_languages']  = $this->rop_get_wpml_languages();
-		$array_nonce['hide_own_app_option']      = $this->rop_hide_add_own_app_option();
-		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
-		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
-		$array_nonce['remote_cron_type_limit']    = $this->limit_remote_cron_system();
-		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
-		$array_nonce['publish_now']             = array(
+		$rop_api_settings['license_type']                     = $global_settings->license_type();
+		$rop_api_settings['fb_domain_toast_display']          = $this->facebook_exception_toast_display();
+		$rop_api_settings['labels']                           = Rop_I18n::get_labels();
+		$rop_api_settings['upsell_link']                      = Rop_I18n::UPSELL_LINK;
+		$rop_api_settings['pro_installed']                    = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
+		$rop_api_settings['staging']                          = $this->rop_site_is_staging();
+		$rop_api_settings['show_li_app_btn']                  = $li_service->rop_show_li_app_btn();
+		$rop_api_settings['show_tmblr_app_btn']               = $tmblr_service->rop_show_tmblr_app_btn();
+		$rop_api_settings['rop_get_wpml_active_status']       = $this->rop_get_wpml_active_status();
+		$rop_api_settings['rop_get_yoast_seo_active_status']  = $this->rop_get_yoast_seo_active_status();
+		$rop_api_settings['rop_is_edit_post_screen']          = $this->rop_is_edit_post_screen();
+		$rop_api_settings['rop_get_wpml_languages']           = $this->rop_get_wpml_languages();
+		$rop_api_settings['hide_own_app_option']              = $this->rop_hide_add_own_app_option();
+		$rop_api_settings['debug']                            = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
+		$rop_api_settings['tax_apply_limit']                  = $this->limit_tax_dropdown_list();
+		$rop_api_settings['remote_cron_type_limit']           = $this->limit_remote_cron_system();
+		$rop_api_settings['exclude_apply_limit']              = $this->limit_exclude_list();
+
+		$rop_api_settings['publish_now'] = array(
 			'instant_share_enabled' => $settings->get_instant_sharing(),
 			'instant_share_by_default'   => $settings->get_instant_sharing_by_default(),
 			'choose_accounts_manually' => $settings->get_instant_share_choose_accounts_manually(),
 			'accounts' => $active_accounts,
 		);
-		$array_nonce['added_networks']          = $added_networks;
-		$array_nonce['rop_cron_remote']           = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
-		$array_nonce['rop_cron_remote_agreement'] = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
+
+		$rop_api_settings['added_networks']            = $added_networks;
+		$rop_api_settings['rop_cron_remote']           = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
+		$rop_api_settings['rop_cron_remote_agreement'] = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
+
+		// Handle Twitter/X limit notification when user reach the post limit.
+		if ( $this->should_show_twitter_limit_notification() ) {
+			$sharing_limit = Rop_Admin::rop_check_reached_sharing_limit( 'tw' );
+			if ( $sharing_limit ) {
+				$rop_api_settings['twitter_limit']       = $sharing_limit->limit;
+				$rop_api_settings['twitter_limit_close'] = admin_url( 'admin-ajax.php?action=rop_twitter_limit_notice_dismissed&rop_notice_nonce=' . wp_create_nonce( 'rop_notice_nonce_value' ) );
+			}
+		}
+
+		// Handle Twitter/X limit promotion.
+		$twitter_limit_promotion_key      = 'rop_twitter_limit_promotion';
+		$user_id                          = wp_get_current_user()->ID;
+		$should_show_twitter_limit_upsell = Rop_Admin_Notices_Helpers::rop_should_show_notice( $user_id, $twitter_limit_promotion_key );
+
+		if ( $should_show_twitter_limit_upsell ) {
+			$rop_api_settings['twitter_limit_promotion_close'] = admin_url( 'admin-ajax.php?action=rop_notice_dismissed&rop_notice_id=' . $twitter_limit_promotion_key . '&rop_notice_nonce=' . wp_create_nonce( 'rop_notice_nonce_value' ) );
+		}
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token     = get_option( ROP_INSTALL_TOKEN_OPTION );
@@ -373,11 +393,11 @@ class Rop_Admin {
 		);
 
 		if ( 'publish_now' === $page ) {
-			$array_nonce['publish_now'] = apply_filters( 'rop_publish_now_attributes', $array_nonce['publish_now'] );
+			$rop_api_settings['publish_now'] = apply_filters( 'rop_publish_now_attributes', $rop_api_settings['publish_now'] );
 			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		}
 
-		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
+		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $rop_api_settings );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', array( ROP_LITE_URL . 'assets/' ) );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropAuthAppData', $rop_auth_app_data );
 		wp_enqueue_script( $this->plugin_name . '-' . $page );
@@ -1723,7 +1743,7 @@ HTML;
 	 * Check the post sharing limit before sharing the post.
 	 *
 	 * @param string $sharing_type Post sharing type.
-	 * @return bool
+	 * @return bool|array
 	 */
 	public static function rop_check_reached_sharing_limit( $sharing_type = 'tw' ) {
 		$license_key = '';
@@ -1759,5 +1779,70 @@ HTML;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check if the user should see the notification about the new X/Twitter limit.
+	 *
+	 * @return bool Whether the user should see the notification.
+	 */
+	public function should_show_twitter_limit_notification() {
+
+		$product_plan  = apply_filters( 'product_rop_license_plan', 0 );
+
+		// Marketer plan should not see the notification. Including lifetime plan.
+		if ( 3 === $product_plan || 6 === $product_plan ) {
+			return false;
+		}
+
+		$service_used = get_option( 'rop_twitter_last_posted', false );
+
+		// Show no notification if the user has not used X/Twitter to share posts.
+		if ( false === $service_used ) {
+			return false;
+		}
+
+		// Get the last date when the notification about new X/Twitter limit was shown.
+		$last_date = get_option( 'rop_twitter_notice_date', false );
+
+		// Show it to all users if it was never shown.
+		if ( $last_date === false ) {
+			return true;
+		}
+
+		$last_date     = strtotime( $last_date );
+		$sinceLastDate = time() - $last_date;
+
+		// Free plan: Show it once a week.
+		if ( 0 === $product_plan ) {
+			return WEEK_IN_SECONDS < $sinceLastDate;
+		}
+
+		// Starter, Personal and Business plan: Show it at 3 weeks if the user has reached the limit.
+		$sharing_limit = Rop_Admin::rop_check_reached_sharing_limit( 'tw' );
+
+		if ( false === $sharing_limit ) {
+			return false; // There was an error with the API request.
+		}
+
+		if ( ! empty( $sharing_limit->is_valid ) ) {
+			return false; // We still have some shares left.
+		}
+
+		return ( 3 * WEEK_IN_SECONDS ) < $sinceLastDate;
+	}
+
+	/**
+	 * Close the notification about the new X/Twitter limit.
+	 *
+	 * @return void
+	 */
+	public function close_twitter_limit_notification() {
+
+		if ( ! wp_verify_nonce( $_REQUEST['rop_notice_nonce'], 'rop_notice_nonce_value' ) ) {
+			exit( 'Failed to verify nonce. Please try going back and refreshing the page to try again.' );
+		}
+
+		update_option( 'rop_twitter_notice_date', date( 'Y-m-d' ) );
 	}
 }

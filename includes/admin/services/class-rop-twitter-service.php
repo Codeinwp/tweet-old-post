@@ -647,6 +647,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				)
 			);
 
+			update_option( 'rop_twitter_last_posted', time() );
+
 			return true;
 		} else {
 			$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', json_encode( $response ) ) );

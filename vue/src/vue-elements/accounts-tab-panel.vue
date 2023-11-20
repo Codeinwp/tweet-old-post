@@ -1,6 +1,8 @@
 <template>
     <div class="tab-view">
         <div class="panel-body">
+            <twitter-component></twitter-component>
+	        <upsell-notification></upsell-notification>
             <div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
 
             </div>
@@ -57,6 +59,8 @@
     import ServiceUserTile from './service-user-tile.vue'
     import AddAccountTile from './reusables/add-account-tile.vue'
     import vue_spinner from './reusables/vue-spinner.vue'
+    import TwitterNotice from './utils/twitter-notification.vue'
+    import UpsellNotifcation from './utils/upsell-popup.vue'
 
     module.exports = {
         name: 'account-view',
@@ -152,7 +156,9 @@
             SignInBtn,
             ServiceUserTile,
             AddAccountTile,
-            'vue_spinner': vue_spinner
+            'vue_spinner': vue_spinner,
+            'twitter-component': TwitterNotice,
+            'upsell-notification': UpsellNotifcation
         }
     }
 </script>
