@@ -1,15 +1,26 @@
 <template>
-    <div class="wpr-tooltip">
-        <div class="outlet" @mouseover="autoShowWithMode" @mouseleave="autoHideWithMode" @click="autoShowWithMode">
-            <slot name="outlet"></slot>
-        </div>
-        <div class="wpr-tooltip" :style="tooltipStyle">
-            <div class="inner">
-                <slot name="tooltip"></slot>
-            </div>
-            <div class="wpr-arrow" :style="arrowStyle"></div>
-        </div>
+  <div class="wpr-tooltip">
+    <div
+      class="outlet"
+      @mouseover="autoShowWithMode"
+      @mouseleave="autoHideWithMode"
+      @click="autoShowWithMode"
+    >
+      <slot name="outlet" />
     </div>
+    <div
+      class="wpr-tooltip"
+      :style="tooltipStyle"
+    >
+      <div class="inner">
+        <slot name="tooltip" />
+      </div>
+      <div
+        class="wpr-arrow"
+        :style="arrowStyle"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -18,13 +29,6 @@
 
 	export default {
 		name: 'Tooltip',
-
-		data() {
-			return {
-				arrowStyle: {},
-				isShowing: false
-			}
-		},
 
 		props: {
 			// hover|click|manual
@@ -73,6 +77,13 @@
 				default: EMPTY_FN
 			}
 		},
+
+		data() {
+			return {
+				arrowStyle: {},
+				isShowing: false
+			}
+		},
 		computed: {
 			tooltipStyle() {
 				let s = {}
@@ -108,6 +119,15 @@
 			is_show( the_value ) {
 				console.log( 'the is show value : ' + the_value );
 			}
+		},
+		mounted() {
+			if ( this.mode === 'manual' && this.value ) {
+				this.show()
+			}
+			document.addEventListener( 'click', this.autoHideWithMode, false )
+		},
+		destroyed() {
+			document.removeEventListener( 'click', this.autoHideWithMode, false )
 		},
 		methods: {
 			updateArrowStyle() {
@@ -298,15 +318,6 @@
 					this.$emit( 'input', false )
 				}
 			}
-		},
-		mounted() {
-			if ( this.mode === 'manual' && this.value ) {
-				this.show()
-			}
-			document.addEventListener( 'click', this.autoHideWithMode, false )
-		},
-		destroyed() {
-			document.removeEventListener( 'click', this.autoHideWithMode, false )
 		}
 	}
 </script>

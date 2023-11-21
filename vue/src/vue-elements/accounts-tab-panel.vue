@@ -1,55 +1,99 @@
 <template>
-    <div class="tab-view">
-        <div class="panel-body">
-            <div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
-
+  <div class="tab-view">
+    <div class="panel-body">
+      <div
+        v-if="twitter_warning"
+        class="toast  toast-warning"
+        v-html="labels.twitter_warning"
+      />
+      <div class="container">
+        <div
+          class="columns"
+          :class="'rop-tab-state-'+is_loading"
+        >
+          <div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
+            <vue_spinner
+              v-if="is_preloading === 0"
+              ref="Preloader"
+              :preloader_message="labels.preloader_message_accounts"
+            />
+            <div
+              v-if="accountsCount === 0 && is_preloading > 0"
+              class="empty mb-2"
+            >
+              <div class="empty-icon">
+                <i class="fa fa-3x fa-user-circle-o" />
+              </div>
+              <p class="empty-title h5">
+                {{ labels.no_accounts }}
+              </p>
+              <p class="empty-subtitle">
+                {{ labels.no_accounts_desc }}
+              </p>
             </div>
-            <div class="container">
-                <div class="columns" :class="'rop-tab-state-'+is_loading">
-                    <div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
-                        <vue_spinner :preloader_message="labels.preloader_message_accounts" ref="Preloader" v-if="is_preloading === 0"></vue_spinner>
-                        <div class="empty mb-2" v-if="accountsCount === 0 && is_preloading > 0">
-                            <div class="empty-icon">
-                                <i class="fa fa-3x fa-user-circle-o"></i>
-                            </div>
-                            <p class="empty-title h5">{{labels.no_accounts}}</p>
-                            <p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
-                        </div>
-                        <div class="account-container" v-for="( account, id ) in accounts" v-if="is_preloading > 0">
-                            <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-                            <span class="divider"></span>
-                        </div>
-                        <div class="add-accounts" v-if="is_preloading > 0" id="rop-add-account-button">
-                            <add-account-tile></add-account-tile>
-                            <span class="divider"></span>
-                        </div>
-                    </div>
-                </div>
+            <div
+              v-for="( account, id ) in accounts"
+              v-if="is_preloading > 0"
+              class="account-container"
+            >
+              <service-user-tile
+                :account_data="account"
+                :account_id="id"
+              />
+              <span class="divider" />
             </div>
-            <div class="panel-footer" v-if="is_preloading > 0">
-                <div class="columns my-2" v-if="checkLicense && pro_installed">
-                    <div class="column col-12">
-                        <i class="fa fa-info-circle "></i> <span v-html="labels.activate_license"></span>
-                    </div>
-                </div>
-                <div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
-                    <div class="column col-12">
-                        <p class="upsell">
-                            <i class="fa fa-info-circle "></i> <span v-html="labels.upsell_accounts"></span>
-                        </p>
-                    </div>
-                </div>
-                <div class="column col-12 text-right">
-                    <button class="btn btn-secondary" @click="resetAccountData()">
-                        <i class="fa fa-ban" v-if="!this.is_loading"></i>
-                        <i class="fa fa-spinner fa-spin" v-else></i>
-                        {{labels.remove_all_cta}}
-                    </button>
-                </div>
+            <div
+              v-if="is_preloading > 0"
+              id="rop-add-account-button"
+              class="add-accounts"
+            >
+              <add-account-tile />
+              <span class="divider" />
             </div>
+          </div>
         </div>
-
+      </div>
+      <div
+        v-if="is_preloading > 0"
+        class="panel-footer"
+      >
+        <div
+          v-if="checkLicense && pro_installed"
+          class="columns my-2"
+        >
+          <div class="column col-12">
+            <i class="fa fa-info-circle " /> <span v-html="labels.activate_license" />
+          </div>
+        </div>
+        <div
+          v-if="(checkLicense && accountsCount === 2) && !pro_installed"
+          class="columns my-2"
+        >
+          <div class="column col-12">
+            <p class="upsell">
+              <i class="fa fa-info-circle " /> <span v-html="labels.upsell_accounts" />
+            </p>
+          </div>
+        </div>
+        <div class="column col-12 text-right">
+          <button
+            class="btn btn-secondary"
+            @click="resetAccountData()"
+          >
+            <i
+              v-if="!is_loading"
+              class="fa fa-ban"
+            />
+            <i
+              v-else
+              class="fa fa-spinner fa-spin"
+            />
+            {{ labels.remove_all_cta }}
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -58,8 +102,14 @@
     import AddAccountTile from './reusables/add-account-tile.vue'
     import vue_spinner from './reusables/vue-spinner.vue'
 
-    module.exports = {
-        name: 'account-view',
+    export default {
+        name: 'AccountView',
+        components: {
+            SignInBtn,
+            ServiceUserTile,
+            AddAccountTile,
+            'vue_spinner': vue_spinner
+        },
         data: function () {
             return {
                 addAccountActive: false,
@@ -70,11 +120,6 @@
                 upsell_link: ropApiSettings.upsell_link,
                 pro_installed: ropApiSettings.pro_installed,
                 is_preloading: this.$store.state.hide_preloading
-            }
-        },
-        mounted: function () {
-            if (0 === this.is_preloading) {
-                this.page_loader_module_display();
             }
         },
         computed: {
@@ -115,6 +160,11 @@
                 return (this.$store.state.licence < 1);
             },
         },
+        mounted: function () {
+            if (0 === this.is_preloading) {
+                this.page_loader_module_display();
+            }
+        },
 
         methods: {
             page_loader_module_display() {
@@ -147,12 +197,6 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
                 })
             }
-        },
-        components: {
-            SignInBtn,
-            ServiceUserTile,
-            AddAccountTile,
-            'vue_spinner': vue_spinner
         }
     }
 </script>

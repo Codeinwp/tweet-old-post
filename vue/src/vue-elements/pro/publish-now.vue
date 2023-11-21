@@ -1,36 +1,79 @@
 <template>
-	<div class="rop-control-container">
-			<p v-if="Object.keys(accounts).length < 1">{{labels.add_account_to_use_instant_share}}</p>
-		<!-- Share on publish/update -->
-		<fieldset v-if="Object.keys(accounts).length > 0">
-			<label class="form-checkbox">
-				<input type="checkbox" :checked="share_on_update_by_default" v-on:click="toggle_accounts = !toggle_accounts" name="publish_now" value="1"/>
-				<span v-html=" labels.share_on_update"></span>
-			</label>
+  <div class="rop-control-container">
+    <p v-if="Object.keys(accounts).length < 1">
+      {{ labels.add_account_to_use_instant_share }}
+    </p>
+    <!-- Share on publish/update -->
+    <fieldset v-if="Object.keys(accounts).length > 0">
+      <label class="form-checkbox">
+        <input
+          type="checkbox"
+          :checked="share_on_update_by_default"
+          name="publish_now"
+          value="1"
+          @click="toggle_accounts = !toggle_accounts"
+        >
+        <span v-html=" labels.share_on_update" />
+      </label>
 
-			<div class="form-group rop-publish-now-accounts-wrapper" v-if="toggle_accounts" v-for="(account, key) in accounts" :id="key" v-bind:key="key">
-				<label class="form-checkbox rop-publish-now-account" :id="key">
-					<input type="checkbox" :checked="share_on_update_by_default && !choose_accounts_manually" :value="key" v-on:click="toggleServices($event, key)" name="publish_now_accounts[]" class="rop-account-names"/>
-					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
-				</label>
-				<span v-on:click="togglefields(key)" :id="key" class="rop-edit-custom-instant-share-message-text">{{ showField[key] ? 'done' : 'edit message' }}</span>
-				<p v-show="showField[key]" class="rop-custom-instant-share-message-text">Custom share message:</p>
-				<textarea v-show="showField[key]" :name="key" :disabled="!isPro" class="rop-custom-instant-share-message-area"></textarea>
-				<p v-if="!isPro && showField[key]" v-html="labels.custom_instant_share_messages_upsell" class="custom-instant-share-upsell"></p>
-			</div>
-		</fieldset>
-
-	</div>
+      <div
+        v-for="(account, key) in accounts"
+        v-if="toggle_accounts"
+        :id="key"
+        :key="key"
+        class="form-group rop-publish-now-accounts-wrapper"
+      >
+        <label
+          :id="key"
+          class="form-checkbox rop-publish-now-account"
+        >
+          <input
+            type="checkbox"
+            :checked="share_on_update_by_default && !choose_accounts_manually"
+            :value="key"
+            name="publish_now_accounts[]"
+            class="rop-account-names"
+            @click="toggleServices($event, key)"
+          >
+          <i
+            class=" fa "
+            :class="getServiceClass(account.service)"
+          /> {{ account.user }}
+        </label>
+        <span
+          :id="key"
+          class="rop-edit-custom-instant-share-message-text"
+          @click="togglefields(key)"
+        >{{ showField[key] ? 'done' : 'edit message' }}</span>
+        <p
+          v-show="showField[key]"
+          class="rop-custom-instant-share-message-text"
+        >
+          Custom share message:
+        </p>
+        <textarea
+          v-show="showField[key]"
+          :name="key"
+          :disabled="!isPro"
+          class="rop-custom-instant-share-message-area"
+        />
+        <p
+          v-if="!isPro && showField[key]"
+          class="custom-instant-share-upsell"
+          v-html="labels.custom_instant_share_messages_upsell"
+        />
+      </div>
+    </fieldset>
+  </div>
 </template>
 
 <script>
 	import ButtonCheckbox from '../reusables/button-checkbox.vue'
 
-	module.exports = {
-		name: 'publish-now',
-		created() {
-		},
-		computed: {
+	export default {
+		name: 'PublishNow',
+		components: {
+			ButtonCheckbox
 		},
 		data: function () {
 			var fields = {};
@@ -50,8 +93,14 @@
 				toggle_accounts: this.$store.state.publish_now.instant_share_by_default,
 			}
 		},
-		components: {
-			ButtonCheckbox
+		computed: {
+		},
+		computed: {
+			isPro: function () {
+					return (this.license > 0);
+			},
+		},
+		created() {
 		},
 		methods: {
 			getServiceClass: function (service) {
@@ -81,11 +130,6 @@
 				return self.showField[value] = ! self.showField[value];
 			},
 
-		},
-		computed: {
-			isPro: function () {
-					return (this.license > 0);
-			},
 		}
 	}
 </script>

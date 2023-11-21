@@ -1,89 +1,146 @@
 <template>
-	<div :class="'rop-control-container-'+ ( license > 1 && license !== 7 ) +  '  rop-schedule-tab-container'">
+  <div :class="'rop-control-container-'+ ( license > 1 && license !== 7 ) + '  rop-schedule-tab-container'">
+    <div class="columns py-2 rop-control">
+      <div class="column col-6 col-sm-12 vertical-align">
+        <b>{{ labels.schedule_type_title }}</b>
+        <p class="text-gray">
+          {{ labels.schedule_type_desc }}
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align">
+        <div class="form-group">
+          <select
+            v-model="schedule.type"
+            class="form-select"
+          >
+            <option value="recurring">
+              {{ labels.schedule_type_option_rec }}
+            </option>
+            <option value="fixed">
+              {{ labels.schedule_type_option_fix }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-		<div class="columns py-2 rop-control">
-			<div class="column col-6 col-sm-12 vertical-align">
-				<b>{{labels.schedule_type_title}}</b>
-				<p class="text-gray">{{labels.schedule_type_desc}}</p>
-			</div>
-			<div class="column col-6 col-sm-12 vertical-align">
-				<div class="form-group">
-					<select class="form-select" v-model="schedule.type">
-						<option value="recurring">{{labels.schedule_type_option_rec}}</option>
-						<option value="fixed">{{labels.schedule_type_option_fix}}</option>
-					</select>
-				</div>
-			</div>
-		</div>
+    <!-- Fixed Schedule Days -->
+    <div
+      v-if="schedule.type === 'fixed'"
+      class="columns py-2 rop-control"
+    >
+      <div class="column col-6 col-sm-12 vertical-align">
+        <b>{{ labels.schedule_fixed_days_title }}</b>
+        <p class="text-gray">
+          {{ labels.schedule_fixed_days_desc }}
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align">
+        <div class="form-group input-group">
+          <button-checkbox
+            v-for="( data, label ) in daysObject"
+            :key="label"
+            :value="data.value"
+            :label="label"
+            :checked="data.checked"
+            @add-day="addDay"
+            @rmv-day="rmvDay"
+          />
+        </div>
+      </div>
+    </div>
 
-		<!-- Fixed Schedule Days -->
-		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-			<div class="column col-6 col-sm-12 vertical-align">
-				<b>{{labels.schedule_fixed_days_title}}</b>
-				<p class="text-gray">{{labels.schedule_fixed_days_desc}}</p>
-			</div>
-			<div class="column col-6 col-sm-12 vertical-align">
-				<div class="form-group input-group">
-					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
-					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
-					></button-checkbox>
-				</div>
-			</div>
-		</div>
+    <!-- Fixed Schedule time -->
+    <div
+      v-if="schedule.type === 'fixed'"
+      class="columns py-2 rop-control"
+    >
+      <div class="column col-6 col-sm-12 vertical-align">
+        <b>{{ labels.schedule_fixed_time_title }}</b>
+        <p class="text-gray">
+          {{ labels.schedule_fixed_time_desc }}
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align">
+        <div class="form-group">
+          <div
+            v-for="( time, index ) in schedule.interval_f.time"
+            class="input-group"
+          >
+            <vue-timepicker
+              :minute-interval="generalSettings.minute_interval"
+              class="timepicker-style-fix"
+              :value="getTime( index )"
+              hide-clear-button
+              @change="syncTime( $event, index )"
+            />
+            <button
+              v-if="schedule.interval_f.time.length > 1"
+              class="btn btn-danger input-group-btn"
+              @click="rmvTime( index )"
+            >
+              <i class="fa fa-fw fa-minus" />
+            </button>
+            <button
+              v-if="index == schedule.interval_f.time.length - 1"
+              class="btn btn-success input-group-btn"
+              @click="addTime()"
+            >
+              <i class="fa fa-fw fa-plus" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-		<!-- Fixed Schedule time -->
-		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-			<div class="column col-6 col-sm-12 vertical-align">
-				<b>{{labels.schedule_fixed_time_title}}</b>
-				<p class="text-gray">{{labels.schedule_fixed_time_desc}}</p>
-			</div>
-			<div class="column col-6 col-sm-12 vertical-align">
-				<div class="form-group">
-					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
-						<vue-timepicker :minute-interval="generalSettings.minute_interval" class="timepicker-style-fix" :value="getTime( index )"
-						                @change="syncTime( $event, index )" hide-clear-button
-						></vue-timepicker>
-						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
-						        @click="rmvTime( index )">
-							<i class="fa fa-fw fa-minus"></i>
-						</button>
-						<button class="btn btn-success input-group-btn"
-						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
-						>
-							<i class="fa fa-fw fa-plus"></i>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
+    <!-- Current time -->
+    <div
+      v-if="schedule.type === 'fixed'"
+      class="column col-6 col-sm-12 vertical-align float-right"
+    >
+      <div
+        v-if="formatedDate"
+        class="toast rop-current-time text-center"
+      >
+        {{ labels.time_now }}: {{ formatedDate }}
+      </div>
+    </div>
 
-		<!-- Current time -->
-<div class="column col-6 col-sm-12 vertical-align float-right" v-if="schedule.type === 'fixed'">
-		<div class="toast rop-current-time text-center" v-if="formatedDate">
-				{{labels.time_now}}: {{ formatedDate }}
-		</div>
-</div>
+    <div
+      v-else
+      class="columns py-2 rop-control"
+    >
+      <div class="column col-6 col-sm-12 vertical-align">
+        <b>{{ labels.schedule_rec_title }}</b>
+        <p class="text-gray">
+          {{ labels.schedule_rec_desc }}
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align">
+        <div class="form-group">
+          <counter-input
+            id="interval_r"
+            :value.sync="schedule.interval_r"
+            :min-val="generalSettings.min_interval"
+            :step-val="generalSettings.step_interval"
+          />
+        </div>
+      </div>
+    </div>
 
-		<div class="columns py-2 rop-control" v-else>
-			<div class="column col-6 col-sm-12 vertical-align">
-				<b>{{labels.schedule_rec_title}}</b>
-				<p class="text-gray">{{labels.schedule_rec_desc}}</p>
-			</div>
-			<div class="column col-6 col-sm-12 vertical-align">
-				<div class="form-group">
-					<counter-input id="interval_r" :value.sync="schedule.interval_r" :min-val="generalSettings.min_interval" :step-val="generalSettings.step_interval"></counter-input>
-				</div>
-			</div>
-		</div>
-
-		<!-- Upsell -->
-		<div class="columns py-2" v-if="license < 2 || license === 7">
-			<div class="column text-center">
-				<p class="upsell"><i class="fa fa-lock"></i> {{labels.schedule_upsell}}</p>
-			</div>
-		</div>
-		<span class="divider"></span>
-	</div>
+    <!-- Upsell -->
+    <div
+      v-if="license < 2 || license === 7"
+      class="columns py-2"
+    >
+      <div class="column text-center">
+        <p class="upsell">
+          <i class="fa fa-lock" /> {{ labels.schedule_upsell }}
+        </p>
+      </div>
+    </div>
+    <span class="divider" />
+  </div>
 </template>
 
 <script>
@@ -92,8 +149,13 @@
 	import CounterInput from './reusables/counter-input.vue'
 	import moment from 'moment'
 
-	module.exports = {
-		name: 'account-schedule',
+	export default {
+		name: 'AccountSchedule',
+		components: {
+			ButtonCheckbox,
+			CounterInput,
+			VueTimepicker
+		},
 		props: ['account_id', 'license'],
 		data: function () {
 			return {
@@ -219,11 +281,6 @@
 					this.schedule.interval_f.week_days.splice(index, 1)
 				}
 			},
-		},
-		components: {
-			ButtonCheckbox,
-			CounterInput,
-			VueTimepicker
 		}
 	}
 </script>

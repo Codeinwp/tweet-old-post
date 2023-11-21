@@ -1,22 +1,28 @@
 <template>
-	<div>
-		<div class="tile-content">
-		</div>
-		<div class="rop-add-account">
-     <button class="btn btn-secondary" v-if="!this.add_more_clicked && this.added_networks >= 2" @click="addMore()">
-        <i class="fa fa-plus"></i>{{labels.add_all_cta}}
-     </button>
+  <div>
+    <div class="tile-content" />
+    <div class="rop-add-account">
+      <button
+        v-if="!add_more_clicked && added_networks >= 2"
+        class="btn btn-secondary"
+        @click="addMore()"
+      >
+        <i class="fa fa-plus" />{{ labels.add_all_cta }}
+      </button>
 
-					<sign-in-btn  v-if="this.add_more_clicked || this.added_networks < 2"></sign-in-btn>
-		</div>
-	</div>
+      <sign-in-btn v-if="add_more_clicked || added_networks < 2" />
+    </div>
+  </div>
 </template>
 
 <script>
 	import SignInBtn from '../sign-in-btn.vue';
 
-	module.exports = {
-		name: "add-account-tile",
+	export default {
+		name: "AddAccountTile",
+		components: {
+			SignInBtn,
+		},
 		data: function () {
 			return {
 				addAccountActive: false,
@@ -27,9 +33,6 @@
 			}
 		},
 		computed: {
-		},
-		components: {
-			SignInBtn,
 		},
   methods: {
     addMore: function () {
