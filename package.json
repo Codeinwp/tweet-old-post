@@ -60,7 +60,6 @@
     "stylelint": "^8.2.0",
     "stylelint-config-recommended": "^1.0.0",
     "terser-webpack-plugin": "^5.3.9",
-    "vue": "^2.7.15",
     "vue-hot-reload-api": "^2.3.4",
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^15.11.1",
@@ -70,12 +69,13 @@
   "dependencies": {
     "moment-duration-format": "^2.2.2",
     "npm": "^6.1.0",
+    "vue": "^2.7.15",
     "vue-clickaway": "^2.1.0",
     "vue-js-toggle-button": "^1.3.3",
     "vue-moment": "^3.2.0",
     "vue-resource": "^1.3.4",
     "vue2-timepicker": "^0.1.4",
     "vuejs-logger": "1.3.4",
-    "vuex": "^2.4.0"
+    "vuex": "^3.6.2"
   }
 }
