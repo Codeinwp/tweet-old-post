@@ -2,9 +2,9 @@ name: Build Artifact
 
 on:
   pull_request:
-    branches:
-      - master
     types: [opened, synchronize, ready_for_review]
+    branches-ignore:
+      - "update_dependencies"
 
 jobs:
   dev-zip:
