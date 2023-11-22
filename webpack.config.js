@@ -32,7 +32,12 @@ module.exports = (env, argv) => (
 									"@babel/preset-env",
 									{
 									  useBuiltIns: "usage",
-									  corejs: 3,
+									  corejs: "3.22",
+									  targets: [
+										"last 2 versions",
+										"> 1%",
+										"not ie <= 8"
+									  ]
 									},
 								],
 							]
