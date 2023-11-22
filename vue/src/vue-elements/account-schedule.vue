@@ -284,22 +284,24 @@
 		}
 	}
 </script>
-<style scoped>
+<style lang="scss" scoped>
 	.rop-control-container-false  {
 		cursor:not-allowed !important;
 	}
-	#rop_core .panel-body .text-gray {
-		margin: 0;
-		line-height: normal;
-	}
+	#rop_core {
+    .panel-body .text-gray {
+      margin: 0;
+      line-height: normal;
+    }
+
+    .input-group .input-group-addon {
+      padding: 3px 5px;
+    }
+  } 
 
 	b {
 		margin-bottom: 5px;
 		display: block;
-	}
-
-	#rop_core .input-group .input-group-addon {
-		padding: 3px 5px;
 	}
 
 	.time-picker {
@@ -307,13 +309,15 @@
 	}
 
 	@media ( max-width: 600px ) {
-		#rop_core .panel-body .text-gray {
-			margin-bottom: 10px;
-		}
+		#rop_core {
+      .panel-body .text-gray {
+        margin-bottom: 10px;
+      }
 
-		#rop_core .text-right {
-			text-align: left;
-		}
+      .text-right {
+        text-align: left;
+      }
+    } 
 	}
 
 </style>
