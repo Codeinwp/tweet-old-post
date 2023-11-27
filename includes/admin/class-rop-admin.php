@@ -1810,7 +1810,7 @@ HTML;
 			return true;
 		}
 
-		$last_date     = strtotime( $last_date );
+		$last_date     = (int)strtotime( $last_date );
 		$sinceLastDate = time() - $last_date;
 
 		$sharing_limit = Rop_Admin::rop_check_reached_sharing_limit( 'tw' );
