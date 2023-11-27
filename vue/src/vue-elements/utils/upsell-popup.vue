@@ -62,7 +62,7 @@ export default {
 			this.deactivateTwitterNotice();
 		},
 		deactivateTwitterNotice() {
-			fetch( this.dismissLink, { method: 'GET' });
+			fetch( this.twitterDismissLink, { method: 'GET' });
 			this.$store.commit( 'updateState', { requestName: 'close_twitter_limit_promotion' } )
 		}
 	},

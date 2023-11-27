@@ -1805,7 +1805,7 @@ HTML;
 		// Get the last date when the notification about new X/Twitter limit was shown.
 		$last_date = get_option( 'rop_twitter_notice_date', false );
 
-		// Show it to all users if it was never shown.
+		// Show it if it was never shown.
 		if ( $last_date === false ) {
 			return true;
 		}
@@ -1813,22 +1813,22 @@ HTML;
 		$last_date     = strtotime( $last_date );
 		$sinceLastDate = time() - $last_date;
 
-		// Free plan: Show it once a week.
-		if ( 0 === $product_plan ) {
-			return WEEK_IN_SECONDS < $sinceLastDate;
-		}
-
-		// Starter, Personal and Business plan: Show it at 3 weeks if the user has reached the limit.
 		$sharing_limit = Rop_Admin::rop_check_reached_sharing_limit( 'tw' );
 
 		if ( false === $sharing_limit ) {
 			return false; // There was an error with the API request.
 		}
 
-		if ( ! empty( $sharing_limit->is_valid ) ) {
+		if ( empty( $sharing_limit->is_valid ) ) {
 			return false; // We still have some shares left.
 		}
 
+		// Free plan: Show it once a week.
+		if ( 0 === $product_plan ) {
+			return WEEK_IN_SECONDS < $sinceLastDate;
+		}
+
+		// Starter, Personal and Business plan: Show it at 3 weeks.
 		return ( 3 * WEEK_IN_SECONDS ) < $sinceLastDate;
 	}
 
