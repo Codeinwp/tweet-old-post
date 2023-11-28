@@ -28,14 +28,21 @@
     "dist": "bash bin/dist.sh",
     "release": "semantic-release --debug",
     "lint": "eslint ./vue -c .eslintrc.js --ext .js,.vue",
-    "format": "eslint ./vue -c .eslintrc.js --ext .js,.vue --fix"
+    "format": "eslint ./vue -c .eslintrc.js --ext .js,.vue --fix",
+    "wp-env": "wp-env",
+    "test:e2e:playwright": "wp-scripts test-playwright --config tests/e2e/playwright.config.js",
+    "test:e2e:playwright:ui": "wp-scripts test-playwright --config tests/e2e/playwright.config.js --ui"
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@babel/preset-env": "^7.23.3",
+    "@playwright/test": "^1.40.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
+    "@wordpress/e2e-test-utils-playwright": "^0.14.0",
+    "@wordpress/env": "^8.12.0",
+    "@wordpress/scripts": "^26.17.0",
     "babel-eslint": "^8.0.1",
     "babel-loader": "^9.1.3",
     "conventional-changelog-simple-preset": "^1.0.15",
