@@ -14,7 +14,7 @@
 			<ul>
 				<li><strong>Free users </strong> have a limit of 1 post per day.</li>
 				<li><strong>Personal plan </strong> users have a limit of 4 posts per day.</li>
-				<li><strong>Business plan </strong> suers have a limit of 10 posts per day.</li>
+				<li><strong>Business plan </strong> users have a limit of 10 posts per day.</li>
 				<li><strong>Marketer plan </strong> users have a limit of 24 posts per day.</li>
 			</ul>
 			<p>
