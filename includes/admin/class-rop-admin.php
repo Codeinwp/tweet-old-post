@@ -356,8 +356,10 @@ class Rop_Admin {
 		$rop_api_settings['rop_cron_remote']           = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
 		$rop_api_settings['rop_cron_remote_agreement'] = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
 
+		$tutorial_finished = get_option( 'rop_dashboard_pointers_queued', false );
+
 		// Handle Twitter/X limit notification when user reach the post limit.
-		if ( $this->should_show_twitter_limit_notification() ) {
+		if ( $tutorial_finished && $this->should_show_twitter_limit_notification() ) {
 			$sharing_limit = Rop_Admin::rop_check_reached_sharing_limit( 'tw' );
 			if ( $sharing_limit ) {
 				$rop_api_settings['twitter_limit']       = $sharing_limit->limit;
@@ -370,7 +372,7 @@ class Rop_Admin {
 		$user_id                          = wp_get_current_user()->ID;
 		$should_show_twitter_limit_upsell = Rop_Admin_Notices_Helpers::rop_should_show_notice( $user_id, $twitter_limit_promotion_key );
 
-		if ( $should_show_twitter_limit_upsell ) {
+		if ( $tutorial_finished && $should_show_twitter_limit_upsell ) {
 			$rop_api_settings['twitter_limit_promotion_close'] = admin_url( 'admin-ajax.php?action=rop_notice_dismissed&rop_notice_id=' . $twitter_limit_promotion_key . '&rop_notice_nonce=' . wp_create_nonce( 'rop_notice_nonce_value' ) );
 		}
 
