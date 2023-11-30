@@ -573,8 +573,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$is_rop_app = get_option( 'rop_twitter_via_rs_app', 'no' );
-		if ( 'yes' === $is_rop_app ) {
+		$is_rop_app = get_option( 'rop_twitter_via_rs_app', false );
+		if ( true === (bool) $is_rop_app || 'yes' === $is_rop_app ) {
 			$check_sharing_limit = Rop_Admin::rop_check_reached_sharing_limit( 'tw' );
 			if ( $check_sharing_limit && ! $check_sharing_limit->is_valid_license ) {
 				$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', Rop_I18n::get_labels( 'sharing.invalid_license' ) ) );
