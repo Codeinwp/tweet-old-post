@@ -50,7 +50,16 @@ module.exports = (env, argv) => (
 				},
 				{
 					test: /\.s?css$/,
-					use: ["style-loader", "css-loader", "sass-loader"],
+					use: [
+						"style-loader", 
+						{
+							loader: 'css-loader',
+							options: {
+								esModule: false
+							}
+						},
+						"sass-loader"
+					],
 				},
 			]
 		},
@@ -60,7 +69,7 @@ module.exports = (env, argv) => (
 			}
 		},
 		plugins: [
-			new VueLoaderPlugin(),
+						new VueLoaderPlugin(),
 		],
 		optimization: {
 			minimizer: [new TerserPlugin()],
