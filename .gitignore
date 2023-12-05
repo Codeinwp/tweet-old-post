@@ -3,6 +3,7 @@ node_modules
 logs
 dist
 artifact
+artifacts
 vendor
 tweet-old-post.zip
 assets/.DS_Store
