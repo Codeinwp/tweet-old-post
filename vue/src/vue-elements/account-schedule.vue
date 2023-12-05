@@ -65,6 +65,7 @@
         <div class="form-group">
           <div
             v-for="( time, index ) in schedule.interval_f.time"
+            :key="index"
             class="input-group"
           >
             <vue-timepicker

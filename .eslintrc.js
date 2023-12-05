@@ -11,9 +11,7 @@ module.exports = {
     ],
     // add your custom rules here
     rules: {
-        "vue/require-v-for-key": "warn",
         "vue/no-dupe-keys": "warn",
-        "vue/no-use-v-if-with-v-for": "warn",
         "vue/no-unused-components": "warn",
         "vue/no-side-effects-in-computed-properties": "warn",
         "vue/return-in-computed-property": "warn",

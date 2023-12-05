@@ -21,6 +21,7 @@
           >
             <option
               v-for="(lang, index) in wpml_languages"
+              :key="index"
               :value="lang.code"
               :selected="index == 0 || lang.code == post_format.wpml_language ? true : false"
             >
@@ -346,6 +347,7 @@
           >
             <option
               v-for="shortener in shorteners"
+              :key="shortener.id"
               :value="shortener.id"
               :disabled="shortener.active !== true"
               :selected="shortener.name == post_format.short_url_service"
@@ -357,29 +359,33 @@
       </div>
     </div>
 
-    <div
-      v-for="( credential, key_name ) in post_format.shortner_credentials"
-      v-if="post_format.short_url"
-      class="columns py-2"
-    >
-      <div class="column col-6 col-sm-12 vertical-align">
-        <b>{{ key_name | capitalize }}</b>
-        <p class="text-gray">
-          {{ labels.shortner_field_desc_start }} "{{ key_name }}"
-          {{ labels.shortner_field_desc_end }}
-          <strong>{{ post_format.short_url_service }}</strong> {{ labels.shortner_api_field }}.
-        </p>
-      </div>
-      <div class="column col-6 col-sm-12 vertical-align">
-        <div class="form-group">
-          <input
-            v-model="post_format.shortner_credentials[key_name]"
-            class="form-input"
-            type="text"
-          >
+    <template v-if="post_format.short_url">
+      <div
+        v-for="( credential, key_name ) in post_format.shortner_credentials"
+        :key="key_name"
+       
+        class="columns py-2"
+      >
+        <div class="column col-6 col-sm-12 vertical-align">
+          <b>{{ key_name | capitalize }}</b>
+          <p class="text-gray">
+            {{ labels.shortner_field_desc_start }} "{{ key_name }}"
+            {{ labels.shortner_field_desc_end }}
+            <strong>{{ post_format.short_url_service }}</strong> {{ labels.shortner_api_field }}.
+          </p>
+        </div>
+        <div class="column col-6 col-sm-12 vertical-align">
+          <div class="form-group">
+            <input
+              v-model="post_format.shortner_credentials[key_name]"
+              class="form-input"
+              type="text"
+            >
+          </div>
         </div>
       </div>
-    </div>
+    </template>
+    
 
     <span class="divider" />
 

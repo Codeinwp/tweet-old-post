@@ -31,17 +31,20 @@
                 {{ labels.no_accounts_desc }}
               </p>
             </div>
-            <div
-              v-for="( account, id ) in accounts"
-              v-if="is_preloading > 0"
-              class="account-container"
-            >
-              <service-user-tile
-                :account_data="account"
-                :account_id="id"
-              />
-              <span class="divider" />
-            </div>
+            <template v-if="is_preloading > 0">
+              <div
+                v-for="( account, id ) in accounts"
+                :key="id"
+                
+                class="account-container"
+              >
+                <service-user-tile
+                  :account_data="account"
+                  :account_id="id"
+                />
+                <span class="divider" />
+              </div>
+            </template>
             <div
               v-if="is_preloading > 0"
               id="rop-add-account-button"
@@ -118,8 +121,7 @@
                 twitter_warning: false,
                 labels: this.$store.state.labels.accounts,
                 upsell_link: ropApiSettings.upsell_link,
-                pro_installed: ropApiSettings.pro_installed,
-                is_preloading: this.$store.state.hide_preloading
+                pro_installed: ropApiSettings.pro_installed
             }
         },
         computed: {
@@ -159,6 +161,9 @@
             checkLicense: function () {
                 return (this.$store.state.licence < 1);
             },
+            is_preloading: function () {
+                return this.$store.state.hide_preloading;
+            }
         },
         mounted: function () {
             if (0 === this.is_preloading) {

@@ -6,8 +6,7 @@
           class="empty-title h5"
           v-html="loading_message"
         />
-        <component
-          :is="spinner_style"
+        <loader-style
           :loading="loading"
           :color="color"
           :size="size"
@@ -23,18 +22,12 @@
 
     import Loader_Style from './preload_three_dots.vue'
 
-    const style_components = {
-        'loader-style': Loader_Style
-    }
-
     export default {
         name: "VueSpinner",
-        components: style_components,
+        components: {
+	        'loader-style': Loader_Style
+        },
         props: {
-            spinner_style: {
-                type: String,
-                default: 'loader-style'
-            },
             loading: {
                 type: Boolean,
                 default: true

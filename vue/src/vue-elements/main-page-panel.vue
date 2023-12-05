@@ -81,6 +81,7 @@
             <li
               v-for="tab in displayTabs"
               :id="tab.name.replace(' ', '').toLowerCase()"
+              :key="tab.slug"
               class="tab-item c-hand"
               :class="{ active: tab.isActive }"
             >
@@ -296,9 +297,6 @@
                     return labels.status + ': ' + labels.error_check_log;
                 }
                 return labels.status + ': ' + status_label_display;
-            },
-            status_is_error_display: function () {
-                return this.status_is_error_display;
             },
             /**
              * Check if we have accounts connected.

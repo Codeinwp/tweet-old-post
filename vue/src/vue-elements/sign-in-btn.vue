@@ -3,6 +3,7 @@
     <div class="input-group text-right buttons-wrap">
       <button
         v-for="( service, network ) in services"
+        :key="network"
         :disabled="checkDisabled( service, network )"
         :title="getTooltip( service, network )"
         class="btn input-group-btn"
@@ -136,6 +137,7 @@
               <div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr) )">
                 <div
                   v-for="( field, id ) in modal.data"
+                  :key="field.id"
                   class="form-group"
                 >
                   <label
@@ -162,6 +164,7 @@
             <div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)">
               <div
                 v-for="( field, id ) in modal.data"
+                :key="id"
                 class="form-group"
               >
                 <label

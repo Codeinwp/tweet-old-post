@@ -43,19 +43,21 @@
           </p>
         </div>
 
-        <div
-          v-for=" (data, index) in logs "
-          v-else-if="logs_no > 0"
-          class="column col-12 mt-2"
-        >
+        <template v-else-if="logs_no > 0">
           <div
-            class="toast log-toast"
-            :class="'toast-' + data.type"
+            v-for=" (data, index) in logs "
+            :key="index"
+            class="column col-12 mt-2"
           >
-            <small class="pull-right text-right">{{ formatDate ( data.time ) }}</small>
-            <p>{{ data.message }}</p>
+            <div
+              class="toast log-toast"
+              :class="'toast-' + data.type"
+            >
+              <small class="pull-right text-right">{{ formatDate ( data.time ) }}</small>
+              <p>{{ data.message }}</p>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
     </div>
   </div>

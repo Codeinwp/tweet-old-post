@@ -128,6 +128,7 @@
             >
               <tr
                 v-for="(post,index ) in postsAvailable"
+                :key="index"
                 class="rop-post-item"
               >
                 <td :class="'rop-post-' + post.selected">

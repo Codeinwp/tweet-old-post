@@ -12,6 +12,7 @@
       <!-- autocomplete chips -->
       <label
         v-for="( option, index ) in selected"
+        :key="index"
         class="chip"
       >
         {{ option.name }}
@@ -52,22 +53,24 @@
       <!-- menu list chips -->
       <li
         v-for="( option, index ) in options"
-        v-if="filterSearch(option)"
+        :key="index"
         class="menu-item"
       >
-        <a
-          href="#"
-          @click.prevent="addToSelected(index)"
-          @keydown.38="highlightItem(true)"
-          @keydown.40="highlightItem()"
-        >
-          <div class="tile tile-centered">
-            <div
-              class="tile-content"
-              v-html="markMatch(option.name, search)"
-            />
-          </div>
-        </a>
+        <template v-if="filterSearch(option)">
+          <a
+            href="#"
+            @click.prevent="addToSelected(index)"
+            @keydown.38="highlightItem(true)"
+            @keydown.40="highlightItem()"
+          >
+            <div class="tile tile-centered">
+              <div
+                class="tile-content"
+                v-html="markMatch(option.name, search)"
+              />
+            </div>
+          </a>
+        </template>
       </li>
       <li v-if="has_results">
         <a href="#">

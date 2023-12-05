@@ -14,7 +14,10 @@
         <div class="columns">
           <div class="column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts">
             <span class="divider" />
-            <div v-for="( account, id ) in active_accounts">
+            <div
+              v-for="( account, id ) in active_accounts"
+              :key="id"
+            >
               <div
                 class="rop-selector-account-container"
                 :class="{active: selected_account===id}"

@@ -61,6 +61,7 @@
       >
         <div
           v-for=" (data, index) in queue "
+          :key="index"
           class="column col-12 text-left"
         >
           <queue-card
