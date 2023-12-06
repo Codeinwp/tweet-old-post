@@ -194,16 +194,12 @@
 		},
 		mounted: function () {
 			this.setupData();
-		//	this.refresh_language_taxonomies();
 		},
 		methods: {
 
 			postTypes() {
 				// console.log('post types:', this.$store.state.generalSettings.available_post_types);
 					return this.$store.state.generalSettings.available_post_types;
-			},
-			refresh_language_taxonomies(lang){
-				 this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes(), language_code: lang}});
 			},
 			get_lang(){
 				console.log("Inside Get lang");
