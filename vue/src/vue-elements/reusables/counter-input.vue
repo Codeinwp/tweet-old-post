@@ -1,18 +1,38 @@
 <template>
-	<div class="input-group rop-counter-group">
-		<input class="form-input rop-counter" type="text" v-model="inputValueC" :id="id" :disabled="is_disabled">
-		<button class="btn input-group-btn increment-btn up" @mousedown="isPressed('up')" @mouseup="isReleased('up')" :disabled="is_disabled"><i
-				class="fa fa-fw fa-caret-up"></i></button>
-		<button class="btn input-group-btn increment-btn down" @mousedown="isPressed('down')"
-		        @mouseup="isReleased('down')" :disabled="is_disabled"><i class="fa fa-fw fa-caret-down"></i></button>
-	</div>
+  <div class="input-group rop-counter-group">
+    <input
+      :id="id"
+      v-model="inputValueC"
+      class="form-input rop-counter"
+      type="text"
+      :disabled="is_disabled"
+    >
+    <button
+      class="btn input-group-btn increment-btn up"
+      :disabled="is_disabled"
+      @mousedown="isPressed('up')"
+      @mouseup="isReleased('up')"
+    >
+      <i
+        class="fa fa-fw fa-caret-up"
+      />
+    </button>
+    <button
+      class="btn input-group-btn increment-btn down"
+      :disabled="is_disabled"
+      @mousedown="isPressed('down')"
+      @mouseup="isReleased('down')"
+    >
+      <i class="fa fa-fw fa-caret-down" />
+    </button>
+  </div>
 </template>
 
 <script>
 	let intervalID = null
 
-	module.exports = {
-		name: 'counter-input',
+	export default {
+		name: 'CounterInput',
 		props: {
 			id: {
 				default: ''

@@ -1,14 +1,23 @@
 <template>
-	<div class="toast" :class="toastTypeClass" >
-		<button class="btn btn-clear float-right" @click="closeThis"></button>
-		<b><i class="fa" :class="iconClass"></i> {{ toast.title }}</b><br/>
-		<small>{{ toast.message }}</small>
-	</div>
+  <div
+    class="toast"
+    :class="toastTypeClass"
+  >
+    <button
+      class="btn btn-clear float-right"
+      @click="closeThis"
+    />
+    <b><i
+      class="fa"
+      :class="iconClass"
+    /> {{ toast.title }}</b><br>
+    <small>{{ toast.message }}</small>
+  </div>
 </template>
 
 <script>
-	module.exports = {
-		name: 'toast',
+	export default {
+		name: 'Toast',
 		computed: {
 			toast: function () {
 				return this.$store.state.toast

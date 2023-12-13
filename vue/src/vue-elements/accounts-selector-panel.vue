@@ -1,58 +1,107 @@
 <template>
-	<div class="tab-view">
-		<div class="panel-body">
-			<div class="d-inline-block mt-2 column col-12">
-				<p class="text-gray"><i class="fa fa-info-circle"></i> <span v-html="labels.accounts_selector"></span>
-				</p>
-			</div>
-			<empty-active-accounts v-if="accountsCount === 0"></empty-active-accounts>
-			<div class="container" v-if="accountsCount > 0">
-				<div class="columns">
-					<div class="column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts">
-						<span class="divider"></span>
-						<div v-for="( account, id ) in active_accounts">
-							<div class="rop-selector-account-container" :class="{active: selected_account===id}"
-							     @click="setActiveAccount(id)">
-								<div class="tile tile-centered rop-account">
-									<div class="tile-icon">
-										<div class="icon_box"
-										     :class=" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service ">
-											<img class="service_account_image" :src="account.img"
-											     v-if="account.img"/>
-											<i class="fa  " :class="getIcon(account)" aria-hidden="true"></i>
-										</div>
-									</div>
-									<div class="tile-content">
-										<p class="rop-account-name">{{account.user}}</p>
-										<strong class="rop-service-name">{{account.service}}</strong>
-									</div>
-								</div>
-							</div>
-							<span class="divider"></span>
-						</div>
-					</div>
-					<div class="column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12"
-					     :class="'rop-tab-state-'+is_loading">
-						<component :is="type" :account_id="selected_account" :license="license"></component>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="panel-footer" v-if="accountsCount > 0">
-			<div class="panel-actions text-right" v-if="allow_footer">
-				<button class="btn btn-secondary" @click="resetAccountData()"><i class="fa fa-ban"
-				                                                                 v-if="!this.is_loading"></i> <i
-						class="fa fa-spinner fa-spin" v-else></i> {{labels.reset_selector_btn}} {{component_label}}
-					{{labels.for}}
-					<b>{{active_account_name}}</b>
-				</button>
-				<button class="btn btn-primary" @click="saveAccountData()"><i class="fa fa-check"
-				                                                              v-if="!this.is_loading"></i> <i
-						class="fa fa-spinner fa-spin" v-else></i> {{labels.save_selector_btn}} {{component_label}}
-				</button>
-			</div>
-		</div>
-	</div>
+  <div class="tab-view">
+    <div class="panel-body">
+      <div class="d-inline-block mt-2 column col-12">
+        <p class="text-gray">
+          <i class="fa fa-info-circle" /> <span v-html="labels.accounts_selector" />
+        </p>
+      </div>
+      <empty-active-accounts v-if="accountsCount === 0" />
+      <div
+        v-if="accountsCount > 0"
+        class="container"
+      >
+        <div class="columns">
+          <div class="column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts">
+            <span class="divider" />
+            <div
+              v-for="( account, id ) in active_accounts"
+              :key="id"
+            >
+              <div
+                class="rop-selector-account-container"
+                :class="{active: selected_account===id}"
+                @click="setActiveAccount(id)"
+              >
+                <div class="tile tile-centered rop-account">
+                  <div class="tile-icon">
+                    <div
+                      class="icon_box"
+                      :class=" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service "
+                    >
+                      <img
+                        v-if="account.img"
+                        class="service_account_image"
+                        :src="account.img"
+                      >
+                      <i
+                        class="fa  "
+                        :class="getIcon(account)"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </div>
+                  <div class="tile-content">
+                    <p class="rop-account-name">
+                      {{ account.user }}
+                    </p>
+                    <strong class="rop-service-name">{{ account.service }}</strong>
+                  </div>
+                </div>
+              </div>
+              <span class="divider" />
+            </div>
+          </div>
+          <div
+            class="column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12"
+            :class="'rop-tab-state-'+is_loading"
+          >
+            <component
+              :is="type"
+              :account_id="selected_account"
+              :license="license"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="accountsCount > 0"
+      class="panel-footer"
+    >
+      <div
+        v-if="allow_footer"
+        class="panel-actions text-right"
+      >
+        <button
+          class="btn btn-secondary"
+          @click="resetAccountData()"
+        >
+          <i
+            v-if="!is_loading"
+            class="fa fa-ban"
+          /> <i
+            v-else
+            class="fa fa-spinner fa-spin"
+          /> {{ labels.reset_selector_btn }} {{ component_label }}
+          {{ labels.for }}
+          <b>{{ active_account_name }}</b>
+        </button>
+        <button
+          class="btn btn-primary"
+          @click="saveAccountData()"
+        >
+          <i
+            v-if="!is_loading"
+            class="fa fa-check"
+          /> <i
+            v-else
+            class="fa fa-spinner fa-spin"
+          /> {{ labels.save_selector_btn }} {{ component_label }}
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -61,8 +110,21 @@
 	import AccountSchedule from './account-schedule.vue'
 	import MultipleSelect from './reusables/multiple-select.vue'
 
-	module.exports = {
-		name: 'account-selector-view',
+	export default {
+		name: 'AccountSelectorView',
+		filters: {
+			capitalize: function (value) {
+				if (!value) return ''
+				value = value.toString()
+				return value.charAt(0).toUpperCase() + value.slice(1)
+			}
+		},
+		components: {
+			'empty-active-accounts': EmptyActiveAccounts,
+			'post-format': PostFormat,
+			'schedule': AccountSchedule,
+			'MultipleSelect': MultipleSelect
+		},
 		props: {
 			type: {
 				default: function () {
@@ -84,17 +146,6 @@
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
 				is_loading: false
-			}
-		},
-		mounted: function () {
-			this.setupData();
-		//	this.refresh_language_taxonomies();
-		},
-		filters: {
-			capitalize: function (value) {
-				if (!value) return ''
-				value = value.toString()
-				return value.charAt(0).toUpperCase() + value.slice(1)
 			}
 		},
 		computed: {
@@ -141,14 +192,14 @@
 				//this.get_lang();
 			}
 		},
+		mounted: function () {
+			this.setupData();
+		},
 		methods: {
 
 			postTypes() {
 				// console.log('post types:', this.$store.state.generalSettings.available_post_types);
 					return this.$store.state.generalSettings.available_post_types;
-			},
-			refresh_language_taxonomies(lang){
-				 this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes(), language_code: lang}});
 			},
 			get_lang(){
 				console.log("Inside Get lang");
@@ -284,12 +335,6 @@
 				this.checkActiveData();
     this.$store.state.dom_updated = false;
 			}
-		},
-		components: {
-			'empty-active-accounts': EmptyActiveAccounts,
-			'post-format': PostFormat,
-			'schedule': AccountSchedule,
-			'MultipleSelect': MultipleSelect
 		}
 	}
 </script>

@@ -1,57 +1,114 @@
 <template>
-	<div class="tab-view rop-queue-tab-container">
-		<div class="panel-body" :class="'rop-tab-state-'+is_loading">
-			<div class="columns" v-if="! start_status">
-				<div class="column col-12 text-center empty-container">
-					<div class="empty-icon">
-						<i class="fa fa-3x fa-info-circle"></i>
-					</div>
-					<p class="empty-title h5">{{labels.sharing_not_started}}</p>
-					<p class="empty-subtitle">{{labels.sharing_not_started_desc}}</p>
-				</div>
-			</div>
+  <div class="tab-view rop-queue-tab-container">
+    <div
+      class="panel-body"
+      :class="'rop-tab-state-'+is_loading"
+    >
+      <div
+        v-if="! start_status"
+        class="columns"
+      >
+        <div class="column col-12 text-center empty-container">
+          <div class="empty-icon">
+            <i class="fa fa-3x fa-info-circle" />
+          </div>
+          <p class="empty-title h5">
+            {{ labels.sharing_not_started }}
+          </p>
+          <p class="empty-subtitle">
+            {{ labels.sharing_not_started_desc }}
+          </p>
+        </div>
+      </div>
 
-			<div v-else-if="start_status && queueCount > 0 ">
+      <div v-else-if="start_status && queueCount > 0 ">
+        <div
+          v-if="! is_business_and_higher"
+          class="columns py-2"
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-lock" /> <span v-html="labels.business_or_higher_only" />
+            </p>
+          </div>
+        </div>
 
-				<div class="columns py-2" v-if="! is_business_and_higher">
-					<div class="column text-center">
-						<p class="upsell"><i class="fa fa-lock"></i> <span v-html="labels.business_or_higher_only"></span></p>
-					</div>
-				</div>
-
-				<!-- When sharing is started but we  have the business plan. -->
-				<div class="d-inline-block mt-2 column col-12">
-					<p class="text-gray info-paragraph"><i class="fa fa-info-circle"></i> {{labels.queue_desc}}</p>
-				</div>
-			</div>
-			<div class="empty" v-else-if="start_status && queueCount === 0">
-				<div class="empty-icon">
-					<i class="fa fa-3x fa-info-circle"></i>
-				</div>
-				<p class="empty-title h5">{{labels.no_posts}}</p>
-				<p class="empty-subtitle" v-html="labels.no_posts_desc"></p>
-			</div>
-			<div class="columns" v-if="start_status && queueCount > 0">
-				<div class="column col-12 text-left" v-for=" (data, index) in queue ">
-					<queue-card :card_data="data.post_data" :id="index" :enabled="is_business_and_higher"/>
-				</div>
-			</div>
-		</div>
-		<div class="panel-footer text-rightcade" v-if="start_status">
-			<button class="btn btn-secondary" @click="refreshQueue(true)">
-				<i class="fa fa-refresh" v-if="!is_loading"></i>
-				<i class="fa fa-spinner fa-spin" v-else></i>
-				{{labels.refresh_btn}}
-			</button>
-		</div>
-	</div>
+        <!-- When sharing is started but we  have the business plan. -->
+        <div class="d-inline-block mt-2 column col-12">
+          <p class="text-gray info-paragraph">
+            <i class="fa fa-info-circle" /> {{ labels.queue_desc }}
+          </p>
+        </div>
+      </div>
+      <div
+        v-else-if="start_status && queueCount === 0"
+        class="empty"
+      >
+        <div class="empty-icon">
+          <i class="fa fa-3x fa-info-circle" />
+        </div>
+        <p class="empty-title h5">
+          {{ labels.no_posts }}
+        </p>
+        <p
+          class="empty-subtitle"
+          v-html="labels.no_posts_desc"
+        />
+      </div>
+      <div
+        v-if="start_status && queueCount > 0"
+        class="columns"
+      >
+        <div
+          v-for=" (data, index) in queue "
+          :key="index"
+          class="column col-12 text-left"
+        >
+          <queue-card
+            :id="index"
+            :card_data="data.post_data"
+            :enabled="is_business_and_higher"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="start_status"
+      class="panel-footer text-rightcade"
+    >
+      <button
+        class="btn btn-secondary"
+        @click="refreshQueue(true)"
+      >
+        <i
+          v-if="!is_loading"
+          class="fa fa-refresh"
+        />
+        <i
+          v-else
+          class="fa fa-spinner fa-spin"
+        />
+        {{ labels.refresh_btn }}
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
 	import QueueCard from './reusables/queue-card.vue'
 
-	module.exports = {
-		name: 'queue-view',
+	export default {
+		name: 'QueueView',
+		components: {
+			QueueCard
+		},
+		data: function () {
+			return {
+				is_loading: false,
+				labels: this.$store.state.labels.queue,
+				upsell_link: ropApiSettings.upsell_link,
+			}
+		},
 		computed: {
 			queueCount: function () {
 				return Object.keys(this.$store.state.queue).length
@@ -65,13 +122,6 @@
 			is_business_and_higher: function () {
 				return (this.$store.state.licence > 1 && this.$store.state.licence !== 7)
 			},
-		},
-		data: function () {
-			return {
-				is_loading: false,
-				labels: this.$store.state.labels.queue,
-				upsell_link: ropApiSettings.upsell_link,
-			}
 		},
 		watch: {
 			start_status: function (new_val) {
@@ -99,9 +149,6 @@
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				})
 			}
-		},
-		components: {
-			QueueCard
 		}
 	}
 </script>

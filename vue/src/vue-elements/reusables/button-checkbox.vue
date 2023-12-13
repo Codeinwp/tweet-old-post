@@ -1,10 +1,16 @@
 <template>
-	<button class="btn input-group-addon column" :class="is_active" @click="toggleThis()" >{{label}}</button>
+  <button
+    class="btn input-group-addon column"
+    :class="is_active"
+    @click="toggleThis()"
+  >
+    {{ label }}
+  </button>
 </template>
 
 <script>
-	module.exports = {
-		name: 'button-checkbox',
+	export default {
+		name: 'ButtonCheckbox',
 		props: {
 			value: {
 				default: '0',

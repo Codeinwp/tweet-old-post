@@ -1,44 +1,86 @@
 <template>
-	<div class="form-autocomplete" style="width: 100%;" v-on-clickaway="closeDropdown">
-		<!-- autocomplete input container -->
-		<div class="form-autocomplete-input form-input" :class="is_focused">
+  <div
+    v-on-clickaway="closeDropdown"
+    class="form-autocomplete"
+    style="width: 100%;"
+  >
+    <!-- autocomplete input container -->
+    <div
+      class="form-autocomplete-input form-input"
+      :class="is_focused"
+    >
+      <!-- autocomplete chips -->
+      <label
+        v-for="( option, index ) in selected"
+        :key="index"
+        class="chip"
+      >
+        {{ option.name }}
+        <a
+          href="#"
+          class="btn btn-clear"
+          aria-label="Close"
+          role="button"
+          @click.prevent="removeSelected(index)"
+        />
+      </label>
 			
-			<!-- autocomplete chips -->
-			<label class="chip" v-for="( option, index ) in selected">
-				{{option.name}}
-				<a href="#" class="btn btn-clear" aria-label="Close" @click.prevent="removeSelected(index)"
-				   role="button"></a>
-			</label>
-			
-			<!-- autocomplete real input box -->
-			<input style="height: 1.0rem;" class="form-input" type="text" ref="search" v-model="search"
-			       :placeholder="autocomplete_placeholder" @click="magic_flag = true" @focus="magic_flag = true"
-			       @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.38="highlightItem(true)"
-			       @keydown.40="highlightItem()" :disabled="is_disabled">
-		</div>
+      <!-- autocomplete real input box -->
+      <input
+        ref="search"
+        v-model="search"
+        style="height: 1.0rem;"
+        class="form-input"
+        type="text"
+        :placeholder="autocomplete_placeholder"
+        :disabled="is_disabled"
+        @click="magic_flag = true"
+        @focus="magic_flag = true"
+        @keyup="magic_flag = true"
+        @keydown.8="popLast()"
+        @keydown.38="highlightItem(true)"
+        @keydown.40="highlightItem()"
+      >
+    </div>
 		
-		<!-- autocomplete suggestion list -->
-		<ul class="menu" ref="autocomplete_results" :class="is_visible"
-		    style="overflow-y: scroll; max-height: 120px">
-			<!-- menu list chips -->
-			<li class="menu-item" v-for="( option, index ) in options" v-if="filterSearch(option)">
-				<a href="#" @click.prevent="addToSelected(index)" @keydown.38="highlightItem(true)"
-				   @keydown.40="highlightItem()">
-					<div class="tile tile-centered">
-						<div class="tile-content" v-html="markMatch(option.name, search)"></div>
-					</div>
-				</a>
-			</li>
-			<li v-if="has_results">
-				<a href="#">
-					<div class="tile tile-centered">
-						<div class="tile-content"><i>{{labels.multiselect_not_found}}"{{search}}" ...</i></div>
-					</div>
-				</a>
-			</li>
-		</ul>
-	</div>
-
+    <!-- autocomplete suggestion list -->
+    <ul
+      ref="autocomplete_results"
+      class="menu"
+      :class="is_visible"
+      style="overflow-y: scroll; max-height: 120px"
+    >
+      <!-- menu list chips -->
+      <li
+        v-for="( option, index ) in options"
+        :key="index"
+        class="menu-item"
+      >
+        <template v-if="filterSearch(option)">
+          <a
+            href="#"
+            @click.prevent="addToSelected(index)"
+            @keydown.38="highlightItem(true)"
+            @keydown.40="highlightItem()"
+          >
+            <div class="tile tile-centered">
+              <div
+                class="tile-content"
+                v-html="markMatch(option.name, search)"
+              />
+            </div>
+          </a>
+        </template>
+      </li>
+      <li v-if="has_results">
+        <a href="#">
+          <div class="tile tile-centered">
+            <div class="tile-content"><i>{{ labels.multiselect_not_found }}"{{ search }}" ...</i></div>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -54,8 +96,8 @@
 		return false
 	}
 
-	module.exports = {
-		name: 'multiple-select',
+	export default {
+		name: 'MultipleSelect',
 		mixins: [clickaway],
 		props: {
 			options: {
@@ -95,6 +137,69 @@
             apply_limit: {
                 default: false,
                 type: Boolean
+			}
+		},
+		data: function () {
+			return {
+				search: '',
+				highlighted: -1,
+				no_results: false,
+				labels: this.$store.state.labels.general,
+				upsell_link: ropApiSettings.upsell_link,
+				magic_flag: false,
+				rand: 0
+			}
+		},
+		computed: {
+			is_focused: function () {
+				return {
+					'is-focused': this.magic_flag === true
+				}
+			},
+			is_visible: function () {
+				return {
+					'd-none': this.magic_flag === false
+				}
+			},
+			is_one: function () {
+				if (!this.dontLock) {
+					if (this.options.length === 1 && this.options[0].selected === false) {
+						//		this.selected.push(this.options[0])
+						return true
+					} else if (this.options.length === 1 && this.options[0].selected === true) {
+						return true
+					}
+				}
+				return false
+			},
+			autocomplete_placeholder: function () {
+				if (this.selected.length > 0) {
+					return ''
+				}
+				return this.placeHolderText
+			},
+			is_disabled: function () {
+				return !this.disabled;
+			},
+			has_results: function () {
+				let found = 0
+				for (var option of this.options) {
+					if (this.filterSearch(option)) {
+						found++
+					}
+				}
+				if (found) {
+					return false
+				}
+				return true
+			}
+		},
+		watch: {
+			search: function (val) {
+				this.$emit('update', val)
+            },
+            selected: function (val) {
+                this.$emit( 'display-limiter-notice', this.selected.length)
 			}
 		},
 		mounted() {
@@ -146,69 +251,6 @@
 			for (let option of this.options) {
 				this.options[index].selected = false;
 				index++
-			}
-		},
-		data: function () {
-			return {
-				search: '',
-				highlighted: -1,
-				no_results: false,
-				labels: this.$store.state.labels.general,
-				upsell_link: ropApiSettings.upsell_link,
-				magic_flag: false,
-				rand: 0
-			}
-		},
-		watch: {
-			search: function (val) {
-				this.$emit('update', val)
-            },
-            selected: function (val) {
-                this.$emit( 'display-limiter-notice', this.selected.length)
-			}
-		},
-		computed: {
-			is_focused: function () {
-				return {
-					'is-focused': this.magic_flag === true
-				}
-			},
-			is_visible: function () {
-				return {
-					'd-none': this.magic_flag === false
-				}
-			},
-			is_one: function () {
-				if (!this.dontLock) {
-					if (this.options.length === 1 && this.options[0].selected === false) {
-						//		this.selected.push(this.options[0])
-						return true
-					} else if (this.options.length === 1 && this.options[0].selected === true) {
-						return true
-					}
-				}
-				return false
-			},
-			autocomplete_placeholder: function () {
-				if (this.selected.length > 0) {
-					return ''
-				}
-				return this.placeHolderText
-			},
-			is_disabled: function () {
-				return !this.disabled;
-			},
-			has_results: function () {
-				let found = 0
-				for (var option of this.options) {
-					if (this.filterSearch(option)) {
-						found++
-					}
-				}
-				if (found) {
-					return false
-				}
-				return true
 			}
 		},
 		methods: {
