@@ -72,13 +72,17 @@ class Rop_I18n {
 	 * @return array|mixed|string String localized
 	 */
 	public static function get_labels( $key = '' ) {
+		$tw_new_name = __( 'X (ex Twitter)', 'tweet-old-post' );
 		$labels = array(
 			'accounts'    => array(
 				'menu_item'                  => __( 'Accounts', 'tweet-old-post' ),
 				'service_popup_title'        => __( 'Service Credentials', 'tweet-old-post' ),
 				'show_advance_config'        => __( 'Use your own keys', 'tweet-old-post' ),
+				'show_own_keys_config'       => __( 'Use my own API keys', 'tweet-old-post' ),
+				'tw_app_signin_tooltip'      => sprintf( __( 'Due to the %1$s changes in network limits, we cannot guarantee stable sharing using this mode. %2$s', 'tweet-old-post' ), $tw_new_name, ' <br/> <a href="https://docs.revive.social/article/1908-how-to-solve-453-twitter-error-in-rop" target="_blank">' . __( 'Learn More', 'tweet-old-post' ) . '</a>' ),
+				'tw_new_name'                => $tw_new_name,
 				'fb_app_signin_btn'          => __( 'Sign in to Facebook', 'tweet-old-post' ),
-				'tw_app_signin_btn'          => __( 'Sign in to Twitter', 'tweet-old-post' ),
+				'tw_app_signin_btn'          => __( 'Sign in to X', 'tweet-old-post' ),
 				'li_app_signin_btn'          => __( 'Sign in to LinkedIn', 'tweet-old-post' ),
 				'tumblr_app_signin_btn'      => __( 'Sign in to Tumblr', 'tweet-old-post' ),
 				'gmb_app_signin_btn'         => __( 'Sign in to Google My Business', 'tweet-old-post' ),

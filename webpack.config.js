@@ -1,7 +1,7 @@
 const webpack = require( 'webpack' )
 const TerserPlugin = require( "terser-webpack-plugin" );
 const path    = require( 'path' )
-const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
+const VueLoaderPlugin = require( 'vue-loader' ).VueLoaderPlugin;
 
 // Main Settings config
 module.exports = (env, argv) => (
@@ -31,36 +31,36 @@ module.exports = (env, argv) => (
 								[
 									"@babel/preset-env",
 									{
-									  useBuiltIns: "usage",
-									  corejs: "3.22",
-									  targets: [
+										useBuiltIns: "usage",
+										corejs: "3.22",
+										targets: [
 										"last 2 versions",
 										"> 1%",
 										"not ie <= 8"
-									  ]
-									},
+										]
+							},
 								],
 							]
 						}
 					}
-				},
+			},
 				{
 					test: /\.vue$/,
 					use: 'vue-loader'
-				},
+			},
 				{
 					test: /\.s?css$/,
 					use: [
-						"style-loader", 
+						"style-loader",
 						{
 							loader: 'css-loader',
 							options: {
 								esModule: false
 							}
-						},
+					},
 						"sass-loader"
 					],
-				},
+			},
 			]
 		},
 		resolve: {
