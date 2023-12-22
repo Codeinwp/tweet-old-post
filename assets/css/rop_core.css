@@ -692,9 +692,9 @@ a.active {
 }
 
 #rop_core .btn.btn-twitter {
-    border-color: #47a5ed;
+    border-color: #000;
     color: #fff;
-    background: #55acee;
+    background: #000;
 }
 
 #rop_core .btn.btn-twitter:focus {
@@ -703,9 +703,9 @@ a.active {
 
 #rop_core .btn.btn-twitter:focus,
 #rop_core .btn.btn-twitter:hover {
-    border-color: #3ea1ec;
+    border-color: #14171A;
     color: #fff;
-    background: #0074ab;
+    background: #14171A;
 }
 
 #rop_core .btn.btn-twitter:active,
@@ -2874,7 +2874,6 @@ a.active {
 }
 
 #rop_core .modal-container .modal-body {
-    overflow-y: auto;
     position: relative;
     max-height: 50vh;
     padding: 0.8rem;
@@ -4460,6 +4459,11 @@ a.active {
     text-overflow: initial;
 }
 
+#rop_core .no-wrap-tooltip.tooltip::after {
+    white-space: initial;
+    text-overflow: initial;
+}
+
 #rop_core .rop-queue-post .card-top-header.columns {
     position: absolute;
     top: 0;
@@ -4799,4 +4803,26 @@ padding: 0 20px;
 .tile-action div {
     display: inline-block;
     vertical-align: middle;
+}
+
+#rop_core .tw-signin-advanced-config {
+    position: relative;
+    max-width: 205px;
+    margin: 0 auto;
+}
+#rop_core .tw-signin-advanced-config > .wpr-tooltip {
+    padding: 0;
+    top: 5px;
+}
+
+#rop_core .tw-signin-advanced-config > .wpr-tooltip > .wpr-tooltip {
+    background-color: rgba( 0, 0, 0, 0.8 );
+    text-align: left;
+    font-size: 12px;
+    padding: 8px 12px;
+}
+
+#rop_core .tw-signin-advanced-config > .wpr-tooltip > .wpr-tooltip a {
+    color: #fff;
+    text-decoration: underline;
 }
