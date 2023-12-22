@@ -1,0 +1,64 @@
+name: E2E
+
+on:
+  pull_request:
+    types: [synchronize, ready_for_review]
+    branches-ignore:
+      - "update_dependencies"
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
+
+      # run composer install
+      - name: Install composer
+        run: composer install --prefer-dist --no-progress --quiet
+
+      # setup the node cache (node_modules) with github actions cache
+      - name: Cache Node - npm
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-cache-
+
+      - name: npm ci
+        run: |
+          npm ci
+
+      - name: Make build
+        run: |
+          npm run build
+
+      - name: Setup WP Env
+        run: |
+          npm run wp-env start
+
+      - name: Install Playwright
+        run: |
+          npm install -g playwright-cli
+          npx playwright install
+
+      - name: Playwright Blocks
+        run: |
+          npm run test:e2e:playwright
+        continue-on-error: true
+
+      - name: Upload tests artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact
+          path: ./artifacts
+          retention-days: 1

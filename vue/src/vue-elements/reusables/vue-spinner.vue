@@ -1,32 +1,33 @@
 <template>
-    <transition v-if="display_the_preloader">
-        <div class="preloader-container">
-            <div class="preloader-body text-center">
-                <p class="empty-title h5" v-html="loading_message"></p>
-                <component v-bind:is="spinner_style" :loading="loading" :color="color" :size="size" :margin="margin" :radius="radius"></component>
-            </div>
-        </div>
-    </transition>
+  <transition v-if="display_the_preloader">
+    <div class="preloader-container">
+      <div class="preloader-body text-center">
+        <p
+          class="empty-title h5"
+          v-html="loading_message"
+        />
+        <loader-style
+          :loading="loading"
+          :color="color"
+          :size="size"
+          :margin="margin"
+          :radius="radius"
+        />
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script>
 
     import Loader_Style from './preload_three_dots.vue'
 
-    const style_components = {
-        'loader-style': Loader_Style
-    }
-
     export default {
-        name: "vue-spinner",
-        mounted () {
-
+        name: "VueSpinner",
+        components: {
+	        'loader-style': Loader_Style
         },
         props: {
-            spinner_style: {
-                type: String,
-                default: 'loader-style'
-            },
             loading: {
                 type: Boolean,
                 default: true
@@ -58,7 +59,9 @@
                 loading_message: this.preloader_message
             }
         },
-        components: style_components,
+        mounted () {
+
+        },
         methods: {
             show: function () {
                 this.display_the_preloader = true

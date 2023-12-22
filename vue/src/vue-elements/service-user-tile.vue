@@ -1,41 +1,82 @@
 <template>
-	<div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
+  <div
+    class="tile tile-centered rop-account"
+    :class="'rop-'+type+'-account'"
+  >
+    <div class="tile-icon">
+      <div
+        class="icon_box"
+        :class="service"
+      >
+        <img
+          v-if="img"
+          class="service_account_image"
+          :src="img"
+        >
+        <i
+          class="fa  "
+          :class="icon"
+          aria-hidden="true"
+        />
+      </div>
+    </div>
+    <div class="tile-content">
+      <div class="tile-title">
+        <a
+          :href="link"
+          target="_blank"
+        >{{ user }}</a>
+      </div>
+      <div class="tile-subtitle text-gray">
+        {{ serviceInfo }}
+      </div>
+    </div>
+    <div class="tile-action">
+      <div class="form-group">
+        <label class="form-switch">
+          <div class="ajax-loader "><i
+            v-show="is_loading"
+            class="fa fa-spinner fa-spin"
+          /></div>
+          <input
+            v-model="account_data.active"
+            :disabled="checkDisabled"
+            type="checkbox"
+            @change="startToggleAccount( account_id, type )"
+          >
+          <i class="form-icon" />
+        </label>
+      </div>
 
-		<div class="tile-icon">
-			<div class="icon_box" :class="service">
-				<img class="service_account_image" :src="img" v-if="img"/>
-				<i class="fa  " :class="icon" aria-hidden="true"></i>
-			</div>
-		</div>
-		<div class="tile-content">
-			<div class="tile-title"><a :href="link" target="_blank">{{ user }}</a></div>
-			<div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
-		</div>
-		<div class="tile-action">
-			<div class="form-group">
-				<label class="form-switch">
-					<div class="ajax-loader "><i class="fa fa-spinner fa-spin" v-show="is_loading"></i></div>
-					<input :disabled="checkDisabled" type="checkbox" v-model="account_data.active"
-					       @change="startToggleAccount( account_id, type )"/>
-					<i class="form-icon"></i>
-				</label>
-			</div>
-
-   		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="account_labels.remove_account" v-if=" ! account_data.active">
-			<i class="fa fa-trash" v-if=" ! is_loading"></i>
-			<i class="fa fa-spinner fa-spin" v-else></i>
-		</div>
-			<a href="https://revive.social/plugins/revive-old-post/?utm_source=rop&utm_medium=dashboard&utm_campaign=upsell" target="_blank"><p v-if="informFbProProducts">{{ all_labels.generic.only_pro_suffix }}</p></a>
-		</div>
-	</div>
+      <div
+        v-if=" ! account_data.active"
+        class="tile-icon rop-remove-account tooltip tooltip-right"
+        :data-tooltip="account_labels.remove_account"
+        @click="removeAccount(account_id) "
+      >
+        <i
+          v-if=" ! is_loading"
+          class="fa fa-trash"
+        />
+        <i
+          v-else
+          class="fa fa-spinner fa-spin"
+        />
+      </div>
+      <a
+        href="https://revive.social/plugins/revive-old-post/?utm_source=rop&utm_medium=dashboard&utm_campaign=upsell"
+        target="_blank"
+      ><p v-if="informFbProProducts">{{ all_labels.generic.only_pro_suffix }}</p></a>
+    </div>
+  </div>
 </template>
 
 <script>
 
 	import Vue from 'vue'
 
-	module.exports = {
-		name: 'service-user-tile',
+	export default {
+		name: 'ServiceUserTile',
 		props: ['account_data', 'account_id'],
 		data: function () {
 			return {

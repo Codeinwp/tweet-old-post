@@ -1,15 +1,27 @@
 <template>
-    <div class="preloader-loading-item" v-show="loading">
-        <div class="normal-dot normal-dot-odd" v-bind:style="dot_style"></div>
-        <div class="normal-dot normal-dot-even" v-bind:style="dot_style"></div>
-        <div class="normal-dot normal-dot-odd" v-bind:style="dot_style"></div>
-    </div>
+  <div
+    v-show="loading"
+    class="preloader-loading-item"
+  >
+    <div
+      class="normal-dot normal-dot-odd"
+      :style="dot_style"
+    />
+    <div
+      class="normal-dot normal-dot-even"
+      :style="dot_style"
+    />
+    <div
+      class="normal-dot normal-dot-odd"
+      :style="dot_style"
+    />
+  </div>
 </template>
 
 <script>
     export default {
 
-        name: 'preload_three_dots',
+        name: 'PreloadThreeDots',
 
         props: {
             loading: {

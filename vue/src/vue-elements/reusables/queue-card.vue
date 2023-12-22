@@ -1,120 +1,230 @@
 <template>
-	<div class="card">
-		<div class="columns">
-			<div class="column col-sm-12 col-justified">
-				<div class="columns">
-					<div class="column">
-						<p class="text-gray text-left "><i class="fa fa-clock-o"></i> {{card_data.date}} <b><i
-								class="fa fa-at"></i></b> <i class="service fa"
-						                                     :class="iconClass( card_data.account_id )"></i>
-							{{getAccountName(card_data.account_id)}}</p>
-					</div>
-				</div>
-				<div class="columns" v-if="!edit">
-					<div class="column col-12">
-						<p v-html="content.content + hashtags( content.hashtags )"></p>
-					</div>
-				</div>
-				<div class="form-group columns" v-if="edit">
-					<div class="column col-12" v-if="content.post_with_image || is_instagram_account">
-						<label class="form-label" for="image">{{labels.queue_image}}</label>
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
-							<input id="image" type="text" class="form-input" :value="content.post_image" readonly>
-							<button class="btn btn-primary input-group-btn tooltip" @click="uploadImage"
-							        :data-tooltip="labels.upload_image">
-								<i class="fa fa-upload" aria-hidden="true"></i>
-							</button>
-							<button class="btn btn-danger input-group-btn tooltip" @click="removeImage"
-							        :data-tooltip="labels.remove_image">
-								<i class="fa fa-remove" aria-hidden="true"></i>
-							</button>
-						</div>
-					</div>
-					<div class="column col-12">
-						<label class="form-label" for="content">{{labels.queue_content}}</label>
-						<textarea class="form-input" id="content" placeholder="" rows="3" @keyup="checkCount">{{content.content}}</textarea>
-					</div>
-				</div>
-				<div class="columns col-justified" v-if="!edit">
-					<div class="column col-3">
-						<button class="btn btn-sm btn-block btn-warning tooltip   tooltip-bottom "
-						        @click="skipPost(card_data.account_id, card_data.post_id)"
-						        :data-tooltip="labels.reschedule_post"
-						        :disabled=" ! enabled">
-							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'skip'"></i>
-							<i class="fa fa-step-forward" v-else aria-hidden="true"></i>
-							{{labels.skip_btn_queue}}
-						</button>
-					</div>
-					<div class="column col-3">
-						<button class="btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  "
-						        :data-tooltip="labels.ban_post"
-						        @click="blockPost(card_data.account_id, card_data.post_id)" :disabled=" ! enabled">
-							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'block'"></i>
-							<i class="fa fa-ban" aria-hidden="true" v-else></i>
-							{{labels.block_btn_queue}}
-						</button>
-					</div>
-					<div class="column col-3">
-						<button class="btn btn-sm btn-block btn-primary" @click="toggleEditState" v-if="!edit"
-						        :disabled=" ! enabled">
-							<i class="fa fa-pencil" aria-hidden="true"></i> {{labels.edit_queue}}
-						</button>
-					</div>
-					<div class="column col-3 col-ml-auto text-right" v-if="content.post_url !== ''">
-						<p class="m-0">
-							<b>{{labels.link_title}}:</b>
-							<a :href="content.post_url" target="_blank" class="tooltip"
-							   :data-tooltip="labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  ">
-								{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +
-								'}'}}</a>
-						</p>
-					</div>
-				</div>
-				<div class="columns" v-else>
-					<div class="column col-3">
-						<button class="btn btn-sm btn-block btn-success"
-						        @click="saveChanges(card_data.account_id, card_data.post_id)"
-						        v-if="edit" :disabled=" ! enabled">
-							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'edit'"></i>
-							<i class="fa fa-check" aria-hidden="true" v-else></i>
-							{{labels.save_edit}}
-						</button>
-					</div>
-					<div class="column col-3">
-						<button class="btn btn-sm btn-block btn-warning" @click="cancelChanges" v-if="edit"
-						        :disabled=" ! enabled">
-							<i class="fa fa-times" aria-hidden="true"></i>
-							{{labels.cancel_edit}}
-						</button>
-					</div>
-				</div>
-			</div>
-			<div class="column col-4 col-sm-12 vertical-align" v-if="(!edit && content.post_with_image) || (!edit && is_instagram_account)">
-				<div v-if="content.post_image !== ''">
-					<figure class="figure" v-if="content.post_image !== ''">
-						<img :src="( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )"
-						     class="img-fit-cover img-responsive">
-					</figure>
-				
-				</div>
-				<div class="rop-image-placeholder" v-else>
-					<summary>
-						<i class="fa fa-file-image-o"></i>
-						{{labels.queue_no_image}}
-					</summary>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="card">
+    <div class="columns">
+      <div class="column col-sm-12 col-justified">
+        <div class="columns">
+          <div class="column">
+            <p class="text-gray text-left ">
+              <i class="fa fa-clock-o" /> {{ card_data.date }} <b><i
+                class="fa fa-at"
+              /></b> <i
+                class="service fa"
+                :class="iconClass( card_data.account_id )"
+              />
+              {{ getAccountName(card_data.account_id) }}
+            </p>
+          </div>
+        </div>
+        <div
+          v-if="!edit"
+          class="columns"
+        >
+          <div class="column col-12">
+            <p v-html="content.content + hashtags( content.hashtags )" />
+          </div>
+        </div>
+        <div
+          v-if="edit"
+          class="form-group columns"
+        >
+          <div
+            v-if="content.post_with_image || is_instagram_account"
+            class="column col-12"
+          >
+            <label
+              class="form-label"
+              for="image"
+            >{{ labels.queue_image }}</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-file-image-o" /></span>
+              <input
+                id="image"
+                type="text"
+                class="form-input"
+                :value="content.post_image"
+                readonly
+              >
+              <button
+                class="btn btn-primary input-group-btn tooltip"
+                :data-tooltip="labels.upload_image"
+                @click="uploadImage"
+              >
+                <i
+                  class="fa fa-upload"
+                  aria-hidden="true"
+                />
+              </button>
+              <button
+                class="btn btn-danger input-group-btn tooltip"
+                :data-tooltip="labels.remove_image"
+                @click="removeImage"
+              >
+                <i
+                  class="fa fa-remove"
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
+          </div>
+          <div class="column col-12">
+            <label
+              class="form-label"
+              for="content"
+            >{{ labels.queue_content }}</label>
+            <textarea
+              id="content"
+              class="form-input"
+              placeholder=""
+              rows="3"
+              @keyup="checkCount"
+            >{{ content.content }}</textarea>
+          </div>
+        </div>
+        <div
+          v-if="!edit"
+          class="columns col-justified"
+        >
+          <div class="column col-3">
+            <button
+              class="btn btn-sm btn-block btn-warning tooltip   tooltip-bottom "
+              :data-tooltip="labels.reschedule_post"
+              :disabled=" ! enabled"
+              @click="skipPost(card_data.account_id, card_data.post_id)"
+            >
+              <i
+                v-if=" is_loading === 'skip'"
+                class="fa fa-spinner fa-spin"
+              />
+              <i
+                v-else
+                class="fa fa-step-forward"
+                aria-hidden="true"
+              />
+              {{ labels.skip_btn_queue }}
+            </button>
+          </div>
+          <div class="column col-3">
+            <button
+              class="btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  "
+              :data-tooltip="labels.ban_post"
+              :disabled=" ! enabled"
+              @click="blockPost(card_data.account_id, card_data.post_id)"
+            >
+              <i
+                v-if=" is_loading === 'block'"
+                class="fa fa-spinner fa-spin"
+              />
+              <i
+                v-else
+                class="fa fa-ban"
+                aria-hidden="true"
+              />
+              {{ labels.block_btn_queue }}
+            </button>
+          </div>
+          <div class="column col-3">
+            <button
+              v-if="!edit"
+              class="btn btn-sm btn-block btn-primary"
+              :disabled=" ! enabled"
+              @click="toggleEditState"
+            >
+              <i
+                class="fa fa-pencil"
+                aria-hidden="true"
+              /> {{ labels.edit_queue }}
+            </button>
+          </div>
+          <div
+            v-if="content.post_url !== ''"
+            class="column col-3 col-ml-auto text-right"
+          >
+            <p class="m-0">
+              <b>{{ labels.link_title }}:</b>
+              <a
+                :href="content.post_url"
+                target="_blank"
+                class="tooltip"
+                :data-tooltip="labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) "
+              >
+                {{ '{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +
+                  '}' }}</a>
+            </p>
+          </div>
+        </div>
+        <div
+          v-else
+          class="columns"
+        >
+          <div class="column col-3">
+            <button
+              v-if="edit"
+              class="btn btn-sm btn-block btn-success"
+              :disabled=" ! enabled"
+              @click="saveChanges(card_data.account_id, card_data.post_id)"
+            >
+              <i
+                v-if=" is_loading === 'edit'"
+                class="fa fa-spinner fa-spin"
+              />
+              <i
+                v-else
+                class="fa fa-check"
+                aria-hidden="true"
+              />
+              {{ labels.save_edit }}
+            </button>
+          </div>
+          <div class="column col-3">
+            <button
+              v-if="edit"
+              class="btn btn-sm btn-block btn-warning"
+              :disabled=" ! enabled"
+              @click="cancelChanges"
+            >
+              <i
+                class="fa fa-times"
+                aria-hidden="true"
+              />
+              {{ labels.cancel_edit }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        v-if="(!edit && content.post_with_image) || (!edit && is_instagram_account)"
+        class="column col-4 col-sm-12 vertical-align"
+      >
+        <div v-if="content.post_image !== ''">
+          <figure
+            v-if="content.post_image !== ''"
+            class="figure"
+          >
+            <img
+              :src="( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )"
+              class="img-fit-cover img-responsive"
+            >
+          </figure>
+        </div>
+        <div
+          v-else
+          class="rop-image-placeholder"
+        >
+          <summary>
+            <i class="fa fa-file-image-o" />
+            {{ labels.queue_no_image }}
+          </summary>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 	/* global wp */
 
-	module.exports = {
-		name: 'queue-card',
+	export default {
+		name: 'QueueCard',
 		props: {
 			id: {
 				default: ''
@@ -174,10 +284,10 @@
             },
 
 		},
+		watch: {},
 		mounted: function () {
 			//console.log(this.card_data);
 		},
-		watch: {},
 		methods: {
 			skipPost: function (account, post_id) {
 				if (this.is_loading) {
