@@ -1,3 +1,32 @@
+##### [Version 9.0.21](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.20...v9.0.21) (2023-09-27)
+
+ - Implemented post-sharing limit API to prevent sharing errors
+
+##### [Version 9.0.20](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.19...v9.0.20) (2023-09-19)
+
+- Fixed Facebook login issue by upgrading Graph API version v7.0 to v12.0
+
+##### [Version 9.0.19](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.18...v9.0.19) (2023-08-23)
+
+- Fixed LinkedIn sharing (API version changed)
+
+##### [Version 9.0.18](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.17...v9.0.18) (2023-08-17)
+
+- Added new authentication permissions scope for LinkedIn
+
+##### [Version 9.0.17](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.16...v9.0.17) (2023-08-03)
+
+PHP version required updated to 7.4
+
+##### [Version 9.0.16](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.15...v9.0.16) (2023-08-03)
+
+- Updated the required PHP version to 7.4
+
+##### [Version 9.0.15](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.14...v9.0.15) (2023-07-28)
+
+- Fixed post-sharing issue with post image
+- Added Twitter v2 API support
+
 ##### [Version 9.0.14](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.13...v9.0.14) (2023-06-06)
 
 - Added LinkedIn new API support
