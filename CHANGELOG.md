@@ -1,3 +1,10 @@
+##### [Version 9.0.22](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.21...v9.0.22) (2023-12-22)
+
+### Fixes
+- Changed the default usage of X (ex Twitter) to own API keys
+- Updated the JS pipeline
+- Fixed compatibility issue with the LearnPress plugin
+
 ##### [Version 9.0.21](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.20...v9.0.21) (2023-09-27)
 
  - Implemented post-sharing limit API to prevent sharing errors
