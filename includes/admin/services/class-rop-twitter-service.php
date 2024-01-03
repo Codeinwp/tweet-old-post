@@ -655,12 +655,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$user_24h_limit_remaining = isset( $responseHeaders['x_user_limit_24hour_remaining'] ) ? $responseHeaders['x_user_limit_24hour_remaining'] : false;
 		$app_24h_limit_remaining = isset( $responseHeaders['x_app_limit_24hour_remaining'] ) ? $responseHeaders['x_app_limit_24hour_remaining'] : false;
 
-		$log_limit_msg = __( 'X posting limit reached. Sharing on X will be skipped.', 'tweet-old-post' ) . ' (' . __( 'Learn more about X limits at', 'tweet-old-post' ) . ' https://developer.twitter.com/en/docs/twitter-api/rate-limits). ';
-
-		$limit_remaining = 0;
 		$reset_time_msg = '';
 		$time_diff = 0;
 		$max_reset = 0;
+		$log_limit_msg = __( 'X posting limit reached. Sharing on X will be skipped.', 'tweet-old-post' ) . ' (' . __( 'Learn more about X limits at', 'tweet-old-post' ) . ' https://developer.twitter.com/en/docs/twitter-api/rate-limits). ';
 
 		if ( false !== $limit_remaining && $limit_remaining <= 0 ) {
 			$reset = isset( $responseHeaders['x_rate_limit_reset'] ) ? $responseHeaders['x_rate_limit_reset'] : false; // in UTC epoch seconds
