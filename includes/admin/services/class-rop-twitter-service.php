@@ -127,7 +127,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @param   string $oauth_token The OAuth Token. Default empty.
 	 * @param   string $oauth_token_secret The OAuth Token Secret. Default empty.
 	 *
-	 * @return mixed
+	 * @return \Abraham\TwitterOAuth\TwitterOAuth
 	 */
 	public function get_api( $oauth_token = '', $oauth_token_secret = '' ) {
 		if ( $this->api == null ) {
@@ -588,6 +588,14 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			}
 		}
 
+		$transient_key = 'rop_twitter_limit_reset_' . wp_hash( $this->credentials['oauth_token'] );
+		$limit_saved_msg = get_transient( $transient_key );
+
+		if ( ! empty( $limit_saved_msg ) ) {
+			$this->logger->alert_error( $limit_saved_msg );
+			return false;
+		}
+
 		$this->set_api(
 			$this->credentials['oauth_token'],
 			$this->credentials['oauth_token_secret'],
@@ -634,8 +642,59 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 
+		// TODO: Add a way to check if we share via app or not.
+
 		$api->setApiVersion( '2' );
 		$response = $api->post( 'tweets', $new_post, true );
+
+		$responseHeaders = $api->getLastXHeaders();
+
+		$this->logger->info( sprintf( 'After twitter share: %s', json_encode( $responseHeaders ) ) );
+
+		$limit_remaining = isset( $responseHeaders['x_rate_limit_remaining'] ) ? $responseHeaders['x_rate_limit_remaining'] : false;
+		$user_24h_limit_remaining = isset( $responseHeaders['x_user_limit_24hour_remaining'] ) ? $responseHeaders['x_user_limit_24hour_remaining'] : false;
+		$app_24h_limit_remaining = isset( $responseHeaders['x_app_limit_24hour_remaining'] ) ? $responseHeaders['x_app_limit_24hour_remaining'] : false;
+
+		$log_limit_msg = __( 'X posting limit reached. Sharing on X will be skipped.', 'tweet-old-post' ) . ' (' . __( 'Learn more about X limits at', 'tweet-old-post' ) . ' https://developer.twitter.com/en/docs/twitter-api/rate-limits). ';
+
+		$limit_remaining = 0;
+		$reset_time_msg = '';
+		$time_diff = 0;
+		$max_reset = 0;
+
+		if ( false !== $limit_remaining && $limit_remaining <= 0 ) {
+			$reset = isset( $responseHeaders['x_rate_limit_reset'] ) ? $responseHeaders['x_rate_limit_reset'] : false; // in UTC epoch seconds
+
+			if ( $reset ) {
+				$time_diff = max( $time_diff, $reset - time() );
+				$max_reset = max( $max_reset, $reset );
+				$reset_time_msg .= '(' . __( '"x-rate-limit-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
+			}
+		}
+
+		if ( false !== $user_24h_limit_remaining && $user_24h_limit_remaining <= 0 ) {
+			$reset = isset( $responseHeaders['x_user_limit_24hour_reset'] ) ? $responseHeaders['x_user_limit_24hour_reset'] : false; // in UTC epoch seconds
+
+			if ( $reset ) {
+				$time_diff = max( $time_diff, $reset - time() );
+				$max_reset = max( $max_reset, $reset );
+				$reset_time_msg .= '(' . __( '"x-user-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
+			}
+		}
+
+		if ( false !== $app_24h_limit_remaining && $app_24h_limit_remaining <= 0 ) {
+			$reset = isset( $responseHeaders['x_app_limit_24hour_reset'] ) ? $responseHeaders['x_app_limit_24hour_reset'] : false; // in UTC epoch seconds
+
+			if ( $reset ) {
+				$time_diff = max( $time_diff, $reset - time() );
+				$max_reset = max( $max_reset, $reset );
+				$reset_time_msg .= '(' . __( '"x-app-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
+			}
+		}
+
+		if ( ! empty( $reset_time_msg ) ) {
+			set_transient( $transient_key, $log_limit_msg . __( 'All limits will be fully reset by', 'tweet-old-post' ) . ': ' . date( 'Y-m-d H:i:s', $max_reset ) . ' ' . $reset_time_msg, $time_diff );
+		}
 
 		if ( isset( $response->data->id ) ) {
 			$this->logger->alert_success(

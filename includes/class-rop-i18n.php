@@ -326,9 +326,10 @@ class Rop_I18n {
 
 			),
 			'logs'        => array(
-				'menu_item' => __( 'Sharing Logs', 'tweet-old-post' ),
-				'clear_btn' => __( 'Clear logs', 'tweet-old-post' ),
-				'no_logs'   => __( 'No recent logs!', 'tweet-old-post' ),
+				'menu_item'  => __( 'Sharing Logs', 'tweet-old-post' ),
+				'clear_btn'  => __( 'Clear logs', 'tweet-old-post' ),
+				'no_logs'    => __( 'No recent logs!', 'tweet-old-post' ),
+				'export_btn' => __( 'Export logs', 'tweet-old-post' ),
 			),
 			'general'     => array(
 				'plugin_name'                => __( 'Revive Old Posts', 'tweet-old-post' ),
