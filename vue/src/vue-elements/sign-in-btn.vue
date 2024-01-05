@@ -2,30 +2,36 @@
   <div id="rop-sign-in-area">
     <div class="input-group text-right buttons-wrap">
       <button
-          v-for="( service, network ) in services"
-          :key="network"
-          :disabled="checkDisabled( service, network )"
-          :title="getTooltip( service, network )"
-          class="btn input-group-btn"
-          :class="'btn-' + network"
-          @click="requestAuthorization( network )"
+        v-for="( service, network ) in services"
+        :key="network"
+        :disabled="checkDisabled( service, network )"
+        :title="getTooltip( service, network )"
+        class="btn input-group-btn"
+        :class="'btn-' + network"
+        @click="requestAuthorization( network )"
       >
         <i
-            v-if="! [ 'gmb', 'twitter'].includes( network )"
-            class="fa fa-fw"
-            :class="'fa-' + network"
+          v-if="! [ 'gmb', 'twitter'].includes( network )"
+          class="fa fa-fw"
+          :class="'fa-' + network"
         />
         <i
-            v-if="network === 'gmb'"
-            class="fa fa-fw fa-google"
+          v-if="network === 'gmb'"
+          class="fa fa-fw fa-google"
         />
         <i
-            v-if="network === 'twitter'"
-            class="fa fa-fw"
+          v-if="network === 'twitter'"
+          class="fa fa-fw"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" height="14" width="16" viewBox="0 0 512 512" fill="currentColor">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="14"
+            width="16"
+            viewBox="0 0 512 512"
+            fill="currentColor"
+          >
             <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
-            <path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/>
+            <path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
           </svg>
         </i>
         {{ displayName( service.name, false, true ) }}
@@ -33,15 +39,15 @@
     </div>
 
     <div
-        class="modal"
-        :class="modalActiveClass"
+      class="modal"
+      :class="modalActiveClass"
     >
-      <div class="modal-overlay"/>
+      <div class="modal-overlay" />
       <div class="modal-container">
         <div class="modal-header">
           <button
-              class="btn btn-clear float-right"
-              @click="cancelModal()"
+            class="btn btn-clear float-right"
+            @click="cancelModal()"
           />
           <div class="modal-title h5">
             {{ displayName( modal.serviceName, true ) }} {{ labels.service_popup_title }}
@@ -50,12 +56,12 @@
         <div class="modal-body">
           <div class="content">
             <div
-                v-if="isFacebook"
-                class="auth-app"
+              v-if="isFacebook"
+              class="auth-app"
             >
               <button
-                  class="btn btn-primary big-btn"
-                  @click="openPopupFB()"
+                class="btn btn-primary big-btn"
+                @click="openPopupFB()"
               >
                 {{ labels.fb_app_signin_btn }}
               </button>
@@ -64,23 +70,23 @@
               </div>
             </div>
             <div
-                v-if="isTwitter"
-                class="auth-app"
+              v-if="isTwitter"
+              class="auth-app"
             >
               <button
-                  class="btn btn-primary big-btn"
-                  @click="showAdvanceConfig = !showAdvanceConfig"
+                class="btn btn-primary big-btn"
+                @click="showAdvanceConfig = !showAdvanceConfig"
               >
                 {{ labels.show_own_keys_config }}
               </button>
             </div>
             <div
-                v-if="isLinkedIn"
-                class="auth-app"
+              v-if="isLinkedIn"
+              class="auth-app"
             >
               <button
-                  class="btn btn-primary big-btn"
-                  @click="openPopupLI()"
+                class="btn btn-primary big-btn"
+                @click="openPopupLI()"
               >
                 {{ labels.li_app_signin_btn }}
               </button>
@@ -89,12 +95,12 @@
               </div>
             </div>
             <div
-                v-if="isTumblr && isAllowedTumblr"
-                class="auth-app"
+              v-if="isTumblr && isAllowedTumblr"
+              class="auth-app"
             >
               <button
-                  class="btn btn-primary big-btn"
-                  @click="openPopupTumblr()"
+                class="btn btn-primary big-btn"
+                @click="openPopupTumblr()"
               >
                 {{ labels.tumblr_app_signin_btn }}
               </button>
@@ -103,26 +109,26 @@
               </div>
             </div>
             <div
-                v-if="isGmb"
-                class="auth-app"
+              v-if="isGmb"
+              class="auth-app"
             >
               <button
-                  id="gmb-btn"
-                  class="btn btn-primary big-btn"
-                  @click="openPopupGmb()"
+                id="gmb-btn"
+                class="btn btn-primary big-btn"
+                @click="openPopupGmb()"
               >
                 {{ labels.gmb_app_signin_btn }}
               </button>
             </div>
 
             <div
-                v-if="isVk"
-                class="auth-app"
+              v-if="isVk"
+              class="auth-app"
             >
               <button
-                  id="vk-btn"
-                  class="btn btn-primary big-btn"
-                  @click="openPopupVk()"
+                id="vk-btn"
+                class="btn btn-primary big-btn"
+                @click="openPopupVk()"
               >
                 {{ labels.vk_app_signin_btn }}
               </button>
@@ -130,24 +136,25 @@
 
             <div v-if="!hideOwnAppOption || isTwitter">
               <div
-                  v-if="isFacebook || isLinkedIn || (isTumblr && isAllowedTumblr)"
-                  id="rop-advanced-config"
+                v-if="isFacebook || isLinkedIn || (isTumblr && isAllowedTumblr)"
+                id="rop-advanced-config"
               >
                 <button
-                    class="btn btn-primary"
-                    @click="showAdvanceConfig = !showAdvanceConfig"
+                  class="btn btn-primary"
+                  @click="showAdvanceConfig = !showAdvanceConfig"
                 >
                   {{ labels.show_advance_config }}
                 </button>
               </div>
 
-              <div v-if="isTwitter && ! showAdvanceConfig"
-                   id="rop-advanced-config"
-                   class="tw-signin-advanced-config"
+              <div
+                v-if="isTwitter && ! showAdvanceConfig"
+                id="rop-advanced-config"
+                class="tw-signin-advanced-config"
               >
                 <button
-                    class="btn btn-secondary"
-                    @click="openPopupTW()"
+                  class="btn btn-secondary"
+                  @click="openPopupTW()"
                 >
                   {{ labels.tw_app_signin_btn }}
                 </button>
@@ -155,50 +162,51 @@
                   <span class="text-center">{{ labels.app_option_signin }}</span>
                 </div>
                 <tooltip
-                    placement="bottom-right"
-                    mode="hover"
-                    :nowrap="false"
-                    :min-width="260"
-                    :max-width="350"
+                  placement="bottom-right"
+                  mode="hover"
+                  :nowrap="false"
+                  :min-width="260"
+                  :max-width="350"
                 >
                   <div slot="outlet">
                     <button
-                        class="btn btn-sm input-group-btn circle"
+                      class="btn btn-sm input-group-btn circle"
                     >
                       <i
-                          class="fa fa-exclamation-circle"
-                          aria-hidden="true"
+                        class="fa fa-exclamation-circle"
+                        aria-hidden="true"
                       />
                     </button>
                   </div>
                   <div
-                      slot="tooltip"
-                      v-html="labels.tw_app_signin_tooltip"
+                    slot="tooltip"
+                    v-html="labels.tw_app_signin_tooltip"
                   />
                 </tooltip>
               </div>
 
               <div
-                  v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr) )">
+                v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr) )"
+              >
                 <div
-                    v-for="( field, id ) in modal.data"
-                    :key="field.id"
-                    class="form-group"
+                  v-for="( field, id ) in modal.data"
+                  :key="field.id"
+                  class="form-group"
                 >
                   <label
-                      class="form-label"
-                      :for="field.id"
+                    class="form-label"
+                    :for="field.id"
                   >{{ field.name }}</label>
                   <input
-                      :id="field.id"
-                      v-model="field.value"
-                      :class="[ 'form-input', field.error ? ' is-error' : '' ]"
-                      type="text"
-                      :placeholder="field.name"
+                    :id="field.id"
+                    v-model="field.value"
+                    :class="[ 'form-input', field.error ? ' is-error' : '' ]"
+                    type="text"
+                    :placeholder="field.name"
                   >
                   <small
-                      v-if="field.error"
-                      class="text-error"
+                    v-if="field.error"
+                    class="text-error"
                   >{{ labels.field_required }}</small>
                   <p class="text-gray">
                     {{ field.description }}
@@ -207,26 +215,27 @@
               </div>
             </div>
             <div
-                v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)">
+              v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)"
+            >
               <div
-                  v-for="( field, id ) in modal.data"
-                  :key="id"
-                  class="form-group"
+                v-for="( field, id ) in modal.data"
+                :key="id"
+                class="form-group"
               >
                 <label
-                    class="form-label"
-                    :for="field.id"
+                  class="form-label"
+                  :for="field.id"
                 >{{ field.name }}</label>
                 <input
-                    :id="field.id"
-                    v-model="field.value"
-                    :class="[ 'form-input', field.error ? ' is-error' : '' ]"
-                    type="text"
-                    :placeholder="field.name"
+                  :id="field.id"
+                  v-model="field.value"
+                  :class="[ 'form-input', field.error ? ' is-error' : '' ]"
+                  type="text"
+                  :placeholder="field.name"
                 >
                 <small
-                    v-if="field.error"
-                    class="text-error"
+                  v-if="field.error"
+                  class="text-error"
                 >{{ labels.field_required }}</small>
                 <p class="text-gray">
                   {{ field.description }}
@@ -237,40 +246,40 @@
         </div>
 
         <div
-            v-if="isFacebook || isTwitter || isLinkedIn || isGmb || isVk ||(isTumblr && isAllowedTumblr)"
-            class="modal-footer"
+          v-if="isFacebook || isTwitter || isLinkedIn || isGmb || isVk ||(isTumblr && isAllowedTumblr)"
+          class="modal-footer"
         >
           <p
-              class="text-left pull-left mr-2"
-              v-html="labels.rs_app_info"
+            class="text-left pull-left mr-2"
+            v-html="labels.rs_app_info"
           />
         </div>
         <div
-            v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)"
-            class="modal-footer"
+          v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)"
+          class="modal-footer"
         >
           <div
-              class="text-left pull-left mr-2"
-              v-html="modal.description"
+            class="text-left pull-left mr-2"
+            v-html="modal.description"
           />
           <button
-              class="btn btn-primary"
-              @click="closeModal()"
+            class="btn btn-primary"
+            @click="closeModal()"
           >
             {{ labels.sign_in_btn }}
           </button>
         </div>
         <div
-            v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)"
-            class="modal-footer"
+          v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)"
+          class="modal-footer"
         >
           <div
-              class="text-left pull-left mr-2"
-              v-html="modal.description"
+            class="text-left pull-left mr-2"
+            v-html="modal.description"
           />
           <button
-              class="btn btn-primary"
-              @click="closeModal()"
+            class="btn btn-primary"
+            @click="closeModal()"
           >
             {{ labels.sign_in_btn }}
           </button>
@@ -309,6 +318,7 @@ export default {
       siteAdminUrl: ropAuthAppData.adminUrl,
       appUniqueId: ropAuthAppData.authToken,
       appSignature: ropAuthAppData.authSignature,
+      pluginVersion: ropAuthAppData.pluginVersion,
       windowParameters: 'top=20,left=100,width=560,height=670',
       authPopupWindow: null,
       showLiAppBtn: ropApiSettings.show_li_app_btn,
@@ -492,7 +502,7 @@ export default {
       window.open(url, '_self')
     },
     /**
-     * Get signin url.
+     * Get signin url. Used for authentication of the user who is using their own app.
      * @param credentials
      */
     getUrlAndGo(credentials) {
@@ -698,7 +708,7 @@ export default {
       window.addEventListener("message", event => this.getChildWindowMessage(event));
     },
     openPopupTW: function () { // Open the popup specific for Twitter
-      let loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+      let loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail ;
       try {
         this.authPopupWindow.close();
       } catch (e) {

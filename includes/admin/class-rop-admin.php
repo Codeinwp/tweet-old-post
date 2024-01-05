@@ -370,6 +370,7 @@ class Rop_Admin {
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
+			'pluginVersion'       => ROP_LITE_VERSION,
 		);
 
 		if ( 'publish_now' === $page ) {
