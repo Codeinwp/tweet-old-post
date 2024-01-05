@@ -59,13 +59,15 @@
             class="column col-12 mt-2"
           >
             <div
-              class="toast log-toast"
-              :class="'toast-' + data.type"
+              class="log-container"
             >
-              <small class="pull-right text-right">{{ formatDate ( data.time ) }}</small>
-              <p>
-                {{ data.message }}
-              </p>
+              [<span class="log-entry">{{ formatDate ( data.time ) }}</span>]
+              [<span
+                class="log-entry"
+                :class="'log-' + data.type"
+              >{{ data.type }}</span>]
+              <b>{{ data.message?.split('|')?.[0] }}</b>
+              {{ data.message?.split('|')?.[1] }}
             </div>
           </div>
         </template>
@@ -181,5 +183,29 @@
 
 	.columns {
 		line-break: anywhere;
+	}
+
+	.log-container {
+		font-size: 14px;
+	}
+
+	.log-entry {
+		text-transform: uppercase;
+	}
+
+	.log-info {
+		color: #0000ff;
+	}
+
+	.log-error {
+		color: #ff0000;
+	}
+
+	.log-warning {
+		color: #ff8c00;
+	}
+
+	.log-success {
+		color: #008000;
 	}
 </style>
