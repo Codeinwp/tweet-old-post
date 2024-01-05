@@ -649,7 +649,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$response_headers = $api->getLastXHeaders();
 		} else {
 			$response = $this->rop_share_post_via_server( 'tw', $new_post, $this->credentials['rop_auth_token'] );
-			error_log( 'ROP: Twitter share response: ' . print_r( $response, true ) ); // TODO: Remove this
 			$body = wp_remote_retrieve_body( $response );
 			$body = json_decode( $body, true );
 
@@ -666,9 +665,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				$response_headers = $body['api_headers'];
 				$response         = $body['api_body'];
 			}
-
-			error_log( 'ROP: Twitter share response array: ' . print_r( $response_headers, true ) ); // TODO: Remove this
-			error_log( 'ROP: Twitter share response body: ' . print_r( $response, true ) ); // TODO: Remove this
 		}
 
 		$this->logger->info( sprintf( 'After twitter share: %s', json_encode( $response_headers ) ) );
@@ -693,7 +689,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		if ( false !== $user_24h_limit_remaining && $user_24h_limit_remaining <= 0 ) {
-			$reset = isset( $response_headers['x_user_limit_24hour_reset'] ) ? $response_headers['x_user_limit_24hour_reset'] : false; // in UTC epoch seconds
+			$reset = isset( $response_headers['x_user_limit_24hour_reset'] ) ? $response_headers['x_user_limit_24hour_reset'] : false;
 
 			if ( $reset ) {
 				$time_diff = max( $time_diff, $reset - time() );
@@ -703,7 +699,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		if ( false !== $app_24h_limit_remaining && $app_24h_limit_remaining <= 0 ) {
-			$reset = isset( $response_headers['x_app_limit_24hour_reset'] ) ? $response_headers['x_app_limit_24hour_reset'] : false; // in UTC epoch seconds
+			$reset = isset( $response_headers['x_app_limit_24hour_reset'] ) ? $response_headers['x_app_limit_24hour_reset'] : false;
 
 			if ( $reset ) {
 				$time_diff = max( $time_diff, $reset - time() );
@@ -715,8 +711,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( ! empty( $reset_time_msg ) ) {
 			set_transient( $transient_key, $log_limit_msg . __( 'All limits will be fully reset by', 'tweet-old-post' ) . ': ' . date( 'Y-m-d H:i:s', $max_reset ) . ' ' . $reset_time_msg, $time_diff );
 		}
-
-		error_log( 'ROP: Twitter share response: ' . print_r( $response, true ) ); // TODO: Remove this
 
 		if ( isset( $response['data'] ) && ! empty( $response['data']['id'] ) ) {
 			$this->logger->alert_success(
