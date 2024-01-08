@@ -61,13 +61,11 @@
             <div
               class="log-container"
             >
-              [<span class="log-entry">{{ formatDate ( data.time ) }}</span>]
+              [<span>{{ formatDate ( data.time ) }}</span>]
               [<span
-                class="log-entry"
                 :class="'log-' + data.type"
               >{{ data.type }}</span>]
-              <b>{{ data.message?.split('|')?.[0] }}</b>
-              {{ data.message?.split('|')?.[1] }}
+              {{ data.message }}
             </div>
           </div>
         </template>
@@ -160,7 +158,7 @@
 		},
 	}
 </script>
-<style type="text/css" scoped>
+<style lang="scss" scoped>
 	#rop_core .toast.log-toast p {
 		margin: 0px;
 		line-height: inherit;
@@ -187,25 +185,27 @@
 
 	.log-container {
 		font-size: 14px;
-	}
+		background-color: #f3f2f1;
+		padding: 10px;
 
-	.log-entry {
-		text-transform: uppercase;
-	}
+		span {
+			text-transform: uppercase;
 
-	.log-info {
-		color: #0000ff;
-	}
+			&:nth-child(even) {
+				font-weight: bold;
+			}
 
-	.log-error {
-		color: #ff0000;
-	}
+			&.log-error {
+				color: #BE4B00;
+			}
 
-	.log-warning {
-		color: #ff8c00;
-	}
+			&.log-success {
+				color: #418331;
+			}
+		}
 
-	.log-success {
-		color: #008000;
+		&:has( .log-error ) {
+			background-color: #FBE8E8;
+		}
 	}
 </style>
