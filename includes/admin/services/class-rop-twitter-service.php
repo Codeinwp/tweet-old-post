@@ -612,7 +612,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$new_post = $this->twitter_text_post( $post_details );
 		}
 
-		// Twitter media post TODO
+		// Twitter media post
 		if ( isset( $api ) && ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
 			$new_post = $this->twitter_media_post( $post_details, $api );
 		} elseif ( ! isset( $api ) && ! empty( $share_as_image_post ) ) {
@@ -637,16 +637,17 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 
-		$response = array();
+		$response         = array();
 		$response_headers = array();
-		$server_response = array();
+		$server_response  = array();
 
 		if ( ! $share_via_rop_server ) {
-			$response = $api->post( 'tweets', $new_post, true );
-			$response = (array) $response;
+			$response         = $api->post( 'tweets', $new_post, true );
 			$response_headers = $api->getLastXHeaders();
+			$response         = (array) $response;
 		} else {
 			$response = $this->rop_share_post_via_server( 'tw', $new_post, $this->credentials['rop_auth_token'] );
+
 			$body = wp_remote_retrieve_body( $response );
 			$body = json_decode( $body, true );
 
@@ -667,14 +668,14 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$this->logger->info( sprintf( 'After twitter share: %s', json_encode( $response_headers ) ) );
 
-		$limit_remaining = isset( $response_headers['x_rate_limit_remaining'] ) ? $response_headers['x_rate_limit_remaining'] : false;
+		$limit_remaining          = isset( $response_headers['x_rate_limit_remaining'] ) ? $response_headers['x_rate_limit_remaining'] : false;
 		$user_24h_limit_remaining = isset( $response_headers['x_user_limit_24hour_remaining'] ) ? $response_headers['x_user_limit_24hour_remaining'] : false;
-		$app_24h_limit_remaining = isset( $response_headers['x_app_limit_24hour_remaining'] ) ? $response_headers['x_app_limit_24hour_remaining'] : false;
+		$app_24h_limit_remaining  = isset( $response_headers['x_app_limit_24hour_remaining'] ) ? $response_headers['x_app_limit_24hour_remaining'] : false;
 
 		$reset_time_msg = '';
-		$time_diff = 0;
-		$max_reset = 0;
-		$log_limit_msg = __( 'X posting limit reached. Sharing on X will be skipped.', 'tweet-old-post' ) . ' (' . __( 'Learn more about X limits at', 'tweet-old-post' ) . ' https://developer.twitter.com/en/docs/twitter-api/rate-limits). ';
+		$time_diff      = 0;
+		$max_reset      = 0;
+		$log_limit_msg  = __( 'X posting limit reached. Sharing on X will be skipped.', 'tweet-old-post' ) . ' (' . __( 'Learn more about X limits at', 'tweet-old-post' ) . ' https://developer.twitter.com/en/docs/twitter-api/rate-limits). ';
 
 		if ( false !== $limit_remaining && $limit_remaining <= 0 ) {
 			$reset = isset( $response_headers['x_rate_limit_reset'] ) ? $response_headers['x_rate_limit_reset'] : false; // in UTC epoch seconds
@@ -682,6 +683,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			if ( $reset ) {
 				$time_diff = max( $time_diff, $reset - time() );
 				$max_reset = max( $max_reset, $reset );
+
 				$reset_time_msg .= '(' . __( '"x-rate-limit-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
 			}
 		}
@@ -692,6 +694,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			if ( $reset ) {
 				$time_diff = max( $time_diff, $reset - time() );
 				$max_reset = max( $max_reset, $reset );
+
 				$reset_time_msg .= '(' . __( '"x-user-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
 			}
 		}
@@ -702,11 +705,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			if ( $reset ) {
 				$time_diff = max( $time_diff, $reset - time() );
 				$max_reset = max( $max_reset, $reset );
+
 				$reset_time_msg .= '(' . __( '"x-app-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
 			}
 		}
 
-		if ( ! empty( $reset_time_msg ) ) {
+		if ( 0 < $time_diff ) {
 			set_transient( $transient_key, $log_limit_msg . __( 'All limits will be fully reset by', 'tweet-old-post' ) . ': ' . date( 'Y-m-d H:i:s', $max_reset ) . ' ' . $reset_time_msg, $time_diff );
 		}
 
@@ -721,27 +725,27 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			);
 
 			return true;
-		} else {
-			$msg = '';
-			$extra = json_encode( $response );
-
-			if ( isset( $response->detail ) ) {
-				$msg = $response->detail;
-			}
-
-			if ( ! empty( $server_response['message'] ) ) {
-				$msg = $server_response['message'];
-
-				if ( 'limit_reached' === $server_response['code'] ) {
-					$extra = json_encode( $response_headers );
-				}
-			}
-
-			$this->logger->alert_error( sprintf( 'Error posting on X: %s | Additional info: %s', $msg, $extra ) );
-			$this->rop_get_error_docs( $response );
-			return false;
 		}
 
+		$msg   = '';
+		$extra = json_encode( $response );
+
+		if ( isset( $response->detail ) ) {
+			$msg = $response->detail;
+		}
+
+		if ( ! empty( $server_response['message'] ) ) {
+			$msg = $server_response['message'];
+
+			if ( 'limit_reached' === $server_response['code'] ) {
+				$extra = json_encode( $response_headers );
+			}
+		}
+
+		$this->logger->alert_error( sprintf( 'Error posting on X: %s | Additional info: %s', $msg, $extra ) );
+		$this->rop_get_error_docs( $response );
+
+		return false;
 	}
 
 	/**
