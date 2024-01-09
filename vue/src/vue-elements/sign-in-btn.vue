@@ -708,7 +708,8 @@ export default {
       window.addEventListener("message", event => this.getChildWindowMessage(event));
     },
     openPopupTW: function () { // Open the popup specific for Twitter
-      let loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail ;
+      let loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail + '&plugin_version=' + this.pluginVersion;
+
       try {
         this.authPopupWindow.close();
       } catch (e) {
