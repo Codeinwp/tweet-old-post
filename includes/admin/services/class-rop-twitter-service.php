@@ -661,8 +661,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					}
 				}
 
-				$response_headers = $body['api_headers'];
-				$response         = $body['api_body'];
+				$response_headers = ! empty( $body['api_headers'] ) ? $body['api_headers'] : array();
+				$response         = ! empty( $body['api_body'] ) ? $body['api_body'] : array();
 			}
 		}
 
@@ -728,7 +728,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		$msg   = '';
-		$extra = json_encode( $response );
+		$extra = $response;
 
 		if ( isset( $response->detail ) ) {
 			$msg = $response->detail;
@@ -740,9 +740,13 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			if ( 'limit_reached' === $server_response['code'] ) {
 				$extra = json_encode( $response_headers );
 			}
+
+			if ( empty( $extra ) ) {
+				$extra = $server_response['code'];
+			}
 		}
 
-		$this->logger->alert_error( sprintf( 'Error posting on X: %s | Additional info: %s', $msg, $extra ) );
+		$this->logger->alert_error( sprintf( 'Error posting on X: %s | Additional info: %s', $msg, json_encode( $extra ) ) );
 		$this->rop_get_error_docs( $response );
 
 		return false;
