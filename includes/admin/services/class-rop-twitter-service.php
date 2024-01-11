@@ -652,18 +652,19 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$body = json_decode( $body, true );
 
 			if ( ! empty( $body ) ) {
+
 				if ( ! empty( $body['server'] ) ) {
 					$server_response = $body['server'];
 
 					// If we have a cached response, use it to apply the logic for rate limiting.
-					if ( ! empty( $server_response['cached_response']['body'] ) ) {
-						$body = $server_response['cached_response']['body'];
+					if ( ! empty( $server_response['cached_response'] ) ) {
+						$body = $server_response['cached_response'];
 					}
 				}
 
 				$response_headers = ! empty( $body['api_headers'] ) ? $body['api_headers'] : array();
 				$response         = ! empty( $body['api_body'] ) ? $body['api_body'] : array();
-			}
+			} 
 		}
 
 		$this->logger->info( sprintf( 'After twitter share: %s', json_encode( $response_headers ) ) );
@@ -730,8 +731,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$msg   = '';
 		$extra = $response;
 
-		if ( isset( $response->detail ) ) {
-			$msg = $response->detail;
+		if ( isset( $response['detail'] ) ) {
+			$msg = $response['detail'];
 		}
 
 		if ( ! empty( $server_response['message'] ) ) {
