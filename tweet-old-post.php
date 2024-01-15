@@ -179,7 +179,7 @@ function run_rop() {
 	define( 'ROP_TEMP_IMAGES', plugin_dir_path( __FILE__ ) . 'temp-images/' ); // Path for external images downloaded for sharing
 
 	// Authorization APP Data
-	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
+	define( 'ROP_AUTH_APP_URL', 'https://crimson-sound-ioadxd7to4ji.ymirsites.com' ); // TODO: replace with real URL
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
 	define( 'ROP_APP_TWITTER_PATH', '/tw_auth' );
 	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
@@ -188,6 +188,7 @@ function run_rop() {
 	define( 'ROP_APP_VK_PATH', '/vk_auth' );
 	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
 	define( 'ROP_POST_SHARING_CONTROL_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/post-sharing-control' );
+	define( 'ROP_POST_ON_X_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/post-on-x' );
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {
