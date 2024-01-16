@@ -662,8 +662,13 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					}
 				}
 
-				$response_headers = ! empty( $body['api_headers'] ) ? $body['api_headers'] : array();
-				$response         = ! empty( $body['api_body'] ) ? $body['api_body'] : array();
+				if ( ! empty( $body['api_body'] ) ) {
+					$response = $body['api_body'];
+				}
+
+				if ( ! empty( $body['api_body'] ) ) {
+					$response = $body['api_body'];
+				}
 			} 
 		}
 
