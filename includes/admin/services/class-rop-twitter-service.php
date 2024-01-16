@@ -883,10 +883,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @return array|WP_Error
 	 */
 	public static function rop_share_post_via_server( $sharing_type = 'tw', $post_data, $rop_auth_token ) {
-		$license_key = '';
+		$license_key = 'free';
 		$plan_id     = 0;
 		if ( 'valid' === apply_filters( 'product_rop_license_status', 'invalid' ) ) {
-			$license_key = apply_filters( 'product_rop_license_key', '' );
+			$license_key = apply_filters( 'product_rop_license_key', 'free' );
 			$plan_id     = apply_filters( 'product_rop_license_plan', 0 );
 		}
 		// Send API request.
