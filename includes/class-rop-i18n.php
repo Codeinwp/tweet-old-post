@@ -72,7 +72,7 @@ class Rop_I18n {
 	 * @return array|mixed|string String localized
 	 */
 	public static function get_labels( $key = '' ) {
-		$tw_new_name = __( 'X (ex Twitter)', 'tweet-old-post' );
+		$tw_new_name = __( 'X (Twitter)', 'tweet-old-post' );
 		$labels = array(
 			'accounts'    => array(
 				'menu_item'                  => __( 'Accounts', 'tweet-old-post' ),
