@@ -208,7 +208,7 @@
                     v-if="field.error"
                     class="text-error"
                   >{{ labels.field_required }}</small>
-                  <p class="text-gray">
+                  <p class="text-gray uppercase">
                     {{ field.description }}
                   </p>
                 </div>
@@ -237,7 +237,7 @@
                   v-if="field.error"
                   class="text-error"
                 >{{ labels.field_required }}</small>
-                <p class="text-gray">
+                <p class="text-gray uppercase">
                   {{ field.description }}
                 </p>
               </div>

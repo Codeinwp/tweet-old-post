@@ -4830,3 +4830,7 @@ padding: 0 20px;
     color: #fff;
     text-decoration: underline;
 }
+
+#rop_core .uppercase {
+    text-transform: uppercase;
+}
