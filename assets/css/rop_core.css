@@ -720,6 +720,10 @@ a.active {
     border-left-color: #fff;
 }
 
+#rop_core .btn.btn-twitter svg {
+    margin-bottom: -2px;
+}
+
 #rop_core .btn.btn-tumblr {
     border-color: #304d69;
     color: #fff;
