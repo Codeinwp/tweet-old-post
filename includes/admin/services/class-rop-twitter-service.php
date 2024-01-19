@@ -669,7 +669,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				if ( ! empty( $body['api_body'] ) ) {
 					$response = $body['api_body'];
 				}
-			} 
+			}
 		}
 
 		$this->logger->info( sprintf( 'After twitter share: %s', json_encode( $response_headers ) ) );

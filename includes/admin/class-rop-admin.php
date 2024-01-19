@@ -325,7 +325,7 @@ class Rop_Admin {
 			$uniq_auth_accounts = array();
 
 			foreach ( $added_services as $key => $service ) {
-				if ( isset( $service['service']) && ! in_array( $service['service'], $uniq_auth_accounts, true ) ) {
+				if ( isset( $service['service'] ) && ! in_array( $service['service'], $uniq_auth_accounts, true ) ) {
 					$uniq_auth_accounts[] = $service['service'];
 				}
 			}
