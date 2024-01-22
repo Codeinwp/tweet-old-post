@@ -40,15 +40,22 @@ class Rop_Isgd_Shortner extends Rop_Url_Shortner_Abstract {
 	public function shorten_url( $url ) {
 
 		$response = $this->callAPI(
-			'https://is.gd/api.php',
+			'https://is.gd/create.php',
 			array( 'method' => 'get' ),
-			array( 'longurl' => $url),
+			array( 
+				'format' => 'simple',
+				'url' => $url
+			),
 			null
 		);
+		
 		$shortURL = $url;
-		if ( intval( $response['error'] ) == 200 ) {
+		if ( intval( $response['error'] ) == 200 && wp_http_validate_url( $response['response'] ) ) {
 			$shortURL = $response['response'];
+		} else {
+			$this->error->throw_exception( 'Error', 'is.gd error: ' . print_r( $response, true) );
 		}
+		
 		return $shortURL;
 	}
 }
