@@ -332,6 +332,8 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Method to generate url for service post share.
 	 *
+	 * Apply short url if available.
+	 *
 	 * @param array $post_details The post details to be published by the service.
 	 *
 	 * @return string
@@ -340,28 +342,17 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected function get_url( $post_details ) {
 
-		$link = ( ! empty( $post_details['post_url'] ) ) ? ' ' . $post_details['post_url'] : '';
-
-		if ( empty( $link ) ) {
+		if ( empty( $post_details['post_url'] ) ) {
 			return '';
 		}
 
-		if ( ! $post_details['short_url'] ) {
-			return $link;
-		}
-		if ( empty( $post_details['short_url_service'] ) ) {
-			return $link;
+		if ( empty( $post_details['short_url'] ) || empty( $post_details['short_url_service'] || 'wp_short_url' === $post_details['short_url_service'] ) ) {
+			return ' ' . $post_details['post_url'];
 		}
 
 		$post_format_helper = new Rop_Post_Format_Helper();
 
-		if ( $post_details['short_url_service'] === 'wp_short_url' ) {
-			return $link;
-		}
-
-		$link = ' ' . $post_format_helper->get_short_url( $post_details['post_url'], $post_details['short_url_service'], $post_details['shortner_credentials'] );
-
-		return $link;
+		return ' ' . $post_format_helper->get_short_url( $post_details['post_url'], $post_details['short_url_service'], $post_details['shortner_credentials'] );
 	}
 
 	/**
