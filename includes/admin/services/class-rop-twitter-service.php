@@ -644,7 +644,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( ! $share_via_rop_server ) {
 			$response         = $api->post( 'tweets', $new_post, true );
 			$response_headers = $api->getLastXHeaders();
-			$response         = (array) $response;
+
+			$response = (array) $response;
+			if ( ! empty( $response['data'] ) ) {
+				$response['data'] = (array) $response['data'];
+			}
 		} else {
 			$response = $this->rop_share_post_via_server( 'tw', $new_post, $this->credentials['rop_auth_token'] );
 
