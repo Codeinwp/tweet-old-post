@@ -978,7 +978,7 @@ a.active {
 }
 
 #rop_core .form-group:not(:last-child) {
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.8rem;
 }
 
 #rop_core fieldset {
