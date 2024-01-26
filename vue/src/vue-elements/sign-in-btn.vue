@@ -590,8 +590,13 @@ export default {
         data: data
       }).then(response => {
         window.removeEventListener("message", event => this.getChildWindowMessage(event));
-        this.authPopupWindow.close();
-        window.location.reload();
+        try {
+          this.authPopupWindow.close(); // Sometimes this throws an error because of cross-origin frame.
+        } catch(e) {
+          // nothing to do
+        } finally {
+          window.location.reload();
+        }
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
