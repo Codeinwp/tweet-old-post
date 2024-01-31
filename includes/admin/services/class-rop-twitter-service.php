@@ -595,7 +595,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				isset( $this->credentials['consumer_secret'] ) ? $this->credentials['consumer_secret'] : ''
 			);
 			$api = $this->get_api();
-			$api->setApiVersion( '2' );
 		}
 
 		$post_id = $post_details['post_id'];
@@ -642,6 +641,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$server_response  = array();
 
 		if ( ! $share_via_rop_server ) {
+			$api->setApiVersion( '2' ); // Note: Make sure to always set the correct API version before making a request.
 			$response         = $api->post( 'tweets', $new_post, true );
 			$response_headers = $api->getLastXHeaders();
 
