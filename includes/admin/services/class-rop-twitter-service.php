@@ -645,12 +645,16 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$response         = $api->post( 'tweets', $new_post, true );
 			$response_headers = $api->getLastXHeaders();
 
+			$this->logger->info( sprintf( '[X API] Response: %s', json_encode( $response_headers ) ) );
+
 			$response = (array) $response;
 			if ( ! empty( $response['data'] ) ) {
 				$response['data'] = (array) $response['data'];
 			}
 		} else {
 			$response = $this->rop_share_post_via_server( 'tw', $new_post, $this->credentials['rop_auth_token'] );
+
+			$this->logger->info( sprintf( '[Revive Social] Response: %s', json_encode( $response_headers ) ) );
 
 			$body = wp_remote_retrieve_body( $response );
 			$body = json_decode( $body, true );
@@ -666,8 +670,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					}
 				}
 
-				if ( ! empty( $body['api_body'] ) ) {
-					$response = $body['api_body'];
+				if ( ! empty( $body['api_headers'] ) ) {
+					$response_headers = $body['api_headers'];
 				}
 
 				if ( ! empty( $body['api_body'] ) ) {
@@ -675,8 +679,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				}
 			}
 		}
-
-		$this->logger->info( sprintf( 'After twitter share: %s', json_encode( $response_headers ) ) );
 
 		$limit_remaining          = isset( $response_headers['x_rate_limit_remaining'] ) ? $response_headers['x_rate_limit_remaining'] : false;
 		$user_24h_limit_remaining = isset( $response_headers['x_user_limit_24hour_remaining'] ) ? $response_headers['x_user_limit_24hour_remaining'] : false;
