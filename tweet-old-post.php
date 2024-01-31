@@ -179,7 +179,7 @@ function run_rop() {
 	define( 'ROP_TEMP_IMAGES', plugin_dir_path( __FILE__ ) . 'temp-images/' ); // Path for external images downloaded for sharing
 
 	// Authorization APP Data
-	define( 'ROP_AUTH_APP_URL', 'https://crimson-sound-ioadxd7to4ji.ymirsites.com' ); // TODO: replace with real URL
+	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
 	define( 'ROP_APP_TWITTER_PATH', '/tw_auth' );
 	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
