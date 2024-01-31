@@ -737,7 +737,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			return true;
 		}
 
-		$msg   = '';
+		$msg   = 'Invalid response from X server.';
 		$extra = $response;
 
 		if ( isset( $response['detail'] ) ) {
