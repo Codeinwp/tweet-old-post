@@ -1,45 +1,85 @@
 <template>
-	<div class="tab-view">
-		<div class="panel-body">
-			<div class=" columns mt-2" v-if="logs_no > 0">
-				<div class="column  col-12 text-right ">
-					<button class="btn  btn-secondary " @click="getLogs(true)">
-						<i class="fa fa-remove" v-if="!is_loading"></i>
-						<i class="fa fa-spinner fa-spin" v-else></i>
-						{{labels.clear_btn}}
-					</button>
-				</div>
-			</div>
-			<div class="columns">
-				<div class="empty column col-12" v-if="is_loading">
-					<div class="empty-icon">
-						<i class="fa fa-3x fa-spinner fa-spin"></i>
-					</div>
-				</div>
-				<div class="empty column col-12" v-else-if="logs_no === 0">
-					<div class="empty-icon">
-						<i class="fa fa-3x fa-info-circle"></i>
-					</div>
-					<p class="empty-title h5">{{labels.no_logs}}</p>
-				</div>
+  <div class="tab-view">
+    <div class="panel-body">
+      <div
+        v-if="logs_no > 0"
+        class=" columns mt-2"
+      >
+        <div class="column  col-12 text-right ">
+          <button
+            class="btn btn-secondary "
+            @click="exportLogsAsFile"
+          >
+            <i
+              class="fa fa-download"
+            />
+            {{ labels.export_btn }}
+          </button>
+          <button
+            class="btn btn-secondary "
+            @click="getLogs(true)"
+          >
+            <i
+              v-if="!is_loading"
+              class="fa fa-remove"
+            />
+            <i
+              v-else
+              class="fa fa-spinner fa-spin"
+            />
+            {{ labels.clear_btn }}
+          </button>
+        </div>
+      </div>
+      <div class="columns">
+        <div
+          v-if="is_loading"
+          class="empty column col-12"
+        >
+          <div class="empty-icon">
+            <i class="fa fa-3x fa-spinner fa-spin" />
+          </div>
+        </div>
+        <div
+          v-else-if="logs_no === 0"
+          class="empty column col-12"
+        >
+          <div class="empty-icon">
+            <i class="fa fa-3x fa-info-circle" />
+          </div>
+          <p class="empty-title h5">
+            {{ labels.no_logs }}
+          </p>
+        </div>
 
-				<div class="column col-12 mt-2" v-for=" (data, index) in logs " v-else-if="logs_no >  0">
-					<div class="toast log-toast" :class="'toast-' + data.type">
-						<small class="pull-right text-right">{{formatDate ( data.time ) }}</small>
-						<p>{{data.message}}</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <template v-else-if="logs_no > 0">
+          <div
+            v-for=" (data, index) in logs "
+            :key="index"
+            class="column col-12 mt-2"
+          >
+            <div
+              class="log-container"
+            >
+              [<span>{{ formatDate ( data.time ) }}</span>]
+              [<span
+                :class="'log-' + data.type"
+              >{{ data.type }}</span>]
+              {{ data.message }}
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 
 	import moment from 'moment'
 
-	module.exports = {
-		name: 'logs-view',
+	export default {
+		name: 'LogsView',
 		props: ['model'],
 		data: function () {
 			return {
@@ -47,9 +87,6 @@
 				labels: this.$store.state.labels.logs,
 				upsell_link: ropApiSettings.upsell_link,
 			}
-		},
-		mounted: function () {
-			this.getLogs();
 		},
 		computed: {
 			logs: function () {
@@ -63,6 +100,9 @@
 			logs_no: function () {
 				this.getLogs();
 			}
+		},
+		mounted: function () {
+			this.getLogs();
 		},
 		methods: {
 			getLogs(force) {
@@ -100,14 +140,29 @@
 				}
 				return moment.utc(value, 'X').format(format.replace('mm', 'mm:ss'));
 			},
+			exportLogsAsFile() {
+				const content = this.logs.map(log => {
+					return `[${moment.utc(log.time, 'X')}][${log.type}] ${log.message}`;
+				}).join('\n');
+
+				const element = document.createElement('a');
+				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+				element.setAttribute('download', `rop_logs__${moment().format('YYYY-MM-DD_HH-mm-ss')}.txt`);
+
+				element.style.display = 'none';
+				document.body.appendChild(element);
+				element.click();
+				document.body.removeChild(element);
+			}
 
 		},
 	}
 </script>
-<style type="text/css" scoped>
+<style lang="scss" scoped>
 	#rop_core .toast.log-toast p {
 		margin: 0px;
 		line-height: inherit;
+		padding: 20px 5px;
 	}
 
 	#rop_core .toast.log-toast:hover {
@@ -126,5 +181,31 @@
 
 	.columns {
 		line-break: anywhere;
+	}
+
+	.log-container {
+		font-size: 14px;
+		background-color: #f3f2f1;
+		padding: 10px;
+
+		span {
+			text-transform: uppercase;
+
+			&:nth-child(even) {
+				font-weight: bold;
+			}
+
+			&.log-error {
+				color: #BE4B00;
+			}
+
+			&.log-success {
+				color: #418331;
+			}
+		}
+
+		&:has( .log-error ) {
+			background-color: #FBE8E8;
+		}
 	}
 </style>

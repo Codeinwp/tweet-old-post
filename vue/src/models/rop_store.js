@@ -28,6 +28,9 @@ Vue.use(Vuex);
 Vue.use(VueResource);
 Vue.use(VueLogger, logOptions);
 
+
+// In the futures, this should be replaced with Pina library.
+// For new features that do not need the existing store data, use the new Pina.
 export default new Vuex.Store({
     state: {
         page: {

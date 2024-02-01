@@ -1,110 +1,197 @@
 <template>
-    <div id="rop_core" class="columns ">
-        <div id="rop-sidebar-selector" class="column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right">
-            <div class="columns py-2" :class="'rop-control-container-'+isPro">
-                <div class="column col-12 col-sm-12 vertical-align rop-control">
-                    <b>{{labels.post_types_title}}</b>
-                    <p class="text-gray"> {{labels.filter_by_post_types_desc}}</p>
-                </div>
-                <div class="column col-12 col-sm-12 vertical-align text-left rop-control">
-                    <multiple-select :options="postTypes" :disabled="isPro"
-                                     :selected="generalSettings.selected_post_types"
-                                     :changed-selection="updatedPostTypes"></multiple-select>
-                </div>
-            </div>
-
-            <span class="divider"></span>
-            <div class="columns py-2" v-if="!isPro">
-                <div class="column text-center">
-                    <p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
-                </div>
-            </div>
-            <div class="columns py-2">
-                <div class="column col-12 col-sm-12 vertical-align">
-                    <b>{{labels.taxonomies_title}}</b>
-                    <p class="text-gray"> {{labels.filter_by_taxonomies_desc}}</p>
-                </div>
-                <div class="column col-12 col-sm-12 vertical-align text-left">
-                    <div class="input-group">
-                        <multiple-select :options="taxonomies"
-                                         :selected="generalSettings.selected_taxonomies"
-                                         :changed-selection="updatedTaxonomies"
-                        ></multiple-select>
-
-                    </div>
-                </div>
-
-            </div>
-            <upsell-sidebar></upsell-sidebar>
+  <div
+    id="rop_core"
+    class="columns "
+  >
+    <div
+      id="rop-sidebar-selector"
+      class="column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right"
+    >
+      <div
+        class="columns py-2"
+        :class="'rop-control-container-'+isPro"
+      >
+        <div class="column col-12 col-sm-12 vertical-align rop-control">
+          <b>{{ labels.post_types_title }}</b>
+          <p class="text-gray">
+            {{ labels.filter_by_post_types_desc }}
+          </p>
         </div>
-        <div id="rop-posts-listing" class="column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left">
-            <div class="columns py-2">
-                <div class="column col-12 col-sm-12 vertical-align">
-                    <div class="input-group has-icon-right">
-                        <input class="form-input" type="text" v-model="searchQuery"
-                               :placeholder="labels.search_posts_to_exclude"/>
-                        <i class="form-icon loading" v-if="is_loading"></i>
-                    </div>
-                </div>
-                <div class="column col-12 col-sm-12 mt-2">
-                    <div class="form-group pull-right" v-if="searchQuery != '' && ! show_excluded">
-                        <button class="btn btn-primary" @click="excludePostsBatch">
-                            <i class="fa fa-save " v-if="!this.is_loading"></i>
-                            <i class="fa fa-spinner fa-spin" v-else></i>
-                            {{labels.exclude_matching}} "{{searchQuery}}"
-                        </button>
-                    </div>
-                    <div class="form-group pull-right ">
-                        <label class="form-switch">
-                            <input type="checkbox" v-model="show_excluded" @change="excludePostsChange">
-                            <i class="form-icon"></i>{{labels.search_posts_show_excluded}}
-                        </label>
-                    </div>
-
-                    <p class="text-primary rop-post-type-badge" v-if="apply_limit_exclude" v-html="labels.post_types_exclude_limit"></p>
-                </div>
-                <div class="column col-12  px-2" v-if="postsAvailable">
-                    <div v-if="postsAvailable.length === 0 && !is_loading">
-                        {{labels.no_posts_found}}
-                    </div>
-                    <div v-else>
-                        <table id="rop-posts-table" class="table table-striped table-hover" v-if=" ! is_loading">
-                            <tr v-for="(post,index ) in postsAvailable" class="rop-post-item">
-                                <td :class="'rop-post-' + post.selected">{{post.name}}
-                                    <template>
-                                        <tooltip placement="top-right" mode="hover" :is_show="apply_limit_exclude">
-                                            <div slot="outlet">
-                                                <button class="btn btn-error rop-exclude-post"
-                                                        @click="excludeSinglePost(post.value,post.selected)">
-                                                    <i class="fa" :class="'fa-' + (post.selected ? 'plus' : 'remove') "
-                                                       v-if="!is_loading_single"></i>
-                                                    <i class="fa fa-spinner fa-spin" v-else></i>
-                                                    <span v-html=" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) "> </span>
-                                                </button>
-                                            </div>
-                                            <div slot="tooltip" v-html="labels.post_types_exclude_limit_tooltip"></div>
-                                        </tooltip>
-                                    </template>
-                                </td>
-                            </tr>
-                            <tr v-if="has_pages">
-                                <td class="rop-load-more-posts">
-                                    <button class="btn btn-error"
-                                            @click="loadMorePosts()">
-                                        <i class="fa fa-newspaper-o " v-if="!is_loading_single"></i>
-                                        <i class="fa fa-spinner fa-spin" v-else></i>
-                                        {{labels.load_more_posts}}
-                                    </button>
-                                </td>
-                            </tr>
-                        </table>
-                        <div class="loading loading-lg" v-else></div>
-                    </div>
-                </div>
-            </div>
+        <div class="column col-12 col-sm-12 vertical-align text-left rop-control">
+          <multiple-select
+            :options="postTypes"
+            :disabled="isPro"
+            :selected="generalSettings.selected_post_types"
+            :changed-selection="updatedPostTypes"
+          />
         </div>
+      </div>
 
+      <span class="divider" />
+      <div
+        v-if="!isPro"
+        class="columns py-2"
+      >
+        <div class="column text-center">
+          <p class="upsell">
+            <i class="fa fa-lock" /> {{ labels.post_types_upsell }}
+          </p>
+        </div>
+      </div>
+      <div class="columns py-2">
+        <div class="column col-12 col-sm-12 vertical-align">
+          <b>{{ labels.taxonomies_title }}</b>
+          <p class="text-gray">
+            {{ labels.filter_by_taxonomies_desc }}
+          </p>
+        </div>
+        <div class="column col-12 col-sm-12 vertical-align text-left">
+          <div class="input-group">
+            <multiple-select
+              :options="taxonomies"
+              :selected="generalSettings.selected_taxonomies"
+              :changed-selection="updatedTaxonomies"
+            />
+          </div>
+        </div>
+      </div>
+      <upsell-sidebar />
     </div>
+    <div
+      id="rop-posts-listing"
+      class="column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left"
+    >
+      <div class="columns py-2">
+        <div class="column col-12 col-sm-12 vertical-align">
+          <div class="input-group has-icon-right">
+            <input
+              v-model="searchQuery"
+              class="form-input"
+              type="text"
+              :placeholder="labels.search_posts_to_exclude"
+            >
+            <i
+              v-if="is_loading"
+              class="form-icon loading"
+            />
+          </div>
+        </div>
+        <div class="column col-12 col-sm-12 mt-2">
+          <div
+            v-if="searchQuery != '' && ! show_excluded"
+            class="form-group pull-right"
+          >
+            <button
+              class="btn btn-primary"
+              @click="excludePostsBatch"
+            >
+              <i
+                v-if="!is_loading"
+                class="fa fa-save "
+              />
+              <i
+                v-else
+                class="fa fa-spinner fa-spin"
+              />
+              {{ labels.exclude_matching }} "{{ searchQuery }}"
+            </button>
+          </div>
+          <div class="form-group pull-right ">
+            <label class="form-switch">
+              <input
+                v-model="show_excluded"
+                type="checkbox"
+                @change="excludePostsChange"
+              >
+              <i class="form-icon" />{{ labels.search_posts_show_excluded }}
+            </label>
+          </div>
+
+          <p
+            v-if="apply_limit_exclude"
+            class="text-primary rop-post-type-badge"
+            v-html="labels.post_types_exclude_limit"
+          />
+        </div>
+        <div
+          v-if="postsAvailable"
+          class="column col-12  px-2"
+        >
+          <div v-if="postsAvailable.length === 0 && !is_loading">
+            {{ labels.no_posts_found }}
+          </div>
+          <div v-else>
+            <table
+              v-if=" ! is_loading"
+              id="rop-posts-table"
+              class="table table-striped table-hover"
+            >
+              <tr
+                v-for="(post,index ) in postsAvailable"
+                :key="index"
+                class="rop-post-item"
+              >
+                <td :class="'rop-post-' + post.selected">
+                  {{ post.name }}
+                  <template>
+                    <tooltip
+                      placement="top-right"
+                      mode="hover"
+                      :is_show="apply_limit_exclude"
+                    >
+                      <div slot="outlet">
+                        <button
+                          class="btn btn-error rop-exclude-post"
+                          @click="excludeSinglePost(post.value,post.selected)"
+                        >
+                          <i
+                            v-if="!is_loading_single"
+                            class="fa"
+                            :class="'fa-' + (post.selected ? 'plus' : 'remove') "
+                          />
+                          <i
+                            v-else
+                            class="fa fa-spinner fa-spin"
+                          />
+                          <span v-html=" ( post.selected ? labels.include_single_post : labels.exclude_single_post) " />
+                        </button>
+                      </div>
+                      <div
+                        slot="tooltip"
+                        v-html="labels.post_types_exclude_limit_tooltip"
+                      />
+                    </tooltip>
+                  </template>
+                </td>
+              </tr>
+              <tr v-if="has_pages">
+                <td class="rop-load-more-posts">
+                  <button
+                    class="btn btn-error"
+                    @click="loadMorePosts()"
+                  >
+                    <i
+                      v-if="!is_loading_single"
+                      class="fa fa-newspaper-o "
+                    />
+                    <i
+                      v-else
+                      class="fa fa-spinner fa-spin"
+                    />
+                    {{ labels.load_more_posts }}
+                  </button>
+                </td>
+              </tr>
+            </table>
+            <div
+              v-else
+              class="loading loading-lg"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -116,8 +203,11 @@
 
 	// Vue.use(Tooltip);
 
-	module.exports = {
-		name: 'exclude-posts-page',
+	export default {
+		name: 'ExcludePostsPage',
+		components: {
+			MultipleSelect, UpsellSidebar, Tooltip
+		},
 		data: function () {
 			return {
 				searchQuery: '',
@@ -134,14 +224,6 @@
 				posts_selected_currently: 0,
 				apply_limit_exclude: false
 			}
-		},
-		watch: {
-			searchQuery: function ( val ) {
-				this.searchUpdate( val );
-			},
-			postsAvailable: function ( val ) {
-				this.has_pages = ( this.postsAvailable.length % 100 === 0 );
-			},
 		},
 		computed: {
 			generalSettings: function () {
@@ -172,6 +254,14 @@
 
 			}
 
+		},
+		watch: {
+			searchQuery: function ( val ) {
+				this.searchUpdate( val );
+			},
+			postsAvailable: function ( val ) {
+				this.has_pages = ( this.postsAvailable.length % 100 === 0 );
+			},
 		},
 		mounted: function () {
 			this.$log.info( 'In General Settings state ' );
@@ -382,9 +472,6 @@
 					Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )
 			}
-		},
-		components: {
-			MultipleSelect, UpsellSidebar, Tooltip
 		}
 	}
 </script>

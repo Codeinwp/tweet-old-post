@@ -1,9 +1,12 @@
 <template>
-    <div class="tab-view">
-        <div class="panel-body">
-            <div class="container" :class="'rop-tab-state-'+is_loading">
-                <!-- Disabled Remote Cron feature and left code commented out -->
-                <!-- <div class="columns py-2" v-if="this.apply_exclude_limit_cron" >
+  <div class="tab-view">
+    <div class="panel-body">
+      <div
+        class="container"
+        :class="'rop-tab-state-'+is_loading"
+      >
+        <!-- Disabled Remote Cron feature and left code commented out -->
+        <!-- <div class="columns py-2" v-if="this.apply_exclude_limit_cron" >
                     <div class="column col-6 col-sm-12 vertical-align rop-control">
                         <b>{{labels.cron_type_label}}</b>
                         <p class="text-gray"><span v-html="labels.cron_type_label_desc"></span></p>
@@ -36,339 +39,554 @@
                         </div>
                     </div>
                 </div> -->
-                <!-- <span class="divider" v-if="this.apply_exclude_limit_cron && ! isBiz" ></span> -->
+        <!-- <span class="divider" v-if="this.apply_exclude_limit_cron && ! isBiz" ></span> -->
                 
-                <!-- Minimum interval between shares -->
+        <!-- Minimum interval between shares -->
 
-                <div class="columns py-2" v-if="! isBiz">
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <b>{{labels.min_interval_title}}</b>
-                        <p class="text-gray">{{labels.min_interval_desc}}</p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <counter-input id="default_interval" :min-val="generalSettings.min_interval" :step-val="generalSettings.step_interval"
-                                       :value.sync="generalSettings.default_interval"></counter-input>
-                                     
-                    </div>
-                </div>
+        <div
+          v-if="! isBiz"
+          class="columns py-2"
+        >
+          <div class="column col-6 col-sm-12 vertical-align">
+            <b>{{ labels.min_interval_title }}</b>
+            <p class="text-gray">
+              {{ labels.min_interval_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align">
+            <counter-input
+              id="default_interval"
+              :min-val="generalSettings.min_interval"
+              :step-val="generalSettings.step_interval"
+              :value.sync="generalSettings.default_interval"
+            />
+          </div>
+        </div>
 
-                <span class="divider"  v-if="! isBiz"></span>
+        <span
+          v-if="! isBiz"
+          class="divider"
+        />
                 
-                <!-- Min Post Age -->
+        <!-- Min Post Age -->
                
-                <div class="columns py-2">
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <b>{{labels.min_days_title}}</b>
-                        <p class="text-gray">{{labels.min_days_desc}}</p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <counter-Input id="min_post_age"
-                                       :value.sync="generalSettings.minimum_post_age"></counter-Input>
-                    </div>
-                    
-                </div>
+        <div class="columns py-2">
+          <div class="column col-6 col-sm-12 vertical-align">
+            <b>{{ labels.min_days_title }}</b>
+            <p class="text-gray">
+              {{ labels.min_days_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align">
+            <counter-Input
+              id="min_post_age"
+              :value.sync="generalSettings.minimum_post_age"
+            />
+          </div>
+        </div>
 
-                <span class="divider"></span>
+        <span class="divider" />
 
-                <!-- Max Post Age -->
-                <div class="columns py-2" :class="'rop-control-container-'+isPro">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.max_days_title}}</b>
-                        <p class="text-gray">{{labels.max_days_desc}}</p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <counter-input id="max_post_age" 
-                                       :value.sync="generalSettings.maximum_post_age" :disabled="!isPro"></counter-input>
-                    </div>
-                </div>
+        <!-- Max Post Age -->
+        <div
+          class="columns py-2"
+          :class="'rop-control-container-'+isPro"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.max_days_title }}</b>
+            <p class="text-gray">
+              {{ labels.max_days_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align">
+            <counter-input
+              id="max_post_age" 
+              :value.sync="generalSettings.maximum_post_age"
+              :disabled="!isPro"
+            />
+          </div>
+        </div>
                 
-                <div class="columns " v-if="!isPro">
-                    <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.available_in_pro}}</p>
-                    </div>
-                </div>
-                <span class="divider"></span>
+        <div
+          v-if="!isPro"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.available_in_pro }}
+            </p>
+          </div>
+        </div>
+        <span class="divider" />
               
-                <!-- Number of Posts -->
-                <div class="columns py-2" :class="'rop-control-container-'+isPro">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.no_posts_title}}</b>
-                        <p class="text-gray">{{labels.no_posts_desc}}</p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts" :disabled="!isPro"></counter-input>
-                    </div>
-                </div>
-                   <div class="columns " v-if="!isPro">
-                    <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.available_in_pro}}</p>
-                    </div>
-                </div>
-                <span class="divider"></span>
+        <!-- Number of Posts -->
+        <div
+          class="columns py-2"
+          :class="'rop-control-container-'+isPro"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.no_posts_title }}</b>
+            <p class="text-gray">
+              {{ labels.no_posts_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <counter-input
+              id="no_of_posts"
+              :value.sync="generalSettings.number_of_posts"
+              :disabled="!isPro"
+            />
+          </div>
+        </div>
+        <div
+          v-if="!isPro"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.available_in_pro }}
+            </p>
+          </div>
+        </div>
+        <span class="divider" />
 
-                <!-- Share more than once -->
-                <div class="columns py-2">
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <b>{{labels.share_once_title}}</b>
-                        <p class="text-gray">{{labels.share_once_desc}}</p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left">
-                        <div class="form-group">
-                            <label class="form-checkbox" id="share_more_than_once">
-                                <input type="checkbox" v-model="generalSettings.more_than_once"/>
-                                <i class="form-icon"></i> {{labels.yes_text}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <span class="divider"></span>
-               
-                <!-- Post Types -->
-                <div class="columns py-2" :class="'rop-control-container-'+isPro">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.post_types_title}}</b>
-                        <p class="text-gray"><span v-html="labels.post_types_desc"></span></p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                        <multiple-select id="rop_post_types" :options="postTypes" :disabled="isPro"
-                                         :selected="generalSettings.selected_post_types"
-                                         :changed-selection="updatedPostTypes"></multiple-select>
-
-                        <p class="text-primary rop-post-type-badge" v-if="checkMediaPostType " v-html="labels.post_types_attachament_info"></p>
-                    </div>
-                </div>
-
-                <div class="columns " v-if="!isPro">
-                    <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.post_types_upsell}}</p>
-                    </div>
-                </div>
-
-				<span class="divider" v-if="!isPro || license_price_id === 7"></span>
-
-                <!-- Taxonomies -->
-                <!-- Price ID 7 is Starter Plan -->
-				<div class="columns py-2" v-if="!isPro || license_price_id === 7">
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <b>{{labels.taxonomies_title}}</b>
-                        <p class="text-gray"><span v-html="labels.taxonomies_desc"></span></p>
-                    </div>
-                    <div id="rop_taxonomies" class="column col-6 col-sm-12 vertical-align text-left">
-                        <div class="input-group">
-                            <multiple-select :options="taxonomies"
-                                             :selected="generalSettings.selected_taxonomies"
-                                             :changed-selection="updatedTaxonomies"
-                                             :is_pro_version="isPro" :apply_limit="isTaxLimit" v-on:display-limiter-notice="displayProMessage"></multiple-select>
-                            <span class="input-group-addon vertical-align">
-								<label class="form-checkbox">
-									<input type="checkbox" v-model="generalSettings.exclude_taxonomies"/>
-									<i class="form-icon"></i>{{labels.taxonomies_exclude}}
-								</label>
-							</span>
-                        </div>
-                        <p class="text-primary rop-post-type-badge" v-if="is_taxonomy_message" v-html="labels.post_types_taxonomy_limit"></p>
-                    </div>
-                </div>
-
-                <span class="divider"></span>
-
-                <!-- Update publish date -->
-                <div class="columns py-2" :class="'rop-control-container-'+isPro">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.update_post_published_date_title}}</b>
-                        <p class="text-gray"><span v-html="labels.update_post_published_date_desc"></span></p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                        <div class="form-group">
-                            <label class="form-checkbox" id="share_more_than_once">
-                                <input type="checkbox" v-model="generalSettings.update_post_published_date" :disabled="!isPro"/>
-                                <i class="form-icon"></i> {{labels.yes_text}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="columns " v-if="!isPro">
-                    <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.available_in_pro}}</p>
-                    </div>
-                </div>
-                <span class="divider"></span>
-
-                <!-- Google Analytics -->
-                <div class="columns py-2">
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <b>{{labels.ga_title}}</b>
-                        <p class="text-gray">{{labels.ga_desc}}</p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left">
-                        <div class="form-group">
-                            <label class="form-checkbox">
-                                <input type="checkbox" v-model="generalSettings.ga_tracking"/>
-                                <i class="form-icon"></i>{{labels.yes_text}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <span class="divider"></span>
-
-                <!-- Enable Instant Sharing Feature (Post on Publish) -->
-                <div class="columns py-2">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.instant_share_title}}</b>
-                        <p class="text-gray"><span v-html="labels.instant_share_desc"></span></p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                        <div class="form-group">
-                            <label id="rop_instant_share" class="form-checkbox">
-                                <input type="checkbox" v-model="generalSettings.instant_share"/>
-                                <i class="form-icon"></i>{{labels.yes_text}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <span class="divider"></span>
-
-                <!-- Use True Instant Share -->
-                <div class="columns py-2" v-if="isInstantShare">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.true_instant_share_title}}</b>
-                        <p class="text-gray"><span v-html="labels.true_instant_share_desc"></span></p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                        <div class="form-group">
-                            <label class="form-checkbox">
-                                <input type="checkbox" v-model="generalSettings.true_instant_share"/>
-                                <i class="form-icon"></i>{{labels.yes_text}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <span class="divider" v-if="isInstantShare"></span>
-
-                <!-- Enable Instant Sharing By Default -->
-                <div class="columns py-2" v-if="isInstantShare">
-                  <div class="column col-6 col-sm-12 vertical-align rop-control">
-                    <b>{{labels.instant_share_default_title}}</b>
-                    <p class="text-gray">{{labels.instant_share_default_desc}}</p>
-                  </div>
-                  <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                    <div class="form-group">
-                      <label class="form-checkbox">
-                        <input type="checkbox" v-model="generalSettings.instant_share_default"/>
-                        <i class="form-icon"></i>{{labels.yes_text}}
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <span class="divider" v-if="isInstantShare && isInstantShareByDefault"></span>
-                
-                <!-- Choose Accounts Manually -->
-                <div class="columns py-2" v-if="isInstantShare && isInstantShareByDefault">
-                  <div class="column col-6 col-sm-12 vertical-align rop-control">
-                    <b>{{labels.instant_share_choose_accounts_manually_title}}</b>
-                    <p class="text-gray">{{labels.instant_share_choose_accounts_manually_desc}}</p>
-                  </div>
-                  <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                    <div class="form-group">
-                      <label class="form-checkbox">
-                        <input type="checkbox" v-model="generalSettings.instant_share_choose_accounts_manually"/>
-                        <i class="form-icon"></i>{{labels.yes_text}}
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <span class="divider" v-if="isInstantShare"></span>
-                
-                <!-- Share Scheduled Posts to Social Media On Publish -->
-                <div class="columns py-2" v-if="isInstantShare" :class="'rop-control-container-'+isPro">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.instant_share_future_scheduled_title}}</b>
-                        <p class="text-gray"><span v-html="labels.instant_share_future_scheduled_desc"></span></p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                        <div class="form-group">
-                            <label class="form-checkbox">
-                                <input type="checkbox" v-model="generalSettings.instant_share_future_scheduled" :disabled="!isPro"/>
-                                <i class="form-icon"></i>{{labels.yes_text}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <!-- Upsell -->
-                <div class="columns " v-if="!isPro && isInstantShare">
-                    <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.available_in_pro}}</p>
-                    </div>
-                </div>
-                <span class="divider" v-if="isInstantShare"></span>
-
-                <!-- Enable Share Content Variations -->
-                <div class="columns py-2" :class="'rop-control-container-'+isPro">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.custom_share_title}}</b>
-                        <p class="text-gray"><span v-html="labels.custom_share_desc"></span></p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                        <div class="form-group">
-                            <label id="rop_custom_share_msg" class="form-checkbox">
-                                <input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages"/>
-                                <i class="form-icon"></i>{{labels.yes_text}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <!-- Upsell -->
-                <div class="columns " v-if="!isPro">
-                    <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.available_in_pro}}</p>
-                    </div>
-                </div>
-                <span class="divider"></span>
-
-                <!-- Share Message Variations In the Order They Are Added -->
-                <div class="columns py-2" :class="'rop-control-container-'+isPro" v-if="isCustomMsgs">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.custom_share_order_title}}</b>
-                        <p class="text-gray">{{labels.custom_share_order_desc}}</p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                        <div class="form-group">
-                            <label id="rop_custom_share_msg" class="form-checkbox">
-                                <input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages_share_order"/>
-                                <i class="form-icon"></i>{{labels.yes_text}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <span class="divider" v-if="isCustomMsgs"></span>
-
-                <!-- Housekeeping -->
-                <div class="columns py-2">
-                    <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.housekeeping}}</b>
-                        <p class="text-gray">{{labels.housekeeping_desc}}</p>
-                    </div>
-                    <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-                        <div class="form-group">
-                            <label class="form-checkbox">
-                                <input type="checkbox" v-model="generalSettings.housekeeping"/>
-                                <i class="form-icon"></i>{{labels.yes_text}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
+        <!-- Share more than once -->
+        <div class="columns py-2">
+          <div class="column col-6 col-sm-12 vertical-align">
+            <b>{{ labels.share_once_title }}</b>
+            <p class="text-gray">
+              {{ labels.share_once_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left">
+            <div class="form-group">
+              <label
+                id="share_more_than_once"
+                class="form-checkbox"
+              >
+                <input
+                  v-model="generalSettings.more_than_once"
+                  type="checkbox"
+                >
+                <i class="form-icon" /> {{ labels.yes_text }}
+              </label>
             </div>
+          </div>
         </div>
-        <div class="panel-footer text-right">
-            <button class="btn btn-primary" @click="saveGeneralSettings()"><i class="fa fa-check"
-                                                                              v-if="!this.is_loading"></i> <i
-                    class="fa fa-spinner fa-spin" v-else></i> {{labels.save}}
-            </button>
+        <span class="divider" />
+               
+        <!-- Post Types -->
+        <div
+          class="columns py-2"
+          :class="'rop-control-container-'+isPro"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.post_types_title }}</b>
+            <p class="text-gray">
+              <span v-html="labels.post_types_desc" />
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <multiple-select
+              id="rop_post_types"
+              :options="postTypes"
+              :disabled="isPro"
+              :selected="generalSettings.selected_post_types"
+              :changed-selection="updatedPostTypes"
+            />
+
+            <p
+              v-if="checkMediaPostType "
+              class="text-primary rop-post-type-badge"
+              v-html="labels.post_types_attachament_info"
+            />
+          </div>
         </div>
+
+        <div
+          v-if="!isPro"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.post_types_upsell }}
+            </p>
+          </div>
+        </div>
+
+        <span
+          v-if="!isPro || license_price_id === 7"
+          class="divider"
+        />
+
+        <!-- Taxonomies -->
+        <!-- Price ID 7 is Starter Plan -->
+        <div
+          v-if="!isPro || license_price_id === 7"
+          class="columns py-2"
+        >
+          <div class="column col-6 col-sm-12 vertical-align">
+            <b>{{ labels.taxonomies_title }}</b>
+            <p class="text-gray">
+              <span v-html="labels.taxonomies_desc" />
+            </p>
+          </div>
+          <div
+            id="rop_taxonomies"
+            class="column col-6 col-sm-12 vertical-align text-left"
+          >
+            <div class="input-group">
+              <multiple-select
+                :options="taxonomies"
+                :selected="generalSettings.selected_taxonomies"
+                :changed-selection="updatedTaxonomies"
+                :is_pro_version="isPro"
+                :apply_limit="isTaxLimit"
+                @display-limiter-notice="displayProMessage"
+              />
+              <span class="input-group-addon vertical-align">
+                <label class="form-checkbox">
+                  <input
+                    v-model="generalSettings.exclude_taxonomies"
+                    type="checkbox"
+                  >
+                  <i class="form-icon" />{{ labels.taxonomies_exclude }}
+                </label>
+              </span>
+            </div>
+            <p
+              v-if="is_taxonomy_message"
+              class="text-primary rop-post-type-badge"
+              v-html="labels.post_types_taxonomy_limit"
+            />
+          </div>
+        </div>
+
+        <span class="divider" />
+
+        <!-- Update publish date -->
+        <div
+          class="columns py-2"
+          :class="'rop-control-container-'+isPro"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.update_post_published_date_title }}</b>
+            <p class="text-gray">
+              <span v-html="labels.update_post_published_date_desc" />
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label
+                id="share_more_than_once"
+                class="form-checkbox"
+              >
+                <input
+                  v-model="generalSettings.update_post_published_date"
+                  type="checkbox"
+                  :disabled="!isPro"
+                >
+                <i class="form-icon" /> {{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="!isPro"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.available_in_pro }}
+            </p>
+          </div>
+        </div>
+        <span class="divider" />
+
+        <!-- Google Analytics -->
+        <div class="columns py-2">
+          <div class="column col-6 col-sm-12 vertical-align">
+            <b>{{ labels.ga_title }}</b>
+            <p class="text-gray">
+              {{ labels.ga_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.ga_tracking"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <span class="divider" />
+
+        <!-- Enable Instant Sharing Feature (Post on Publish) -->
+        <div class="columns py-2">
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.instant_share_title }}</b>
+            <p class="text-gray">
+              <span v-html="labels.instant_share_desc" />
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label
+                id="rop_instant_share"
+                class="form-checkbox"
+              >
+                <input
+                  v-model="generalSettings.instant_share"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <span class="divider" />
+
+        <!-- Use True Instant Share -->
+        <div
+          v-if="isInstantShare"
+          class="columns py-2"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.true_instant_share_title }}</b>
+            <p class="text-gray">
+              <span v-html="labels.true_instant_share_desc" />
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.true_instant_share"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <span
+          v-if="isInstantShare"
+          class="divider"
+        />
+
+        <!-- Enable Instant Sharing By Default -->
+        <div
+          v-if="isInstantShare"
+          class="columns py-2"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.instant_share_default_title }}</b>
+            <p class="text-gray">
+              {{ labels.instant_share_default_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.instant_share_default"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <span
+          v-if="isInstantShare && isInstantShareByDefault"
+          class="divider"
+        />
+                
+        <!-- Choose Accounts Manually -->
+        <div
+          v-if="isInstantShare && isInstantShareByDefault"
+          class="columns py-2"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.instant_share_choose_accounts_manually_title }}</b>
+            <p class="text-gray">
+              {{ labels.instant_share_choose_accounts_manually_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.instant_share_choose_accounts_manually"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <span
+          v-if="isInstantShare"
+          class="divider"
+        />
+                
+        <!-- Share Scheduled Posts to Social Media On Publish -->
+        <div
+          v-if="isInstantShare"
+          class="columns py-2"
+          :class="'rop-control-container-'+isPro"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.instant_share_future_scheduled_title }}</b>
+            <p class="text-gray">
+              <span v-html="labels.instant_share_future_scheduled_desc" />
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.instant_share_future_scheduled"
+                  type="checkbox"
+                  :disabled="!isPro"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <!-- Upsell -->
+        <div
+          v-if="!isPro && isInstantShare"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.available_in_pro }}
+            </p>
+          </div>
+        </div>
+        <span
+          v-if="isInstantShare"
+          class="divider"
+        />
+
+        <!-- Enable Share Content Variations -->
+        <div
+          class="columns py-2"
+          :class="'rop-control-container-'+isPro"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.custom_share_title }}</b>
+            <p class="text-gray">
+              <span v-html="labels.custom_share_desc" />
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label
+                id="rop_custom_share_msg"
+                class="form-checkbox"
+              >
+                <input
+                  v-model="generalSettings.custom_messages"
+                  type="checkbox"
+                  :disabled="!isPro"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <!-- Upsell -->
+        <div
+          v-if="!isPro"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.available_in_pro }}
+            </p>
+          </div>
+        </div>
+        <span class="divider" />
+
+        <!-- Share Message Variations In the Order They Are Added -->
+        <div
+          v-if="isCustomMsgs"
+          class="columns py-2"
+          :class="'rop-control-container-'+isPro"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.custom_share_order_title }}</b>
+            <p class="text-gray">
+              {{ labels.custom_share_order_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label
+                id="rop_custom_share_msg"
+                class="form-checkbox"
+              >
+                <input
+                  v-model="generalSettings.custom_messages_share_order"
+                  type="checkbox"
+                  :disabled="!isPro"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <span
+          v-if="isCustomMsgs"
+          class="divider"
+        />
+
+        <!-- Housekeeping -->
+        <div class="columns py-2">
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.housekeeping }}</b>
+            <p class="text-gray">
+              {{ labels.housekeeping_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.housekeeping"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    <div class="panel-footer text-right">
+      <button
+        class="btn btn-primary"
+        @click="saveGeneralSettings()"
+      >
+        <i
+          v-if="!is_loading"
+          class="fa fa-check"
+        /> <i
+          v-else
+          class="fa fa-spinner fa-spin"
+        /> {{ labels.save }}
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -379,8 +597,12 @@
 
     Vue.use(ToggleButton);
 
-    module.exports = {
-        name: 'settings-view',
+    export default {
+        name: 'SettingsView',
+		components: {
+			counterInput,
+			MultipleSelect
+		},
         data: function () {
             return {
                 searchQuery: '',
@@ -604,10 +826,6 @@
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				})
 			}
-		},
-		components: {
-			counterInput,
-			MultipleSelect
 		}
 	}
 </script>

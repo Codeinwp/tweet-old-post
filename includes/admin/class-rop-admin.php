@@ -300,8 +300,8 @@ class Rop_Admin {
 			return;
 		}
 		wp_enqueue_media();
-		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
-		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 
 		$array_nonce = array(
 			'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
@@ -321,7 +321,16 @@ class Rop_Admin {
 		$added_services = $services->get_authenticated_services();
 		$added_networks = 0;
 		if ( $added_services ) {
-			$added_networks = count( array_unique( wp_list_pluck( array_values( $added_services ), 'service' ) ) );
+
+			$uniq_auth_accounts = array();
+
+			foreach ( $added_services as $key => $service ) {
+				if ( isset( $service['service'] ) && ! in_array( $service['service'], $uniq_auth_accounts, true ) ) {
+					$uniq_auth_accounts[] = $service['service'];
+				}
+			}
+
+			$added_networks = count( $uniq_auth_accounts );
 		}
 
 		$global_settings = new Rop_Global_Settings();
@@ -370,17 +379,23 @@ class Rop_Admin {
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
+			'pluginVersion'       => ROP_LITE_VERSION,
 		);
 
 		if ( 'publish_now' === $page ) {
 			$array_nonce['publish_now'] = apply_filters( 'rop_publish_now_attributes', $array_nonce['publish_now'] );
-			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		}
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', array( ROP_LITE_URL . 'assets/' ) );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropAuthAppData', $rop_auth_app_data );
 		wp_enqueue_script( $this->plugin_name . '-' . $page );
+
+		// Deregister the LMS vue-libs script for the ROP dashboard and exclude the page.
+		if ( function_exists( 'learn_press_get_current_version' ) && wp_script_is( $this->plugin_name . '-' . $page ) ) {
+			wp_deregister_script( 'vue-libs' );
+		}
 
 	}
 

@@ -72,13 +72,17 @@ class Rop_I18n {
 	 * @return array|mixed|string String localized
 	 */
 	public static function get_labels( $key = '' ) {
+		$tw_new_name = __( 'X (Twitter)', 'tweet-old-post' );
 		$labels = array(
 			'accounts'    => array(
 				'menu_item'                  => __( 'Accounts', 'tweet-old-post' ),
 				'service_popup_title'        => __( 'Service Credentials', 'tweet-old-post' ),
 				'show_advance_config'        => __( 'Use your own keys', 'tweet-old-post' ),
+				'show_own_keys_config'       => __( 'Use my own API keys', 'tweet-old-post' ),
+				'tw_app_signin_tooltip'      => sprintf( __( 'Due to the %1$s changes in network limits, we cannot guarantee stable sharing using this mode. We recommend using your own API keys.', 'tweet-old-post' ), $tw_new_name ),
+				'tw_new_name'                => $tw_new_name,
 				'fb_app_signin_btn'          => __( 'Sign in to Facebook', 'tweet-old-post' ),
-				'tw_app_signin_btn'          => __( 'Sign in to Twitter', 'tweet-old-post' ),
+				'tw_app_signin_btn'          => __( 'Sign in to X', 'tweet-old-post' ),
 				'li_app_signin_btn'          => __( 'Sign in to LinkedIn', 'tweet-old-post' ),
 				'tumblr_app_signin_btn'      => __( 'Sign in to Tumblr', 'tweet-old-post' ),
 				'gmb_app_signin_btn'         => __( 'Sign in to Google My Business', 'tweet-old-post' ),
@@ -278,6 +282,7 @@ class Rop_I18n {
 				'instagram_disable_link_recommendation' => sprintf( __( '%1$sNote:%2$s We recommend that you disable links for Instagram posts. If you do leave this option checked, then we recommend that you enable a shortener.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'instagram_image_post_default' => sprintf( __( '%1$sNote:%2$s Instagram posts need to be an image.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'vk_unsupported_shorteners' => sprintf( __( '%1$sNote:%2$s is.gd shortener is not currently supported by VK.com.', 'tweet-old-post' ), '<strong>', '</strong>' ),
+				'not_available_with_rop_server'     => __( 'This feature is not available for X accounts authorized via Revival Social.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
@@ -322,9 +327,10 @@ class Rop_I18n {
 
 			),
 			'logs'        => array(
-				'menu_item' => __( 'Sharing Logs', 'tweet-old-post' ),
-				'clear_btn' => __( 'Clear logs', 'tweet-old-post' ),
-				'no_logs'   => __( 'No recent logs!', 'tweet-old-post' ),
+				'menu_item'  => __( 'Sharing Logs', 'tweet-old-post' ),
+				'clear_btn'  => __( 'Clear logs', 'tweet-old-post' ),
+				'no_logs'    => __( 'No recent logs!', 'tweet-old-post' ),
+				'export_btn' => __( 'Export logs', 'tweet-old-post' ),
 			),
 			'general'     => array(
 				'plugin_name'                => __( 'Revive Old Posts', 'tweet-old-post' ),
