@@ -28,7 +28,7 @@
           >
             <input
               type="checkbox"
-              :checked="share_on_update_by_default && !choose_accounts_manually"
+              :checked="isActiveAccount(key)"
               :value="key"
               name="publish_now_accounts[]"
               class="rop-account-names"
@@ -91,6 +91,7 @@
 				choose_accounts_manually: this.$store.state.publish_now.choose_accounts_manually,
 				showField: fields,
 				toggle_accounts: this.$store.state.publish_now.instant_share_by_default,
+				active_accounts: this.$store.state.publish_now.active
 			}
 		},
 		computed: {
@@ -128,6 +129,15 @@
 			togglefields: function(value){
 				var self = this;
 				return self.showField[value] = ! self.showField[value];
+			},
+
+			containsKey(obj, key ) {
+				return Object.keys(obj).includes(key);
+			},
+
+			isActiveAccount: function( key ) {
+				var self = this;
+				return this.containsKey(self.active_accounts, key);
 			},
 
 		}
