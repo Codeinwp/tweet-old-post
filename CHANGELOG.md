@@ -1,3 +1,16 @@
+##### [Version 9.0.23](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.22...v9.0.23) (2024-02-01)
+
+### Improvements
+- Quota limit handling when sharing in X Network (re-quires re-login with your X account)
+- Button to export Logs as a text file
+- New logs display design
+- Sharing tweets via the RoP server
+
+
+### Bux Fixes:
+- `is.gd` URL shortener error handling
+- Fixed instant sharing issue with scheduled posts
+
 ##### [Version 9.0.22](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.21...v9.0.22) (2023-12-22)
 
 ### Fixes
