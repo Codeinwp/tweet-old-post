@@ -833,6 +833,8 @@ class Rop_Rest_Api {
 	/**
 	 * API method called to retrieve a service sign in url.
 	 *
+	 * Used to create an authentication url for users who want to use their own app via personal auth keys/tokens.
+	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 * @Throws  Exception Throws an exception if the service can't be built.
 	 *
@@ -1060,7 +1062,11 @@ class Rop_Rest_Api {
 		$model           = new Rop_Services_Model();
 		$db              = new Rop_Db_Upgrade();
 
-		$twitter_service->add_account_with_app( $data );
+		if ( ! empty( $data['pages'] ) && ! empty( $data['pages']['credentials']['rop_auth_token'] ) ) {
+			$twitter_service->add_account_from_rop_server( $data );
+		} else {
+			$twitter_service->add_account_with_app( $data );
+		}
 
 		$services[ $twitter_service->get_service_id() ] = $twitter_service->get_service();
 		$active_accounts                                = array_merge( $active_accounts, $twitter_service->get_service_active_accounts() );

@@ -72,7 +72,7 @@ class Rop_I18n {
 	 * @return array|mixed|string String localized
 	 */
 	public static function get_labels( $key = '' ) {
-		$tw_new_name = __( 'X (ex Twitter)', 'tweet-old-post' );
+		$tw_new_name = __( 'X (Twitter)', 'tweet-old-post' );
 		$labels = array(
 			'accounts'    => array(
 				'menu_item'                  => __( 'Accounts', 'tweet-old-post' ),
@@ -282,6 +282,7 @@ class Rop_I18n {
 				'instagram_disable_link_recommendation' => sprintf( __( '%1$sNote:%2$s We recommend that you disable links for Instagram posts. If you do leave this option checked, then we recommend that you enable a shortener.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'instagram_image_post_default' => sprintf( __( '%1$sNote:%2$s Instagram posts need to be an image.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'vk_unsupported_shorteners' => sprintf( __( '%1$sNote:%2$s is.gd shortener is not currently supported by VK.com.', 'tweet-old-post' ), '<strong>', '</strong>' ),
+				'not_available_with_rop_server'     => __( 'This feature is not available for X accounts authorized via Revival Social.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
@@ -326,9 +327,10 @@ class Rop_I18n {
 
 			),
 			'logs'        => array(
-				'menu_item' => __( 'Sharing Logs', 'tweet-old-post' ),
-				'clear_btn' => __( 'Clear logs', 'tweet-old-post' ),
-				'no_logs'   => __( 'No recent logs!', 'tweet-old-post' ),
+				'menu_item'  => __( 'Sharing Logs', 'tweet-old-post' ),
+				'clear_btn'  => __( 'Clear logs', 'tweet-old-post' ),
+				'no_logs'    => __( 'No recent logs!', 'tweet-old-post' ),
+				'export_btn' => __( 'Export logs', 'tweet-old-post' ),
 			),
 			'general'     => array(
 				'plugin_name'                => __( 'Revive Old Posts', 'tweet-old-post' ),

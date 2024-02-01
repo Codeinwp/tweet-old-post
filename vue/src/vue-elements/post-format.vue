@@ -522,6 +522,12 @@
       <div class="column col-6 col-sm-12 vertical-align rop-control">
         <b>{{ labels.image_title }}</b>
         <p class="text-gray">
+          <span
+            v-if="is_twitter && is_sharing_post_via_rop_server"
+            class="block"
+          >
+            {{ labels.not_available_with_rop_server }}
+          </span>
           <span v-html="labels.image_desc" />
         </p>
       </div>
@@ -532,7 +538,7 @@
               v-if="!is_instagram_account"
               v-model="post_format.image"
               type="checkbox"
-              :disabled="!isPro"
+              :disabled="!isPro || (is_twitter && is_sharing_post_via_rop_server)"
             >
             <!-- For instagram accounts -->
             <input
@@ -695,23 +701,34 @@
                                 
                     const services = this.$store.state.authenticatedServices;
 
-                        for (const key in services) {
-                            if (!services.hasOwnProperty(key)) {
+                    for (const key in services) {
+                        if (!services.hasOwnProperty(key)) {
+                            continue;
+                        }
+                        const service = services[key];
+
+                        for (const account_id in service.available_accounts) {
+                            if (!service.available_accounts.hasOwnProperty(account_id)) {
                                 continue;
                             }
-                            const service = services[key];
+                            all_accounts[account_id] = service.available_accounts[account_id];
 
-                            for (const account_id in service.available_accounts) {
-                                if (!service.available_accounts.hasOwnProperty(account_id)) {
-                                    continue;
-                                }
-                                all_accounts[account_id] = service.available_accounts[account_id];
+                            if ( service?.credentials?.rop_auth_token ) {
+                                all_accounts[account_id].is_using_rop_server = true;
                             }
                         }
+                    }
+
                     return all_accounts;
             },
             is_instagram_account: function(){
                 return this.allAccounts[this.account_id].account_type === 'instagram_account';
+            },
+            is_twitter: function(){
+                return this.allAccounts[this.account_id].service === 'twitter';
+            },
+            is_sharing_post_via_rop_server: function(){
+                return this.allAccounts[this.account_id]?.is_using_rop_server;
             },
             postTypes: function () {
                 return this.$store.state.generalSettings.available_post_types;
@@ -849,5 +866,9 @@
         #rop_core .text-right {
             text-align: left;
         }
+    }
+
+    .block {
+        display: block;
     }
 </style>
