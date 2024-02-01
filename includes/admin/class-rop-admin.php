@@ -321,7 +321,16 @@ class Rop_Admin {
 		$added_services = $services->get_authenticated_services();
 		$added_networks = 0;
 		if ( $added_services ) {
-			$added_networks = count( array_unique( wp_list_pluck( array_values( $added_services ), 'service' ) ) );
+
+			$uniq_auth_accounts = array();
+
+			foreach ( $added_services as $key => $service ) {
+				if ( isset( $service['service'] ) && ! in_array( $service['service'], $uniq_auth_accounts, true ) ) {
+					$uniq_auth_accounts[] = $service['service'];
+				}
+			}
+
+			$added_networks = count( $uniq_auth_accounts );
 		}
 
 		$global_settings = new Rop_Global_Settings();
@@ -370,6 +379,7 @@ class Rop_Admin {
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
+			'pluginVersion'       => ROP_LITE_VERSION,
 		);
 
 		if ( 'publish_now' === $page ) {

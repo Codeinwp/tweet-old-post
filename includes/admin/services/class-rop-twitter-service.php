@@ -127,7 +127,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @param   string $oauth_token The OAuth Token. Default empty.
 	 * @param   string $oauth_token_secret The OAuth Token Secret. Default empty.
 	 *
-	 * @return mixed
+	 * @return \Abraham\TwitterOAuth\TwitterOAuth
 	 */
 	public function get_api( $oauth_token = '', $oauth_token_secret = '' ) {
 		if ( $this->api == null ) {
@@ -288,6 +288,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	private function get_users( $data = null ) {
 		// assign default values to variable
 		$user = $this->user_default;
+
+		// Check credentials if the user is using his own dev account.
 		if ( $data == null ) {
 			$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'], $this->consumer_key, $this->consumer_secret );
 			$api      = $this->get_api();
@@ -573,29 +575,27 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$is_rop_app = get_option( 'rop_twitter_via_rs_app', 'no' );
-		if ( 'yes' === $is_rop_app ) {
-			$check_sharing_limit = Rop_Admin::rop_check_reached_sharing_limit( 'tw' );
-			if ( $check_sharing_limit && ! $check_sharing_limit->is_valid_license ) {
-				$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', Rop_I18n::get_labels( 'sharing.invalid_license' ) ) );
-				return false;
-			}
+		$share_via_rop_server = ! empty( $this->credentials['rop_auth_token'] );
 
-			if ( $check_sharing_limit && ! $check_sharing_limit->is_valid ) {
-				$error_message = sprintf( Rop_I18n::get_labels( 'sharing.reached_sharing_limit' ), $check_sharing_limit->limit );
-				$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', $error_message ) );
-				return false;
-			}
+		$transient_key = 'rop_twitter_limit_reset_' . wp_hash( $share_via_rop_server ? $this->credentials['rop_auth_token'] : $this->credentials['oauth_token'] );
+		$limit_saved_msg = get_transient( $transient_key );
+
+		if ( ! empty( $limit_saved_msg ) ) {
+			$this->logger->alert_error( $limit_saved_msg );
+			return false;
 		}
 
-		$this->set_api(
-			$this->credentials['oauth_token'],
-			$this->credentials['oauth_token_secret'],
-			isset( $this->credentials['consumer_key'] ) ? $this->credentials['consumer_key'] : '',
-			isset( $this->credentials['consumer_secret'] ) ? $this->credentials['consumer_secret'] : ''
-		);
-		$api      = $this->get_api();
 		$new_post = array();
+		$api      = null;
+		if ( ! $share_via_rop_server ) {
+			$this->set_api(
+				$this->credentials['oauth_token'],
+				$this->credentials['oauth_token_secret'],
+				isset( $this->credentials['consumer_key'] ) ? $this->credentials['consumer_key'] : '',
+				isset( $this->credentials['consumer_secret'] ) ? $this->credentials['consumer_secret'] : ''
+			);
+			$api = $this->get_api();
+		}
 
 		$post_id = $post_details['post_id'];
 		$post_url = $post_details['post_url'];
@@ -612,8 +612,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		// Twitter media post
-		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
+		if ( isset( $api ) && ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
 			$new_post = $this->twitter_media_post( $post_details, $api );
+		} elseif ( ! isset( $api ) && ! empty( $share_as_image_post ) ) {
+			$this->logger->info( __( 'Post with image is available only the local mode (Use my own API Keys). You can find the option when adding your X account to the plugin Dashboard.', 'tweet-old-post' ) . ' ' . __( ' Read more on:', 'tweet-old-post' ) . 'https://docs.revive.social/article/1908-how-to-solve-453-twitter-error-in-rop' );
 		}
 
 		if ( empty( $new_post ) ) {
@@ -634,10 +636,97 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 
-		$api->setApiVersion( '2' );
-		$response = $api->post( 'tweets', $new_post, true );
+		$response         = array();
+		$response_headers = array();
+		$server_response  = array();
 
-		if ( isset( $response->data->id ) ) {
+		if ( ! $share_via_rop_server ) {
+			$api->setApiVersion( '2' ); // Note: Make sure to always set the correct API version before making a request.
+			$response         = $api->post( 'tweets', $new_post, true );
+			$response_headers = $api->getLastXHeaders();
+
+			$this->logger->info( sprintf( '[X API] Response: %s', json_encode( $response_headers ) ) );
+
+			$response = (array) $response;
+			if ( ! empty( $response['data'] ) ) {
+				$response['data'] = (array) $response['data'];
+			}
+		} else {
+			$response = $this->rop_share_post_via_server( 'tw', $new_post, $this->credentials['rop_auth_token'] );
+
+			$this->logger->info( sprintf( '[Revive Social] Response: %s', json_encode( $response_headers ) ) );
+
+			$body = wp_remote_retrieve_body( $response );
+			$body = json_decode( $body, true );
+
+			if ( ! empty( $body ) ) {
+
+				if ( ! empty( $body['server'] ) ) {
+					$server_response = $body['server'];
+
+					// If we have a cached response, use it to apply the logic for rate limiting.
+					if ( ! empty( $server_response['cached_response'] ) ) {
+						$body = $server_response['cached_response'];
+					}
+				}
+
+				if ( ! empty( $body['api_headers'] ) ) {
+					$response_headers = $body['api_headers'];
+				}
+
+				if ( ! empty( $body['api_body'] ) ) {
+					$response = $body['api_body'];
+				}
+			}
+		}
+
+		$limit_remaining          = isset( $response_headers['x_rate_limit_remaining'] ) ? $response_headers['x_rate_limit_remaining'] : false;
+		$user_24h_limit_remaining = isset( $response_headers['x_user_limit_24hour_remaining'] ) ? $response_headers['x_user_limit_24hour_remaining'] : false;
+		$app_24h_limit_remaining  = isset( $response_headers['x_app_limit_24hour_remaining'] ) ? $response_headers['x_app_limit_24hour_remaining'] : false;
+
+		$reset_time_msg = '';
+		$time_diff      = 0;
+		$max_reset      = 0;
+		$log_limit_msg  = __( 'X posting limit reached. Sharing on X will be skipped.', 'tweet-old-post' ) . ' (' . __( 'Learn more about X limits at', 'tweet-old-post' ) . ' https://developer.twitter.com/en/docs/twitter-api/rate-limits). ';
+
+		if ( false !== $limit_remaining && $limit_remaining <= 0 ) {
+			$reset = isset( $response_headers['x_rate_limit_reset'] ) ? $response_headers['x_rate_limit_reset'] : false; // in UTC epoch seconds
+
+			if ( $reset ) {
+				$time_diff = max( $time_diff, $reset - time() );
+				$max_reset = max( $max_reset, $reset );
+
+				$reset_time_msg .= '(' . __( '"x-rate-limit-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
+			}
+		}
+
+		if ( false !== $user_24h_limit_remaining && $user_24h_limit_remaining <= 0 ) {
+			$reset = isset( $response_headers['x_user_limit_24hour_reset'] ) ? $response_headers['x_user_limit_24hour_reset'] : false;
+
+			if ( $reset ) {
+				$time_diff = max( $time_diff, $reset - time() );
+				$max_reset = max( $max_reset, $reset );
+
+				$reset_time_msg .= '(' . __( '"x-user-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
+			}
+		}
+
+		if ( false !== $app_24h_limit_remaining && $app_24h_limit_remaining <= 0 ) {
+			$reset = isset( $response_headers['x_app_limit_24hour_reset'] ) ? $response_headers['x_app_limit_24hour_reset'] : false;
+
+			if ( $reset ) {
+				$time_diff = max( $time_diff, $reset - time() );
+				$max_reset = max( $max_reset, $reset );
+
+				$reset_time_msg .= '(' . __( '"x-app-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
+			}
+		}
+
+		if ( 0 < $time_diff ) {
+			set_transient( $transient_key, $log_limit_msg . __( 'All limits will be fully reset by', 'tweet-old-post' ) . ': ' . date( 'Y-m-d H:i:s', $max_reset ) . ' ' . $reset_time_msg, $time_diff );
+		}
+
+		if ( isset( $response['data'] ) && ! empty( $response['data']['id'] ) ) {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
@@ -648,12 +737,31 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			);
 
 			return true;
-		} else {
-			$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', json_encode( $response ) ) );
-			$this->rop_get_error_docs( $response );
-			return false;
 		}
 
+		$msg   = 'Invalid response from X server.';
+		$extra = $response;
+
+		if ( isset( $response['detail'] ) ) {
+			$msg = $response['detail'];
+		}
+
+		if ( ! empty( $server_response['message'] ) ) {
+			$msg = $server_response['message'];
+
+			if ( 'limit_reached' === $server_response['code'] ) {
+				$extra = json_encode( $response_headers );
+			}
+
+			if ( empty( $extra ) ) {
+				$extra = $server_response['code'];
+			}
+		}
+
+		$this->logger->alert_error( sprintf( 'Error posting on X: %s | Additional info: %s', $msg, json_encode( $extra ) ) );
+		$this->rop_get_error_docs( $response );
+
+		return false;
 	}
 
 	/**
@@ -725,6 +833,44 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * This method will load and prepare the account data for Twitter user using the info from the Rop server.
+	 *
+	 * @since   8.4.0
+	 *
+	 * @param   array $account_data Twitter pages data.
+	 *
+	 * @return  bool
+	 */
+	public function add_account_from_rop_server( $account_data ) {
+		if ( ! $this->is_set_not_empty( $account_data, array( 'id' ) ) ) {
+			return false;
+		}
+		$the_id       = $account_data['id'];
+		$account_data = $account_data['pages'];
+
+		$this->service = array(
+			'id'                 => $the_id,
+			'service'            => $this->service_name,
+			'credentials'        => $account_data['credentials'],
+			'public_credentials' => array(
+				'consumer_key'    => array(
+					'name'    => 'API Key',
+					'value'   => '',
+					'private' => false,
+				),
+				'consumer_secret' => array(
+					'name'    => 'API secret key',
+					'value'   => '',
+					'private' => true,
+				),
+			),
+			'available_accounts' => $this->get_users( (object) $account_data ),
+		);
+
+		return true;
+	}
+
+	/**
 	 * Method to populate additional data.
 	 *
 	 * @since   8.5.13
@@ -736,4 +882,40 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		return $account;
 	}
 
+	/**
+	 * Send the post to RoP server for sharing
+	 *
+	 * @param string $sharing_type Post sharing type.
+	 * @return array|WP_Error
+	 */
+	public static function rop_share_post_via_server( $sharing_type = 'tw', $post_data, $rop_auth_token ) {
+		$license_key = 'free';
+		$plan_id     = 0;
+		if ( 'valid' === apply_filters( 'product_rop_license_status', 'invalid' ) ) {
+			$license_key = apply_filters( 'product_rop_license_key', 'free' );
+			$plan_id     = apply_filters( 'product_rop_license_plan', 0 );
+		}
+		// Send API request.
+		$response = wp_remote_post(
+			ROP_POST_ON_X_API,
+			apply_filters(
+				'rop_post_sharing_api_args',
+				array(
+					'timeout' => 100,
+					'body'    => array_merge(
+						array(
+							'sharing_type' => $sharing_type,
+							'license'      => $license_key,
+							'plan_id'      => $plan_id,
+							'site_url'     => get_site_url(),
+							'post_data'    => $post_data,
+							'rop_auth_token' => $rop_auth_token,
+						)
+					),
+				)
+			)
+		);
+
+		return $response;
+	}
 }
