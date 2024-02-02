@@ -799,7 +799,7 @@ class Rop_Admin {
 			$default['action']                   = 'yes' === get_post_meta( $post->ID, 'rop_publish_now', true );
 			$default['instant_share_by_default'] = $default['action'];
 		}
-		$default['active'] = get_post_meta( $post->ID, 'rop_publish_now_accounts', true );
+		$default['page_active_accounts'] = get_post_meta( $post->ID, 'rop_publish_now_accounts', true );
 
 		return $default;
 	}
@@ -810,10 +810,13 @@ class Rop_Admin {
 	 * @param int $post_id The post ID.
 	 */
 	public function maybe_publish_now( $post_id ) {
+
+		error_log( 'maybe_publish_now: ' . $post_id . '  ---- ' . print_r( $_POST, true ) );
+
 		if ( empty( $_POST['rop_publish_now_nonce'] ) ) {
 			return;
 		}
-		if ( ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
+		if ( ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_nownonce' ) ) {
 			return;
 		}
 
