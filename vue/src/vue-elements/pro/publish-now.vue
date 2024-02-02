@@ -163,7 +163,6 @@
 				
 				// If the active accounts for the page are set, check if the account is active for the page.
 				if ( this.page_active_accounts ) {
-					console.log({...(this.page_active_accounts ?? {})});
 					return  {...(this.page_active_accounts ?? {})}?.hasOwnProperty(account_id);
 				}
 				
