@@ -810,9 +810,7 @@ class Rop_Admin {
 	 * @param int $post_id The post ID.
 	 */
 	public function maybe_publish_now( $post_id ) {
-
-		error_log( 'maybe_publish_now: ' . $post_id . '  ---- ' . print_r( $_POST, true ) );
-
+	
 		if ( empty( $_POST['rop_publish_now_nonce'] ) ) {
 			return;
 		}

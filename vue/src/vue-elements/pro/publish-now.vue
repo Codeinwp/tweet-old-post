@@ -140,17 +140,17 @@
 					return;
 				}
 
-				return self.showField[value] = false;
+				return self.showField[account_id] = false;
 			},
 
 			/**
 			 * Toggle the custom share message field for a specific account.
 			 * 
-			 * @param {string} value - The ID of the account to toggle the custom share message field for.
+			 * @param {string} account_id - The ID of the account to toggle the custom share message field for.
 			 */
-			togglefields: function(value) {
+			togglefields: function(account_id) {
 				var self = this;
-				return self.showField[value] = ! self.showField[value];
+				return self.showField[account_id] = ! self.showField[account_id];
 			},
 		
 			/**
@@ -167,8 +167,7 @@
 					return  {...(this.page_active_accounts ?? {})}?.hasOwnProperty(account_id);
 				}
 				
-				// Otherwise, use the accounts active state as a fallback.
-				return {...(this.accounts ?? {})}?.[account_id]?.active;
+				return true;
 			},
 		}
 	}
