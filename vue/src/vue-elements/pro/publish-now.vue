@@ -166,7 +166,7 @@
 					return  {...(this.page_active_accounts ?? {})}?.hasOwnProperty(account_id);
 				}
 				
-				return true;
+				return ! this.choose_accounts_manually;
 			},
 		}
 	}
