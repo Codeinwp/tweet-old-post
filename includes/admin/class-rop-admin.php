@@ -807,14 +807,17 @@ class Rop_Admin {
 	/**
 	 * Publish now, if enabled.
 	 *
+	 * This is hooked to the `save_post` action.
+	 * The values from the Publish Now metabox are saved to the post meta.
+	 *
 	 * @param int $post_id The post ID.
 	 */
 	public function maybe_publish_now( $post_id ) {
-	
+
 		if ( empty( $_POST['rop_publish_now_nonce'] ) ) {
 			return;
 		}
-		if ( ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_nownonce' ) ) {
+		if ( ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
 			return;
 		}
 
@@ -852,19 +855,22 @@ class Rop_Admin {
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
 
-		$instant_share_custom_content = array();
+		/**
+		 * Save an account as active to instant share via its ID along with the custom message in the post meta.
+		 */
+		$publish_now_active_accounts_settings = array();
 
 		foreach ( $enabled as $account_id ) {
 			$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
-			$instant_share_custom_content[ $account_id ] = $custom_message;
+			$publish_now_active_accounts_settings[ $account_id ] = $custom_message;
 		}
 
 		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
-		update_post_meta( $post_id, 'rop_publish_now_accounts', $instant_share_custom_content );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', $publish_now_active_accounts_settings );
 
 		// If user wants to run this operation on page refresh instead of via Cron.
 		if ( $settings->get_true_instant_share() ) {
-			$this->rop_cron_job_publish_now( $post_id, $instant_share_custom_content );
+			$this->rop_cron_job_publish_now( $post_id, $publish_now_active_accounts_settings );
 			return;
 		}
 
