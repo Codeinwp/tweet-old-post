@@ -1,3 +1,8 @@
+##### [Version 9.0.24](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.23...v9.0.24) (2024-02-12)
+
+### Fixes
+- Social media accounts are not selected with Instant sharing activated
+
 ##### [Version 9.0.23](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.22...v9.0.23) (2024-02-01)
 
 ### Improvements
