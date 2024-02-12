@@ -68,6 +68,11 @@
 </template>
 
 <script>
+	/**
+	 * This component is responsible for rendering the "Publish Now" section of the Pro version of the plugin.
+	 * 
+	 * The section is located in the "Publish" metabox of the post/page editor.
+	 */
 	import ButtonCheckbox from '../reusables/button-checkbox.vue'
 
 	export default {
@@ -91,7 +96,7 @@
 				choose_accounts_manually: this.$store.state.publish_now.choose_accounts_manually,
 				showField: fields,
 				toggle_accounts: this.$store.state.publish_now.instant_share_by_default,
-				active_accounts: this.$store.state.publish_now.active
+				page_active_accounts: this.$store.state.publish_now.page_active_accounts
 			}
 		},
 		computed: {
@@ -104,6 +109,12 @@
 		created() {
 		},
 		methods: {
+
+			/**
+			 * Get the class for the Font Awesome icon of a social media service.
+			 * 
+			 * @param {string} service - The slug of the social media service to get the icon for. 
+			 */
 			getServiceClass: function (service) {
 				let serviceIcon = 'fa-'
 				if (service === 'facebook') serviceIcon = serviceIcon.concat('facebook')
@@ -117,29 +128,46 @@
 				return serviceIcon;
 			},
 
-			toggleServices: function(event, value){
+			/**
+			 * Toggle the sharing feature for a specific account.
+			 * 
+			 * @param {Event} event - The toggle event.
+			 * @param {string} account_id - The ID of the account to toggle the services for.
+			 */
+			toggleServices: function(event, account_id){
 				var self = this;
 				if( event.target.checked ) {
 					return;
 				}
 
-				return self.showField[value] = false;
+				return self.showField[account_id] = false;
 			},
 
-			togglefields: function(value){
+			/**
+			 * Toggle the custom share message field for a specific account.
+			 * 
+			 * @param {string} account_id - The ID of the account to toggle the custom share message field for.
+			 */
+			togglefields: function(account_id) {
 				var self = this;
-				return self.showField[value] = ! self.showField[value];
+				return self.showField[account_id] = ! self.showField[account_id];
 			},
-
-			containsKey(obj, key ) {
-				return Object.keys(obj).includes(key);
+		
+			/**
+			 * 
+			 * Check if the account is active for the page.
+			 * 
+			 * @param {string} account_id - The ID of the account to check the active state for.
+			 */
+			isActiveAccount: function( account_id ) {
+				
+				// If the active accounts for the page are set, check if the account is active for the page.
+				if ( this.page_active_accounts ) {
+					return  {...(this.page_active_accounts ?? {})}?.hasOwnProperty(account_id);
+				}
+				
+				return ! this.choose_accounts_manually;
 			},
-
-			isActiveAccount: function( key ) {
-				var self = this;
-				return this.containsKey(self.active_accounts, key);
-			},
-
 		}
 	}
 </script>
