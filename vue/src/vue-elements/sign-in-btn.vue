@@ -30,7 +30,7 @@
             viewBox="0 0 512 512"
             fill="currentColor"
           >
-            <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+            <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc. -->
             <path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
           </svg>
         </i>
@@ -570,9 +570,12 @@ export default {
         updateState: false,
         data: data
       }).then(response => {
-        window.removeEventListener("message", event => this.getChildWindowMessage(event));
-        this.authPopupWindow.close();
-        window.location.reload();
+        try {
+          window.removeEventListener("message", event => this.getChildWindowMessage(event));
+          this.authPopupWindow.close();
+        } finally {
+          window.location.reload();
+        }
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -589,8 +592,8 @@ export default {
         updateState: false,
         data: data
       }).then(response => {
-        window.removeEventListener("message", event => this.getChildWindowMessage(event));
         try {
+          window.removeEventListener("message", event => this.getChildWindowMessage(event));
           this.authPopupWindow.close(); // Sometimes this throws an error because of cross-origin frame.
         } catch(e) {
           // nothing to do
@@ -613,9 +616,14 @@ export default {
         updateState: false,
         data: data
       }).then(response => {
-        window.removeEventListener("message", event => this.getChildWindowMessage(event));
-        this.authPopupWindow.close();
-        window.location.reload();
+        try {
+          window.removeEventListener("message", event => this.getChildWindowMessage(event));
+          this.authPopupWindow.close();
+        } catch(e) {
+          // nothing to do
+        } finally {
+          window.location.reload();
+        }
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -632,9 +640,14 @@ export default {
         updateState: false,
         data: data
       }).then(response => {
-        window.removeEventListener("message", event => this.getChildWindowMessage(event));
-        this.authPopupWindow.close();
-        window.location.reload();
+        try {
+          window.removeEventListener("message", event => this.getChildWindowMessage(event));
+          this.authPopupWindow.close();
+        } catch(e) {
+          // nothing to do
+        } finally {
+          window.location.reload();
+        }
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -651,9 +664,14 @@ export default {
         updateState: false,
         data: data
       }).then(response => {
-        window.removeEventListener("message", event => this.getChildWindowMessage(event));
-        this.authPopupWindow.close();
-        window.location.reload();
+        try {
+          window.removeEventListener("message", event => this.getChildWindowMessage(event));
+          this.authPopupWindow.close();
+        } catch(e) {
+          // nothing to do
+        } finally {
+          window.location.reload();
+        }
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -670,9 +688,14 @@ export default {
         updateState: false,
         data: data
       }).then(response => {
-        window.removeEventListener("message", event => this.getChildWindowMessage(event));
-        this.authPopupWindow.close();
-        window.location.reload();
+        try {
+          window.removeEventListener("message", event => this.getChildWindowMessage(event));
+          this.authPopupWindow.close();
+        } catch(e) {
+          // nothing to do
+        } finally {
+          window.location.reload();
+        }
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
