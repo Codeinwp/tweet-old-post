@@ -796,8 +796,7 @@ class Rop_Admin {
 		global $post;
 
 		if ( in_array( $post->post_status, array( 'future', 'publish' ), true ) ) {
-			$default['action']                   = 'yes' === get_post_meta( $post->ID, 'rop_publish_now', true );
-			$default['instant_share_by_default'] = $default['action'];
+			$default['action'] = 'yes' === get_post_meta( $post->ID, 'rop_publish_now', true );
 		}
 		$default['page_active_accounts'] = get_post_meta( $post->ID, 'rop_publish_now_accounts', true );
 
