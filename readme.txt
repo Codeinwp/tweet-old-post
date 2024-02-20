@@ -326,6 +326,13 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.0.25](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.24...v9.0.25) (2024-02-20)
+
+### Fixes
+
+- Page will refresh when a social media account is added.
+- Instant sharing checkbox will now be selected when Instant
+
 ##### [Version 9.0.24](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.23...v9.0.24) (2024-02-12)
 
 ### Fixes
