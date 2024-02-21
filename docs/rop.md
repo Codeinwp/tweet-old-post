@@ -270,52 +270,52 @@ General Settings data structure:
 
 Post format data structure:
 
-````json
+```json
 {
-    "twitter_aTo3M....": {
-        "wpml_language": "",
-        "post_content": "post_title",
-        "custom_meta_field": "",
-        "maximum_length": "240",
-        "custom_text": "",
-        "custom_text_pos": "beginning",
-        "include_link": true,
-        "url_from_meta": false,
-        "url_meta_key": "",
-        "short_url": false,
-        "short_url_service": "is.gd",
-        "hashtags": "no-hashtags",
-        "hashtags_length": "200",
-        "hashtags_common": "",
-        "hashtags_custom": "",
-        "hashtags_randomize": false,
-        "shortner_credentials": [],
-        "image": false,
-        "utm_campaign_medium": "social",
-        "utm_campaign_name": "ReviveOldPost"
-    },
-    "facebook_122110....": {
-        "wpml_language": "",
-        "post_content": "post_title",
-        "custom_meta_field": "",
-        "maximum_length": "1000",
-        "custom_text": "",
-        "custom_text_pos": "beginning",
-        "include_link": true,
-        "url_from_meta": false,
-        "url_meta_key": "",
-        "short_url": false,
-        "short_url_service": "is.gd",
-        "hashtags": "no-hashtags",
-        "hashtags_length": "200",
-        "hashtags_common": "",
-        "hashtags_custom": "",
-        "hashtags_randomize": false,
-        "shortner_credentials": [],
-        "image": false,
-        "utm_campaign_medium": "social",
-        "utm_campaign_name": "ReviveOldPost"
-    }
+  "twitter_aTo3M....": {
+    "wpml_language": "",
+    "post_content": "post_title",
+    "custom_meta_field": "",
+    "maximum_length": "240",
+    "custom_text": "",
+    "custom_text_pos": "beginning",
+    "include_link": true,
+    "url_from_meta": false,
+    "url_meta_key": "",
+    "short_url": false,
+    "short_url_service": "is.gd",
+    "hashtags": "no-hashtags",
+    "hashtags_length": "200",
+    "hashtags_common": "",
+    "hashtags_custom": "",
+    "hashtags_randomize": false,
+    "shortner_credentials": [],
+    "image": false,
+    "utm_campaign_medium": "social",
+    "utm_campaign_name": "ReviveOldPost"
+  },
+  "facebook_122110....": {
+    "wpml_language": "",
+    "post_content": "post_title",
+    "custom_meta_field": "",
+    "maximum_length": "1000",
+    "custom_text": "",
+    "custom_text_pos": "beginning",
+    "include_link": true,
+    "url_from_meta": false,
+    "url_meta_key": "",
+    "short_url": false,
+    "short_url_service": "is.gd",
+    "hashtags": "no-hashtags",
+    "hashtags_length": "200",
+    "hashtags_common": "",
+    "hashtags_custom": "",
+    "hashtags_randomize": false,
+    "shortner_credentials": [],
+    "image": false,
+    "utm_campaign_medium": "social",
+    "utm_campaign_name": "ReviveOldPost"
+  }
 }
 ```
 
@@ -409,6 +409,7 @@ For permission, usually the user might need to re-authenticate the app to get th
 When it comes to quota limit, we need to better handle the number of requests and stop any further requests if the limit is reached.
 
 Related issues:
+
 - [Facebook (Permission Issue)](https://github.com/Codeinwp/tweet-old-post-pro/issues/489)
 - [X/Twitter (Quota Limit)](https://github.com/Codeinwp/themeisle/issues/1605)
 
@@ -423,7 +424,7 @@ The share function have the same logic for both cases, if `rop_auth_token` is pr
 One limitation for sharing via our app is that we do not allow sharing posts with images. The uploading images workflow is only present in the plugin.
 
 > [!NOTE]
-> `\Abraham\TwitterOAuth\TwitterOAuth` is also used in our server endpoint for posting to X/Twitter. The same handling is used in both server and plugin. If you change the flow in the plugin, you should also change the server endpoint if necessary.
+> The lib`\Abraham\TwitterOAuth\TwitterOAuth` is also used in our server endpoint for posting to X/Twitter. The same handling is used in both server and plugin. If you change the flow in the plugin, you should also change the server endpoint if necessary.
 
 ## Debug Logs
 
@@ -443,4 +444,3 @@ When no posts are available to be used by ROP, logs an error. Since the cron job
 ![repeated errors](images/no-posts.png)
 
 This error is triggered [here.](https://github.com/Codeinwp/tweet-old-post/blob/v9.0.9/includes/admin/models/class-rop-queue-model.php#L219)
-````
