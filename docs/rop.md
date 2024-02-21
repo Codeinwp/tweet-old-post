@@ -82,6 +82,9 @@ The plugin responsible for this logic exists on the `app.revive.social` website 
 
 The files responsible for this workflow are called `[shortname]_login.php`. Example, if the user tried to connect Facebook, then the file responsible for authenticating the user and sending back their `access token` to their website would be `fb_login.php`.
 
+> [!NOTE]
+> X/Twitter accounts can use a local mode in which they directly put the app credentials without login on `app.revive.social`. Since our app has a low limit for posting, users are advised to use their own keys.
+
 Once the authentication workflow has completed, the `access_token` (and possibly also a `refresh token` depending on the network) as well as the account details will be sent back to the user's website (via `window.postMessage`) where ROP will be responsible for saving those details to the database.
 
 The methods responsible for kickstarting the saving process exists in the `Rop_Rest_Api` class. In the example above, the method responsible for this would be `add_account_fb()`. This method calls the respective `add_account_with_app()` in the service file to setup the account details for saving to the database.
@@ -357,6 +360,11 @@ Once the queue has been built and the sharing is active, the `rop_cron` schedule
 
 If there are any timestamps in the past when the `rop_cron_job()` method is called, then ROP will start the process of sharing the post(s) in the queue to social media.
 
+All the class services are located in the `includes/services` directory and they contain all the logic for interacting with the social media networks via their respective APIs.
+
+> [!NOTE]
+> For interacting with the API we use SDK or wrapper libraries. For example, for Facebook we use the `Facebook SDK`, for LinkedIn we use the `LinkedIn API PHP Client`, and for X/Twitter we use the `Abraham\TwitterOAuth` library. We need to pay attention when the API changes because the current version of the library might not support the changes.
+
 It will build the service object for the social media services and run the `share()` method located in every social media's service class file.
 
 This `share()` method is what sends out the actual post share to social media and then returns a success or error message.
@@ -391,6 +399,31 @@ The featured is rendered using VueJS and the source code is located in `vue/src/
 The class responsible for facilitating client-side interactions with the server is `Rop_Rest_Api`
 
 # Quirks
+
+## Services Permission and Quota
+
+The services API is not always stable, sometime they implement new permission or quota limit.
+
+For permission, usually the user might need to re-authenticate the app to get the new permission or/and we must update the app to request the new permission.
+
+When it comes to quota limit, we need to better handle the number of requests and stop any further requests if the limit is reached.
+
+Related issues:
+- [Facebook (Permission Issue)](https://github.com/Codeinwp/tweet-old-post-pro/issues/489)
+- [X/Twitter (Quota Limit)](https://github.com/Codeinwp/themeisle/issues/1605)
+
+## X/Twitter Integration
+
+We offer the ability to share to X/Twitter via our app or via the user's own app. Since our app has a low limit for posting, users are advised to use their own keys.
+
+When using our app, the `app.revive.social` return an authentication token (`rop_auth_token`) that is used to identify the saved oauth credentials in the server database. If the user uses their own app, then oauth credentials are saved locally in `rop_data` option. This flow can be seen in the `add_account_tw()` method in the `Rop_Rest_Api` class.
+
+The share function have the same logic for both cases, if `rop_auth_token` is present, then the share is done via our app -- we make a POST request to the path stored in `ROP_POST_ON_X_API` and sending the `rop_auth_token` along with the post data. If the `rop_auth_token` is not present, then the share is done via the user's own app -- we make a direct request to the X/Twitter API using the `\Abraham\TwitterOAuth\TwitterOAuth` library.
+
+One limitation for sharing via our app is that we do not allow sharing posts with images. The uploading images workflow is only present in the plugin.
+
+> [!NOTE]
+> `\Abraham\TwitterOAuth\TwitterOAuth` is also used in our server endpoint for posting to X/Twitter. The same handling is used in both server and plugin. If you change the flow in the plugin, you should also change the server endpoint if necessary.
 
 ## Debug Logs
 
