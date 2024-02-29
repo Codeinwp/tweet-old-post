@@ -1,3 +1,8 @@
+##### [Version 9.0.26](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.25...v9.0.26) (2024-02-29)
+
+### Fixes
+- Updated dependencies
+
 ##### [Version 9.0.25](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.24...v9.0.25) (2024-02-20)
 
 ### Fixes
