@@ -886,9 +886,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * Send the post to RoP server for sharing
 	 *
 	 * @param string $sharing_type Post sharing type.
+	 * @param array  $post_data Post data.
+	 * @param string $rop_auth_token RoP auth token.
 	 * @return array|WP_Error
 	 */
-	public static function rop_share_post_via_server( $sharing_type = 'tw', $post_data, $rop_auth_token ) {
+	public static function rop_share_post_via_server( $sharing_type = 'tw', $post_data = array(), $rop_auth_token = '' ) {
 		$license_key = 'free';
 		$plan_id     = 0;
 		if ( 'valid' === apply_filters( 'product_rop_license_status', 'invalid' ) ) {
