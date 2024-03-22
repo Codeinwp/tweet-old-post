@@ -827,7 +827,7 @@ class Rop_Admin {
 		}
 
 		$post_status = get_post_status( $post_id );
-		if ( ! in_array( $post_status, array( 'future', 'publish' ), true ) ) {
+		if ( ! in_array( $post_status, array( 'publish' ), true ) ) {
 			return;
 		}
 
