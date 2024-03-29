@@ -270,6 +270,8 @@ class Rop_Post_Format_Helper {
 	private function build_base_content( $post_id ) {
 
 		$post_title = apply_filters( 'rop_share_post_title', get_the_title( $post_id ), $post_id );
+		$post_title = html_entity_decode( $post_title );
+
 		$post_content = apply_filters( 'rop_share_post_content', get_post_field( 'post_content', $post_id ), $post_id );
 
 		switch ( $this->post_format['post_content'] ) {
