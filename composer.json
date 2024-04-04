@@ -22,8 +22,8 @@
   "scripts": {
     "build": "sh bin/dist.sh",
     "test": "vendor/bin/phpunit",
-    "lint": "vendor/bin/phpcs",
-    "format": "vendor/bin/phpcbf"
+    "lint": "vendor/bin/phpcs --standard=phpcs.xml",
+    "format": "vendor/bin/phpcbf --standard=phpcs.xml"
   },
   "autoload": {
     "files": [
