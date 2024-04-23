@@ -1,3 +1,13 @@
+##### [Version 9.0.27](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.26...v9.0.27) (2024-04-23)
+
+### Bug Fixes
+- Fixed issue with titles not always showing correct escaped characters.
+- Fixed instant sharing not working correctly with scheduled posts, only published posts are now eligible.
+
+### Improvements
+- Improved compatibility with newer versions of PHP
+- Updated internal dependencies
+
 ##### [Version 9.0.26](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.25...v9.0.26) (2024-02-29)
 
 ### Fixes
