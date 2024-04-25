@@ -15,7 +15,7 @@ require_once dirname( __FILE__ ) . '/helpers/class-setup-accounts.php';
  * Test accounts related logic.
  */
 class Test_RopAccounts extends WP_UnitTestCase {
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		Rop_InitAccounts::init();
 	}
 
