@@ -792,33 +792,69 @@
 				let postsSelected = this.generalSettings.selected_posts
 				this.is_loading = true;
 				this.$log.info('Sending request for saving general settings..');
+        
+        const savedSettings = {
+          available_taxonomies: this.generalSettings.available_taxonomies,
+          default_interval: this.generalSettings.default_interval,
+          minimum_post_age: this.generalSettings.minimum_post_age,
+          maximum_post_age: this.generalSettings.maximum_post_age,
+          number_of_posts: this.generalSettings.number_of_posts,
+          more_than_once: this.generalSettings.more_than_once,
+          selected_post_types: postTypesSelected,
+          selected_taxonomies: taxonomiesSelected,
+          exclude_taxonomies: excludeTaxonomies,
+          update_post_published_date: this.generalSettings.update_post_published_date,
+          ga_tracking: this.generalSettings.ga_tracking,
+          custom_messages: this.generalSettings.custom_messages,
+          custom_messages_share_order: this.generalSettings.custom_messages_share_order,
+          instant_share: this.generalSettings.instant_share,
+          true_instant_share: this.generalSettings.true_instant_share,
+          instant_share_default: this.generalSettings.instant_share_default,
+          instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
+          instant_share_choose_accounts_manually: this.generalSettings.instant_share_choose_accounts_manually,
+          housekeeping: this.generalSettings.housekeeping,
+        };
+
 				this.$store.dispatch('fetchAJAXPromise', {
 					req: 'save_general_settings',
 					updateState: false,
-					data: {
-						available_taxonomies: this.generalSettings.available_taxonomies,
-						default_interval: this.generalSettings.default_interval,
-						minimum_post_age: this.generalSettings.minimum_post_age,
-						maximum_post_age: this.generalSettings.maximum_post_age,
-						number_of_posts: this.generalSettings.number_of_posts,
-						more_than_once: this.generalSettings.more_than_once,
-						selected_post_types: postTypesSelected,
-						selected_taxonomies: taxonomiesSelected,
-						exclude_taxonomies: excludeTaxonomies,
-						update_post_published_date: this.generalSettings.update_post_published_date,
-						ga_tracking: this.generalSettings.ga_tracking,
-						custom_messages: this.generalSettings.custom_messages,
-						custom_messages_share_order: this.generalSettings.custom_messages_share_order,
-						instant_share: this.generalSettings.instant_share,
-						true_instant_share: this.generalSettings.true_instant_share,
-						instant_share_default: this.generalSettings.instant_share_default,
-						instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
-                        instant_share_choose_accounts_manually: this.generalSettings.instant_share_choose_accounts_manually,
-						housekeeping: this.generalSettings.housekeeping,
-					}
+					data: savedSettings
 				}).then(response => {
 					this.is_loading = false;
 					this.$log.info('Successfully saved general settings.');
+
+          {};
+
+          const ignoredKeys = [
+            'available_post_types',
+            'available_taxonomies',
+            'selected_posts',
+            'exclude_taxonomies',
+            'selected_taxonomies',
+          ];
+
+          const trackingPayload = Object.entries(savedSettings)
+            .filter(
+              ([key, value]) => (
+                !ignoredKeys.includes(key) || 
+                ! ( value === undefined || value === null || value === '' )
+              ) )
+            .reduce((acc, [key, value]) => {
+              if( 'selected_post_types' === key ) {
+                value = value.map( postType => postType.value ).join( ',' );
+              }
+
+              acc[key] = value;
+              return acc;
+            }, {});
+
+          window?.tiTrk?.with('tweet').add({
+            feature: 'general-settings',
+            featureComponent: 'saved-settings',
+            featureData: trackingPayload,
+          });
+
+          window?.tiTrk?.uploadEvents();
 				}, error => {
 
 					this.$log.error('Successfully saved general settings.');

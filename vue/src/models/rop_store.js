@@ -107,6 +107,7 @@ export default new Vuex.Store({
          */
         rop_cron_remote: ropApiSettings.rop_cron_remote,
         dom_updated: false,
+        tracking: Boolean( ropApiSettings.tracking ),
     },
     mutations: {
 
@@ -249,6 +250,7 @@ export default new Vuex.Store({
                 case 'toggle_account':
                 case 'exclude_post':
                 case 'exclude_post_batch':
+                case 'toggle_tracking':    
 
                     break
                 default:

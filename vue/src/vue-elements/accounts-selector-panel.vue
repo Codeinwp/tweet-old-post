@@ -251,15 +251,52 @@
 					return;
 				}
 				this.is_loading = true;
+				const savedSettings = {
+					service: this.active_accounts[this.selected_account].service,
+					account_id: this.selected_account,
+					data: this.active_data[this.selected_account]
+				};
+	
 				this.$store.dispatch('fetchAJAXPromise', {
 					req: 'save_' + this.action,
-					data: {
-						service: this.active_accounts[this.selected_account].service,
-						account_id: this.selected_account,
-						data: this.active_data[this.selected_account]
-					}
-				}).then(response => {
+					data: savedSettings
+				}).then(() => {
 					this.is_loading = false;
+
+					const trackingPayload = {
+						service: savedSettings.service,
+					};
+
+					const ignoredKeys = ['shortener_credentials'];
+
+					for( const [key, value] of Object.entries(savedSettings.data) ){
+						if ( value === undefined || value === null || value === '' ) {
+							return;
+						}
+
+						if ( ignoredKeys.includes(key) ) {
+							return;
+						}
+						
+						if ( 'interval_f' === key && 'fixed' === savedSettings.data?.type ) {
+							trackingPayload['interval_f_time'] = value?.time?.join(',');
+							trackingPayload['interval_f_weekdays'] = value?.week_days?.join(',');
+						}
+
+						if( Array.isArray(value) || typeof value === 'object' ){
+							continue;
+						}
+						trackingPayload[key] = value;
+					}
+
+					window?.tiTrk?.with('tweet')?.add({
+						feature: 'post-format',
+						featureComponent: 'saved-settings',
+						featureData: trackingPayload,
+						groupId: this.selected_account,
+					});
+
+					window?.tiTrk?.uploadEvents();
 				}, error => {
 
 					this.is_loading = false;

@@ -185,6 +185,17 @@
             target="_blank"
             class="btn rop-sidebar-action-btns"
           >{{ labels.review_it }}</a>
+          <div class="rop-tracking-box">
+            <h5>{{ labels.global_settings_header }}</h5>
+            <label>
+              <input
+                v-model="tracking"
+                type="checkbox"
+                @change="toggle_tracking()"
+              >
+              {{ labels.tracking }}
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -226,7 +237,8 @@
                 staging: ropApiSettings.staging,
                 is_loading: false,
                 is_loading_logs: false,
-                status_is_error_display: false
+                status_is_error_display: false,
+                tracking: this.$store.state.tracking
             }
         },
         computed: {
@@ -453,6 +465,23 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
                     this.is_loading_logs = false;
                 })
+            },
+
+            /**
+             * Toggle tracking from SDK (via tiTrk).
+             */
+            toggle_tracking() {
+                this.$log.info('Toggling tracking');
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'toggle_tracking',
+                    data: { tracking: Boolean( this.tracking) }
+                }).then(response => {
+                  // Update tracking state.
+                  this.$store.commit('updateState', {stateData: {tracking: Boolean( response?.tracking)}, requestName: 'toggle_tracking'});
+                  this.$log.info('Succesfully toggled tracking.');
+                }, error => {
+                  Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                })
             }
         }
     }
@@ -476,5 +505,19 @@
 
     #rop_core .badge.badge-logs {
         padding-right: 10px;
+    }
+
+    .rop-tracking-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      padding: 0.25rem 0.4rem;
+      border: 0.05rem solid #042440;
+      border-radius: 0.1rem;
+    }
+
+    .rop-tracking-box [type="checkbox"] {
+      margin-bottom: -2px;
     }
 </style>
