@@ -256,7 +256,7 @@
 					account_id: this.selected_account,
 					data: this.active_data[this.selected_account]
 				};
-	
+
 				this.$store.dispatch('fetchAJAXPromise', {
 					req: 'save_' + this.action,
 					data: savedSettings
@@ -271,11 +271,11 @@
 
 					for( const [key, value] of Object.entries(savedSettings.data) ){
 						if ( value === undefined || value === null || value === '' ) {
-							return;
+							continue;
 						}
 
 						if ( ignoredKeys.includes(key) ) {
-							return;
+							continue;
 						}
 						
 						if ( 'interval_f' === key && 'fixed' === savedSettings.data?.type ) {
@@ -288,7 +288,7 @@
 						}
 						trackingPayload[key] = value;
 					}
-
+					
 					window?.tiTrk?.with('tweet')?.add({
 						feature: 'post-format',
 						featureComponent: 'saved-settings',
@@ -301,7 +301,7 @@
 
 					this.is_loading = false;
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-				})
+				});
 			},
 			getIcon(account) {
 

@@ -823,8 +823,6 @@
 					this.is_loading = false;
 					this.$log.info('Successfully saved general settings.');
 
-          {};
-
           const ignoredKeys = [
             'available_post_types',
             'available_taxonomies',
@@ -834,20 +832,25 @@
           ];
 
           const trackingPayload = Object.entries(savedSettings)
-            .filter(
-              ([key, value]) => (
-                !ignoredKeys.includes(key) || 
-                ! ( value === undefined || value === null || value === '' )
-              ) )
-            .reduce((acc, [key, value]) => {
+            .map(([key, value]) => {
               if( 'selected_post_types' === key ) {
                 value = value.map( postType => postType.value ).join( ',' );
               }
-
+              
+              return [key, value];
+            })
+            .filter(
+              ([key, value]) => (
+              !ignoredKeys.includes(key) && 
+              ! ( value === undefined || value === null || value === '' ) &&
+              ! Array.isArray(value) &&
+              typeof value !== 'object'
+            ) )
+            .reduce((acc, [key, value]) => {
               acc[key] = value;
               return acc;
             }, {});
-
+         
           window?.tiTrk?.with('tweet').add({
             feature: 'general-settings',
             featureComponent: 'saved-settings',
