@@ -187,14 +187,26 @@
           >{{ labels.review_it }}</a>
           <div class="rop-tracking-box">
             <h5>{{ labels.global_settings_header }}</h5>
-            <label>
-              <input
-                v-model="tracking"
-                type="checkbox"
-                @change="toggle_tracking()"
+            <div class="rop-tracking-item">
+              <label
+                class="form-checkbox"
               >
-              {{ labels.tracking }}
-            </label>
+                <input
+                  v-model="tracking"
+                  type="checkbox"
+                  name="rop-tracking"
+                  @change="toggle_tracking()"
+                >
+                <i class="form-icon" />
+                {{ labels.tracking }}
+                <a
+                  :href="tracking_info_link"
+                  target="_blank"
+                >
+                  {{ labels.tracking_info }}
+                </a>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -238,7 +250,8 @@
                 is_loading: false,
                 is_loading_logs: false,
                 status_is_error_display: false,
-                tracking: this.$store.state.tracking
+                tracking: this.$store.state.tracking,
+                tracking_info_link: ropApiSettings.tracking_info_link
             }
         },
         computed: {
@@ -515,9 +528,5 @@
       padding: 0.25rem 0.4rem;
       border: 0.05rem solid #042440;
       border-radius: 0.1rem;
-    }
-
-    .rop-tracking-box [type="checkbox"] {
-      margin-bottom: -2px;
     }
 </style>
