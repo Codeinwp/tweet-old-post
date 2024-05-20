@@ -326,6 +326,13 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.0.29](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.28...v9.0.29) (2024-05-20)
+
+- Updated internal dependencies
+
+
+
+
 ##### [Version 9.0.28](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.27...v9.0.28) (2024-05-20)
 
 - Updated internal dependencies
