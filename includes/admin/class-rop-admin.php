@@ -387,7 +387,8 @@ class Rop_Admin {
 			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		}
 
-		$rop_api_settings['tracking'] = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
+		$rop_api_settings['tracking']           = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
+		$rop_api_settings['tracking_info_link'] = sanitize_url( 'https://docs.revive.social/article/2008-revive-old-posts-usage-tracking' );
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $rop_api_settings );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', array( ROP_LITE_URL . 'assets/' ) );
