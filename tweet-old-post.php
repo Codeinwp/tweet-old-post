@@ -20,7 +20,7 @@
  * Author:            revive.social
  * Author URI:        https://revive.social/
  * Requires at least: 4.7
- * Tested up to:      6.0
+ * Tested up to:      6.5
  * Stable tag:        trunk
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
