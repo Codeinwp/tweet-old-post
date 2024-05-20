@@ -52,7 +52,7 @@
   "require-dev": {
     "wp-coding-standards/wpcs": "2.3.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
-    "phpunit/phpunit": "5.*",
+    "phpunit/phpunit": "9.*",
     "yoast/phpunit-polyfills": "^2.0"
   },
   "config": {
