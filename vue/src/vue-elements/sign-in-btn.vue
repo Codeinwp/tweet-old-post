@@ -570,12 +570,7 @@ export default {
         updateState: false,
         data: data
       }).then(response => {
-        try {
-          window.removeEventListener("message", event => this.getChildWindowMessage(event));
-          this.authPopupWindow.close();
-        } finally {
-          window.location.reload();
-        }
+        window.removeEventListener("message", event => this.getChildWindowMessage(event));
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -591,15 +586,8 @@ export default {
         req: 'add_account_tw',
         updateState: false,
         data: data
-      }).then(response => {
-        try {
-          window.removeEventListener("message", event => this.getChildWindowMessage(event));
-          this.authPopupWindow.close(); // Sometimes this throws an error because of cross-origin frame.
-        } catch(e) {
-          // nothing to do
-        } finally {
-          window.location.reload();
-        }
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -615,15 +603,8 @@ export default {
         req: 'add_account_li',
         updateState: false,
         data: data
-      }).then(response => {
-        try {
-          window.removeEventListener("message", event => this.getChildWindowMessage(event));
-          this.authPopupWindow.close();
-        } catch(e) {
-          // nothing to do
-        } finally {
-          window.location.reload();
-        }
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -639,15 +620,8 @@ export default {
         req: 'add_account_tumblr',
         updateState: false,
         data: data
-      }).then(response => {
-        try {
-          window.removeEventListener("message", event => this.getChildWindowMessage(event));
-          this.authPopupWindow.close();
-        } catch(e) {
-          // nothing to do
-        } finally {
-          window.location.reload();
-        }
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -663,15 +637,8 @@ export default {
         req: 'add_account_gmb',
         updateState: false,
         data: data
-      }).then(response => {
-        try {
-          window.removeEventListener("message", event => this.getChildWindowMessage(event));
-          this.authPopupWindow.close();
-        } catch(e) {
-          // nothing to do
-        } finally {
-          window.location.reload();
-        }
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -687,41 +654,51 @@ export default {
         req: 'add_account_vk',
         updateState: false,
         data: data
-      }).then(response => {
-        try {
-          window.removeEventListener("message", event => this.getChildWindowMessage(event));
-          this.authPopupWindow.close();
-        } catch(e) {
-          // nothing to do
-        } finally {
-          window.location.reload();
-        }
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
       });
     },
-    getChildWindowMessage: function (event) {
+    /**
+     * Get message from child window.
+     * @param {MessageEvent<any>} event Event.
+     */
+    getChildWindowMessage: async function (event) {
 
-      if (~event.origin.indexOf(this.appOrigin)) {
-
-        if ('Twitter' === this.modal.serviceName) {
-          this.addAccountTW(JSON.parse(event.data));
-        } else if ('Facebook' === this.modal.serviceName) {
-          this.addAccountFB(JSON.parse(event.data));
-        } else if ('LinkedIn' === this.modal.serviceName) {
-          this.addAccountLI(JSON.parse(event.data));
-        } else if ('Tumblr' === this.modal.serviceName) {
-          this.addAccountTumblr(JSON.parse(event.data));
-        } else if ('Gmb' === this.modal.serviceName) {
-          this.addAccountGmb(JSON.parse(event.data));
-        } else if ('Vk' === this.modal.serviceName) {
-          this.addAccountVk(JSON.parse(event.data));
-        }
-
-      } else {
+      if ( ! event.origin.includes( this.appOrigin ) ) {
         return;
       }
+
+      const accountData = JSON.parse(event.data);
+      
+      if ('Twitter' === this.modal.serviceName) {
+        this.addAccountTW( accountData );
+      } else if ('Facebook' === this.modal.serviceName) {
+        this.addAccountFB( accountData );
+      } else if ('LinkedIn' === this.modal.serviceName) {
+        this.addAccountLI( accountData );
+      } else if ('Tumblr' === this.modal.serviceName) {
+        this.addAccountTumblr( accountData );
+      } else if ('Gmb' === this.modal.serviceName) {
+        this.addAccountGmb( accountData );
+      } else if ('Vk' === this.modal.serviceName) {
+        this.addAccountVk( accountData );
+      }
+      
+      try {
+        window?.tiTrk?.with('tweet')?.add({
+          feature: 'add-account',
+          featureComponent: 'sign-in-btn',
+          featureValue: this.modal.serviceName?.toLowerCase(),
+        });
+        await window?.tiTrk?.uploadEvents();
+      } catch (e) {
+        console.warn( e );
+      }
+      
+      window.location.reload();
     },
     openPopupFB: function () {
       let loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -733,7 +710,7 @@ export default {
         this.authPopupWindow = window.open(loginUrl, 'authFB', this.windowParameters);
         this.cancelModal();
       }
-      window.addEventListener("message", event => this.getChildWindowMessage(event));
+      window.addEventListener("message", this.getChildWindowMessage );
     },
     openPopupTW: function () { // Open the popup specific for Twitter
       let loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail + '&plugin_version=' + this.pluginVersion;
@@ -746,7 +723,7 @@ export default {
         this.authPopupWindow = window.open(loginUrl, 'authTW', this.windowParameters);
         this.cancelModal();
       }
-      window.addEventListener("message", event => this.getChildWindowMessage(event));
+      window.addEventListener("message", this.getChildWindowMessage );
     },
     openPopupLI: function () { // Open the popup specific for LinkedIn
       let loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -758,7 +735,7 @@ export default {
         this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
         this.cancelModal();
       }
-      window.addEventListener("message", event => this.getChildWindowMessage(event));
+      window.addEventListener("message", this.getChildWindowMessage );
     },
     openPopupTumblr: function () { // Open the popup specific for Tumblr
       let loginUrl = this.appOrigin + this.appPathTumblr + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -770,7 +747,7 @@ export default {
         this.authPopupWindow = window.open(loginUrl, 'authTmblr', this.windowParameters);
         this.cancelModal();
       }
-      window.addEventListener("message", event => this.getChildWindowMessage(event));
+      window.addEventListener("message", this.getChildWindowMessage );
     },
     openPopupGmb: function () { // Open the popup specific for Google My Business
       let loginUrl = this.appOrigin + this.appPathGmb + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -782,7 +759,7 @@ export default {
         this.authPopupWindow = window.open(loginUrl, 'authGmb', this.windowParameters);
         this.cancelModal();
       }
-      window.addEventListener("message", event => this.getChildWindowMessage(event));
+      window.addEventListener("message", this.getChildWindowMessage );
     },
     openPopupVk: function () { // Open the popup specific for VK
       let loginUrl = this.appOrigin + this.appPathVk + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -794,7 +771,7 @@ export default {
         this.authPopupWindow = window.open(loginUrl, 'authVk', this.windowParameters);
         this.cancelModal();
       }
-      window.addEventListener("message", event => this.getChildWindowMessage(event));
+      window.addEventListener("message", this.getChildWindowMessage );
     },
   }
 }

@@ -343,6 +343,8 @@ class Rop_I18n {
 				'to'                         => __( 'to', 'tweet-old-post' ),
 				'by'                         => __( 'by', 'tweet-old-post' ),
 				'review_it'                  => __( 'Leave a review', 'tweet-old-post' ),
+				'tracking'                   => __( 'Send anonymous data to help us understand how you use the plugin.', 'tweet-old-post' ),
+				'tracking_info'              => __( 'What do we track?', 'tweet-old-post' ), 'global_settings_header' => __( 'Global Settings', 'tweet-old-post' ),
 				'in'                         => __( 'in', 'tweet-old-post' ),
 				'start'                      => __( 'Start', 'tweet-old-post' ),
 				'stop'                       => __( 'Stop', 'tweet-old-post' ),

@@ -226,6 +226,8 @@ function run_rop() {
 		}
 	);
 
+	add_filter( 'themeisle_sdk_enable_telemetry', '__return_true' );
+
 	$plugin = new Rop();
 	$plugin->run();
 
