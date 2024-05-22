@@ -3,6 +3,9 @@
 	"plugins": [ "." ],
 	"env": {
 		"tests": {
+			"config": {
+				"TI_TESTING": true
+			}
 		}
 	}
 }
