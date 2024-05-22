@@ -1792,7 +1792,7 @@ HTML;
 	 * @return array The survey metadata.
 	 */
 	public function get_survey_metadata() {
-		$license_data = get_option( 'feedzy_rss_feeds_pro_license_data', array() );
+		$license_data = get_option( 'tweet_old_post_pro_license_data', array() );
 		$attributes   = array();
 		$user_id      = 'rop_' . ( ! empty( $license_data->key ) ? $license_data->key : preg_replace( '/[^\w\d]*/', '', get_site_url() ) ); // Use a normalized version of the site URL as a user ID for free users.
 
