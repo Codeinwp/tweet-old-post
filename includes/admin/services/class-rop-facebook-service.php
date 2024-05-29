@@ -163,7 +163,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				array(
 					'app_id'                => $this->strip_whitespace( $app_id ),
 					'app_secret'            => $this->strip_whitespace( $secret ),
-					'default_graph_version' => 'v12.0',
+					'default_graph_version' => 'v16.0',
 				)
 			);
 		} catch ( Exception $exception ) {
