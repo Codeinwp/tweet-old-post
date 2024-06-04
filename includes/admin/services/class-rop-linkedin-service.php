@@ -21,6 +21,13 @@
 class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 	/**
+	 * The version of the Linkedin API.
+	 *
+	 * @see https://learn.microsoft.com/en-us/linkedin/marketing/versioning?view=li-lms-2024-05
+	 */
+	public const LINKEDIN_VERSION = 202405;
+
+	/**
 	 * An instance of authenticated LinkedIn user.
 	 *
 	 * @since   8.0.0
@@ -573,7 +580,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'x-li-format'               => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
 					'Authorization'             => 'Bearer ' . $token,
-					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : 202304,
+					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : self::LINKEDIN_VERSION,
 				),
 			)
 		);
@@ -971,7 +978,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'x-li-format'               => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
 					'Authorization'             => 'Bearer ' . $token,
-					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : 202304,
+					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : self::LINKEDIN_VERSION,
 				),
 			)
 		);
