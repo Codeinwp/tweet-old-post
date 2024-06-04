@@ -1,3 +1,8 @@
+##### [Version 9.0.31](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.30...v9.0.31) (2024-06-04)
+
+- Fixed sharing on LinkedIn: updated LinkedIn API Version
+- Updated Facebook API Version
+
 ##### [Version 9.0.30](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.29...v9.0.30) (2024-05-22)
 
 - Updated internal dependencies
