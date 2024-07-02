@@ -624,10 +624,10 @@
                 return this.$store.state.generalSettings
             },
             isPro: function () {
-                return (this.$store.state.licence >= 1);
+                return (this.$store.state.license >= 1);
             },
             license_price_id: function () {
-                return this.$store.state.licence;
+                return this.$store.state.license;
             },
             isTaxLimit: function () {
                 if (ropApiSettings.tax_apply_limit > 0) {
@@ -636,7 +636,7 @@
                 return false;
             },
             isBiz: function () {
-                return (this.$store.state.licence > 1 && this.$store.state.licence !== 7 );
+                return (this.$store.state.license > 1 && this.$store.state.license !== 7 );
             },
             postTypes: function () {
                 return this.$store.state.generalSettings.available_post_types;

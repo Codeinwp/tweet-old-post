@@ -88,7 +88,7 @@
 
 			return {
                 rop_is_edit_post_screen: ropApiSettings.rop_is_edit_post_screen,
-				license: this.$store.state.licence,
+				license: this.$store.state.license,
 				labels: this.$store.state.labels.publish_now,
 				accounts: this.$store.state.publish_now.accounts,
 				share_on_update_enabled: this.$store.state.publish_now.instant_share_enabled,

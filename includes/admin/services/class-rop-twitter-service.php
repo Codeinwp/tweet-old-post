@@ -311,6 +311,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( ! empty( $authenticated_services ) ) {
 			$user['active'] = false;
 		}
+
+		if ( isset( $data->activate_account ) && $data->activate_account ) { // Used by E2E tests.
+			$user['active'] = true;
+		}
+
 		$user['id']      = $data->id;
 		$user['account'] = $this->normalize_string( $data->name );
 		$user['user']    = '@' . $this->normalize_string( $data->screen_name );

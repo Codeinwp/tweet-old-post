@@ -71,8 +71,11 @@
             <option value="custom_field">
               {{ labels.post_content_option_custom_field }}
             </option>
-            <option value="custom_content">
-              {{ labels.post_content_option_custom_content }}
+            <option
+              value="custom_content"
+              :disabled="!isPro"
+            >
+              {{ labels.post_content_option_custom_content }} {{ !isPro ? "(Pro)" : '' }}
             </option>
             <option
               v-if="yoast_seo_active_status"

@@ -157,7 +157,7 @@
              * @returns {boolean}
              */
 			isPro: function () {
-                return (this.$store.state.licence > 0);
+                return (this.$store.state.license > 0);
             },
 			/**
 			 * Returns account type.

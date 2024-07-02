@@ -38,7 +38,7 @@
 		name: "UpsellSidebar",
 		data: function () {
 			return {
-				license: this.$store.state.licence,
+				license: this.$store.state.license,
 				upsell_link: ropApiSettings.upsell_link,
 				to_pro_upsell: ROP_ASSETS_URL + 'img/to_pro.png',
 				labels: this.$store.state.labels.general,
