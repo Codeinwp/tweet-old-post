@@ -71,6 +71,9 @@
             <option value="custom_field">
               {{ labels.post_content_option_custom_field }}
             </option>
+            <option value="custom_content">
+              {{ labels.post_content_option_custom_content }}
+            </option>
             <option
               v-if="yoast_seo_active_status"
               value="yoast_seo_title"
@@ -151,7 +154,7 @@
 
     <div class="columns py-2">
       <div class="column col-6 col-sm-12 vertical-align">
-        <b>{{ labels.add_char_title }}</b>
+        <b>{{ !is_message_custom_content_enabled ? labels.add_char_title : labels.add_char_title_custom_content }}</b>
         <p class="text-gray">
           <span v-html="labels.add_char_desc" />
         </p>
@@ -161,13 +164,16 @@
           <textarea
             v-model="post_format.custom_text"
             class="form-input"
-            :placeholder="labels.add_char_placeholder"
+            :placeholder="!is_message_custom_content_enabled ? labels.add_char_placeholder : labels.add_char_placeholder_custom_content"
           />
         </div>
       </div>
     </div>
 
-    <div class="columns py-2">
+    <div
+      v-if="!is_message_custom_content_enabled"
+      class="columns py-2"
+    >
       <div class="column col-6 col-sm-12 vertical-align">
         <p class="text-gray">
           {{ labels.add_pos_title }}
@@ -304,7 +310,7 @@
     </div>
 
     <span class="divider" />
-        
+
     <div class="columns py-2">
       <div class="column col-6 col-sm-12 vertical-align">
         <b>{{ labels.use_shortner_title }}</b>
@@ -363,7 +369,7 @@
       <div
         v-for="( credential, key_name ) in post_format.shortner_credentials"
         :key="key_name"
-       
+
         class="columns py-2"
       >
         <div class="column col-6 col-sm-12 vertical-align">
@@ -385,7 +391,7 @@
         </div>
       </div>
     </template>
-    
+
 
     <span class="divider" />
 
@@ -698,7 +704,7 @@
             allAccounts: function(){
 
                     const all_accounts = {};
-                                
+
                     const services = this.$store.state.authenticatedServices;
 
                     for (const key in services) {
@@ -764,6 +770,9 @@
             },
             shorteners: function () {
                 return this.$store.state.generalSettings.available_shorteners;
+            },
+            is_message_custom_content_enabled: function() {
+              return this.post_format.post_content === 'custom_content';
             }
         },
         watch: {
@@ -792,7 +801,7 @@
         },
        methods:{
             refresh_language_taxonomies: function(e){
-               
+
                 if( this.wpml_active_status !== true){
                     return;
                 }
