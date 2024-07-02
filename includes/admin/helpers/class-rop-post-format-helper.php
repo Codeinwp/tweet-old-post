@@ -273,6 +273,7 @@ class Rop_Post_Format_Helper {
 		$post_title = html_entity_decode( $post_title );
 
 		$post_content = apply_filters( 'rop_share_post_content', get_post_field( 'post_content', $post_id ), $post_id );
+		$content      = '';
 
 		switch ( $this->post_format['post_content'] ) {
 			case 'post_title':
@@ -295,6 +296,9 @@ class Rop_Post_Format_Helper {
 				break;
 			case 'custom_field':
 				$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
+				break;
+			case 'custom_content':
+				$content = '';
 				break;
 			case 'yoast_seo_title':
 				if ( function_exists( 'YoastSEO' ) ) {
@@ -739,15 +743,17 @@ class Rop_Post_Format_Helper {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
-		}
-
-		if ( isset( $pro_format_helper ) ) {
 			$this->post_format['custom_text'] = $pro_format_helper->rop_replace_magic_tags( $this->post_format['custom_text'], $post_id );
 		}
 
-		if ( empty( $this->post_format['custom_text'] ) > 0 ) {
+		if ( empty( $this->post_format['custom_text'] ) ) {
 			return $content;
 		}
+
+		if ( 'custom_content' === $this->post_format['post_content'] ) {
+			return $this->post_format['custom_text'];
+		}
+
 		switch ( $this->post_format['custom_text_pos'] ) {
 			case 'beginning':
 				$content = $this->post_format['custom_text'] . ' ' . $content;

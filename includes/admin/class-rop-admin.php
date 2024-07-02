@@ -1347,7 +1347,7 @@ class Rop_Admin {
 		// Fetch the plugin global settings.
 		$global_settings = new Rop_Global_Settings();
 
-		// If there is no pro licence, cut process early.
+		// If there is no pro license, cut process early.
 		if ( $global_settings->license_type() < 1 ) {
 			return;
 		}
@@ -1837,7 +1837,7 @@ HTML;
 	 */
 	public function register_survey() {
 
-		if ( defined( 'TI_TESTING' ) ) {
+		if ( defined( 'TI_E2E_TESTING' ) && TI_E2E_TESTING ) {
 			return;
 		}
 

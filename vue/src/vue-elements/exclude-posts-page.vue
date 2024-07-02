@@ -230,7 +230,7 @@
 				return this.$store.state.generalSettings
 			},
 			isPro: function () {
-				return ( this.$store.state.licence >= 1 );
+				return ( this.$store.state.license >= 1 );
 			},
 			isTaxLimit: function () {
 

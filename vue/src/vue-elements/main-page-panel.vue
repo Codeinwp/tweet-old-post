@@ -243,7 +243,7 @@
                 to_pro_upsell: ROP_ASSETS_URL + 'img/to_pro.png',
                 to_business_upsell: ROP_ASSETS_URL + 'img/to_business.png',
                 plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
-                license: this.$store.state.licence,
+                license: this.$store.state.license,
                 labels: this.$store.state.labels.general,
                 upsell_link: ropApiSettings.upsell_link,
                 staging: ropApiSettings.staging,

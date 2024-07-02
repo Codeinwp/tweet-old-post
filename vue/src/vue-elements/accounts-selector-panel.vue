@@ -141,7 +141,7 @@
 				selected_account: key,
 				component_label: '',
 				allow_footer: true,
-				license: this.$store.state.licence,
+				license: this.$store.state.license,
 				action: '',
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
