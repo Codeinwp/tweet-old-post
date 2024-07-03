@@ -152,7 +152,7 @@ class Rop_Post_Format_Helper {
 		$content_helper  = new Rop_Content_Helper();
 		$max_length      = $this->post_format['maximum_length'];
 
-		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 
 			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
@@ -509,7 +509,7 @@ class Rop_Post_Format_Helper {
 	 */
 	private function get_categories_hashtags( $post_id ) {
 
-		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
@@ -538,7 +538,7 @@ class Rop_Post_Format_Helper {
 	 */
 	private function get_tags_hashtags( $post_id ) {
 
-		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
@@ -761,7 +761,7 @@ class Rop_Post_Format_Helper {
 	 */
 	private function append_custom_text( $content, $post_id ) {
 
-		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 
 			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {

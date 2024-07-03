@@ -60,6 +60,11 @@ class Rop_Admin {
 		$this->version     = $version;
 		$this->set_allowed_screens();
 		add_action( 'admin_notices', array( &$this, 'display_global_status_warning' ) );
+
+		$global_settings = new Rop_Global_Settings();
+		add_filter( 'rop_pro_plan', function() use ( $global_settings ) {
+			return $global_settings->license_type();
+		} );
 	}
 
 
@@ -1033,7 +1038,7 @@ class Rop_Admin {
 		$settings = new Rop_Settings_Model();
 		$pro_format_helper = false;
 
-		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
 				$pro_format_helper->set_content_helper( new Rop_Content_Helper() );
