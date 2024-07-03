@@ -24,12 +24,12 @@ test.describe( 'Accounts', () => {
         await page.getByText('Post Format').click();
 
         // Activate Custom Content for the post message.
-        // Note: The real user can not select the option since it is disabled, but the automated test can.
         await page.getByRole('combobox').first().selectOption( 'Custom Content (Pro)' );
 
         // Check UI elements.
         await expect( page.getByText('Message Content') ).toBeVisible();
         await expect( page.getByPlaceholder('{title} with {content}') ).toBeVisible();
+        await expect( page.getByText('Override Share Content') ).toBeVisible();
         await expect( page.getByText('Choose where you want the') ).toBeHidden();
     } );
 	

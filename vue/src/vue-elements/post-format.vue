@@ -71,10 +71,7 @@
             <option value="custom_field">
               {{ labels.post_content_option_custom_field }}
             </option>
-            <option
-              value="custom_content"
-              :disabled="!isPro"
-            >
+            <option value="custom_content">
               {{ labels.post_content_option_custom_content }} {{ !isPro ? "(Pro)" : '' }}
             </option>
             <option
@@ -155,7 +152,11 @@
     </div>
     <span class="divider" />
 
-    <div class="columns py-2">
+    <!-- Additional text | Message Custom Content -->
+    <div
+      class="columns py-2"
+      :class="is_message_custom_content_enabled ? 'rop-control-container-'+( isPro ) : ''"
+    >
       <div class="column col-6 col-sm-12 vertical-align">
         <b>{{ !is_message_custom_content_enabled ? labels.add_char_title : labels.add_char_title_custom_content }}</b>
         <p class="text-gray">
@@ -168,11 +169,50 @@
             v-model="post_format.custom_text"
             class="form-input"
             :placeholder="!is_message_custom_content_enabled ? labels.add_char_placeholder : labels.add_char_placeholder_custom_content"
+            :disabled="is_message_custom_content_enabled && !isPro"
           />
         </div>
       </div>
     </div>
 
+    <!-- Override Share Variations for Custom Content -->
+    <div
+      v-if="is_message_custom_content_enabled"
+      :class="'rop-control-container-'+isPro"
+      class="columns py-2"
+    >
+      <div class="column col-6 col-sm-12 vertical-align">
+        <p class="text-gray">
+          <span>{{ labels.override_share_variations }}</span>
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align">
+        <div class="input-group">
+          <label class="form-checkbox">
+            <input
+              v-model="post_format.override_share_variations"
+              :disabled="!isPro"
+              type="checkbox"
+            >
+            <i class="form-icon" /> {{ labels.yes_text }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upsell for Custom Content -->
+    <div
+      v-if="is_message_custom_content_enabled && !isPro"
+      class="columns "
+    >
+      <div class="column text-center">
+        <p class="upsell">
+          <i class="fa fa-info-circle" /> {{ labels.message_custom_content_upsell }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Additional Text Position -->
     <div
       v-if="!is_message_custom_content_enabled"
       class="columns py-2"
@@ -198,7 +238,9 @@
         </div>
       </div>
     </div>
+
     <span class="divider" />
+    
     <div class="columns py-2">
       <div class="column col-6 col-sm-12 vertical-align">
         <b>{{ labels.add_link_title }}</b>
@@ -524,6 +566,7 @@
 
     <span class="divider" />
 
+    <!-- Share As Image Post -->
     <div
       class="columns py-2"
       :class="'rop-control-container-'+isPro"

@@ -153,7 +153,7 @@ class Rop_Post_Format_Helper {
 		if ( ! empty( $custom_content ) ) {
 			$share_content = isset( $custom_content['text'] ) ? $custom_content['text'] : '';
 			if ( isset( $pro_format_helper ) ) {
-				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
+				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id, $this->post_format );
 			}
 			if ( ! empty( $share_content ) ) {
 
@@ -173,7 +173,11 @@ class Rop_Post_Format_Helper {
 		$custom_messages = get_post_meta( $post_id, 'rop_custom_messages_group', true );
 
 		// If share variations exist for this post and the option to use them is turned on
-		if ( ! empty( $custom_messages ) && ! empty( $general_settings['custom_messages'] ) ) {
+		if (
+			! empty( $custom_messages ) &&
+			! empty( $general_settings['custom_messages'] ) &&
+			( empty( $this->post_format['override_share_variations'] ) || 0 === $this->post_format['override_share_variations'] )
+		) {
 
 			$custom_messages_share_order = $settings->get_custom_messages_share_order();
 
@@ -209,7 +213,7 @@ class Rop_Post_Format_Helper {
 			}
 
 			if ( isset( $pro_format_helper ) ) {
-				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
+				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id, $this->post_format );
 			}
 
 			$share_content = $this->remove_divi_shortcodes( $share_content );
