@@ -1035,6 +1035,9 @@ class Rop_Admin {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
+				$pro_format_helper->set_content_helper( new Rop_Content_Helper() );
+			}
 		}
 
 		if ( $this->rop_get_wpml_active_status() ) {
@@ -1048,21 +1051,29 @@ class Rop_Admin {
 		} else {
 			$logger->info( 'Fetching publish now queue: ' . print_r( $queue_stack, true ) );
 		}
-		foreach ( $queue_stack as $account => $events ) {
+		foreach ( $queue_stack as $account_id => $events ) {
 			foreach ( $events as $index => $event ) {
 				$post    = $event['post'];
 				$message = ! empty( $event['custom_instant_share_message'] ) ? $event['custom_instant_share_message'] : '';
 				$message = apply_filters( 'rop_instant_share_message', stripslashes( $message ), $event );
-				$account_data = $services_model->find_account( $account );
+				$account_data = $services_model->find_account( $account_id );
 				try {
 					$service = $service_factory->build( $account_data['service'] );
 					$service->set_credentials( $account_data['credentials'] );
 					foreach ( $post as $post_id ) {
-						$post_data = $queue->prepare_post_object( $post_id, $account );
+						$post_data = $queue->prepare_post_object( $post_id, $account_id );
 						$custom_instant_share_message = $message;
 						if ( ! empty( $custom_instant_share_message ) ) {
-
 							if ( $pro_format_helper !== false ) {
+								if ( method_exists( $pro_format_helper, 'set_post_format' ) ) {
+									$pro_format_helper->set_post_format( array() ); // Reset to not get data from previous post.
+									if ( ! empty( $account_id ) ) {
+										$format_helper = new Rop_Post_Format_Helper();
+										$format_helper->set_post_format( $account_id );
+										$pro_format_helper->set_post_format( $format_helper->get_post_format() );
+									}
+								}
+
 								$post_data['content'] = $pro_format_helper->rop_replace_magic_tags( $custom_instant_share_message, $post_id );
 							} else {
 								$post_data['content'] = $custom_instant_share_message;

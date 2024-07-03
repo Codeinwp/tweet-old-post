@@ -112,6 +112,17 @@ class Rop_Post_Format_Helper {
 	}
 
 	/**
+	 * Get the post format settings.
+	 *
+	 * @access  public
+	 *
+	 * @return array|bool
+	 */
+	public function get_post_format() {
+		return $this->post_format;
+	}
+
+	/**
 	 * Get service by account name.
 	 *
 	 * @return string Service slug.
@@ -143,6 +154,11 @@ class Rop_Post_Format_Helper {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+
+			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
+				$pro_format_helper->set_content_helper( $content_helper );
+				$pro_format_helper->set_post_format( $this->post_format );
+			}
 		}
 
 		/**
@@ -153,7 +169,7 @@ class Rop_Post_Format_Helper {
 		if ( ! empty( $custom_content ) ) {
 			$share_content = isset( $custom_content['text'] ) ? $custom_content['text'] : '';
 			if ( isset( $pro_format_helper ) ) {
-				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id, $this->post_format );
+				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
 			}
 			if ( ! empty( $share_content ) ) {
 
@@ -213,7 +229,7 @@ class Rop_Post_Format_Helper {
 			}
 
 			if ( isset( $pro_format_helper ) ) {
-				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id, $this->post_format );
+				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
 			}
 
 			$share_content = $this->remove_divi_shortcodes( $share_content );
@@ -747,6 +763,11 @@ class Rop_Post_Format_Helper {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+
+			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
+				$pro_format_helper->set_content_helper( new Rop_Content_Helper() );
+				$pro_format_helper->set_post_format( $this->post_format );
+			}
 			$this->post_format['custom_text'] = $pro_format_helper->rop_replace_magic_tags( $this->post_format['custom_text'], $post_id );
 		}
 
