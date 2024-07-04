@@ -126,6 +126,10 @@ class Rop_Global_Settings {
 			'active' => false,
 			'name'   => 'Vk',
 		),
+		'webhook' => array(
+			'active' => false,
+			'name'   => 'Webhook',
+		),
 	);
 
 	/**
