@@ -6,7 +6,7 @@
  * It extends the Rop_Services_Abstract class.
  *
  * @link       https://themeisle.com/
- * @since      8.0.0
+ * @since      9.1.0
  *
  * @package    Rop
  * @subpackage Rop/includes/admin/services
@@ -23,7 +23,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 	/**
 	 * Defines the service name in slug format.
 	 *
-	 * @since   8.0.0
+	 * @since   9.1.0
 	 * @access  protected
 	 * @var     string $service_name The service name.
 	 */
@@ -34,7 +34,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 	 * Method to inject functionality into constructor.
 	 * Defines the defaults and settings for this service.
 	 *
-	 * @since   8.0.0
+	 * @since   9.1.0
 	 * @access  public
 	 */
 	public function init() {
@@ -44,7 +44,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to register credentials for the service.
 	 *
-	 * @since   8.0.0
+	 * @since   9.1.0
 	 * @access  public
 	 *
 	 * @param   array $args The credentials array.
@@ -52,11 +52,11 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 	public function set_credentials( $args ) {
 		$this->credentials = $args;
 	}
-	
+
 	/**
 	 * Returns information for the current service.
 	 *
-	 * @since   8.0.0
+	 * @since   9.1.0
 	 * @access  public
 	 * @return mixed
 	 */
@@ -67,7 +67,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 	/**
 	 * Method for publishing with Twitter service.
 	 *
-	 * @since   8.0.0
+	 * @since   9.1.0
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
@@ -82,16 +82,64 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		$url = isset( $this->credentials['url'] ) ? $this->credentials['url'] : '';
+
+		if ( empty( $url ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.webhook_url_not_set' ) );
+			return false;
+		}
+
+		$args = array(
+			'headers' => array(),
+		);
+
+		$payload = array(
+			'postId'        => isset( $post_details['post_id'] ) ? $post_details['post_id'] : '',
+			'message'       => isset( $post_details['content'] ) ? $post_details['content'] : '',
+			'postUrl'       => isset( $post_details['post_url'] ) ? $post_details['post_url'] : '',
+			'featuredImage' => isset( $post_details['featured_image'] ) ? $post_details['featured_image'] : '',
+		);
+
+		if ( ! class_exists( 'ROP_Pro_Webhook_Helper' ) ) {
+			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
+			if ( is_plugin_active( 'tweet-old-post-pro/tweet-old-post-pro.php' ) ) {
+				require_once ROP_PRO_PATH . 'includes/helpers/class-rop-pro-webhook-helper.php';
+			}
+		}
+
+		if ( class_exists( 'ROP_Pro_Webhook_Helper' ) ) {
+			$response = ROP_Pro_Webhook_Helper::send_webhook_payload( $this->credentials['url'], $payload, $args );
+		} else {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.webhook_extension_not_found' ) );
+			return false;
+		}
+
+		if ( is_wp_error( $response ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.webhook_error' ) . ': ' . $response->get_error_message() );
+			return false;
+		}
+
 		return false;
 	}
 
-	public function process_registration( $data ) {
+	/**
+	 * Add the webhook to the service data.
+	 *
+	 * @since   9.1.0
+	 * @access  public
+	 *
+	 * @param   array $data The webhook data.
+	 *
+	 * @return  bool
+	 */
+	public function add_webhook( $data ) {
 		if ( empty( $data['url'] ) ) {
 			return false;
 		}
 
-		$id           = base64_encode( $data['url'] );
-		$display_name = ! empty( $data['display_name'] ) ? $data['display_name'] : 'Webhook'; 
+		$id           = empty( $data['id'] ) ? base64_encode( $data['url'] ) : empty( $data['id'] );
+		$display_name = ! empty( $data['display_name'] ) ? $data['display_name'] : 'Webhook';
 
 		$this->service = array(
 			'id'          => $id,
@@ -107,7 +155,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 					'user'    => $display_name,
 					'service' => $this->service_name,
 					'account' => $this->normalize_string( $data['url'] ),
-					'created' => date( 'd/m/Y H:i' )
+					'created' => date( 'd/m/Y H:i' ),
 				),
 			),
 		);
@@ -115,37 +163,77 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 		return true;
 	}
 
-	public function expose_endpoints()
-	{
-		
+
+	/**
+	 * Expose the endpoints for the webhook service.
+	 *
+	 * @since 9.1.0
+	 * @access public
+	 * @return void
+	 */
+	public function expose_endpoints() {
 	}
 
-	public function get_api()
-	{
-		
+	/**
+	 * Retrieve the API object.
+	 *
+	 * @since 9.1.0
+	 * @access public
+	 * @return mixed The API object.
+	 */
+	public function get_api() {
 	}
 
-	public function set_api()
-	{
-		
+	/**
+	 * Define the API object.
+	 *
+	 * @since 9.1.0
+	 * @access public
+	 * @return void
+	 */
+	public function set_api() {
 	}
 
-	public function populate_additional_data($account)
-	{
+	/**
+	 * Populate additional data for the account.
+	 *
+	 * @since 9.1.0
+	 * @access public
+	 * @param mixed $account The account data.
+	 * @return mixed The populated account data.
+	 */
+	public function populate_additional_data( $account ) {
 		return $account;
 	}
 
-	public function maybe_authenticate()
-	{
-		
+	/**
+	 * Check if authentication is needed.
+	 *
+	 * @since 9.1.0
+	 * @access public
+	 * @return void
+	 */
+	public function maybe_authenticate() {
 	}
 
-	public function authenticate($args)
-	{
-		
+	/**
+	 * Authenticate the user with the given arguments.
+	 *
+	 * @since 9.1.0
+	 * @access public
+	 * @param mixed $args The arguments for authentication.
+	 * @return void
+	 */
+	public function authenticate( $args ) {
 	}
-	
+
+	/**
+	 * Request an API token.
+	 *
+	 * @since 9.1.0
+	 * @access public
+	 * @return mixed The API token.
+	 */
 	public function request_api_token() {
-
 	}
 }

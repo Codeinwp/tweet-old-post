@@ -330,6 +330,28 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
+		'webhook' => array(
+			'wpml_language' => '',
+			'post_content'         => 'post_title',
+			'custom_meta_field'    => '',
+			'maximum_length'       => '1000',
+			'custom_text'          => '',
+			'custom_text_pos'      => 'beginning',
+			'include_link'         => true,
+			'url_from_meta'        => false,
+			'url_meta_key'         => '',
+			'short_url'            => false,
+			'short_url_service'    => 'is.gd',
+			'hashtags'             => 'no-hashtags',
+			'hashtags_length'      => '200',
+			'hashtags_common'      => '',
+			'hashtags_custom'      => '',
+			'hashtags_randomize'   => false,
+			'shortner_credentials' => array(),
+			'image'                => false,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
+		),
 	);
 
 	/**

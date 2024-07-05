@@ -414,6 +414,8 @@ You can try to disable any of the security plugins that you use in order to see 
 				'share_attempted_on_staging' => __( 'ROP has detected that this is a development website. Share process skipped.', 'tweet-old-post' ),
 				'reached_sharing_limit' => __( 'You\'ve reached your daily post sharing limit of %1$d posts. Want to share more? Consider upgrading to enjoy a higher limit.', 'tweet-old-post' ),
 				'invalid_license' => __( 'Sorry, your license is invalid.', 'tweet-old-post' ),
+				'webhook_extension_not_found' => __( 'Webhook extension not found. Please install the Pro add-on.', 'tweet-old-post' ),
+				'webhook_url_not_set' => __( 'Webhook URL not set.', 'tweet-old-post' ),
 			),
 			'errors' => array(
 				'wordpress_api_error' => __( 'Cannot post to network. WordPress Error: ', 'tweet-old-post' ),
@@ -426,6 +428,9 @@ You can try to disable any of the security plugins that you use in order to see 
 				'linkedin_issue_fetching_token' => __( 'There was an issue fetching the LinkedIn Token. Please contact Revive Old Posts support for assistance.', 'tweet-old-post' ),
 				'no_image_found' => __( 'No image was found for post %1$s cannot share as an image post to: %2$s. Please double check that you have a featured image set.', 'tweet-old-post' ),
 				'license_not_active' => __( 'An active Pro license is needed to share to %1$s', 'tweet-old-post' ),
+				'could_not_send_webhook' => __( 'Could not send webhook.', 'tweet-old-post' ),
+				'webhook_error' => __( 'An error occurred for Webhook post sharing.', 'tweet-old-post' ),
+
 			),
 			'generic' => array(
 				'only_pro_suffix' => ' (' . __( 'Available in Pro', 'tweet-old-post' ) . ')',

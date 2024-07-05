@@ -1295,14 +1295,14 @@ class Rop_Rest_Api {
 
 	/**
 	 * API method called to add Webhook account.
-	 * 
+	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
-	 * 
+	 *
 	 * @since   9.1.0
 	 * @access  private
-	 * 
+	 *
 	 * @param  array $data Webhook account data.
-	 * 
+	 *
 	 * @return array
 	 */
 	private function add_account_webhook( $data ) {
@@ -1312,7 +1312,7 @@ class Rop_Rest_Api {
 		$model           = new Rop_Services_Model();
 		$db              = new Rop_Db_Upgrade();
 
-		if( ! $webhook_service->process_registration( $data ) ) {
+		if ( ! $webhook_service->add_webhook( $data ) ) {
 			$this->response->set_code( '422' )
 						   ->set_data( array() );
 
@@ -1341,7 +1341,7 @@ class Rop_Rest_Api {
 					   ->set_data( array() );
 
 		return $this->response->to_array();
-	} 
+	}
 
 	/**
 	 * API method called to toggle tracking.
