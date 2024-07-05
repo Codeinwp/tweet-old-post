@@ -819,8 +819,7 @@
                 return this.$store.state.generalSettings.available_shorteners;
             },
             isNewUserPro: function () {
-                console.log(0 === this.license && this.$store.state.is_new_user);
-                return 0 === this.license && this.$store.state.is_new_user;
+                return Boolean( 0 === this.license && this.$store.state.is_new_user );
             },
         },
         watch: {
