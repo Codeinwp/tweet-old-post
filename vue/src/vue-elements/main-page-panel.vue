@@ -168,12 +168,6 @@
             class="btn rop-sidebar-action-btns"
           >{{ labels.rop_support }}</a>
           <a
-            v-if="license < 1"
-            href="https://revive.social/support/"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.rop_support }}</a>
-          <a
             v-if="haveAccounts"
             href="https://docs.revive.social/"
             target="_blank"
