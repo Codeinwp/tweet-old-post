@@ -165,6 +165,9 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 				self::$shorteners
 			);
 		}
+		if ( ! isset( $this->settings['tracking'] ) ) {
+			$this->settings['tracking'] = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
+		}
 
 		return $this->settings;
 	}
