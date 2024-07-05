@@ -109,13 +109,13 @@
             type="text"
             value=""
             placeholder=""
-            :disabled="!!isNewUserPro"
+            :disabled="isNewUserPro"
           >
         </div>
       </div>
     </div>
     <div
-      v-if="!!isNewUserPro && (post_format.post_content === 'custom_field')"
+      v-if="isNewUserPro && (post_format.post_content === 'custom_field')"
       class="columns "
     >
       <div class="column text-center">
@@ -242,7 +242,7 @@
             <input
               v-model="post_format.url_from_meta"
               type="checkbox"
-              :disabled="!!isNewUserPro"
+              :disabled="isNewUserPro"
             >
             <i class="form-icon" /> {{ labels.yes_text }}
           </label>
@@ -250,7 +250,7 @@
       </div>
     </div>
     <div
-      v-if="!!isNewUserPro"
+      v-if="isNewUserPro"
       class="columns "
     >
       <div class="column text-center">
@@ -406,13 +406,13 @@
               v-model="post_format.shortner_credentials[key_name]"
               class="form-input"
               type="text"
-              :disabled="!!isNewUserPro && (post_format.short_url_service !== 'rviv.ly' || post_format.short_url_service !== 'wp_short_url')"
+              :disabled="isNewUserPro && (post_format.short_url_service !== 'rviv.ly' || post_format.short_url_service !== 'wp_short_url')"
             >
           </div>
         </div>
       </div>
       <div
-      v-if="!!isNewUserPro && (post_format.short_url_service !== 'rviv.ly' && post_format.short_url_service !== 'wp_short_url')"
+      v-if="isNewUserPro && (post_format.short_url_service !== 'rviv.ly' && post_format.short_url_service !== 'wp_short_url')"
       class="columns "
     >
       <div class="column text-center">
@@ -500,7 +500,7 @@
             type="text"
             value=""
             placeholder=""
-            :disabled="!!isNewUserPro && (post_format.hashtags !== 'common-hashtags')"
+            :disabled="isNewUserPro && (post_format.hashtags !== 'common-hashtags')"
           >
         </div>
       </div>
@@ -525,7 +525,7 @@
             type="number"
             value=""
             placeholder=""
-            :disabled="!!isNewUserPro && (post_format.hashtags !== 'no-hashtags' && post_format.hashtags !== 'common-hashtags')"
+            :disabled="isNewUserPro && (post_format.hashtags !== 'no-hashtags' && post_format.hashtags !== 'common-hashtags')"
           >
         </div>
       </div>
@@ -548,7 +548,7 @@
             <input
               v-model="post_format.hashtags_randomize"
               type="checkbox"
-              :disabled="!!isNewUserPro && (post_format.hashtags !== 'no-hashtags' && post_format.hashtags !== 'common-hashtags')"
+              :disabled="isNewUserPro && (post_format.hashtags !== 'no-hashtags' && post_format.hashtags !== 'common-hashtags')"
             >
             <i class="form-icon" /> {{ labels.yes_text }}
           </label>
@@ -556,7 +556,7 @@
       </div>
     </div>
     <div
-      v-if="!!isNewUserPro && (post_format.hashtags !== 'no-hashtags' && post_format.hashtags !== 'common-hashtags')"
+      v-if="isNewUserPro && (post_format.hashtags !== 'no-hashtags' && post_format.hashtags !== 'common-hashtags')"
       class="columns "
     >
       <div class="column text-center">
@@ -819,6 +819,7 @@
                 return this.$store.state.generalSettings.available_shorteners;
             },
             isNewUserPro: function () {
+                console.log(0 === this.license && this.$store.state.is_new_user);
                 return 0 === this.license && this.$store.state.is_new_user;
             },
         },
