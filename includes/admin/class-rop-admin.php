@@ -389,6 +389,8 @@ class Rop_Admin {
 
 		$rop_api_settings['tracking']           = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
 		$rop_api_settings['tracking_info_link'] = sanitize_url( 'https://docs.revive.social/article/2008-revive-old-posts-usage-tracking' );
+		$last_post_shared                       = get_option( 'rop_last_post_shared', '' );
+		$rop_api_settings['is_new_user']        = empty( $last_post_shared );
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $rop_api_settings );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', array( ROP_LITE_URL . 'assets/' ) );

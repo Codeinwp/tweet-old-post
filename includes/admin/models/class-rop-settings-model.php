@@ -52,42 +52,48 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @var     array $shorteners The class defaults for shorteners.
 	 */
 	private static $shorteners = array(
+		'rviv.ly' => array(
+			'id' => 'rviv.ly',
+			'name' => 'rviv.ly',
+			'active' => true,
+			'is_free' => true,
+		),
 		'bit.ly' => array(
 			'id' => 'bit.ly',
 			'name' => 'bit.ly',
 			'active' => true,
+			'is_free' => false,
 		),
 		'firebase' => array(
 			'id' => 'firebase',
 			'name' => 'google firebase',
 			'active' => true,
+			'is_free' => false,
 		),
 		'ow.ly' => array(
 			'id' => 'ow.ly',
 			'name' => 'ow.ly',
 			'active' => true,
+			'is_free' => false,
 		),
 		'is.gd' => array(
 			'id' => 'is.gd',
 			'name' => 'is.gd',
 			'active' => true,
+			'is_free' => false,
 		),
 		'rebrand.ly' => array(
 			'id' => 'rebrand.ly',
 			'name' => 'rebrand.ly',
 			'active' => true,
+			'is_free' => false,
 		),
 		'wp_short_url' => array(
 			'id' => 'wp_short_url',
 			'name' => 'wp_short_url',
 			'active' => true,
+			'is_free' => true,
 		),
-		// TODO Reintroduce Rvivly after refactor
-		// 'rviv.ly' => array(
-		// 'id' => 'rviv.ly',
-		// 'name' => 'rviv.ly',
-		// 'active' => false,
-		// ),
 	);
 
 	/**
