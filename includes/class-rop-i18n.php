@@ -364,6 +364,7 @@ You can try to disable any of the security plugins that you use in order to see 
 					'tweet-old-post'
 				),
 				'rop_support'                => __( 'Get Support', 'tweet-old-post' ),
+				'rop_support_url'            => defined( 'ROP_PRO_BASEFILE' ) ? tsdk_support_link( ROP_PRO_BASEFILE ) : '',
 				'rop_facebook_domain_toast'  => __(
 					'You need to verify your website domain with Facebook so your shares can show as article posts on Facebook. [ <a href="https://docs.revive.social/article/1136-facebook-text-posts-vs-article-posts" target="_blank">Read this doc</a> ] for more information',
 					'tweet-old-post'

@@ -163,7 +163,7 @@
           </div>
           <a
             v-if="license >= 1"
-            href="https://revive.social/pro-support/"
+            :href="labels.rop_support_url"
             target="_blank"
             class="btn rop-sidebar-action-btns"
           >{{ labels.rop_support }}</a>
