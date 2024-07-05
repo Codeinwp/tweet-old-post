@@ -162,7 +162,7 @@
             <upsell-sidebar />
           </div>
           <a
-            v-if="license >= 1"
+            v-if="license >= 1 && labels.rop_support_url !== ''"
             :href="labels.rop_support_url"
             target="_blank"
             class="btn rop-sidebar-action-btns"
