@@ -401,7 +401,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			}
 
 			$global_settings = new Rop_Global_Settings();
-			$min_hours       = ! empty( get_option( 'rop_data', '' ) ) ? 5 : 12;
+			$min_hours       = ! empty( get_option( 'rop_is_new_user', '' ) ) ? 12 : 5;
 
 			if ( $global_settings->license_type() > 0 ) {
 				$min_hours = 0.5;
@@ -426,7 +426,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 				$data['interval_r'] = 0.1;
 			}
 
-			$min_hours = ! empty( get_option( 'rop_data', '' ) ) ? 5 : 12;
+			$min_hours = ! empty( get_option( 'rop_is_new_user', '' ) ) ? 12 : 5;
 
 			if ( $global_settings->license_type() > 0 ) {
 				$min_hours = 0.5;
