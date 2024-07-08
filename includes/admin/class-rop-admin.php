@@ -645,21 +645,6 @@ class Rop_Admin {
 		}
 	}
 
-	/**
-	 * Open roadmap in new tab
-	 *
-	 * @since   8.5.0
-	 * @access  public
-	 */
-	function rop_roadmap_new_tab() {
-		?>
-		<script type="text/javascript">
-		   jQuery( document ).ready( function ( $ ) {
-			   $( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
-		   } );
-		</script>
-		<?php
-	}
 
 	/**
 	 * Publish now upsell
@@ -683,7 +668,7 @@ class Rop_Admin {
 				__(
 					'Share to more accounts by upgrading to the extended version for ',
 					'tweet-old-post'
-				) . '<a href="' . ROP_PRO_URL . '" target="_blank">Revive Old Posts </a>
+				) . '<a href="' . Rop_I18n::UPSELL_LINK . '" target="_blank">Revive Old Posts </a>
 						</div>';
 		}
 	}
