@@ -387,8 +387,9 @@ class Rop_Global_Settings {
 			);
 
 			$min_interval = 0.5;
-			if ( empty( get_option( 'rop_data', '' ) ) ) {
-				$min_interval = self::$instance->license_type() > 0 ? 0.5 : 12;
+			// Apply new limit for new free users.
+			if ( empty( get_option( 'rop_data', '' ) ) && 1 < self::$instance->license_type() ) {
+				$min_interval = 12;
 			}
 			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.05 : $min_interval );
 			self::$instance->settings_defaults['step_interval'] = apply_filters( 'rop_min_interval_bw_shares_step', 0.1 );
