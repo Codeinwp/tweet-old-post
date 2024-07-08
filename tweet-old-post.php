@@ -189,6 +189,17 @@ function run_rop() {
 	define( 'ROP_POST_SHARING_CONTROL_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/post-sharing-control' );
 	define( 'ROP_POST_ON_X_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/post-on-x' );
 
+	add_filter(
+		'themeisle_sdk_compatibilities/' . basename( ROP_LITE_PATH ),
+		function ( $compatibilities ) {
+			$compatibilities['RopPRO'] = array(
+				'basefile'  => defined( 'ROP_PRO_DIR_PATH' ) ? ROP_PRO_DIR_PATH . 'tweet-old-post-pro.php' : '',
+				'required'  => '3.0',
+				'tested_up' => '3.1',
+			);
+			return $compatibilities;
+		}
+	);
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {
 		require_once $vendor_file;
