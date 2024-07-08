@@ -581,6 +581,34 @@
             </div>
           </div>
         </div>
+        <span class="divider" />
+
+        <!-- tracking -->
+        <div class="columns py-2">
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.tracking_field }}</b>
+            <p class="text-gray">
+              {{ labels.tracking }}<br>
+              <a
+                  :href="tracking_info_link"
+                  target="_blank"
+                >
+                {{ labels.tracking_info }}
+              </a>
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.tracking"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="panel-footer text-right">
@@ -627,7 +655,9 @@
                  */
                 rop_cron_remote: Boolean(ropApiSettings.rop_cron_remote),
                 rop_cron_remote_agreement: Boolean(ropApiSettings.rop_cron_remote_agreement),
-                is_cron_btn_active: false
+                is_cron_btn_active: false,
+                tracking: this.$store.state.tracking,
+                tracking_info_link: ropApiSettings.tracking_info_link
             }
         },
         computed: {
@@ -824,6 +854,7 @@
           instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
           instant_share_choose_accounts_manually: this.generalSettings.instant_share_choose_accounts_manually,
           housekeeping: this.generalSettings.housekeeping,
+          tracking: this.generalSettings.tracking
         };
 
 				this.$store.dispatch('fetchAJAXPromise', {
