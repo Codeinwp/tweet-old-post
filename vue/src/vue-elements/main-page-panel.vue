@@ -149,14 +149,8 @@
             <upsell-sidebar />
           </div>
           <a
-            v-if="license >= 1"
-            href="https://revive.social/pro-support/"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.rop_support }}</a>
-          <a
-            v-if="license < 1"
-            href="https://revive.social/support/"
+            v-if="license >= 1 && labels.rop_support_url !== ''"
+            :href="labels.rop_support_url"
             target="_blank"
             class="btn rop-sidebar-action-btns"
           >{{ labels.rop_support }}</a>
