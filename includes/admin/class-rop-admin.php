@@ -659,14 +659,6 @@ class Rop_Admin {
 				'rop_addons_page',
 			)
 		);
-
-		add_submenu_page(
-			'TweetOldPost',
-			__( 'Roadmap', 'tweet-old-post' ),
-			__( 'Plugin Roadmap', 'tweet-old-post' ),
-			'manage_options',
-			'https://trello.com/b/svAZqXO1/roadmap-revive-old-posts'
-		);
 	}
 
 	/**
