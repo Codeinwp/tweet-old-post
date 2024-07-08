@@ -266,42 +266,10 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
                 </p>
               </div>
             </div>
-            <div
+            <WebhookHeaders
               v-if="isWebhook"
-              class="webhook-headers"
-            >
-              <span>HTTP Headers</span>
-              <div
-                v-for="( header, index ) in webhooksHeaders"
-                :key="index"
-                class="webhook-header"
-              >
-                <input
-                  :value="header"
-                  type="text"
-                  class="form-input"
-                  placeholder="Authorization: Bearer XXXXXXXXXXXXXX"
-                >
-              </div>
-              <div
-                class="webhook-header"
-              >
-                <input
-                  :value="currentWebhookHeader"
-                  type="text"
-                  class="form-input"
-                  placeholder="Authorization: Bearer XXXXXXXXXXXXXX"
-                >
-              </div>
-              <div>
-                <button
-                  class="btn btn-primary webhook-add-header"
-                  @click="addWebhookHeader"
-                >
-                  Add Header
-                </button>
-              </div>
-            </div>
+              :headers.sync="webhooksHeaders"
+            />
           </div>
         </div>
 
@@ -341,7 +309,7 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
             class="btn btn-primary"
             @click="closeModal()"
           >
-            {{ labels.sign_in_btn }}
+            {{ isOpenToEdit ? labels.save_selector_btn : labels.sign_in_btn }}
           </button>
         </div>
       </div>
@@ -350,11 +318,12 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
 </template>
 
 <script>
-import Tooltip from './reusables/popover.vue'
+import Tooltip from './reusables/popover.vue';
+import WebhookHeaders from './reusables/webhook-headers.vue';
 
 export default {
   name: 'SignInBtn',
-  components: {Tooltip},
+  components: {Tooltip, WebhookHeaders},
   data: function () {
     return {
       modal: {
@@ -385,15 +354,14 @@ export default {
       showTmblrAppBtn: ropApiSettings.show_tmblr_app_btn,
       hideOwnAppOption: ropApiSettings.hide_own_app_option,
       currentWebhookHeader: '',
-      webhooksHeaders: [
-        'Authorization: Bearer XXX',
-        'Content-Type: application/json',
-        'X-My-Header: Value',
-      ],
-      showBtn: false
+      webhooksHeaders: [],
+      showBtn: false,
     }
   },
   computed: {
+    isOpenToEdit() {
+      return this.$store.state.editPopup?.canShow;
+    },
     selected_service: function () {
       return this.services[this.selected_network]
     },
@@ -414,7 +382,7 @@ export default {
     },
     modalActiveClass: function () {
       return {
-        'active': this.modal.isOpen === true
+        'active': this.modal?.isOpen === true
       }
     },
     serviceId: function () {
@@ -458,6 +426,15 @@ export default {
         showButton = false;
       }
       return showButton;
+    }
+  },
+  watch: {
+    isOpenToEdit( canShow) {
+      if ( ! canShow ) {
+        return;
+      }
+      
+      this.openEditPopup();
     }
   },
   created() {
@@ -571,6 +548,30 @@ export default {
       this.$store.commit('logMessage', ['Trying to open popup for url:' + url, 'notice'])
       window.open(url, '_self')
     },
+    openEditPopup() {
+      const accountToEdit = this.$store.state.editPopup?.accountId;
+      const serviceName = this.$store.state?.authenticatedServices?.[accountToEdit]?.service;
+
+      if ( 'webhook' === serviceName ) {
+
+        // Prepare fields.
+        const serviceSchema = this.$store.state?.availableServices?.[serviceName];
+        const fieldData = Object.keys( serviceSchema?.credentials )
+          .reduce( ( fields, fieldId ) => {
+            fields[fieldId] = { ...serviceSchema?.credentials[fieldId] };
+            fields[fieldId].value = this.$store.state?.authenticatedServices?.[accountToEdit]?.credentials?.[fieldId];
+            return fields;
+          }, {} );
+        
+        // Prepare modal.
+        this.modal.serviceName = serviceSchema.name;
+        this.modal.description = '';
+        this.modal.data = fieldData;
+        this.webhooksHeaders = this.$store.state?.authenticatedServices?.[accountToEdit]?.credentials?.headers;
+
+        this.openModal();
+      }
+    },
     /**
      * Get signin url. Used for authentication of the user who is using their own app.
      * @param credentials
@@ -624,16 +625,28 @@ export default {
 
       if( this.isWebhook ) {
         credentials['headers'] = this.webhooksHeaders;
-        this.addAccountWebhook( credentials );
+        if( this.isOpenToEdit ) {
+          credentials['service_id'] = this.$store.state.editPopup?.accountId;
+          credentials['active'] = Boolean( this.$store.state?.activeAccounts?.[this.$store.state.editPopup?.accountId] );
+          this.editAccountWebhook( credentials );
+        } else {
+          this.addAccountWebhook( credentials );
+        }
+
+        this.webhooksHeaders = [];
       } else {
         this.getUrlAndGo(credentials)
       }
-      this.modal.isOpen = false
+      this.modal.isOpen = false;
+
+      this.$store.commit( 'setEditPopupShowPermission', false );
     },
     cancelModal: function () {
       this.$store.state.auth_in_progress = false
       this.showAdvanceConfig = false
       this.modal.isOpen = false
+
+      this.$store.commit( 'setEditPopupShowPermission', false );
     },
     /**
      * Add Facebook account.
@@ -741,6 +754,19 @@ export default {
       console.log( data );
       this.$store.dispatch('fetchAJAXPromise', {
         req: 'add_account_webhook',
+        updateState: false,
+        data: data
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
+      }, error => {
+        this.is_loading = false;
+        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+      });
+    },
+    editAccountWebhook( data ) {
+      console.log( data );
+      this.$store.dispatch('fetchAJAXPromise', {
+        req: 'edit_account_webhook',
         updateState: false,
         data: data
       }).then(() => {
@@ -899,17 +925,6 @@ export default {
   .content:has(.webhook-headers) .auth-app {
     min-width: 200px;
   }
-}
-
-.webhook-headers {
-  background-color: #f7f7f7;
-  padding: 10px;
-  min-width: 400px;
-  border-radius: 10px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 </style>

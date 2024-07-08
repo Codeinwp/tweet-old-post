@@ -47,7 +47,20 @@
           <i class="form-icon" />
         </label>
       </div>
-
+      <div
+        class="tile-icon rop-edit-account tooltip tooltip-right"
+        :data-tooltip="account_labels.edit_account"
+        @click="openEditPopup()" 
+      >
+        <i
+          v-if=" ! is_loading"
+          class="fa fa-edit"
+        />
+        <i
+          v-else
+          class="fa fa-spinner fa-spin"
+        />
+      </div>
       <div
         v-if=" ! account_data.active"
         class="tile-icon rop-remove-account tooltip tooltip-right"
@@ -77,6 +90,7 @@
 
 	export default {
 		name: 'ServiceUserTile',
+		components: {},
 		props: ['account_data', 'account_id'],
 		data: function () {
 			return {
@@ -231,7 +245,6 @@
 			 * @returns {T[]}
 			 */
 			serviceInfo: function () {
-
 				return this.account_data.account.concat(' ' + this.account_labels.at + ': ').concat(this.account_data.created)
 			}
 		},
@@ -318,12 +331,20 @@
 				this.is_loading = true;
 				this.toggleAccount(id, type)
 
+			},
+			openEditPopup() {
+				this.$store.commit( 'setEditPopup', {
+					accountId: `${this.account_data?.service}_${this.account_data?.id}`,
+					canShow: true,
+				})
 			}
 		}
 	}
 </script>
 <style scoped>
-	.rop-remove-account{
+	.rop-remove-account,
+	.rop-edit-account
+	{
 		width:15px;
 		text-align: center;
 		cursor: pointer;
@@ -337,4 +358,8 @@
 		z-index:9999;
 	}
 
+	.rop-edit-account { 
+		margin-right: 5px;
+		margin-top: 2px;
+	}
 </style>

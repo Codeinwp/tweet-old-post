@@ -94,6 +94,7 @@ class Rop_I18n {
 				'field_required'             => __( 'This field is required', 'tweet-old-post' ),
 				'at'                         => __( 'at', 'tweet-old-post' ),
 				'remove_account'             => __( 'Remove account from the list.', 'tweet-old-post' ),
+				'edit_account'               => __( 'Edit account details.', 'tweet-old-post' ),
 				'no_accounts'                => __( 'You Need to Connect an Account', 'tweet-old-post' ),
 				'no_active_accounts'         => __( 'No active accounts!', 'tweet-old-post' ),
 				'no_active_accounts_desc'    => __( 'Add one from the <b>"Accounts"</b> section.', 'tweet-old-post' ),

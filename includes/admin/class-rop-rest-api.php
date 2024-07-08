@@ -1344,6 +1344,65 @@ class Rop_Rest_Api {
 	}
 
 	/**
+	 * API method called to edit Webhook account.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   9.1.0
+	 * @access  private
+	 *
+	 * @param  array $data Webhook account data.
+	 *
+	 * @return array
+	 */
+	private function edit_account_webhook( $data ) {
+		error_log( 'edit webhook data: ' . print_r( $data, true ) );
+		$services        = array();
+		$webhook_service = new Rop_Webhook_Service();
+		$model           = new Rop_Services_Model();
+
+		if ( ! $webhook_service->add_webhook( $data ) ) {
+			$this->response->set_code( '422' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$service_id = ! empty( $data['service_id'] ) ? $data['service_id'] : '';
+
+		$authenticated_services = $model->get_authenticated_services();
+
+		// We should find the service id in the authenticated services. Otherwise, we reject the request.
+		$account_present = false;
+		foreach ( $authenticated_services as $auth_service_id => $service ) {
+			if ( $service_id === $auth_service_id ) {
+				$account_present = true;
+				break;
+			}
+		}
+
+		if ( ! $account_present ) {
+			$this->response->set_code( '422' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$services[ $service_id ] = $webhook_service->get_service();
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+			$model->add_active_accounts( $service_id );
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		return $this->response->to_array();
+	}
+
+	/**
 	 * API method called to toggle tracking.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
