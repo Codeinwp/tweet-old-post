@@ -590,6 +590,10 @@ class Rop_Rest_Api {
 		$this->response->set_code( '200' )
 					   ->set_data( $settings_model->get_settings() );
 
+		// Save tracking flag.
+		$tracking = filter_var( $data['tracking'], FILTER_VALIDATE_BOOLEAN );
+		update_option( 'tweet_old_post_logger_flag', $tracking ? 'yes' : 'no' );
+
 		$cron_status = filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
 
 		if ( true === $cron_status && defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
@@ -1291,31 +1295,5 @@ class Rop_Rest_Api {
 					   ->set_data( array() );
 
 		return $this->response->to_array();
-	}
-
-	/**
-	 * API method called to toggle tracking.
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
-	 *
-	 * @param array $data The data from request.
-	 * @return array The response.
-	 */
-	private function toggle_tracking( $data ) {
-		if ( ! isset( $data['tracking'] ) ) {
-			$this->response->set_code( '400' )
-						   ->set_message( 'Tracking data not found' )
-						   ->set_data( array() );
-
-			return $this->response->to_array();
-		}
-
-		$tracking = filter_var( $data['tracking'], FILTER_VALIDATE_BOOLEAN );
-		update_option( 'tweet_old_post_logger_flag', $tracking ? 'yes' : 'no' );
-
-		return $this->response->set_code( '200' )
-							  ->set_message( 'OK' )
-							  ->set_data( array( 'tracking' => $tracking ) )
-							  ->to_array();
 	}
 }
