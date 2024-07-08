@@ -28,6 +28,7 @@ class Rop_Admin {
 	 */
 	private $allowed_screens;
 
+    const RN_LINK = 'https://revive.social/plugins/revive-network/';
 	/**
 	 * The ID of this plugin.
 	 *
@@ -552,29 +553,6 @@ class Rop_Admin {
 		<?php
 	}
 
-	/**
-	 * The display method for the addons page.
-	 *
-	 * @since   8.6.0
-	 * @access  public
-	 */
-	public function rop_addons_page() {
-		$this->wrong_pro_version();
-		?>
-	<div id="wrap">
-		<div><p style="font-size: 40px; color: #000;">Revive Old Posts - Addons</p></div>
-
-		<div style="background: #ffffff; padding: 10px; width: 400px; border-radius: 5px; box-shadow: 0px 0px 5px black;">
-			<img src="<?php echo ROP_LITE_URL . 'assets/img/revivenetwork.jpg'; ?>" alt="Revive Network">
-			<p style="font-size: 14px"><?php echo Rop_I18n::get_labels( 'misc.revive_network_desc' ); ?>
-			<br>
-			<br>
-			<a style="align: right"href="https://revive.social/plugins/revive-network/?utm_source=rop&utm_medium=cta&utm_campaign=revive_network_upsell&utm_content=addons_page" target="_blank"><button style="cursor: pointer;"><?php echo Rop_I18n::get_labels( 'misc.revive_network_learn_more_btn' ); ?></button></a>
-			</p>
-		</div>
-	</div>
-		<?php
-	}
 
 	/**
 	 * Notice for wrong pro version usage.
@@ -647,18 +625,24 @@ class Rop_Admin {
 				'content_filters',
 			)
 		);
+		if ( ! defined( 'REVIVE_NETWORK_VERSION' ) ) {
+			$rss_to_social = __( 'RSS to Social', 'wpcf7-redirect' ) . '<span id="rop-rn-menu" class="dashicons dashicons-external" style="font-size:initial;"></span>';
+			add_action( 'admin_footer', function () {
+				?><script type="text/javascript">
+                    jQuery(document).ready(function ($) {
+                        $('.tsdk-upg-menu-item').parent().attr('target', '_blank');
+                    });
+                </script>
+				<?php
+			} );
 
-		add_submenu_page(
-			'TweetOldPost',
-			__( 'Addons', 'tweet-old-post' ),
-			__( 'Addons', 'tweet-old-post' ),
-			'manage_options',
-			'rop_addons_page',
-			array(
-				$this,
-				'rop_addons_page',
-			)
-		);
+			global $submenu;
+			$submenu['TweetOldPost'][2] = array(
+				$rss_to_social,
+				'manage_options',
+				tsdk_utmify( self::RN_LINK, 'admin', 'admin_menu' )
+			);
+		}
 	}
 
 	/**
