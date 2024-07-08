@@ -20,19 +20,6 @@
               target="_blank"
             >
               <b>Revive.Social</b>
-            </a> 
-            <a
-              id="rop_vid_tuts"
-              href="https://www.youtube.com/playlist?list=PLAsG7vAH40Q512C8d_0lBpVZusUQqUxuH"
-              target="_blank"
-            >
-              <span>
-                START HERE 
-                <i
-                  class="fa fa-play-circle"
-                  aria-hidden="true"
-                />
-              </span>
             </a>
           </span>
         </div>
@@ -162,14 +149,8 @@
             <upsell-sidebar />
           </div>
           <a
-            v-if="license >= 1"
-            href="https://revive.social/pro-support/"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.rop_support }}</a>
-          <a
-            v-if="license < 1"
-            href="https://revive.social/support/"
+            v-if="license >= 1 && labels.rop_support_url !== ''"
+            :href="labels.rop_support_url"
             target="_blank"
             class="btn rop-sidebar-action-btns"
           >{{ labels.rop_support }}</a>
