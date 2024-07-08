@@ -1841,4 +1841,31 @@ HTML;
 		do_action( 'themeisle_sdk_dependency_enqueue_script', 'survey' );
 		wp_localize_script( $survey_handler, 'ropSurveyData', $this->get_survey_metadata() );
 	}
+
+	/**
+	 * Add upgrade to pro plugin action link.
+	 *
+	 * @param array  $actions Plugin actions.
+	 * @param string $plugin_file Path to the plugin file relative to the plugins directory.
+	 *
+	 * @return array
+	 */
+	public function rop_upgrade_to_pro_plugin_action( $actions, $plugin_file ) {
+		$global_settings     = new \Rop_Global_Settings();
+		$actions['settings'] = '<a href="' . admin_url( 'admin.php?page=TweetOldPost' ) . '">' . __( 'Settings', 'tweet-old-post' ) . '</a>';
+		if ( $global_settings->license_type() < 1 ) {
+			return array_merge(
+				array(
+					'upgrade_link' => '<a href="' . add_query_arg( [
+							'utm_source'   => 'wpadmin',
+							'utm_medium'   => 'plugins',
+							'utm_campaign' => 'rowaction'
+						], Rop_I18n::UPSELL_LINK ) . '" title="' . __( 'More Features', 'tweet-old-post' ) . '"  target="_blank" rel="noopener noreferrer" style="color: #009E29; font-weight: 700;" onmouseover="this.style.color=\'#008a20\';" onmouseout="this.style.color=\'#009528\';" >' . __( 'Get Revive Social Pro', 'tweet-old-post' ) . '</a>',
+				),
+				$actions
+			);
+		}
+
+		return $actions;
+	}
 }
