@@ -181,6 +181,9 @@ class Rop {
 		 * Use PHP_INT_MAX to make sure the schedule is added. Some plugins add their schedule by clearing the previous values.
 		 */
 		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules', PHP_INT_MAX );
+		// Add upgrade to pro plugin action.
+		$plugin_slug = basename( ROP_LITE_PATH ) . '/' . basename( ROP_LITE_BASE_FILE );
+		$this->loader->add_filter( "plugin_action_links_$plugin_slug", $plugin_admin, 'rop_upgrade_to_pro_plugin_action', 10, 2 );
 	}
 
 	/**

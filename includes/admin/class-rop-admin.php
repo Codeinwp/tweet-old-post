@@ -1849,4 +1849,25 @@ HTML;
 		do_action( 'themeisle_sdk_dependency_enqueue_script', 'survey' );
 		wp_localize_script( $survey_handler, 'ropSurveyData', $this->get_survey_metadata() );
 	}
+
+	/**
+	 * Add upgrade to pro plugin action link.
+	 *
+	 * @param array  $actions Plugin actions.
+	 * @param string $plugin_file Path to the plugin file relative to the plugins directory.
+	 *
+	 * @return array
+	 */
+	public function rop_upgrade_to_pro_plugin_action( $actions, $plugin_file ) {
+		$global_settings = new \Rop_Global_Settings();
+		if ( $global_settings->license_type() < 1 ) {
+			return array_merge(
+				array(
+					'upgrade_link' => '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'rowaction', 'plugins' ) . '" target="_blank" title="' . __( 'More Features', 'tweet-old-post' ) . '" style="color: #006400;font-weight:700;">' . __( 'Upgrade to Pro', 'tweet-old-post' ) . '</a>',
+				),
+				$actions
+			);
+		}
+		return $actions;
+	}
 }
