@@ -20,19 +20,6 @@
               target="_blank"
             >
               <b>Revive.Social</b>
-            </a> 
-            <a
-              id="rop_vid_tuts"
-              href="https://www.youtube.com/playlist?list=PLAsG7vAH40Q512C8d_0lBpVZusUQqUxuH"
-              target="_blank"
-            >
-              <span>
-                START HERE 
-                <i
-                  class="fa fa-play-circle"
-                  aria-hidden="true"
-                />
-              </span>
             </a>
           </span>
         </div>
