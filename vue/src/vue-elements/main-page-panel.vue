@@ -20,19 +20,6 @@
               target="_blank"
             >
               <b>Revive.Social</b>
-            </a> 
-            <a
-              id="rop_vid_tuts"
-              href="https://www.youtube.com/playlist?list=PLAsG7vAH40Q512C8d_0lBpVZusUQqUxuH"
-              target="_blank"
-            >
-              <span>
-                START HERE 
-                <i
-                  class="fa fa-play-circle"
-                  aria-hidden="true"
-                />
-              </span>
             </a>
           </span>
         </div>
@@ -162,14 +149,8 @@
             <upsell-sidebar />
           </div>
           <a
-            v-if="license >= 1"
-            href="https://revive.social/pro-support/"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.rop_support }}</a>
-          <a
-            v-if="license < 1"
-            href="https://revive.social/support/"
+            v-if="license >= 1 && labels.rop_support_url !== ''"
+            :href="labels.rop_support_url"
             target="_blank"
             class="btn rop-sidebar-action-btns"
           >{{ labels.rop_support }}</a>
@@ -185,29 +166,6 @@
             target="_blank"
             class="btn rop-sidebar-action-btns"
           >{{ labels.review_it }}</a>
-          <div class="rop-tracking-box">
-            <h5>{{ labels.global_settings_header }}</h5>
-            <div class="rop-tracking-item">
-              <label
-                class="form-checkbox"
-              >
-                <input
-                  v-model="tracking"
-                  type="checkbox"
-                  name="rop-tracking"
-                  @change="toggle_tracking()"
-                >
-                <i class="form-icon" />
-                {{ labels.tracking }}
-                <a
-                  :href="tracking_info_link"
-                  target="_blank"
-                >
-                  {{ labels.tracking_info }}
-                </a>
-              </label>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -250,8 +208,6 @@
                 is_loading: false,
                 is_loading_logs: false,
                 status_is_error_display: false,
-                tracking: this.$store.state.tracking,
-                tracking_info_link: ropApiSettings.tracking_info_link
             }
         },
         computed: {
@@ -478,23 +434,6 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
                     this.is_loading_logs = false;
                 })
-            },
-
-            /**
-             * Toggle tracking from SDK (via tiTrk).
-             */
-            toggle_tracking() {
-                this.$log.info('Toggling tracking');
-                this.$store.dispatch('fetchAJAXPromise', {
-                    req: 'toggle_tracking',
-                    data: { tracking: Boolean( this.tracking) }
-                }).then(response => {
-                  // Update tracking state.
-                  this.$store.commit('updateState', {stateData: {tracking: Boolean( response?.tracking)}, requestName: 'toggle_tracking'});
-                  this.$log.info('Succesfully toggled tracking.');
-                }, error => {
-                  Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-                })
             }
         }
     }
@@ -518,15 +457,5 @@
 
     #rop_core .badge.badge-logs {
         padding-right: 10px;
-    }
-
-    .rop-tracking-box {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
-      padding: 0.25rem 0.4rem;
-      border: 0.05rem solid #042440;
-      border-radius: 0.1rem;
     }
 </style>

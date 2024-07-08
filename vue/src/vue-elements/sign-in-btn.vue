@@ -274,15 +274,6 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
         </div>
 
         <div
-          v-if="isFacebook || isTwitter || isLinkedIn || isGmb || isVk ||(isTumblr && isAllowedTumblr)"
-          class="modal-footer"
-        >
-          <p
-            class="text-left pull-left mr-2"
-            v-html="labels.rs_app_info"
-          />
-        </div>
-        <div
           v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)"
           class="modal-footer"
         >

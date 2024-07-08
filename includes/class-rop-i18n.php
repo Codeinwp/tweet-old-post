@@ -88,7 +88,6 @@ class Rop_I18n {
 				'gmb_app_signin_btn'         => __( 'Sign in to Google My Business', 'tweet-old-post' ),
 				'vk_app_signin_btn'          => __( 'Sign in to Vkontake', 'tweet-old-post' ),
 				'app_option_signin'          => __( 'Or', 'tweet-old-post' ),
-				'rs_app_info'                => sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-social-network-connection" target="_blank">', '</a>' ),
 				'service_popup_title'        => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'                => __( 'Sign In', 'tweet-old-post' ),
 				'field_required'             => __( 'This field is required', 'tweet-old-post' ),
@@ -203,6 +202,9 @@ class Rop_I18n {
 				'exclude_single_post'         => __( 'Exclude this post', 'tweet-old-post' ),
 				'no_posts_found'              => __( 'No posts found.', 'tweet-old-post' ),
 				'load_more_posts'             => __( 'Load more posts.', 'tweet-old-post' ),
+				'tracking_field'              => __( 'Contributing', 'tweet-old-post' ),
+				'tracking'                    => __( 'Send anonymous data to help us understand how you use the plugin.', 'tweet-old-post' ),
+				'tracking_info'               => __( 'What do we track?', 'tweet-old-post' ),
 			),
 			'post_format' => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),
@@ -344,8 +346,6 @@ class Rop_I18n {
 				'to'                         => __( 'to', 'tweet-old-post' ),
 				'by'                         => __( 'by', 'tweet-old-post' ),
 				'review_it'                  => __( 'Leave a review', 'tweet-old-post' ),
-				'tracking'                   => __( 'Send anonymous data to help us understand how you use the plugin.', 'tweet-old-post' ),
-				'tracking_info'              => __( 'What do we track?', 'tweet-old-post' ), 'global_settings_header' => __( 'Global Settings', 'tweet-old-post' ),
 				'in'                         => __( 'in', 'tweet-old-post' ),
 				'start'                      => __( 'Start', 'tweet-old-post' ),
 				'stop'                       => __( 'Stop', 'tweet-old-post' ),
@@ -365,6 +365,7 @@ You can try to disable any of the security plugins that you use in order to see 
 					'tweet-old-post'
 				),
 				'rop_support'                => __( 'Get Support', 'tweet-old-post' ),
+				'rop_support_url'            => defined( 'ROP_PRO_BASEFILE' ) ? tsdk_support_link( ROP_PRO_BASEFILE ) : '',
 				'rop_facebook_domain_toast'  => __(
 					'You need to verify your website domain with Facebook so your shares can show as article posts on Facebook. [ <a href="https://docs.revive.social/article/1136-facebook-text-posts-vs-article-posts" target="_blank">Read this doc</a> ] for more information',
 					'tweet-old-post'
