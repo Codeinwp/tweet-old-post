@@ -200,6 +200,17 @@ function run_rop() {
 			return $compatibilities;
 		}
 	);
+	add_filter(
+		'tweet_old_post_welcome_metadata',
+		function () {
+			return [
+				'is_enabled' => ! defined( 'ROP_PRO_DIR_PATH' ),
+				'pro_name'   => 'Revive Old Post Pro',
+				'logo'       => ROP_LITE_URL . 'assets/img/logo_rop.png',
+				'cta_link'   => tsdk_utmify( add_query_arg(  [ 'discount' => 'LOYALUSER582' ], Rop_I18n::UPSELL_LINK ), 'rop-welcome', 'notice' )
+			];
+		}
+	);
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {
 		require_once $vendor_file;
