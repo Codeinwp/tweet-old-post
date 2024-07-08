@@ -161,7 +161,6 @@ function run_rop() {
 	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
 	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
 
-	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '9.0.31' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
 	$debug = false;
