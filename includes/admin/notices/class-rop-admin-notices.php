@@ -37,22 +37,20 @@ class Rop_Admin_Notices {
 			$nonce = wp_create_nonce( 'rop_notice_nonce_value' );
 
 			$dismiss_url = admin_url( 'admin-ajax.php?action=rop_notice_dismissed&rop_notice_id=' . $notice_id . '&rop_notice_nonce=' . $nonce );
-
+			$upsell_link = tsdk_utmify(Rop_Admin::RN_LINK,'rn','admin_notice');
 			$markup = <<<UPSELLHTML
-
-<div class="update-nag rop-revive-network-admin-notice">
-<div class="rop-revive-network-notice-logo"></div> 
-<p class="rop-revive-network-notice-title">$upsell_title </p> 
-<p class="rop-revive-network-notice-body">$upsell_body </p>
-<br>
-<ul class="rop-revive-network-notice-body rop-revive-network-red">
-<li><span class="dashicons dashicons-share-alt2"></span><a target="_blank" href="https://revive.social/plugins/revive-network/?utm_source=rop&utm_medium=cta&utm_campaign=revive_network_upsell&utm_content=admin_notice" style="color: #2b4fa3">$learn_more</a></li>
-<li><span class="dashicons dashicons-dismiss"></span><a href="$dismiss_url" style="color: #2b4fa3">$dismiss</a></li>
-</ul>
-
-</div>
-
-
+				
+				<div class="update-nag rop-revive-network-admin-notice">
+				<div class="rop-revive-network-notice-logo"></div> 
+				<p class="rop-revive-network-notice-title">$upsell_title </p> 
+				<p class="rop-revive-network-notice-body">$upsell_body </p>
+				<br>
+				<ul class="rop-revive-network-notice-body rop-revive-network-red">
+				<li><span class="dashicons dashicons-share-alt2"></span><a target="_blank" href="$upsell_link" style="color: #2b4fa3">$learn_more</a></li>
+				<li><span class="dashicons dashicons-dismiss"></span><a href="$dismiss_url" style="color: #2b4fa3">$dismiss</a></li>
+				</ul>
+				
+				</div>
 UPSELLHTML;
 			echo $markup;
 		}

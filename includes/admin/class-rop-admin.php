@@ -665,10 +665,10 @@ class Rop_Admin {
 
 		if ( $settings->get_instant_sharing() && count( $active_accounts ) >= 2 && ! defined( 'ROP_PRO_VERSION' ) ) {
 			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
-				__(
-					'Share to more accounts by upgrading to the extended version for ',
-					'tweet-old-post'
-				) . '<a href="' . Rop_I18n::UPSELL_LINK . '" target="_blank">Revive Old Posts </a>
+			     __(
+				     'Share to more accounts by upgrading to the extended version for ',
+				     'tweet-old-post'
+			     ) . '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'editor', 'publish_now' ) . '" target="_blank">Revive Old Posts </a>
 						</div>';
 		}
 	}

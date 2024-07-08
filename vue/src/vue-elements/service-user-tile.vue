@@ -64,7 +64,7 @@
         />
       </div>
       <a
-        href="https://revive.social/plugins/revive-old-post/?utm_source=rop&utm_medium=dashboard&utm_campaign=upsell"
+        href="https://revive.social/plugins/revive-old-post/?utm_source=wpadmin&utm_medium=accounts&utm_campaign=more-accounts"
         target="_blank"
       ><p v-if="informFbProProducts">{{ all_labels.generic.only_pro_suffix }}</p></a>
     </div>

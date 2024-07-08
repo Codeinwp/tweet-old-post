@@ -175,7 +175,7 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 **Awesome features in Pro:**
 
-- RSS feed sharing. Share feed items from ANY website to your connected social media accounts. With the [Revive Network addon](https://revive.social/plugins/revive-network/) it's all possible (available free with Revive Old Posts Pro). 
+- RSS feed sharing. Share feed items from ANY website to your connected social media accounts. With the [Revive Network addon](https://revive.social/plugins/revive-network/https://revive.social/plugins/revive-old-post/?utm_source=wpadmin&utm_medium=readme&utm_campaign=ROP-RN) it's all possible (available free with Revive Old Posts Pro).
 
 - [Support for WordPress Custom Post Types](https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts) (WooCommerce Products, BigCommerce Products, Recipes, etc.)
 
@@ -273,7 +273,7 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 **Is the Social Media Scheduling feature free?**
 
-- Yes, in the free plugin you can set how many hours you’d like between each share(e.g 6 hours), ROP will automatically post to your social networks when the countdown is up. To set the days and time of the week this would require the [Pro plugin](https://revive.social/plugins/revive-old-post/).
+- Yes, in the free plugin you can set how many hours you’d like between each share(e.g 6 hours), ROP will automatically post to your social networks when the countdown is up. To set the days and time of the week this would require the [Pro plugin](https://revive.social/plugins/revive-old-post/https://revive.social/plugins/revive-old-post/?utm_source=wpadmin&utm_medium=readme&utm_campaign=rop-pro).
 
 **Is the Auto Publish (aka Auto Post) feature free?**
 

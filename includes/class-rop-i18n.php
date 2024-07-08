@@ -127,7 +127,7 @@ class Rop_I18n {
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),
 				'available_in_pro' => __( ' This feature is only available in the Pro version.', 'tweet-old-post' ),
-				'post_types_exclude_limit' => sprintf( __( 'Upgrade to Pro version to select more than 30 posts. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
+				'post_types_exclude_limit' => sprintf( __( 'Upgrade to Pro version to select more than 30 posts. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'post_types', 'exclude_post' ) . '" target="_blank">', '</a>' ),
 				'post_types_exclude_limit_tooltip' => __( 'Upgrade to Pro version to select more than 30 posts.', 'tweet-old-post' ),
 				'menu_item'                   => __( 'General Settings', 'tweet-old-post' ),
 				'min_interval_title'          => __( 'Minimum Interval Between Shares', 'tweet-old-post' ),
@@ -144,7 +144,7 @@ class Rop_I18n {
 					'tweet-old-post'
 				),
 				'post_types_title'                      => __( 'Post Types', 'tweet-old-post' ),
-				'post_types_taxonomy_limit'             => sprintf( __( 'Upgrade to Pro version to select more than 4 taxonomies. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
+				'post_types_taxonomy_limit'             => sprintf( __( 'Upgrade to Pro version to select more than 4 taxonomies. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'taxonomy', 'settings' ) . '" target="_blank">', '</a>' ),
 				'post_types_attachament_info'           => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
 				'post_types_desc'                       => __( 'Which post types should Revive Old Posts share? <a href="https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'update_post_published_date_title'      => __( 'Update Post Published Date After Share', 'tweet-old-post' ),
@@ -405,7 +405,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'add_account_to_use_instant_share' => __( 'Connect or switch on an account in the Revive Old Posts dashboard to use the Instant Share (Post on Publish) feature.', 'tweet-old-post' ),
 				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Old Posts</small>  ', 'tweet-old-post' ),
 				'clear_on_share'  => __( 'These checkboxes will be cleared once the post is shared.', 'tweet-old-post' ),
-				'custom_instant_share_messages_upsell'  => sprintf( __( '%1$sCustom instant share messages are available in the %2$sPro version%3$s of the plugin.%4$s', 'tweet-old-post' ), '<small>', '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>', '</small>' ),
+				'custom_instant_share_messages_upsell'  => sprintf( __( '%1$sCustom instant share messages are available in the %2$sPro version%3$s of the plugin.%4$s', 'tweet-old-post' ), '<small>', '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'custom_instant', 'settings' ) . '" target="_blank">', '</a>', '</small>' ),
 			),
 
 			'sharing' => array(
