@@ -201,6 +201,7 @@ class Rop_I18n {
 				'exclude_single_post'         => __( 'Exclude this post', 'tweet-old-post' ),
 				'no_posts_found'              => __( 'No posts found.', 'tweet-old-post' ),
 				'load_more_posts'             => __( 'Load more posts.', 'tweet-old-post' ),
+				'min_interval_upsell'         => __( 'Choosing a lower interval is available in the Pro version.', 'tweet-old-post' ),
 			),
 			'post_format' => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),

@@ -136,8 +136,8 @@ class Rop_Global_Settings {
 	 * @var     array $settings_defaults The class defaults for settings.
 	 */
 	private $settings_defaults = array(
-		'default_interval'      => 10,
-		'min_interval'          => 5,
+		'default_interval'      => 12,
+		'min_interval'          => 12,
 		'step_interval'         => 0.5,
 		'minimum_post_age'      => 30,
 		'maximum_post_age'      => 365,
@@ -386,7 +386,11 @@ class Rop_Global_Settings {
 				self::$instance->services_defaults
 			);
 
-			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.05 : 0.5 );
+			$min_interval = 0.5;
+			if ( empty( get_option( 'rop_data', '' ) ) ) {
+				$min_interval = self::$instance->license_type() > 0 ? 0.5 : 12;
+			}
+			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.05 : $min_interval );
 			self::$instance->settings_defaults['step_interval'] = apply_filters( 'rop_min_interval_bw_shares_step', 0.1 );
 
 			self::$instance->settings = apply_filters(
