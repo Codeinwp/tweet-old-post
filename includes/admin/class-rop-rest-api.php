@@ -590,6 +590,10 @@ class Rop_Rest_Api {
 		$this->response->set_code( '200' )
 					   ->set_data( $settings_model->get_settings() );
 
+		// Save tracking flag.
+		$tracking = filter_var( $data['tracking'], FILTER_VALIDATE_BOOLEAN );
+		update_option( 'tweet_old_post_logger_flag', $tracking ? 'yes' : 'no' );
+
 		$cron_status = filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
 
 		if ( true === $cron_status && defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
