@@ -563,7 +563,9 @@ class Rop_Global_Settings {
 				$available_services[ $key ]  = $service;
 			}
 		}
-
+		$available_services['instagram'] = $available_services['facebook'];
+		$available_services['instagram']['name'] = 'Instagram';
+		$available_services['instagram']['active'] = false;
 		return $available_services;
 	}
 

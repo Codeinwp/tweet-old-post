@@ -39,6 +39,7 @@
           class="dashicons dashicons-lock"
         />
       </button>
+
     </div>
 
     <div
@@ -391,7 +392,7 @@ export default {
       return 'service-' + this.modal.serviceName.toLowerCase()
     },
     isFacebook() {
-      return this.modal.serviceName === 'Facebook';
+      return this.modal.serviceName === 'Facebook' ||  this.modal.serviceName === 'Instagram';
     },
     // will return true if the current service actions are for Twitter.
     isTwitter() {
@@ -736,7 +737,7 @@ export default {
       
       if ('Twitter' === this.modal.serviceName) {
         this.addAccountTW( accountData );
-      } else if ('Facebook' === this.modal.serviceName) {
+      } else if ('Facebook' === this.modal.serviceName || 'Instagram' === this.modal.serviceName) {
         this.addAccountFB( accountData );
       } else if ('LinkedIn' === this.modal.serviceName) {
         this.addAccountLI( accountData );
@@ -851,9 +852,14 @@ export default {
 .btn-gmb {
   text-transform: uppercase;
 }
+.btn-instagram{
+  background-color:#c13584 !important;
+  color:#fff!important;
+}
 .rop-disabled{
   opacity: 0.6
 }
+#rop-sign-in-area .btn {border:none;}
 #rop_core .rop-upsell-modal .modal-container{
   max-width: 500px;
   padding: 25px;
