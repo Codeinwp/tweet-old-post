@@ -4197,6 +4197,10 @@ a.active {
     background-color: #bd081c;
 }
 
+.icon_box.webhook {
+    background-color: #458e82;;
+}
+
 #rop_core .avatar .avatar-icon {
     border-radius: 50%;
     background: #333;
