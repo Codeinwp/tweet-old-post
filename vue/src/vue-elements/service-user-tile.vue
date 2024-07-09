@@ -32,6 +32,21 @@
       </div>
     </div>
     <div class="tile-action">
+      <div
+        v-if="'webhook' === account_data?.service"
+        class="tile-icon rop-edit-account tooltip tooltip-right"
+        :data-tooltip="account_labels.edit_account"
+        @click="openEditPopup()" 
+      >
+        <i
+          v-if=" ! is_loading"
+          class="fa fa-edit"
+        />
+        <i
+          v-else
+          class="fa fa-spinner fa-spin"
+        />
+      </div>
       <div class="form-group">
         <label class="form-switch">
           <div class="ajax-loader "><i
@@ -47,20 +62,7 @@
           <i class="form-icon" />
         </label>
       </div>
-      <div
-        class="tile-icon rop-edit-account tooltip tooltip-right"
-        :data-tooltip="account_labels.edit_account"
-        @click="openEditPopup()" 
-      >
-        <i
-          v-if=" ! is_loading"
-          class="fa fa-edit"
-        />
-        <i
-          v-else
-          class="fa fa-spinner fa-spin"
-        />
-      </div>
+     
       <div
         v-if=" ! account_data.active"
         class="tile-icon rop-remove-account tooltip tooltip-right"
@@ -359,7 +361,7 @@
 	}
 
 	.rop-edit-account { 
-		margin-right: 5px;
+		margin-right: 10px;
 		margin-top: 2px;
 	}
 </style>
