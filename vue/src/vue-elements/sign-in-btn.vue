@@ -267,9 +267,27 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
               </div>
             </div>
             <WebhookHeaders
-              v-if="isWebhook"
+              v-if="isWebhook && showHeaders"
               :headers.sync="webhooksHeaders"
             />
+            <div
+              v-if="isWebhook"
+            >
+              <button
+                v-if="!showHeaders"
+                class="btn btn-primary"
+                @click="showHeaders = true"
+              >
+                {{ labels.edit_headers }}
+              </button>
+              <button
+                v-if="showHeaders"
+                class="btn btn-secondary"
+                @click="showHeaders = false"
+              >
+                {{ labels.hide }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -347,6 +365,7 @@ export default {
       currentWebhookHeader: '',
       webhooksHeaders: [],
       showBtn: false,
+      showHeaders: false,
     }
   },
   computed: {
@@ -524,6 +543,8 @@ export default {
         this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name
         this.modal.description = this.$store.state.availableServices[this.selected_network].description
         this.modal.data = this.$store.state.availableServices[this.selected_network].credentials
+
+        this.showHeaders = false;
         this.openModal()
       } else {
         this.activePopup = this.selected_network

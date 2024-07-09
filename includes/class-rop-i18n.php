@@ -124,6 +124,8 @@ class Rop_I18n {
 				'preloader_message_default'  => __( 'Loading...', 'tweet-old-post' ),
 				'only_in_pro'                => __( 'Available in Pro', 'tweet-old-post' ),
 				'limit_reached'              => __( 'Limit reached', 'tweet-old-post' ),
+				'edit_headers'               => __( 'Edit Headers', 'tweet-old-post' ),
+				'hide' 				         => __( 'Hide', 'tweet-old-post' ),
 			),
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),
@@ -432,7 +434,6 @@ You can try to disable any of the security plugins that you use in order to see 
 				'license_not_active' => __( 'An active Pro license is needed to share to %1$s', 'tweet-old-post' ),
 				'could_not_send_webhook' => __( 'Could not send webhook.', 'tweet-old-post' ),
 				'webhook_error' => __( 'An error occurred for Webhook post sharing.', 'tweet-old-post' ),
-
 			),
 			'generic' => array(
 				'only_pro_suffix' => ' (' . __( 'Available in Pro', 'tweet-old-post' ) . ')',
