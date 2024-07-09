@@ -386,9 +386,9 @@ class Rop_Global_Settings {
 				self::$instance->services_defaults
 			);
 
-			$install_time = (int) get_option( 'rop_first_install_date', 0 );
 			$is_new_user  = (int) get_option( 'rop_is_new_user', 0 );
-			if ( ! $is_new_user && $install_time >= strtotime( '-1 hour' ) ) {
+			$install_time = ! $is_new_user ? (int) get_option( 'rop_first_install_date', 0 ) : 0;
+			if ( ! $is_new_user && ( $install_time && $install_time >= strtotime( '-1 hour' ) ) ) {
 				$is_new_user = update_option( 'rop_is_new_user', 1 );
 			}
 
