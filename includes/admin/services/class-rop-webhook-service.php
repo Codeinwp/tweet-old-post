@@ -167,6 +167,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 
 		$id           = empty( $data['id'] ) ? hash( 'sha1', $data['url'] . time() ) : $data['id'];
 		$display_name = ! empty( $data['display_name'] ) ? $data['display_name'] : 'Webhook';
+		$account_id   = hash( 'md5', $data['url'] );
 
 		$this->service = array(
 			'id'          => $id,
@@ -177,8 +178,8 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 				'display_name' => $display_name,
 			),
 			'available_accounts' => array(
-				array(
-					'id'      => hash( 'md5', $data['url'] ),
+				$this->service_name . '_' . $id . '_' . $account_id => array(
+					'id'      => $account_id,
 					'user'    => $display_name,
 					'service' => $this->service_name,
 					'account' => $this->normalize_string( $data['url'] ),

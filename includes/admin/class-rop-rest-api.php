@@ -1384,12 +1384,10 @@ class Rop_Rest_Api {
 
 		$authenticated_services[ $service_id ] = array_merge( $authenticated_services[ $service_id ], $webhook_service->get_service() );
 
-		if ( ! empty( $authenticated_services ) ) {
-			$model->update_authenticated_services( $authenticated_services );
+		$model->update_authenticated_services( $authenticated_services );
 
-			if ( ! empty( $data['active'] ) && ! empty( $data['full_id'] ) ) {
-				$model->add_active_accounts( array( $data['full_id'] ) );
-			}
+		if ( ! empty( $data['active'] ) && ! empty( $data['full_id'] ) ) {
+			$model->add_active_accounts( array( $data['full_id'] ) );
 		}
 
 		$this->response->set_code( '200' )
