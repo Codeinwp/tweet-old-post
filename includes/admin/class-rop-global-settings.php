@@ -96,11 +96,11 @@ class Rop_Global_Settings {
 			'credentials'      => array(
 				'consumer_key'    => array(
 					'name'        => 'API Key',
-					'description' => 'Your Twitter application api key',
+					'description' => 'Your X (Twitter) application api key',
 				),
 				'consumer_secret' => array(
 					'name'        => 'API secret key',
-					'description' => 'Your Twitter application api secret',
+					'description' => 'Your X (Twitter) application api secret',
 				),
 			),
 			'two_step_sign_in' => true,
@@ -121,6 +121,7 @@ class Rop_Global_Settings {
 		'gmb'    => array(
 			'active' => false,
 			'name'   => 'Gmb',
+			'fullname' => 'Google My Business',
 		),
 		'vk'    => array(
 			'active' => false,
@@ -562,7 +563,9 @@ class Rop_Global_Settings {
 				$available_services[ $key ]  = $service;
 			}
 		}
-
+		$available_services['instagram'] = $available_services['facebook'];
+		$available_services['instagram']['name'] = 'Instagram';
+		$available_services['instagram']['active'] = false;
 		return $available_services;
 	}
 

@@ -11,17 +11,9 @@
             class="plugin-logo avatar avatar-lg"
           >
           <h1 class="plugin-title d-inline-block">
-            Revive Old Posts
+            Revive Social
           </h1>
-          <span class="powered d-inline-block">
-            {{ labels.by }} 
-            <a
-              href="https://revive.social"
-              target="_blank"
-            >
-              <b>Revive.Social</b>
-            </a>
-          </span>
+
         </div>
       </div>
       <toast />
