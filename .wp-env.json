@@ -1,10 +1,10 @@
 {
-	"core": null,
+	"core": "WordPress/WordPress",
 	"plugins": [ "." ],
 	"env": {
 		"tests": {
 			"config": {
-				"TI_E2E_TESTING": true
+				"TI_TESTING": true
 			}
 		}
 	}
