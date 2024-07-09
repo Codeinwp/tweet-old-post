@@ -125,7 +125,7 @@ class Rop_I18n {
 				'only_in_pro'                => __( 'Available in Pro', 'tweet-old-post' ),
 				'limit_reached'              => __( 'Limit reached', 'tweet-old-post' ),
 				'edit_headers'               => __( 'Edit Headers', 'tweet-old-post' ),
-				'hide' 				         => __( 'Hide', 'tweet-old-post' ),
+				'hide'                       => __( 'Hide', 'tweet-old-post' ),
 			),
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),

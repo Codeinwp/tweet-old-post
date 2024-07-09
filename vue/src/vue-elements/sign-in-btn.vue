@@ -564,9 +564,8 @@ export default {
       window.open(url, '_self')
     },
     openEditPopup() {
-      const accountToEdit = this.$store.state.editPopup?.accountId?.split( '_' )?.slice( 0, 2 ).join('_');
-      const serviceName = this.$store.state?.authenticatedServices?.[accountToEdit]?.service;
-
+      const [ serviceName, id, _ ] = this.$store.state.editPopup?.accountId.split( '_' );
+      const accountToEdit = `${serviceName}_${id}`;
       if ( 'webhook' === serviceName ) {
 
         // Prepare fields.
@@ -641,8 +640,6 @@ export default {
       if( this.isWebhook ) {
         credentials['headers'] = this.webhooksHeaders;
         if( this.isOpenToEdit ) {
-          credentials['service_id'] = this.$store.state.editPopup?.accountId;
-          credentials['active'] = Boolean( this.$store.state?.activeAccounts?.[this.$store.state.editPopup?.accountId] );
           this.editAccountWebhook( credentials );
         } else {
           this.addAccountWebhook( credentials );
@@ -779,6 +776,12 @@ export default {
       });
     },
     editAccountWebhook( data ) {
+      const [ serviceName, id, _ ] = this.$store.state.editPopup?.accountId.split( '_' );
+      data['id'] = id;
+      data['service_id'] = `${serviceName}_${id}`;
+      data['full_id'] = this.$store.state.editPopup?.accountId;
+      data['active'] = Boolean( this.$store.state?.activeAccounts?.[this.$store.state.editPopup?.accountId] );
+
       this.$store.dispatch('fetchAJAXPromise', {
         req: 'edit_account_webhook',
         updateState: false,

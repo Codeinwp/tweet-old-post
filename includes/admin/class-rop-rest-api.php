@@ -1372,31 +1372,24 @@ class Rop_Rest_Api {
 			return $this->response->to_array();
 		}
 
-		$service_id = ! empty( $data['service_id'] ) ? $data['service_id'] : '';
-
+		$service_id             = ! empty( $data['service_id'] ) ? $data['service_id'] : '';
 		$authenticated_services = $model->get_authenticated_services();
 
-		// We should find the service id in the authenticated services. Otherwise, we reject the request.
-		$account_present = false;
-		foreach ( $authenticated_services as $auth_service_id => $service ) {
-			if ( $service_id === $auth_service_id ) {
-				$account_present = true;
-				break;
-			}
-		}
-
-		if ( ! $account_present ) {
+		if ( ! isset( $authenticated_services[ $service_id ] ) ) {
 			$this->response->set_code( '422' )
 						   ->set_data( array() );
 
 			return $this->response->to_array();
 		}
 
-		$services[ $service_id ] = $webhook_service->get_service();
+		$authenticated_services[ $service_id ] = array_merge( $authenticated_services[ $service_id ], $webhook_service->get_service() );
 
-		if ( ! empty( $services ) ) {
-			$model->add_authenticated_service( $services );
-			$model->add_active_accounts( $service_id );
+		if ( ! empty( $authenticated_services ) ) {
+			$model->update_authenticated_services( $authenticated_services );
+
+			if ( ! empty( $data['active'] ) && ! empty( $data['full_id'] ) ) {
+				$model->add_active_accounts( array( $data['full_id'] ) );
+			}
 		}
 
 		$this->response->set_code( '200' )

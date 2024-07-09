@@ -165,7 +165,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$id           = empty( $data['id'] ) ? hash( 'sha1', $data['url'] . time() ) : empty( $data['id'] );
+		$id           = empty( $data['id'] ) ? hash( 'sha1', $data['url'] . time() ) : $data['id'];
 		$display_name = ! empty( $data['display_name'] ) ? $data['display_name'] : 'Webhook';
 
 		$this->service = array(
