@@ -246,15 +246,6 @@
         </div>
 
         <div
-          v-if="isFacebook || isTwitter || isLinkedIn || isGmb || isVk ||(isTumblr && isAllowedTumblr)"
-          class="modal-footer"
-        >
-          <p
-            class="text-left pull-left mr-2"
-            v-html="labels.rs_app_info"
-          />
-        </div>
-        <div
           v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)"
           class="modal-footer"
         >

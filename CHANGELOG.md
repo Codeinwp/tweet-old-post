@@ -1,3 +1,67 @@
+##### [Version 9.0.31](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.30...v9.0.31) (2024-06-04)
+
+- Fixed sharing on LinkedIn: updated LinkedIn API Version
+- Updated Facebook API Version
+
+##### [Version 9.0.30](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.29...v9.0.30) (2024-05-22)
+
+- Updated internal dependencies
+
+##### [Version 9.0.29](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.28...v9.0.29) (2024-05-20)
+
+- Updated internal dependencies
+
+##### [Version 9.0.28](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.27...v9.0.28) (2024-05-20)
+
+- Updated internal dependencies
+
+##### [Version 9.0.27](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.26...v9.0.27) (2024-04-23)
+
+### Bug Fixes
+- Fixed issue with titles not always showing correct escaped characters.
+- Fixed instant sharing not working correctly with scheduled posts, only published posts are now eligible.
+
+### Improvements
+- Improved compatibility with newer versions of PHP
+- Updated internal dependencies
+
+##### [Version 9.0.26](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.25...v9.0.26) (2024-02-29)
+
+### Fixes
+- Updated dependencies
+
+##### [Version 9.0.25](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.24...v9.0.25) (2024-02-20)
+
+### Fixes
+
+- Page will refresh when a social media account is added.
+- Instant sharing checkbox will now be selected when "Instant sharing by default" is active
+
+##### [Version 9.0.24](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.23...v9.0.24) (2024-02-12)
+
+### Fixes
+- Social media accounts are not selected with Instant sharing activated
+
+##### [Version 9.0.23](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.22...v9.0.23) (2024-02-01)
+
+### Improvements
+- Quota limit handling when sharing in X Network (re-quires re-login with your X account)
+- Button to export Logs as a text file
+- New logs display design
+- Sharing tweets via the RoP server
+
+
+### Bux Fixes:
+- `is.gd` URL shortener error handling
+- Fixed instant sharing issue with scheduled posts
+
+##### [Version 9.0.22](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.21...v9.0.22) (2023-12-22)
+
+### Fixes
+- Changed the default usage of X (ex Twitter) to own API keys
+- Updated the JS pipeline
+- Fixed compatibility issue with the LearnPress plugin
+
 ##### [Version 9.0.21](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.20...v9.0.21) (2023-09-27)
 
  - Implemented post-sharing limit API to prevent sharing errors
