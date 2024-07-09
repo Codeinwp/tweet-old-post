@@ -387,13 +387,14 @@ class Rop_Global_Settings {
 			);
 
 			$install_time = (int) get_option( 'rop_first_install_date', 0 );
-			if ( $install_time >= strtotime( '-1 hour' ) ) {
-				update_option( 'rop_is_new_user', 1 );
+			$is_new_user  = (int) get_option( 'rop_is_new_user', 0 );
+			if ( ! $is_new_user && $install_time >= strtotime( '-1 hour' ) ) {
+				$is_new_user = update_option( 'rop_is_new_user', 1 );
 			}
 
 			$min_interval = 0.5;
 			// Apply new limit for new free users.
-			if ( ! empty( get_option( 'rop_is_new_user', '' ) ) && 1 < self::$instance->license_type() ) {
+			if ( $is_new_user && 1 < self::$instance->license_type() ) {
 				$min_interval = 12;
 			}
 			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.05 : $min_interval );
