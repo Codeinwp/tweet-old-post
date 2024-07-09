@@ -389,8 +389,16 @@ class Rop_Admin {
 
 		$rop_api_settings['tracking']           = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
 		$rop_api_settings['tracking_info_link'] = sanitize_url( 'https://docs.revive.social/article/2008-revive-old-posts-usage-tracking' );
-		$last_post_shared                       = get_option( 'rop_last_post_shared', '' );
-		$rop_api_settings['is_new_user']        = empty( $last_post_shared );
+
+		$is_new_user  = (int) get_option( 'rop_is_new_user', 0 );
+		$install_time = ! $is_new_user ? (int) get_option( 'rop_first_install_date', 0 ) : 0;
+		$install_time = strtotime( '-1 hour' );
+
+		if ( ! $is_new_user && ( $install_time && $install_time >= strtotime( '-1 hour' ) ) ) {
+			$is_new_user = update_option( 'rop_is_new_user', 1 );
+		}
+
+		$rop_api_settings['is_new_user'] = $is_new_user;
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $rop_api_settings );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', array( ROP_LITE_URL . 'assets/' ) );
