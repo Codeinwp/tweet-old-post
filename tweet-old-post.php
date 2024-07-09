@@ -13,9 +13,9 @@
  * @package           ROP
  *
  * @wordpress-plugin
- * Plugin Name: Revive Old Posts
+ * Plugin Name: Revive Social
  * Plugin URI: https://revive.social/
- * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
+ * Description: WordPress plugin that automatically schedules and posts your content to multiple social networks (including Facebook, X, LinkedIn, and Instagram), helping you promote and drive more traffic to your website. For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
  * Version:           9.0.31
  * Author:            revive.social
  * Author URI:        https://revive.social/
@@ -64,7 +64,7 @@ function rop_buffer_present_notice() {
 	?>
 
 	<div class="notice notice-error is-dismissible">
-		<?php echo sprintf( __( '%1$s %2$sRevive Old Posts:%3$s You have Buffer account(s) connected to Revive Old Posts. You need to remove these accounts to avoid issues with the plugin. Plugin has been deactivated. %4$sClick here to read the article with the fix.%5$s %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1318-fix-php-fatal-error-uncaught-exception-invalid-service-name-given" target="_blank">', '</a>', '</p>' ); ?>
+		<?php echo sprintf( __( '%1$s %2$sRevive Social:%3$s You have Buffer account(s) connected to Revive Social. You need to remove these accounts to avoid issues with the plugin. Plugin has been deactivated. %4$sClick here to read the article with the fix.%5$s %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1318-fix-php-fatal-error-uncaught-exception-invalid-service-name-given" target="_blank">', '</a>', '</p>' ); ?>
 	</div>
 	<?php
 }
@@ -110,7 +110,7 @@ function rop_php_notice() {
 	?>
 
 	<div class="notice notice-error is-dismissible">
-		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 7.4! Revive Old Posts requires at least %2$sPHP 7.4%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 7.4! Revive Social requires at least %2$sPHP 7.4%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
 	</div>
 	<?php
 }
