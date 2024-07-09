@@ -77,20 +77,47 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 
+		$log_account_used = '[' . $this->credentials['user'] . '] ';
 		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
-			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
+			$this->logger->alert_error( $log_account_used . Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
 			return false;
 		}
 
 		$url = isset( $this->credentials['url'] ) ? $this->credentials['url'] : '';
 
 		if ( empty( $url ) ) {
-			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.webhook_url_not_set' ) );
+			$this->logger->alert_error( $log_account_used . Rop_I18n::get_labels( 'sharing.webhook_url_not_set' ) );
 			return false;
 		}
 
+		$headers = array();
+
+		if ( ! empty( $this->credentials['headers'] ) && is_array( $this->credentials['headers'] ) ) {
+			$headers = array_map(
+				function( $header ) {
+					if ( ! is_string( $header ) || false === strpos( $header, ':' ) ) {
+						  return false;
+					}
+
+					list( $key, $value ) = explode( ':', $header );
+
+					$key   = sanitize_text_field( $key );
+					$value = sanitize_text_field( $value );
+					return array( $key => $value );
+				},
+				$this->credentials['headers']
+			);
+
+			$headers = array_filter(
+				$headers,
+				function( $header ) {
+					return $header !== false && is_array( $header );
+				}
+			);
+		}
+
 		$args = array(
-			'headers' => array(),
+			'headers' => apply_filters( 'rop_webhook_headers', $headers ),
 		);
 
 		$payload = array(
@@ -111,12 +138,12 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 		if ( class_exists( 'ROP_Pro_Webhook_Helper' ) ) {
 			$response = ROP_Pro_Webhook_Helper::send_webhook_payload( $this->credentials['url'], $payload, $args );
 		} else {
-			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.webhook_extension_not_found' ) );
+			$this->logger->alert_error( $log_account_used . Rop_I18n::get_labels( 'sharing.webhook_extension_not_found' ) );
 			return false;
 		}
 
 		if ( is_wp_error( $response ) ) {
-			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.webhook_error' ) . ': ' . $response->get_error_message() );
+			$this->logger->alert_error( $log_account_used . Rop_I18n::get_labels( 'errors.webhook_error' ) . $response->get_error_message() );
 			return false;
 		}
 
@@ -138,7 +165,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$id           = empty( $data['id'] ) ? base64_encode( $data['url'] ) : empty( $data['id'] );
+		$id           = empty( $data['id'] ) ? hash( 'sha1', $data['url'] . time() ) : empty( $data['id'] );
 		$display_name = ! empty( $data['display_name'] ) ? $data['display_name'] : 'Webhook';
 
 		$this->service = array(
@@ -151,7 +178,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 			),
 			'available_accounts' => array(
 				array(
-					'id'      => $id,
+					'id'      => hash( 'md5', $data['url'] ),
 					'user'    => $display_name,
 					'service' => $this->service_name,
 					'account' => $this->normalize_string( $data['url'] ),

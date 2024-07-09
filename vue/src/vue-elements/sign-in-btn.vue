@@ -540,7 +540,7 @@ export default {
       window.open(url, '_self')
     },
     openEditPopup() {
-      const accountToEdit = this.$store.state.editPopup?.accountId;
+      const accountToEdit = this.$store.state.editPopup?.accountId?.split( '_' )?.slice( 0, 2 ).join('_');
       const serviceName = this.$store.state?.authenticatedServices?.[accountToEdit]?.service;
 
       if ( 'webhook' === serviceName ) {
@@ -742,26 +742,26 @@ export default {
       });
     },
     addAccountWebhook(data) {
-      console.log( data );
       this.$store.dispatch('fetchAJAXPromise', {
         req: 'add_account_webhook',
         updateState: false,
         data: data
       }).then(() => {
         window.removeEventListener("message", this.getChildWindowMessage );
+        window.location.reload();
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
       });
     },
     editAccountWebhook( data ) {
-      console.log( data );
       this.$store.dispatch('fetchAJAXPromise', {
         req: 'edit_account_webhook',
         updateState: false,
         data: data
       }).then(() => {
         window.removeEventListener("message", this.getChildWindowMessage );
+        window.location.reload();
       }, error => {
         this.is_loading = false;
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)

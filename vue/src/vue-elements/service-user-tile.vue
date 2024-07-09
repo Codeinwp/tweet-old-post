@@ -334,7 +334,7 @@
 			},
 			openEditPopup() {
 				this.$store.commit( 'setEditPopup', {
-					accountId: `${this.account_data?.service}_${this.account_data?.id}`,
+					accountId: this.account_id,
 					canShow: true,
 				})
 			}

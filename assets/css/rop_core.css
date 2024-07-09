@@ -2875,12 +2875,15 @@ a.active {
     cursor: default;
 }
 
-#rop_core .modal:target .modal-container,
-#rop_core .modal.active .modal-container {
+#rop_core :is( .modal:target, .modal.active ) .modal-container {
     z-index: 99999;
     max-width: 640px;
     -webkit-animation: slide-down 0.2s ease 1;
     animation: slide-down 0.2s ease 1;
+}
+
+#rop_core :is( .modal:target, .modal.active ) .modal-container:has(.webhook-headers) {
+    max-width: 960px;
 }
 
 #rop_core .modal.modal-sm .modal-container {
