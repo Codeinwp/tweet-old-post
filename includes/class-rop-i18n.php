@@ -124,7 +124,9 @@ class Rop_I18n {
 				'only_in_pro'                => __( 'Available in Pro', 'tweet-old-post' ),
 				'limit_reached'              => __( 'Limit reached', 'tweet-old-post' ),
 				'upsell_upgrade_now'         => __( 'Upgrade to PRO', 'tweet-old-post' ),
-				'upsell_service_title'       => __( 'Sharing to %1$s is a PRO feature', 'tweet-old-post' ),
+				'upsell_extra_network'       => __( 'Sharing to %1$s', 'tweet-old-post' ),
+				'upsell_extra_account'       => __( 'Sharing to Additional %1$s Accounts', 'tweet-old-post' ),
+				'upsell_service_title'       => __( '%1$s is a PRO feature', 'tweet-old-post' ),
 				'upsell_service_body'        => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the Pro plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
 			),
 			'settings'    => array(

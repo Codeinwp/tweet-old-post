@@ -527,8 +527,13 @@ export default {
       this.selected_network = network;
       if (this.checkDisabled(this.services[network], network)) {
         let networkName = this.$store.state.availableServices[network].fullname || this.$store.state.availableServices[network].name;
-        this.upsellModal.title = wp.i18n.sprintf( this.labels.upsell_service_title, networkName);
-        this.upsellModal.body = wp.i18n.sprintf( this.labels.upsell_service_body,  networkName);
+        let featureName = wp.i18n.sprintf( this.labels.upsell_extra_network.toLowerCase(), networkName);
+        if(network === 'twitter' || network === 'facebook'){
+          featureName = wp.i18n.sprintf( this.labels.upsell_extra_account.toLowerCase(), networkName);
+        }
+        this.upsellModal.title = wp.i18n.sprintf( this.labels.upsell_service_title, featureName.charAt(0).toUpperCase()
+            + featureName.slice(1));
+        this.upsellModal.body = wp.i18n.sprintf( this.labels.upsell_service_body,  featureName);
         this.upsellModal.link = wp.url.addQueryArgs(this.upsell_link, {
           utm_source: 'wp-admin',
           utm_medium: 'add_account',

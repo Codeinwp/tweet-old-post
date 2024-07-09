@@ -96,11 +96,11 @@ class Rop_Global_Settings {
 			'credentials'      => array(
 				'consumer_key'    => array(
 					'name'        => 'API Key',
-					'description' => 'Your Twitter application api key',
+					'description' => 'Your X (Twitter) application api key',
 				),
 				'consumer_secret' => array(
 					'name'        => 'API secret key',
-					'description' => 'Your Twitter application api secret',
+					'description' => 'Your X (Twitter) application api secret',
 				),
 			),
 			'two_step_sign_in' => true,
