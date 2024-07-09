@@ -42,10 +42,6 @@
           v-if=" ! is_loading"
           class="fa fa-edit"
         />
-        <i
-          v-else
-          class="fa fa-spinner fa-spin"
-        />
       </div>
       <div class="form-group">
         <label class="form-switch">
@@ -72,10 +68,6 @@
         <i
           v-if=" ! is_loading"
           class="fa fa-trash"
-        />
-        <i
-          v-else
-          class="fa fa-spinner fa-spin"
         />
       </div>
       <a
