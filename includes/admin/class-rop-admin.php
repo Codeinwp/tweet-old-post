@@ -392,7 +392,6 @@ class Rop_Admin {
 
 		$is_new_user  = (int) get_option( 'rop_is_new_user', 0 );
 		$install_time = ! $is_new_user ? (int) get_option( 'rop_first_install_date', 0 ) : 0;
-		$install_time = strtotime( '-1 hour' );
 
 		if ( ! $is_new_user && ( $install_time && $install_time >= strtotime( '-1 hour' ) ) ) {
 			$is_new_user = update_option( 'rop_is_new_user', 1 );
