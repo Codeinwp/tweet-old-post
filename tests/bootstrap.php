@@ -2,27 +2,11 @@
 /**
  * PHPUnit bootstrap file
  *
- * @package PirateForms
  */
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 if ( ! $_tests_dir ) {
 	$_tests_dir = '/tmp/wordpress-tests-lib';
 }
-
-/************* UVLabs test environment *************/
-
-if ( getenv( 'USER' ) === 'uvdev' ){
-	$_tests_dir = '/Users/uvdev/git_repos/wordpress-develop/tests/phpunit';
-};
-
-/************* UVLabs test environment *************/
-
-
-/************* contactashish13 test environment *************
- * $_tests_dir = 'E:\work\apps\wordpress-dev\tests\phpunit';
- * $_core_dir = 'E:\work\apps\wordpress-dev\src\\';
- ************* contactashish13 test environment *************/
-
 /**
  * The path to the main file of the plugin to test.
  */
@@ -34,14 +18,12 @@ require_once $_tests_dir . '/includes/functions.php';
  * Manually load the plugin being tested.
  */
 function _manually_load_plugin() {
-	$vendor_file = dirname( dirname( __FILE__ ) ) . '/vendor/autoload.php';
-	if ( is_readable( $vendor_file ) ) {
-		require_once $vendor_file;
-	}
+	//We need to load the sdk separately since phpunit is loading already the autoloader, and due to the exit condition in load.php on ABSPATH, the sdk is not loaded with the composer autoloader in phpunit env.
+	require dirname( dirname( __FILE__ ) ) . '/vendor/codeinwp/themeisle-sdk/load.php';
 	require dirname( dirname( __FILE__ ) ) . '/tweet-old-post.php';
 }
 
-tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
+tests_add_filter( 'plugins_loaded', '_manually_load_plugin' );
 // Start up the WP testing environment.
 require $_tests_dir . '/includes/bootstrap.php';
 activate_plugin( 'tweet-old-post/tweet-old-post.php' );
