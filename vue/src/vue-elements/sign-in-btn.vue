@@ -448,6 +448,9 @@ export default {
     }
   },
   created() {
+    if ( this.isOpenToEdit ) {
+      this.openEditPopup();
+    }
   },
   methods: {
     /**
