@@ -43,21 +43,21 @@
           v-if="start_status"
           class="d-inline-block mt-2 column col-4 float-right text-right"
         >
-        <button
-          class="btn btn-secondary"
-          @click="refreshQueue(true)"
-        >
-          <i
-            v-if="!is_loading"
-            class="fa fa-refresh"
-          />
-          <i
-            v-else
-            class="fa fa-spinner fa-spin"
-          />
-          {{ labels.refresh_btn }}
-      </button>
-    </div>
+          <button
+            class="btn btn-secondary"
+            @click="refreshQueue(true)"
+          >
+            <i
+              v-if="!is_loading"
+              class="fa fa-refresh"
+            />
+            <i
+              v-else
+              class="fa fa-spinner fa-spin"
+            />
+            {{ labels.refresh_btn }}
+          </button>
+        </div>
       </div>
       <div
         v-else-if="start_status && queueCount === 0"

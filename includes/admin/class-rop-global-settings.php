@@ -121,6 +121,7 @@ class Rop_Global_Settings {
 		'gmb'    => array(
 			'active' => false,
 			'name'   => 'Gmb',
+			'fullname' => 'Google My Business',
 		),
 		'vk'    => array(
 			'active' => false,

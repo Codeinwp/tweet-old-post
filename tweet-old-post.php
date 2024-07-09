@@ -203,12 +203,12 @@ function run_rop() {
 	add_filter(
 		'tweet_old_post_welcome_metadata',
 		function () {
-			return [
+			return array(
 				'is_enabled' => ! defined( 'ROP_PRO_DIR_PATH' ),
 				'pro_name'   => 'Revive Old Post Pro',
 				'logo'       => ROP_LITE_URL . 'assets/img/logo_rop.png',
-				'cta_link'   => tsdk_utmify( add_query_arg(  [ 'discount' => 'LOYALUSER582' ], Rop_I18n::UPSELL_LINK ), 'rop-welcome', 'notice' )
-			];
+				'cta_link'   => tsdk_utmify( add_query_arg( array( 'discount' => 'LOYALUSER582' ), Rop_I18n::UPSELL_LINK ), 'rop-welcome', 'notice' ),
+			);
 		}
 	);
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';

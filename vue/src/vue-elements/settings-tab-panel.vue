@@ -579,9 +579,9 @@
             <p class="text-gray">
               {{ labels.tracking }}<br>
               <a
-                  :href="tracking_info_link"
-                  target="_blank"
-                >
+                :href="tracking_info_link"
+                target="_blank"
+              >
                 {{ labels.tracking_info }}
               </a>
             </p>

@@ -28,7 +28,7 @@ class Rop_Admin {
 	 */
 	private $allowed_screens;
 
-    const RN_LINK = 'https://revive.social/plugins/revive-network/';
+	const RN_LINK = 'https://revive.social/plugins/revive-network/';
 	/**
 	 * The ID of this plugin.
 	 *
@@ -301,7 +301,7 @@ class Rop_Admin {
 			return;
 		}
 		wp_enqueue_media();
-		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array('wp-url'), ( ROP_DEBUG ) ? time() : $this->version, false );
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 
 		$rop_api_settings = array(
@@ -627,20 +627,24 @@ class Rop_Admin {
 		);
 		if ( ! defined( 'REVIVE_NETWORK_VERSION' ) ) {
 			$rss_to_social = __( 'RSS to Social', 'wpcf7-redirect' ) . '<span id="rop-rn-menu" class="dashicons dashicons-external" style="font-size:initial;"></span>';
-			add_action( 'admin_footer', function () {
-				?><script type="text/javascript">
-                    jQuery(document).ready(function ($) {
-                        $('.tsdk-upg-menu-item').parent().attr('target', '_blank');
-                    });
-                </script>
-				<?php
-			} );
+			add_action(
+				'admin_footer',
+				function () {
+					?>
+				<script type="text/javascript">
+					jQuery(document).ready(function ($) {
+						$('.tsdk-upg-menu-item').parent().attr('target', '_blank');
+					});
+				</script>
+					<?php
+				}
+			);
 
 			global $submenu;
 			$submenu['TweetOldPost'][2] = array(
 				$rss_to_social,
 				'manage_options',
-				tsdk_utmify( self::RN_LINK, 'admin', 'admin_menu' )
+				tsdk_utmify( self::RN_LINK, 'admin', 'admin_menu' ),
 			);
 		}
 	}
@@ -665,10 +669,10 @@ class Rop_Admin {
 
 		if ( $settings->get_instant_sharing() && count( $active_accounts ) >= 2 && ! defined( 'ROP_PRO_VERSION' ) ) {
 			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
-			     __(
-				     'Share to more accounts by upgrading to the extended version for ',
-				     'tweet-old-post'
-			     ) . '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'editor', 'publish_now' ) . '" target="_blank">Revive Old Posts </a>
+				__(
+					'Share to more accounts by upgrading to the extended version for ',
+					'tweet-old-post'
+				) . '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'editor', 'publish_now' ) . '" target="_blank">Revive Old Posts </a>
 						</div>';
 		}
 	}
@@ -1825,11 +1829,14 @@ HTML;
 		if ( $global_settings->license_type() < 1 ) {
 			return array_merge(
 				array(
-					'upgrade_link' => '<a href="' . add_query_arg( [
+					'upgrade_link' => '<a href="' . add_query_arg(
+						array(
 							'utm_source'   => 'wpadmin',
 							'utm_medium'   => 'plugins',
-							'utm_campaign' => 'rowaction'
-						], Rop_I18n::UPSELL_LINK ) . '" title="' . __( 'More Features', 'tweet-old-post' ) . '"  target="_blank" rel="noopener noreferrer" style="color: #009E29; font-weight: 700;" onmouseover="this.style.color=\'#008a20\';" onmouseout="this.style.color=\'#009528\';" >' . __( 'Get Revive Social Pro', 'tweet-old-post' ) . '</a>',
+							'utm_campaign' => 'rowaction',
+						),
+						Rop_I18n::UPSELL_LINK
+					) . '" title="' . __( 'More Features', 'tweet-old-post' ) . '"  target="_blank" rel="noopener noreferrer" style="color: #009E29; font-weight: 700;" onmouseover="this.style.color=\'#008a20\';" onmouseout="this.style.color=\'#009528\';" >' . __( 'Get Revive Social Pro', 'tweet-old-post' ) . '</a>',
 				),
 				$actions
 			);

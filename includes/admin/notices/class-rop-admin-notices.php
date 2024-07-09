@@ -37,7 +37,7 @@ class Rop_Admin_Notices {
 			$nonce = wp_create_nonce( 'rop_notice_nonce_value' );
 
 			$dismiss_url = admin_url( 'admin-ajax.php?action=rop_notice_dismissed&rop_notice_id=' . $notice_id . '&rop_notice_nonce=' . $nonce );
-			$upsell_link = tsdk_utmify(Rop_Admin::RN_LINK,'rn','admin_notice');
+			$upsell_link = tsdk_utmify( Rop_Admin::RN_LINK, 'rn', 'admin_notice' );
 			$markup = <<<UPSELLHTML
 				
 				<div class="update-nag rop-revive-network-admin-notice">
