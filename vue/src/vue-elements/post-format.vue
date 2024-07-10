@@ -85,6 +85,13 @@
             >
               {{ labels.post_content_option_yoast_seo_description }} {{ !isPro ? "(Pro)" : '' }}
             </option>
+            <option
+              v-if="yoast_seo_active_status"
+              value="yoast_seo_title_description"
+              :disabled="!isPro"
+            >
+              {{ labels.post_content_option_yoast_seo_title_description }} {{ !isPro ? "(Pro)" : '' }}
+            </option>
           </select>
         </div>
       </div>
