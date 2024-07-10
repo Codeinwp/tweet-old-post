@@ -633,17 +633,21 @@ class Rop_Global_Settings {
 	 * @return bool
 	 */
 	public function check_is_new_license() {
-		// Check is valid license.
-		if ( $this->license_type() > 0 ) {
-			$product_key  = 'tweet_old_post_pro';
-			$license_data = get_option( $product_key . '_license_data', '' );
-			if ( isset( $license_data->created_at ) ) {
-				$created_at = strtotime( date( 'Y-m-d', strtotime( $license_data->created_at ) ) );
-				$compare_to = strtotime( '2024-07-21' );
-				return $created_at > $compare_to;
-			}
+		if ( $this->license_type() <= 0 ) { // Ignore free users.
+			return false;
 		}
 
-		return false;
+		$product_key  = 'tweet_old_post_pro';
+		$license_data = get_option( $product_key . '_license_data', '' );
+
+		if ( ! isset( $license_data->created_at ) ) {
+			return false;
+		}
+
+		// Is after 9.1?
+		$created_at = strtotime( date( 'Y-m-d', strtotime( $license_data->created_at ) ) );
+		$compare_to = strtotime( '2024-07-21' );
+
+		return $created_at > $compare_to;
 	}
 }
