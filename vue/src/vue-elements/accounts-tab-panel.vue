@@ -153,7 +153,6 @@
                 this.$log.info('All accounts: ', all_accounts);
                 this.$log.debug('Preloading: ', this.$store.state.hide_preloading);
                 this.accountsCount = Object.keys(all_accounts).length;
-                this.is_preloading = this.$store.state.hide_preloading;
                 return all_accounts;
             },
             /**

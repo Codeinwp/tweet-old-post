@@ -1355,6 +1355,7 @@ a.active {
     display: -webkit-flex;
     display: flex;
     display: -ms-flexbox;
+    flex-wrap: wrap;
 }
 
 #rop_core .input-group .input-group-addon {

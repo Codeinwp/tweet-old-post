@@ -4,10 +4,9 @@
       <button
         v-for="( service, network ) in services"
         :key="network"
-        :disabled="checkDisabled( service, network )"
         :title="getTooltip( service, network )"
         class="btn input-group-btn"
-        :class="'btn-' + network"
+        :class="'btn-' + network + ' ' + ( checkDisabled( service, network ) ? 'rop-disabled' : '' )"
         @click="requestAuthorization( network )"
       >
         <i
@@ -58,8 +57,44 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
             />
           </svg>
         </i>
-        {{ displayName( service.name, false, true ) }}
+        {{ displayName( service.name, false, true ) }}<span
+          v-if="checkDisabled( service, network )"
+          style="font-size:13px;line-height: 20px"
+          class="dashicons dashicons-lock"
+        />
       </button>
+
+    </div>
+
+    <div
+      class="modal rop-upsell-modal"
+      :class="upsellModalActiveClass"
+    >
+      <div class="modal-overlay" />
+      <div class="modal-container">
+        <div class="modal-header">
+          <button
+            class="btn btn-clear float-right"
+            @click="closeUpsellModal()"
+          />
+          <div class="modal-title h3">
+            <span class="dashicons dashicons-lock" />
+          </div>
+          <div class="modal-title h5">
+            {{ upsellModal.title }}
+          </div>
+        </div>
+        <div class="modal-body">
+          {{ upsellModal.body }}
+        </div>
+        <div class="modal-footer">
+          <a
+            :href="upsellModal.link"
+            class="btn  btn-success"
+            target="_blank"
+          >{{ labels.upsell_upgrade_now }}</a>
+        </div>
+      </div>
     </div>
 
     <div
@@ -341,6 +376,12 @@ export default {
         description: '',
         data: {}
       },
+      upsellModal: {
+        isOpen: false,
+        title: '',
+        body: '',
+        link: ropApiSettings.upsell_link
+      },
       showAdvanceConfig: false,
       labels: this.$store.state.labels.accounts,
       upsell_link: ropApiSettings.upsell_link,
@@ -395,11 +436,16 @@ export default {
         'active': this.modal?.isOpen === true
       }
     },
+    upsellModalActiveClass: function () {
+      return {
+        'active': this.upsellModal.isOpen === true
+      }
+    },
     serviceId: function () {
       return 'service-' + this.modal.serviceName.toLowerCase()
     },
     isFacebook() {
-      return this.modal.serviceName === 'Facebook';
+      return this.modal.serviceName === 'Facebook' ||  this.modal.serviceName === 'Instagram';
     },
     // will return true if the current service actions are for Twitter.
     isTwitter() {
@@ -536,11 +582,36 @@ export default {
 
       return this.$store.state.auth_in_progress
     },
+    openUpsellModal(){
+      this.upsellModal.isOpen = true;
+
+    },
+    closeUpsellModal(){
+      this.upsellModal.isOpen = false;
+    },
     /**
      * Request authorization popup.
      */
     requestAuthorization: function (network) {
+
       this.selected_network = network;
+      if (this.checkDisabled(this.services[network], network)) {
+        let networkName = this.$store.state.availableServices[network].fullname || this.$store.state.availableServices[network].name;
+        let featureName = wp.i18n.sprintf( this.labels.upsell_extra_network.toLowerCase(), networkName);
+        if(network === 'twitter' || network === 'facebook'){
+          featureName = wp.i18n.sprintf( this.labels.upsell_extra_account.toLowerCase(), networkName);
+        }
+        this.upsellModal.title = wp.i18n.sprintf( this.labels.upsell_service_title, featureName.charAt(0).toUpperCase()
+            + featureName.slice(1));
+        this.upsellModal.body = wp.i18n.sprintf( this.labels.upsell_service_body,  featureName);
+        this.upsellModal.link = wp.url.addQueryArgs(this.upsell_link, {
+          utm_source: 'wp-admin',
+          utm_medium: 'add_account',
+          utm_campaign: networkName
+        });
+        this.openUpsellModal();
+        return
+      }
       this.$store.state.auth_in_progress = true
       if (this.$store.state.availableServices[this.selected_network].two_step_sign_in) {
         this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name
@@ -808,7 +879,7 @@ export default {
       
       if ('Twitter' === this.modal.serviceName) {
         this.addAccountTW( accountData );
-      } else if ('Facebook' === this.modal.serviceName) {
+      } else if ('Facebook' === this.modal.serviceName || 'Instagram' === this.modal.serviceName) {
         this.addAccountFB( accountData );
       } else if ('LinkedIn' === this.modal.serviceName) {
         this.addAccountLI( accountData );
@@ -931,6 +1002,48 @@ export default {
 
 .btn-gmb {
   text-transform: uppercase;
+}
+.btn-instagram{
+  background-color:#c13584 !important;
+  color:#fff!important;
+}
+.rop-disabled{
+  opacity: 0.6
+}
+#rop-sign-in-area .btn {border:none;}
+#rop_core .rop-upsell-modal .modal-container{
+  max-width: 500px;
+  padding: 25px;
+  .dashicons{
+    font-size: 2rem;
+  }
+  .modal-title, .modal-footer{
+    text-align: center;
+  }
+  .h3{
+    min-height: 30px;
+  }
+  .h5.modal-title{
+    padding:30px 20px 20px 20px;
+  }
+  .modal-header{
+    padding: 0px;
+  }
+  .btn-success{
+    border:none;
+    background-color:#00a32a;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    height: auto;
+  }
+  .btn-success:hover{
+    background-color:#009528;
+  }
+  .modal-body{
+    font-size: 0.7rem;
+    margin: 10px 30px;
+    padding: 0px;
+  }
 }
 
 @media (min-width: 768px) {

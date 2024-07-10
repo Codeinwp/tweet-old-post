@@ -131,7 +131,6 @@ class Rop {
 		$this->loader->add_action( 'wp_ajax_rop_notice_dismissed', $plugin_admin_notices_helpers, 'rop_notice_dismissed' );
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
-		$this->loader->add_action( 'admin_head', $plugin_admin, 'rop_roadmap_new_tab' );
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'rop_hide_pinterest_network_btn' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_rop_event_not_firing_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_cron_event_status_notice' );

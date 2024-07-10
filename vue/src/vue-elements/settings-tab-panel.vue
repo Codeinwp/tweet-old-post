@@ -62,6 +62,17 @@
             />
           </div>
         </div>
+        
+        <div
+          v-if="!isPro && generalSettings.default_interval < 12"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.min_interval_upsell }}
+            </p>
+          </div>
+        </div>
 
         <span
           v-if="! isBiz"
@@ -579,9 +590,9 @@
             <p class="text-gray">
               {{ labels.tracking }}<br>
               <a
-                  :href="tracking_info_link"
-                  target="_blank"
-                >
+                :href="tracking_info_link"
+                target="_blank"
+              >
                 {{ labels.tracking_info }}
               </a>
             </p>

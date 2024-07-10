@@ -69,7 +69,7 @@
               {{ labels.post_content_option_excerpt }}
             </option>
             <option value="custom_field">
-              {{ labels.post_content_option_custom_field }}
+              {{ labels.post_content_option_custom_field }} {{ isNewUserPro ? "(Pro)" : '' }}
             </option>
             <option
               v-if="yoast_seo_active_status"
@@ -93,14 +93,15 @@
     <div
       v-if="post_format.post_content === 'custom_field'"
       class="columns py-2"
+      :class="'rop-control-container-'+(!isNewUserPro)"
     >
-      <div class="column col-6 col-sm-12 vertical-align">
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
         <b>{{ labels.custom_meta_title }}</b>
         <p class="text-gray">
           {{ labels.custom_meta_desc }}
         </p>
       </div>
-      <div class="column col-6 col-sm-12 vertical-align">
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
         <div class="form-group">
           <input
             v-model="post_format.custom_meta_field"
@@ -108,8 +109,19 @@
             type="text"
             value=""
             placeholder=""
+            :disabled="isNewUserPro"
           >
         </div>
+      </div>
+    </div>
+    <div
+      v-if="isNewUserPro && (post_format.post_content === 'custom_field')"
+      class="columns "
+    >
+      <div class="column text-center">
+        <p class="upsell">
+          <i class="fa fa-info-circle" /> {{ labels.custom_meta_field_upsell }}
+        </p>
       </div>
     </div>
 
@@ -214,23 +226,37 @@
       </div>
     </div>
     <span class="divider" />
-    <div class="columns py-2">
-      <div class="column col-6 col-sm-12 vertical-align">
+    <div
+      class="columns py-2"
+      :class="'rop-control-container-'+(!isNewUserPro)"
+    >
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
         <b>{{ labels.meta_link_title }}</b>
         <p class="text-gray">
           {{ labels.meta_link_desc }}
         </p>
       </div>
-      <div class="column col-6 col-sm-12 vertical-align">
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
         <div class="input-group">
           <label class="form-checkbox">
             <input
               v-model="post_format.url_from_meta"
               type="checkbox"
+              :disabled="isNewUserPro"
             >
             <i class="form-icon" /> {{ labels.yes_text }}
           </label>
         </div>
+      </div>
+    </div>
+    <div
+      v-if="isNewUserPro"
+      class="columns "
+    >
+      <div class="column text-center">
+        <p class="upsell">
+          <i class="fa fa-info-circle" /> {{ labels.custom_meta_upsell }}
+        </p>
       </div>
     </div>
 
@@ -348,11 +374,11 @@
             <option
               v-for="shortener in shorteners"
               :key="shortener.id"
-              :value="shortener.id"
+              :value="isNewUserPro && ( 'is.gd' === shortener.id ) ? '' : shortener.id"
               :disabled="shortener.active !== true"
               :selected="shortener.name == post_format.short_url_service"
             >
-              {{ shortener.name }}{{ !shortener.active ? labels_generic.only_pro_suffix : '' }}
+              {{ shortener.name }}{{ (isNewUserPro && shortener.is_free === false) || shortener.active !== true ? " (Pro)" : '' }}
             </option>
           </select>
         </div>
@@ -363,10 +389,10 @@
       <div
         v-for="( credential, key_name ) in post_format.shortner_credentials"
         :key="key_name"
-       
+        :class="'rop-control-container-'+(!isNewUserPro || (post_format.short_url_service === 'rviv.ly' || post_format.short_url_service === 'wp_short_url'))"
         class="columns py-2"
       >
-        <div class="column col-6 col-sm-12 vertical-align">
+        <div class="column col-6 col-sm-12 vertical-align rop-control">
           <b>{{ key_name | capitalize }}</b>
           <p class="text-gray">
             {{ labels.shortner_field_desc_start }} "{{ key_name }}"
@@ -374,16 +400,27 @@
             <strong>{{ post_format.short_url_service }}</strong> {{ labels.shortner_api_field }}.
           </p>
         </div>
-        <div class="column col-6 col-sm-12 vertical-align">
+        <div class="column col-6 col-sm-12 vertical-align rop-control">
           <div class="form-group">
             <input
               v-model="post_format.shortner_credentials[key_name]"
               class="form-input"
               type="text"
+              :disabled="isNewUserPro && (post_format.short_url_service !== 'rviv.ly' || post_format.short_url_service !== 'wp_short_url')"
             >
           </div>
         </div>
       </div>
+      <div
+      v-if="isNewUserPro && (post_format.short_url_service !== 'rviv.ly' && post_format.short_url_service !== 'wp_short_url')"
+      class="columns "
+    >
+      <div class="column text-center">
+        <p class="upsell">
+          <i class="fa fa-info-circle" /> {{ labels.hashtag_field_upsell }}
+        </p>
+      </div>
+    </div>
     </template>
     
 
@@ -409,13 +446,13 @@
               {{ labels.hashtags_option_common }}
             </option>
             <option value="categories-hashtags">
-              {{ labels.hashtags_option_cats }}
+              {{ labels.hashtags_option_cats }} {{ isNewUserPro ? "(Pro)" : '' }}
             </option>
             <option value="tags-hashtags">
-              {{ labels.hashtags_option_tags }}
+              {{ labels.hashtags_option_tags }} {{ isNewUserPro ? "(Pro)" : '' }}
             </option>
             <option value="custom-hashtags">
-              {{ labels.hashtags_option_field }}
+              {{ labels.hashtags_option_field }} {{ isNewUserPro ? "(Pro)" : '' }}
             </option>
           </select>
         </div>
@@ -447,14 +484,15 @@
     <div
       v-if="post_format.hashtags === 'custom-hashtags'"
       class="columns py-2"
+      :class="'rop-control-container-'+(!isNewUserPro && (post_format.hashtags !== 'common-hashtags'))"
     >
-      <div class="column col-6 col-sm-12 vertical-align">
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
         <b>{{ labels.hastags_field_title }}</b>
         <p class="text-gray">
           {{ labels.hastags_field_desc }}
         </p>
       </div>
-      <div class="column col-6 col-sm-12 vertical-align">
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
         <div class="form-group">
           <input
             v-model="post_format.hashtags_custom"
@@ -462,6 +500,7 @@
             type="text"
             value=""
             placeholder=""
+            :disabled="isNewUserPro && (post_format.hashtags !== 'common-hashtags')"
           >
         </div>
       </div>
@@ -470,14 +509,15 @@
     <div
       v-if="post_format.hashtags !== 'no-hashtags'"
       class="columns py-2"
+      :class="'rop-control-container-'+(!isNewUserPro || (post_format.hashtags === 'no-hashtags' || post_format.hashtags === 'common-hashtags'))"
     >
-      <div class="column col-6 col-sm-12 vertical-align">
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
         <b>{{ labels.hashtags_length_title }}</b>
         <p class="text-gray">
           {{ labels.hashtags_length_desc }}
         </p>
       </div>
-      <div class="column col-6 col-sm-12 vertical-align">
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
         <div class="form-group">
           <input
             v-model="post_format.hashtags_length"
@@ -485,6 +525,7 @@
             type="number"
             value=""
             placeholder=""
+            :disabled="isNewUserPro && (post_format.hashtags !== 'no-hashtags' && post_format.hashtags !== 'common-hashtags')"
           >
         </div>
       </div>
@@ -493,6 +534,7 @@
     <div
       v-if="post_format.hashtags !== 'no-hashtags'"
       class="columns py-2"
+      :class="'rop-control-container-'+(!isNewUserPro || (post_format.hashtags === 'no-hashtags' || post_format.hashtags === 'common-hashtags'))"
     >
       <div class="column col-6 col-sm-12 vertical-align rop-control">
         <b>{{ labels.hashtags_randomize }}</b>
@@ -500,16 +542,27 @@
           <span v-html="labels.hashtags_randomize_desc" />
         </p>
       </div>
-      <div class="column col-6 col-sm-12 vertical-align">
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
         <div class="input-group">
           <label class="form-checkbox">
             <input
               v-model="post_format.hashtags_randomize"
               type="checkbox"
+              :disabled="isNewUserPro && (post_format.hashtags !== 'no-hashtags' && post_format.hashtags !== 'common-hashtags')"
             >
             <i class="form-icon" /> {{ labels.yes_text }}
           </label>
         </div>
+      </div>
+    </div>
+    <div
+      v-if="isNewUserPro && (post_format.hashtags !== 'no-hashtags' && post_format.hashtags !== 'common-hashtags')"
+      class="columns "
+    >
+      <div class="column text-center">
+        <p class="upsell">
+          <i class="fa fa-info-circle" /> {{ labels.hashtag_field_upsell }}
+        </p>
       </div>
     </div>
 
@@ -764,7 +817,10 @@
             },
             shorteners: function () {
                 return this.$store.state.generalSettings.available_shorteners;
-            }
+            },
+            isNewUserPro: function () {
+                return Boolean( ! this.isPro && this.$store.state.is_new_user );
+            },
         },
         watch: {
             short_url_service: function () {

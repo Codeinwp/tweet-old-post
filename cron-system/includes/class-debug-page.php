@@ -203,7 +203,7 @@ class Debug_Page {
 			</td>
 		  </tr>
 		  <tr>
-			<td valign="top"><?php _e( 'Check connection with<br/>ROP Cron SyStem: ', 'tweet-old-post' ); ?></td>
+			<td valign="top"><?php _e( 'Check connection with<br/>Revive Social Cron SyStem: ', 'tweet-old-post' ); ?></td>
 			<td>
 				<?php _e( 'WordPress -> Server:', 'tweet-old-post' ); ?>
 			  <span id="server_responded">N/A</span>
