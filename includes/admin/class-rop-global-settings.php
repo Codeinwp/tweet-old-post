@@ -422,7 +422,6 @@ class Rop_Global_Settings {
 	 */
 	public function license_type() {
 
-		return 1;
 		$pro_check = defined( 'ROP_PRO_VERSION' );
 
 		if ( ! $pro_check ) {
@@ -639,7 +638,6 @@ class Rop_Global_Settings {
 			$product_key  = 'tweet_old_post_pro';
 			$license_data = get_option( $product_key . '_license_data', '' );
 			if ( isset( $license_data->created_at ) ) {
-				$license_data->created_at = '2024-07-22 08:57:58';
 				$created_at = strtotime( date( 'Y-m-d', strtotime( $license_data->created_at ) ) );
 				$compare_to = strtotime( '2024-07-21' );
 				return $created_at > $compare_to;
