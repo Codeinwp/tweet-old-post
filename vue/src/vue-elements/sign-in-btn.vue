@@ -40,10 +40,10 @@
           <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
           <svg
             height="14"
-            width="16" 
-            viewBox="-10 -5 1034 1034" 
-            xmlns="http://www.w3.org/2000/svg" 
-            xmlns:xlink="http://www.w3.org/1999/xlink" 
+            width="16"
+            viewBox="-10 -5 1034 1034"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
             version="1.1"
           >
             <path
@@ -489,7 +489,7 @@ export default {
       if ( ! canShow ) {
         return;
       }
-      
+
       this.openEditPopup();
     }
   },
@@ -647,7 +647,7 @@ export default {
             fields[fieldId].value = this.$store.state?.authenticatedServices?.[accountToEdit]?.credentials?.[fieldId];
             return fields;
           }, {} );
-        
+
         // Prepare modal.
         this.modal.serviceName = serviceSchema.name;
         this.modal.description = '';
@@ -876,7 +876,7 @@ export default {
       }
 
       const accountData = JSON.parse(event.data);
-      
+
       if ('Twitter' === this.modal.serviceName) {
         this.addAccountTW( accountData );
       } else if ('Facebook' === this.modal.serviceName || 'Instagram' === this.modal.serviceName) {
@@ -892,7 +892,7 @@ export default {
       } else if ('Webhook' === this.modal.serviceName) {
         this.addAccountWebhook( accountData );
       }
-      
+
       try {
         window?.tiTrk?.with('tweet')?.add({
           feature: 'add-account',
@@ -903,7 +903,7 @@ export default {
       } catch (e) {
         console.warn( e );
       }
-      
+
       window.location.reload();
     },
     addWebhookHeader() {
@@ -1010,7 +1010,10 @@ export default {
 .rop-disabled{
   opacity: 0.6
 }
-#rop-sign-in-area .btn {border:none;}
+#rop-sign-in-area .btn:not( .btn-secondary ) {
+  border:none;
+}
+
 #rop_core .rop-upsell-modal .modal-container{
   max-width: 500px;
   padding: 25px;
