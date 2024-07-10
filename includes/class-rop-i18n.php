@@ -290,6 +290,9 @@ class Rop_I18n {
 				'instagram_image_post_default' => sprintf( __( '%1$sNote:%2$s Instagram posts need to be an image.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'vk_unsupported_shorteners' => sprintf( __( '%1$sNote:%2$s is.gd shortener is not currently supported by VK.com.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'not_available_with_rop_server'     => __( 'This feature is not available for X accounts authorized via Revival Social.', 'tweet-old-post' ),
+				'custom_meta_field_upsell'          => __( 'Custom meta fields are only available in the Pro version.', 'tweet-old-post' ),
+				'custom_meta_upsell'                => __( 'Custom fields are only available in the Pro version.', 'tweet-old-post' ),
+				'hashtag_field_upsell'              => __( 'The selected option is only available in the Pro version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
