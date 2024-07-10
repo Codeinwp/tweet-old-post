@@ -1332,7 +1332,7 @@ class Rop_Rest_Api {
 
 		if ( is_wp_error( $response ) ) {
 			return $this->response
-				->set_data( array( 'success' => false, 'message' => Rop_I18n::get_labels( 'general.could_not_change_license' ) ) )
+				->set_data( array( 'success' => false, 'message' => 'activate' === $data['action'] ? Rop_I18n::get_labels( 'general.validation_failed' ) : Rop_I18n::get_labels( 'general.could_not_change_license' ) ) )
 				->to_array();
 		}
 

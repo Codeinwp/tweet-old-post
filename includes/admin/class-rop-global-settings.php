@@ -463,7 +463,12 @@ class Rop_Global_Settings {
 		}
 
 		if ( isset( $license_data->expires ) ) {
-			$view_license_data['expires'] = date( 'Y-m-d', strtotime( $license_data->expires ) );
+			$view_license_data['expires'] = date( 'F j, Y', strtotime( $license_data->expires ) );
+			if ( 'valid' === $view_license_data['license'] ) {
+				$view_license_data['expires'] = sprintf( Rop_I18n::get_labels( 'general.expires' ), $view_license_data['expires'] );
+			} else {
+				$view_license_data['expires'] = sprintf( Rop_I18n::get_labels( 'general.expired' ), $view_license_data['expires'] );
+			}
 		}
 
 		if ( isset( $license_data->key ) ) {

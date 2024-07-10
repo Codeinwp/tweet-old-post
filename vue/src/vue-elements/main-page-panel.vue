@@ -174,18 +174,24 @@
               v-model="generalSettings.license_key"
               type="password"
               class="form-input"
-              :placeholder="license_data_view.passwordMask"
-              :disabled="'valid' === license_data_view.license"
+              :placeholder="password_mask"
+              :disabled="is_license_valid"
             >
+            <span
+              v-if="license_data_view.expires"
+              class="text-gray expires-on"
+            >
+              {{ license_data_view.expires }}
+            </span>
             <button
-              v-if="'valid' !== license_data_view.license"
+              v-if="! is_license_valid"
               class="btn btn-primary activate"
               @click="activateLicense()"
             >
               {{ labels.activate }}
             </button>
             <button
-              v-if="'valid' === license_data_view.license"
+              v-if="is_license_valid"
               class="btn btn-secondary deactivate"
               @click="disableLicense()"
             >
@@ -242,9 +248,13 @@
                 license_data_view: this.$store.state.licenseDataView,
                 license_field_title: window.wp.i18n.sprintf(this.$store.state.labels.general.license_product, 'Revive Old Posts Pro Add-on'),
                 license_error: false,
+                password_mask: this.$store.state.licenseDataView?.passwordMask
             }
         },
         computed: {
+            is_license_valid() {
+              return this.$store.state.licenseDataView.license === 'valid';
+            },
             is_preloading_over: function () {
                 return this.$store.state.hide_preloading;
             },
@@ -537,5 +547,10 @@
       font-size: 13px;
       line-height: 1.2em;
       margin: 0;
+    }
+
+    .expires-on {
+      font-size: 13px;
+      line-height: 1.2em;
     }
 </style>
