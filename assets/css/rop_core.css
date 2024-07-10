@@ -872,7 +872,7 @@ a.active {
 #rop_core .btn.btn-webhook {
     border-color: #0071a6;
     color: #fff;
-    background: #458e82;
+    background: #FFBC42;
 }
 
 #rop_core .btn.btn-webhook:focus {
@@ -4199,7 +4199,7 @@ a.active {
 }
 
 .icon_box.webhook {
-    background-color: #458e82;;
+    background-color: #FFBC42;;
 }
 
 #rop_core .avatar .avatar-icon {
