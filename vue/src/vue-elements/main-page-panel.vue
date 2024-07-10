@@ -13,7 +13,6 @@
           <h1 class="plugin-title d-inline-block">
             Revive Social
           </h1>
-
         </div>
       </div>
       <toast />
@@ -158,6 +157,47 @@
             target="_blank"
             class="btn rop-sidebar-action-btns"
           >{{ labels.review_it }}</a>
+          <div class="license-container">
+            <h6 class="license-title">
+              {{ license_field_title }}
+            </h6>
+            <p class="license-description text-gray">
+              {{ labels.license_help }}
+              <a
+                href="https://store.themeisle.com/"
+                rel="nofollow"
+                target="_blank"
+                class="text-gray"
+              >{{ labels.purchase_history }}</a>
+            </p>
+            <input
+              v-model="generalSettings.license_key"
+              type="password"
+              class="form-input"
+              :placeholder="license_data_view.passwordMask"
+              :disabled="'valid' === license_data_view.license"
+            >
+            <button
+              v-if="'valid' !== license_data_view.license"
+              class="btn btn-primary activate"
+              @click="activateLicense()"
+            >
+              {{ labels.activate }}
+            </button>
+            <button
+              v-if="'valid' === license_data_view.license"
+              class="btn btn-secondary deactivate"
+              @click="disableLicense()"
+            >
+              {{ labels.deactivate }}
+            </button>
+            <p
+              v-if="license_error"
+              class="text-error"
+            >
+              {{ license_error }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -173,7 +213,6 @@
     import LogsTab from './logs-tab-panel.vue'
     import Toast from './reusables/toast.vue'
     import CountDown from './reusables/countdown.vue'
-    import moment from 'moment'
     import upsellSidebar from './upsell-sidebar.vue'
 
     export default {
@@ -200,6 +239,9 @@
                 is_loading: false,
                 is_loading_logs: false,
                 status_is_error_display: false,
+                license_data_view: this.$store.state.licenseDataView,
+                license_field_title: window.wp.i18n.sprintf(this.$store.state.labels.general.license_product, 'Revive Old Posts Pro Add-on'),
+                license_error: false,
             }
         },
         computed: {
@@ -426,6 +468,32 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
                     this.is_loading_logs = false;
                 })
+            },
+            activateLicense() {
+              this.uploadLicense( 'activate' );
+            },
+            disableLicense() {
+              this.generalSettings.license_key = '';
+              this.uploadLicense( 'deactivate' );
+            },
+            uploadLicense( action ) {
+              this.$store.dispatch( 'fetchAJAXPromise', {
+                req: 'set_license',
+                updateState: false,
+                data: {
+                  license_key: this.generalSettings.license_key,
+                  action
+                }
+              }).then( response => {
+                if ( response?.success ) {
+                  window.location.reload();
+                } else {
+                  this.license_error = response?.message;
+                }
+              }, error => {
+                this.license_error = this.labels.could_not_send;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+              })
             }
         }
     }
@@ -449,5 +517,25 @@
 
     #rop_core .badge.badge-logs {
         padding-right: 10px;
+    }
+
+    #rop_core .license-container {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    #rop_core .license-title {
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 0;
+      color: black;
+    }
+
+    #rop_core .license-description {
+      font-size: 13px;
+      line-height: 1.2em;
+      margin: 0;
     }
 </style>

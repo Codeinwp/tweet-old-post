@@ -128,6 +128,8 @@ class Rop {
 		$plugin_admin_notices_helpers = new Rop_Admin_Notices_Helpers();
 		$tutorial_pointers = new Rop_Pointers();
 
+		add_filter( 'tweet_old_post_pro_hide_license_field', '__return_true' );
+
 		$this->loader->add_action( 'wp_ajax_rop_notice_dismissed', $plugin_admin_notices_helpers, 'rop_notice_dismissed' );
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );

@@ -1296,4 +1296,49 @@ class Rop_Rest_Api {
 
 		return $this->response->to_array();
 	}
+
+	/**
+	 * API method to call the license processor.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since 9.1.0
+	 *
+	 * @param array $data Data passed from the AJAX call.
+	 *
+	 * @return array
+	 */
+	private function set_license( $data ) {
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			$this->response
+				->set_code( '403' )
+				->set_message( 'Forbidden' )
+				->set_data( array( 'success' => false, 'message' => Rop_I18n::get_labels( 'general.no_permission' ) ) );
+
+			return $this->response->to_array();
+		}
+
+		// NOTE: The license processor requires the license key, even if we want to deactivate the license.
+		if ( empty( $data['license_key'] ) ) {
+			$general_settings = new Rop_Global_Settings;
+			$license_data     = $general_settings->get_license_data();
+			if ( ! empty( $license_data ) && isset( $license_data->key ) ) {
+				$data['license_key'] = $license_data->key;
+			}
+		}
+
+		$response = apply_filters( 'themeisle_sdk_license_process_rop', $data['license_key'], $data['action'] );
+
+		if ( is_wp_error( $response ) ) {
+			return $this->response
+				->set_data( array( 'success' => false, 'message' => Rop_I18n::get_labels( 'general.could_not_change_license' ) ) )
+				->to_array();
+		}
+
+		return $this->response
+			->set_code( '200' )
+			->set_data( array( 'success' => true ) )
+			->to_array();
+	}
 }

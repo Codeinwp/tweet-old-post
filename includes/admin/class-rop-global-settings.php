@@ -411,6 +411,69 @@ class Rop_Global_Settings {
 	}
 
 	/**
+	 * Get the license data.
+	 *
+	 * @since   9.1.0
+	 * @access  public
+	 *
+	 * @return  object
+	 */
+	public function get_license_data() {
+		if ( ! defined( 'ROP_PRO_VERSION' ) ) {
+			return -1;
+		}
+
+		$license_data = get_option( 'tweet_old_post_pro_license_data', '' );
+
+		if ( empty( $license_data ) ) {
+			return -1;
+		}
+
+		if ( ! isset( $license_data->license ) ) {
+			return -1;
+		}
+
+		return $license_data;
+	}
+
+	/**
+	 * Get the license data for the public view (display).
+	 *
+	 * @since   9.1.0
+	 * @access  public
+	 *
+	 * @return  array With data for display.
+	 */
+	public function get_license_data_view() {
+		$license_data = $this->get_license_data();
+
+		if ( -1 === $license_data ) {
+			return array(
+				'license' => 'invalid',
+				'expires' => '',
+				'passwordMask'    => '',
+			);
+		}
+
+		$view_license_data = array();
+
+		// Pick only the necessary data.
+		if ( isset( $license_data->license ) ) {
+			$view_license_data['license'] = $license_data->license;
+		}
+
+		if ( isset( $license_data->expires ) ) {
+			$view_license_data['expires'] = date( 'Y-m-d', strtotime( $license_data->expires ) );
+		}
+
+		if ( isset( $license_data->key ) ) {
+			$view_license_data['passwordMask'] = str_repeat( '*', strlen( $license_data->key ) - 4 ) . substr( $license_data->key, -4 );
+		}
+
+		return $view_license_data;
+	}
+
+	/**
 	 * Get license plan.
 	 *      -1 - Pro is not present nor installed.
 	 *      0 - Pro is installed but not active.
@@ -422,20 +485,9 @@ class Rop_Global_Settings {
 	 */
 	public function license_type() {
 
-		$pro_check = defined( 'ROP_PRO_VERSION' );
+		$license_data = $this->get_license_data();
 
-		if ( ! $pro_check ) {
-			return - 1;
-		}
-
-		$product_key  = 'tweet_old_post_pro';
-		$license_data = get_option( $product_key . '_license_data', '' );
-
-		if ( empty( $license_data ) ) {
-			return - 1;
-		}
-
-		if ( ! isset( $license_data->license ) ) {
+		if ( - 1 === $license_data ) {
 			return - 1;
 		}
 
@@ -443,7 +495,7 @@ class Rop_Global_Settings {
 		 * If we have an invalid license but the pro is installed.
 		 */
 		if ( $license_data->license !== 'valid' ) {
-			if ( $pro_check ) {
+			if ( defined( 'ROP_PRO_VERSION' ) ) {
 				return 0;
 			}
 
@@ -454,15 +506,13 @@ class Rop_Global_Settings {
 			return intval( $license_data->price_id );
 		}
 
-		$plan = get_option( $product_key . '_license_plan', - 1 );
-
-		$plan = intval( $plan );
+		$plan = intval( get_option( 'tweet_old_post_pro_license_data', - 1 ) );
 
 		/**
 		 * If the plan is not fetched but we have pro.
 		 */
 		if ( $plan < 1 ) {
-			if ( $pro_check ) {
+			if ( defined( 'ROP_PRO_VERSION' ) ) {
 				return 0;
 			}
 
@@ -470,7 +520,6 @@ class Rop_Global_Settings {
 		}
 
 		return $plan;
-
 	}
 
 	/**
