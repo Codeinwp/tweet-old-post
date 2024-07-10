@@ -98,6 +98,7 @@ if ( ! empty( $housekeeping ) ) {
 		'rop_tumblr_via_rs_app',
 		'rop_data_migrated_tax',
 		'rop_changed_shortener',
+		'rop_is_new_user',
 		/**
 		 * Old ROP options
 		 */
