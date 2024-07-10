@@ -137,8 +137,8 @@ class Rop_Global_Settings {
 	 * @var     array $settings_defaults The class defaults for settings.
 	 */
 	private $settings_defaults = array(
-		'default_interval'      => 10,
-		'min_interval'          => 5,
+		'default_interval'      => 12,
+		'min_interval'          => 12,
 		'step_interval'         => 0.5,
 		'minimum_post_age'      => 30,
 		'maximum_post_age'      => 365,
@@ -387,7 +387,18 @@ class Rop_Global_Settings {
 				self::$instance->services_defaults
 			);
 
-			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.05 : 0.5 );
+			$is_new_user  = (int) get_option( 'rop_is_new_user', 0 );
+			$install_time = ! $is_new_user ? (int) get_option( 'rop_first_install_date', 0 ) : 0;
+			if ( ! $is_new_user && ( $install_time && $install_time >= strtotime( '-1 hour' ) ) ) {
+				$is_new_user = update_option( 'rop_is_new_user', 1 );
+			}
+
+			$min_interval = 0.5;
+			// Apply new limit for new free users.
+			if ( $is_new_user && 1 < self::$instance->license_type() ) {
+				$min_interval = 12;
+			}
+			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.05 : $min_interval );
 			self::$instance->settings_defaults['step_interval'] = apply_filters( 'rop_min_interval_bw_shares_step', 0.1 );
 
 			self::$instance->settings = apply_filters(

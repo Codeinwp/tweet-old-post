@@ -206,6 +206,7 @@ class Rop_I18n {
 				'exclude_single_post'         => __( 'Exclude this post', 'tweet-old-post' ),
 				'no_posts_found'              => __( 'No posts found.', 'tweet-old-post' ),
 				'load_more_posts'             => __( 'Load more posts.', 'tweet-old-post' ),
+				'min_interval_upsell'         => __( 'Choosing a lower interval is available in the Pro version.', 'tweet-old-post' ),
 				'tracking_field'              => __( 'Contributing', 'tweet-old-post' ),
 				'tracking'                    => __( 'Send anonymous data to help us understand how you use the plugin.', 'tweet-old-post' ),
 				'tracking_info'               => __( 'What do we track?', 'tweet-old-post' ),

@@ -62,6 +62,17 @@
             />
           </div>
         </div>
+        
+        <div
+          v-if="!isPro && generalSettings.default_interval < 12"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.min_interval_upsell }}
+            </p>
+          </div>
+        </div>
 
         <span
           v-if="! isBiz"
