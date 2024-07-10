@@ -1048,10 +1048,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	public function rop_is_business_plan() {
 		if ( $this->rop_show_li_app_btn() ) {
 			$global_settings = new Rop_Global_Settings();
-			// Check is new user.
-			$is_new_user = $global_settings->check_is_new_license();
-			// Apply new plan(middle) for new free users.
-			return $is_new_user ? $global_settings->license_type() > 1 : $global_settings->license_type() > 0;
+			// New users will require a higher plan than the old.
+			return $global_settings->check_is_new_license() ? $global_settings->license_type() > 1 : $global_settings->license_type() > 0;
 		}
 
 		return false;
