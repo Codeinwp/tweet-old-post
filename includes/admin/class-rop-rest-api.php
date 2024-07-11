@@ -365,6 +365,21 @@ class Rop_Rest_Api {
 			}
 		}
 
+		// New users will require a pro plan.
+		$global_settings = new Rop_Global_Settings();
+		$is_new_user     = (int) get_option( 'rop_is_new_user', 0 );
+		if ( $global_settings->license_type() <= 0 && $is_new_user ) {
+			if ( 'custom_field' === $data['data']['post_content'] ) {
+				$data['data']['post_content'] = 'post_title';
+			}
+			if ( ! in_array( $data['data']['hashtags'], array( 'no-hashtags', 'common-hashtags' ), true ) ) {
+				$data['data']['hashtags'] = 'no-hashtags';
+			}
+			if ( ! in_array( $data['data']['short_url_service'], array( 'rviv.ly', 'wp_short_url' ), true ) ) {
+				$data['data']['short_url_service'] = 'rviv.ly';
+			}
+		}
+
 		try {
 			if ( $data['data']['short_url_service'] !== 'wp_short_url' ) {
 				$shortner = $sh_factory->build( $data['data']['short_url_service'] );
