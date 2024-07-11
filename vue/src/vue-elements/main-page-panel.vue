@@ -156,7 +156,10 @@
             target="_blank"
             class="btn rop-sidebar-action-btns"
           >{{ labels.review_it }}</a>
-          <div class="license-container">
+          <div
+            v-if="license_data_view.installed"
+            class="license-container"
+          >
             <h6 class="license-title">
               {{ license_field_title }}
             </h6>

@@ -456,17 +456,17 @@ class Rop_Global_Settings {
 	 * @return  array With data for display.
 	 */
 	public function get_license_data_view() {
-		$license_data = $this->get_license_data();
+		$license_data      = $this->get_license_data();
+		$view_license_data = array(
+			'installed'    => defined( 'ROP_PRO_VERSION' ),
+			'license'      => 'invalid',
+			'expires'      => '',
+			'passwordMask' => '',
+		);
 
 		if ( -1 === $license_data ) {
-			return array(
-				'license' => 'invalid',
-				'expires' => '',
-				'passwordMask'    => '',
-			);
+			return $view_license_data;
 		}
-
-		$view_license_data = array();
 
 		// Pick only the necessary data.
 		if ( isset( $license_data->license ) ) {
