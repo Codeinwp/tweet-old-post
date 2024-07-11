@@ -141,6 +141,22 @@ class Test_RopAccounts extends WP_UnitTestCase {
 		}
 
 		$this->assertTrue( $account_added );
+
+		$saved_data = get_option( 'rop_data', array() );
+		
+		$webhooks_services = $saved_data[Rop_Services_Model::WEBHOOK_NAMESPACE];
+		$this->assertNotEmpty( $webhooks_services );
+		foreach ( $webhooks_services as $webhook_service_id => $webhook_service ) {
+			$this->assertEquals( $webhook_service['credentials']['url'], $webhook_data['url'] );
+			$this->assertEquals( $webhook_service['credentials']['display_name'], $webhook_data['display_name'] );
+			$this->assertEquals( $webhook_service['credentials']['headers'], $webhook_data['headers'] );
+		}
+
+		// No webhooks saved in the main services array. Backwards compatibility!
+		$services = $saved_data['services'];
+		foreach ( $services as $service_key => $service ) {
+			$this->assertNotEquals( Rop_Webhook_Service::SERVICE_SLUG, $service['service'] );
+		}
 	}
 
 	/**
