@@ -2669,7 +2669,7 @@ a.active {
     margin: 0.1rem;
     padding: 0.1rem 0.5rem;
     border-radius: 5rem;
-    color: #727e96;
+    color: #4C4E67;
     background: #f0f1f4;
     vertical-align: middle;
     text-decoration: none;
@@ -3530,7 +3530,7 @@ a.active {
 }
 
 #rop_core .text-gray {
-    color: #acb3c2;
+    color: #6A7590;
 }
 
 #rop_core a.text-gray:focus,
@@ -4258,7 +4258,7 @@ a.active {
 }
 
 .rop-control-container-false .rop-control {
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
 #rop_core .panel-body {
@@ -4410,7 +4410,7 @@ a.active {
 #rop_core .btn-danger {
     border-color: #b71c1c;
     color: #fff;
-    background-color: #c62828;
+    background-color: #B7151F;
 }
 
 #rop_core .btn-danger:hover,
@@ -4429,7 +4429,7 @@ a.active {
 #rop_core .btn-success {
     border-color: #33691e;
     color: #fff;
-    background-color: #8bc34a;
+    background-color: #2E8726;
 }
 
 #rop_core .btn-success:hover,
@@ -4445,6 +4445,17 @@ a.active {
     background-color: #33691e;
 }
 
+#rop_core :is( .btn-success, .btn-warning, .btn-danger, .sharing-status-sharing, .rop-next-share-time, .sharing-status-notsharing ) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+ }
+
+#rop_core :is( .btn-success, .btn-warning, .btn-danger, .sharing-status-sharing, .rop-next-share-time, .rop-sidebar-action-btns, .sharing-status-notsharing ) {
+   padding: 12px 16px 12px 16px;
+   height: fit-content;
+}
+
 .rop-queue-post i.service {
     background: none;
 }
@@ -4457,6 +4468,11 @@ a.active {
 
 #rop_core .sidebar .rop-sidebar-action-btns{
     margin-bottom: 10px;
+}
+
+#rop_core .rop-container-start {
+    border: unset;
+    box-shadow: unset;
 }
 
 #rop_core .rop-container-start .tooltip::after {
@@ -4567,32 +4583,11 @@ a.active {
     pointer-events: auto;
 }
 
-#rop_core .toast.rop-next-share-time{
-  background: #8bc34a;
+#rop_core .toast.rop-next-share-time {
+  background: #E8EDFE;
+  color: #384C94;
   border: none;
-  margin-bottom: 0;
-}
-
-.sharing-box{
-    padding: 15px 10px;
-    font-size: 0.75rem;
-    margin: 10px 0 0;
-    text-align: center;
-}
-
-.sharing-status-sharing {
-    color: #fff;
-    background-color: #46bd55;
-}
-
-.sharing-status-notsharing {
-    color: #fff;
-    background-color: #e65100;
-}
-
-.sharing-status-error {
-    color: #fff;
-    background-color: #c62828;
+  margin: 0 0 10px 0;
 }
 
 #rop_vid_tuts span{
@@ -4674,6 +4669,9 @@ a.active {
 }
 
 #rop_core .upsell {
+    color: #674E13;
+    background: #FFF7E2;
+    padding: 8px;
     margin-bottom: 0;
     border-radius: 0.1rem;
 }
