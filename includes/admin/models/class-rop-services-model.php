@@ -550,7 +550,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @param string $key The key to retrieve from model data.
 	 *
 	 * @return mixed
-	 * @since   8.0.0
+	 * @since   9.1.0
 	 * @access  protected
 	 */
 	protected function get( $key ) {
@@ -596,7 +596,9 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * To maintain backward compatibility, we will save the webhooks in a separate namespace.
 	 *
 	 * @param string $key The key to save.
-	 * @param array $value The value to save.
+	 * @param array  $value The value to save.
+	 *
+	 * @since 9.1.0
 	 *
 	 * @return array The value to save.
 	 */
