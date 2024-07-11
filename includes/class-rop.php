@@ -136,8 +136,6 @@ class Rop {
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_cron_event_status_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin_notices, 'rop_revive_network_nag_delayed' );
 
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_remove_remote_cron_notice' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_remove_remote_cron' );
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );

@@ -4869,3 +4869,10 @@ padding: 0 20px;
 #rop_core .uppercase {
     text-transform: uppercase;
 }
+
+#rop_core i.fa {
+    font-family: 'FontAwesome';
+}
+#rop_core span.dashicons {
+    font-family: 'dashicons';
+}

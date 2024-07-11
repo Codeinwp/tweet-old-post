@@ -686,10 +686,34 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function get_active_accounts() {
-		$model = new Rop_Services_Model();
-		// $model->reset_authenticated_services();
+		$model                 = new Rop_Services_Model();
+		$saved_active_accounts = $model->get_active_accounts();
+		$available_services    = $model->get_authenticated_services();
+
+		// Return the active accounts that are also available.
+		$valid_accounts         = array();
+		$available_accounts_ids = array();
+
+		foreach ( $available_services as $_ => $service ) {
+			if ( ! isset( $service['available_accounts'] ) ) {
+				continue;
+			}
+
+			foreach ( $service['available_accounts'] as $account_id => $_ ) {
+				$available_accounts_ids[] = $account_id;
+			}
+		}
+
+		foreach ( $saved_active_accounts as $active_account_id => $active_account ) {
+			if ( ! in_array( $active_account_id, $available_accounts_ids, true ) ) {
+				continue;
+			}
+
+			$valid_accounts[ $active_account_id ] = $active_account;
+		}
+
 		$this->response->set_code( '200' )
-					   ->set_data( $model->get_active_accounts() );
+					   ->set_data( $valid_accounts );
 
 		return $this->response->to_array();
 	}
