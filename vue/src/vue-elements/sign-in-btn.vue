@@ -39,7 +39,6 @@
           class="dashicons dashicons-lock"
         />
       </button>
-
     </div>
 
     <div
@@ -103,17 +102,6 @@
               <div v-if="!hideOwnAppOption">
                 <span class="text-center">{{ labels.app_option_signin }}</span>
               </div>
-            </div>
-            <div
-              v-if="isTwitter"
-              class="auth-app"
-            >
-              <button
-                class="btn btn-primary big-btn"
-                @click="showAdvanceConfig = !showAdvanceConfig"
-              >
-                {{ labels.show_own_keys_config }}
-              </button>
             </div>
             <div
               v-if="isLinkedIn"
@@ -183,45 +171,7 @@
               </div>
 
               <div
-                v-if="isTwitter && ! showAdvanceConfig"
-                id="rop-advanced-config"
-                class="tw-signin-advanced-config"
-              >
-                <button
-                  class="btn btn-secondary"
-                  @click="openPopupTW()"
-                >
-                  {{ labels.tw_app_signin_btn }}
-                </button>
-                <div v-if="!hideOwnAppOption">
-                  <span class="text-center">{{ labels.app_option_signin }}</span>
-                </div>
-                <tooltip
-                  placement="bottom-right"
-                  mode="hover"
-                  :nowrap="false"
-                  :min-width="260"
-                  :max-width="350"
-                >
-                  <div slot="outlet">
-                    <button
-                      class="btn btn-sm input-group-btn circle"
-                    >
-                      <i
-                        class="fa fa-exclamation-circle"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
-                  <div
-                    slot="tooltip"
-                    v-html="labels.tw_app_signin_tooltip"
-                  />
-                </tooltip>
-              </div>
-
-              <div
-                v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr) )"
+                v-if="showAdvanceConfig && (isFacebook || isLinkedIn || (isTumblr && isAllowedTumblr) )"
               >
                 <div
                   v-for="( field, id ) in modal.data"
@@ -250,7 +200,7 @@
               </div>
             </div>
             <div
-              v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)"
+              v-if="(!isFacebook && !isLinkedIn && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)"
             >
               <div
                 v-for="( field, id ) in modal.data"
@@ -281,7 +231,7 @@
         </div>
 
         <div
-          v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)"
+          v-if="showAdvanceConfig && (isFacebook || isLinkedIn || isTumblr) || isTwitter"
           class="modal-footer"
         >
           <div
