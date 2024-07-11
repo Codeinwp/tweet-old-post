@@ -130,6 +130,7 @@ class Rop_Global_Settings {
 		'webhook' => array(
 			'active' => false,
 			'name'   => 'Webhook',
+			'two_step_sign_in' => true,
 		),
 	);
 
