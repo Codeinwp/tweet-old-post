@@ -37,6 +37,23 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	private $accounts_namespace = 'active_accounts';
 
+	/**
+	 * Holds the webhook namespace.
+	 *
+	 * @since   9.1.0
+	 * @access  public
+	 * @var     string WEBHOOK_NAMESPACE Defaults 'services_webhooks'.
+	 */
+	public const WEBHOOK_NAMESPACE = 'services_webhooks';
+
+	/**
+	 * Holds the webhook active accounts namespace.
+	 *
+	 * @since   9.1.0
+	 * @access  public
+	 * @var     string ACTIVE_WEBHOOK_NAMESPACE Defaults 'active_accounts_webhooks'.
+	 */
+	public const ACTIVE_WEBHOOK_NAMESPACE = 'active_accounts_webhooks';
 
 	/**
 	 * Utility method to clear authenticated services.
@@ -375,6 +392,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @access  public
 	 */
 	public function update_active_accounts( $new_active_accounts ) {
+		$new_active_accounts = $this->save_webhooks( self::ACTIVE_WEBHOOK_NAMESPACE, $new_active_accounts );
 		$this->set( $this->accounts_namespace, $new_active_accounts );
 
 		return $new_active_accounts;
@@ -389,6 +407,12 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function get_active_accounts() {
 		$accounts = $this->get( $this->accounts_namespace );
+		$webhook_accounts = $this->get( self::ACTIVE_WEBHOOK_NAMESPACE );
+
+		if ( is_array( $webhook_accounts ) && ! empty( $webhook_accounts ) ) {
+			$accounts = array_merge( $accounts, $webhook_accounts );
+		}
+
 		if ( ! is_array( $accounts ) ) {
 			$accounts = array();
 		}
@@ -520,4 +544,92 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		return false;
 	}
 
+	/**
+	 * The get method for the model data.
+	 *
+	 * @param string $key The key to retrieve from model data.
+	 *
+	 * @return mixed
+	 * @since   8.0.0
+	 * @access  protected
+	 */
+	protected function get( $key ) {
+
+		$extra = array();
+
+		// Get the extra services.
+		if ( $this->services_namespace === $key ) {
+			$webhooks_services = parent::get( self::WEBHOOK_NAMESPACE );
+			if ( ! empty( $webhooks_services ) && is_array( $webhooks_services ) ) {
+				$extra = array_merge( $extra, $webhooks_services );
+			}
+
+			return array_merge( $extra, parent::get( $key ) );
+		}
+
+		return parent::get( $key );
+	}
+
+	/**
+	 * The set method for the model data.
+	 *
+	 * @param string $key The key to set inside the model data.
+	 * @param mixed  $value The value for the specified key.
+	 * @param bool   $refresh Whether to refresh the rop_data property in class with new rop_data option values.
+	 *
+	 * @return mixed
+	 * @since   9.1.0
+	 * @access  protected
+	 */
+	protected function set( $key, $value = '', $refresh = false ) {
+
+		if ( $this->services_namespace === $key ) {
+			$value = $this->save_webhooks( self::WEBHOOK_NAMESPACE, $value );
+		}
+
+		parent::set( $key, $value, $refresh );
+	}
+
+	/**
+	 * Save webhooks related data.
+	 *
+	 * To maintain backward compatibility, we will save the webhooks in a separate namespace.
+	 *
+	 * @param string $key The key to save.
+	 * @param array $value The value to save.
+	 *
+	 * @return array The value to save.
+	 */
+	protected function save_webhooks( $key, $value ) {
+
+		if ( empty( $value ) || ! is_array( $value ) ) {
+			return $value;
+		}
+
+		$webhooks_services = array();
+		$keys_to_delete    = array();
+
+		foreach ( $value as $service_key => $service_data ) {
+			if (
+				! isset( $service_data['service'] ) ||
+				empty( $service_data['service'] ) ||
+				Rop_Webhook_Service::SERVICE_SLUG !== $service_data['service']
+			) {
+				continue;
+			}
+
+			$keys_to_delete[]                  = $service_key;
+			$webhooks_services[ $service_key ] = $service_data;
+		}
+
+		if ( ! empty( $webhooks_services ) ) {
+			parent::set( $key, $webhooks_services );
+
+			foreach ( $keys_to_delete as $key ) {
+				unset( $value[ $key ] );
+			}
+		}
+
+		return $value;
+	}
 }

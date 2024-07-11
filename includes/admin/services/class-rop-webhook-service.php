@@ -21,6 +21,15 @@
 class Rop_Webhook_Service extends Rop_Services_Abstract {
 
 	/**
+	 * Defines the service slug.
+	 *
+	 * @since   9.1.0
+	 * @access  public
+	 * @var     string SERVICE_SLUG The service slug.
+	 */
+	public const SERVICE_SLUG = 'webhook';
+
+	/**
 	 * Defines the service name in slug format.
 	 *
 	 * @since   9.1.0
