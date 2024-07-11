@@ -896,8 +896,11 @@ class Rop_Rest_Api {
 				}
 			}
 			if ( ${$data['service'] . '_services'} ) {
-				/* @noinspection PhpUndefinedMethodInspection */
-				$url = ${$data['service'] . '_services'}->sign_in_url( $data );
+				if ( method_exists( ${$data['service'] . '_services'}, 'sign_in_url' ) ) {
+					$url = ${$data['service'] . '_services'}->sign_in_url( $data );
+				} else {
+					$url = '';
+				}
 			}
 		} catch ( Exception $exception ) {
 			// Service can't be built. Not found or otherwise. Maybe log this.
