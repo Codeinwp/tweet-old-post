@@ -316,6 +316,22 @@ class Rop_Post_Format_Helper {
 					$content = $post_content;
 				}
 				break;
+			case 'yoast_seo_title_description':
+				if ( function_exists( 'YoastSEO' ) ) {
+					$title       = YoastSEO()->meta->for_post( $post_id )->title;
+					$description = YoastSEO()->meta->for_post( $post_id )->description;
+
+					// This is empty if user doesn't add a custom description
+					// So lets fall back to post content
+					if ( empty( $description ) ) {
+						$description = $post_content;
+					}
+
+					$content = $title . ' ' . $description;
+				} else {
+					$content = $post_title . apply_filters( 'rop_title_content_separator', ' ' ) . $post_content;
+				}
+				break;
 			default:
 				$content = $post_title;
 				break;

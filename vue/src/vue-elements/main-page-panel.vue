@@ -95,6 +95,13 @@
         :class="'rop-license-plan-'+license"
       >
         <div class="card rop-container-start">
+          <StatusBox
+            :status-color-class="status_color_class"
+            :label="status_label_display"
+          />
+
+          <countdown :current_time="current_time" />
+          
           <button
             id="rop_start_stop_btn"
             class="btn"
@@ -118,14 +125,6 @@
             {{ labels.click }} {{ labels.to }} {{ ( start_status ? labels.stop : labels.start ) }} {{ labels.sharing }}
           </button>
 
-          <div
-            class="sharing-box"
-            :class="status_color_class"
-          >
-            {{ status_label_display }}
-          </div>
-
-          <countdown :current_time="current_time" />
 
           <div
             v-if="staging"
@@ -220,6 +219,7 @@
     import Toast from './reusables/toast.vue'
     import CountDown from './reusables/countdown.vue'
     import upsellSidebar from './upsell-sidebar.vue'
+    import StatusBox from './reusables/status-box.vue'
 
     export default {
         name: 'MainPagePanel',
@@ -231,7 +231,8 @@
             'logs': LogsTab,
             'upsell-sidebar': upsellSidebar,
             'toast': Toast,
-            'countdown': CountDown
+            'countdown': CountDown,
+            StatusBox
         },
         data: function () {
             return {

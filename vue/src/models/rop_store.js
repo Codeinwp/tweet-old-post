@@ -109,6 +109,7 @@ export default new Vuex.Store({
         rop_cron_remote: ropApiSettings.rop_cron_remote,
         dom_updated: false,
         tracking: Boolean( ropApiSettings.tracking ),
+        is_new_user: Boolean( ropApiSettings.is_new_user ),
     },
     mutations: {
 
