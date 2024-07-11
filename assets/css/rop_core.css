@@ -4470,6 +4470,11 @@ a.active {
     margin-bottom: 10px;
 }
 
+#rop_core .rop-container-start {
+    border: unset;
+    box-shadow: unset;
+}
+
 #rop_core .rop-container-start .tooltip::after {
     white-space: initial;
     text-overflow: initial;
