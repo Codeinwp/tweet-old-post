@@ -145,7 +145,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 		if ( is_wp_error( $response ) ) {
 			$this->logger->alert_error( $log_account_used . Rop_I18n::get_labels( 'errors.webhook_error' ) . $response->get_error_message() );
 			return false;
-		} else if ( true === $response ) {
+		} elseif ( true === $response ) {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
