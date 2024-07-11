@@ -2669,7 +2669,7 @@ a.active {
     margin: 0.1rem;
     padding: 0.1rem 0.5rem;
     border-radius: 5rem;
-    color: #727e96;
+    color: #4C4E67;
     background: #f0f1f4;
     vertical-align: middle;
     text-decoration: none;
@@ -3530,7 +3530,7 @@ a.active {
 }
 
 #rop_core .text-gray {
-    color: #acb3c2;
+    color: #6A7590;
 }
 
 #rop_core a.text-gray:focus,
@@ -4258,7 +4258,7 @@ a.active {
 }
 
 .rop-control-container-false .rop-control {
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
 #rop_core .panel-body {
@@ -4664,6 +4664,9 @@ a.active {
 }
 
 #rop_core .upsell {
+    color: #674E13;
+    background: #FFF7E2;
+    padding: 8px;
     margin-bottom: 0;
     border-radius: 0.1rem;
 }
