@@ -834,6 +834,7 @@ export default {
     color: #fff;
     padding: 0.5rem 1rem;
     height: auto;
+    display: inline;
   }
   .btn-success:hover{
     background-color:#009528;
