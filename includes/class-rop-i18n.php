@@ -93,6 +93,7 @@ class Rop_I18n {
 				'field_required'             => __( 'This field is required', 'tweet-old-post' ),
 				'at'                         => __( 'at', 'tweet-old-post' ),
 				'remove_account'             => __( 'Remove account from the list.', 'tweet-old-post' ),
+				'edit_account'               => __( 'Edit account details.', 'tweet-old-post' ),
 				'no_accounts'                => __( 'You Need to Connect an Account', 'tweet-old-post' ),
 				'no_active_accounts'         => __( 'No active accounts!', 'tweet-old-post' ),
 				'no_active_accounts_desc'    => __( 'Add one from the <b>"Accounts"</b> section.', 'tweet-old-post' ),
@@ -128,6 +129,8 @@ class Rop_I18n {
 				'upsell_extra_account'       => __( 'Sharing to Additional %1$s Accounts', 'tweet-old-post' ),
 				'upsell_service_title'       => __( '%1$s is a PRO feature', 'tweet-old-post' ),
 				'upsell_service_body'        => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the Pro plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
+				'edit_headers'               => __( 'Edit Headers', 'tweet-old-post' ),
+				'hide'                       => __( 'Hide', 'tweet-old-post' ),
 			),
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),
@@ -437,6 +440,8 @@ You can try to disable any of the security plugins that you use in order to see 
 				'share_attempted_on_staging' => __( 'Revive Social has detected that this is a development website. Share process skipped.', 'tweet-old-post' ),
 				'reached_sharing_limit' => __( 'You\'ve reached your daily post sharing limit of %1$d posts. Want to share more? Consider upgrading to enjoy a higher limit.', 'tweet-old-post' ),
 				'invalid_license' => __( 'Sorry, your license is invalid.', 'tweet-old-post' ),
+				'webhook_extension_not_found' => __( 'Webhook extension not found. Please install the Pro add-on.', 'tweet-old-post' ),
+				'webhook_url_not_set' => __( 'Webhook URL not set.', 'tweet-old-post' ),
 			),
 			'errors' => array(
 				'wordpress_api_error' => __( 'Cannot post to network. WordPress Error: ', 'tweet-old-post' ),
@@ -449,6 +454,8 @@ You can try to disable any of the security plugins that you use in order to see 
 				'linkedin_issue_fetching_token' => __( 'There was an issue fetching the LinkedIn Token. Please contact Revive Social support for assistance.', 'tweet-old-post' ),
 				'no_image_found' => __( 'No image was found for post %1$s cannot share as an image post to: %2$s. Please double check that you have a featured image set.', 'tweet-old-post' ),
 				'license_not_active' => __( 'An active Pro license is needed to share to %1$s', 'tweet-old-post' ),
+				'could_not_send_webhook' => __( 'Could not send webhook.', 'tweet-old-post' ),
+				'webhook_error' => __( 'An error occurred for Webhook post sharing.', 'tweet-old-post' ),
 			),
 			'generic' => array(
 				'only_pro_suffix' => ' (' . __( 'Available in Pro', 'tweet-old-post' ) . ')',
@@ -460,7 +467,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'revive_network_learn_more_btn' => __( 'Learn More', 'tweet-old-post' ),
 				'learn_more' => __( 'Learn More!', 'tweet-old-post' ),
 				'min_interval_6_mins' => __( 'Minimum interval between consecutive shares is 6 minutes.', 'tweet-old-post' ),
-				'min_interval_between_shares' => __( 'Lowest allowed value for "Minimum Interval Between Shares" is %s hours. Upgrade to Business Plan or higher to fine tune posting times and days.', 'tweet-old-post' ),
+				'min_interval_between_shares' => __( 'Lowest allowed value for "Minimum Interval Between Shares" is %s hours. Choosing a lower interval is available in the Pro version.', 'tweet-old-post' ),
 				'min_recurring_schedule_interval' => __( 'Lowest allowed value for "Recurring Schedule Interval" is %d minutes.', 'tweet-old-post' ),
 				'no_post_types_selected' => __( 'You need to have at least one post type to share.', 'tweet-old-post' ),
 				'min_number_of_concurrent_posts' => __( 'At least one posts need to be shared.', 'tweet-old-post' ),

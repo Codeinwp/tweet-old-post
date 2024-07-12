@@ -101,5 +101,135 @@ class Test_RopAccounts extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test adding a webhook account.
+	 * 
+	 * @since 9.1.0
+	 * 
+	 * @covers Rop_Webhook_Service
+	 */
+	public function test_add_account_webhook() {
+		$rest_controller = new Rop_Rest_Api();
 
+		$webhook_data = array(
+			'url'          => 'https://test.add.com',
+			'display_name' => 'Add Webhook',
+			'headers'      => array(
+				'Content-Type: application/json',
+			),
+		);
+
+		$request = new WP_REST_Request( 'POST', '/example' );
+        $request->set_param( 'req', 'add_account_webhook' );
+        $request->set_body( json_encode( $webhook_data ) );
+
+		$response = $rest_controller->api( $request );
+
+		$this->assertEquals( '200', $response['code'] );
+
+		$model = new Rop_Services_Model();
+
+		$authenticated_services = $model->get_authenticated_services();
+
+		$account_added = false;
+		foreach ( $authenticated_services as $service_id => $service ) {
+			if ( isset( $service['credentials']['url'] ) && $service['credentials']['url'] === $webhook_data['url'] ) {
+				$account_added = true;
+				$this->assertEquals( $service['credentials']['display_name'], $webhook_data['display_name'] );
+				$this->assertEquals( $service['credentials']['headers'], $webhook_data['headers'] );
+			}
+		}
+
+		$this->assertTrue( $account_added );
+	}
+
+	/**
+	 * Test editing a webhook account.
+	 * 
+	 * @since 9.1.0
+	 * 
+	 * @covers Rop_Webhook_Service
+	 */
+	public function test_edit_account_webhook() {
+		$rest_controller = new Rop_Rest_Api();
+
+		$webhook_data = array(
+			'url'          => 'https://test.edit.com',
+			'display_name' => 'Edit Webhook',
+			'headers'      => array(
+				'Content-Type: application/json',
+			),
+		);
+
+		$request = new WP_REST_Request( 'POST', '/example' );
+		$request->set_param( 'req', 'add_account_webhook' );
+		$request->set_body( json_encode( $webhook_data ) );
+
+		$response = $rest_controller->api( $request );
+
+		$this->assertEquals( '200', $response['code'] );
+
+		$model = new Rop_Services_Model();
+
+		$authenticated_services = $model->get_authenticated_services();
+
+		$account_added          = false;
+		$service_id_added       = null;
+		$service_added          = array();
+		$full_id_active_account = '';
+
+		foreach ( $authenticated_services as $service_id => $service ) {
+			if ( isset( $service['credentials']['url'] ) && $service['credentials']['url'] === $webhook_data['url'] ) {
+				$account_added = true;
+				$this->assertEquals( $service['credentials']['display_name'], $webhook_data['display_name'] );
+				$this->assertEquals( $service['credentials']['headers'], $webhook_data['headers'] );
+				
+				$service_added    = $service;
+				$service_id_added = $service_id;
+
+				foreach ( $service['available_accounts'] as $full_id => $account ) {
+					$full_id_active_account = $full_id;
+					break;
+				}
+
+				break;
+			}
+		}
+
+		$this->assertTrue( $account_added );
+
+		$webhook_data['display_name'] = 'Test Webhook 2';
+		$webhook_data['headers']      = array(
+			'Content-Type: application/json',
+			'Authorization: Bearer test',
+		);
+
+		$webhook_data['id']         = $service_added['id'];
+		$webhook_data['active']     = true;
+		$webhook_data['full_id']    = $full_id_active_account;
+		$webhook_data['service_id'] = $service_id_added;
+
+		$request = new WP_REST_Request( 'POST', '/example' );
+		$request->set_param( 'req', 'edit_account_webhook' );
+		$request->set_body( json_encode( $webhook_data ) );
+
+		$response = $rest_controller->api( $request );
+
+		$this->assertEquals( '200', $response['code'] );
+
+		$model                  = new Rop_Services_Model();
+		$authenticated_services = $model->get_authenticated_services();
+
+		$account_edited = false;
+		foreach ( $authenticated_services as $service_id => $service ) {
+			if ( isset( $service['credentials']['url'] ) && $service['credentials']['url'] === $webhook_data['url'] ) {
+				$account_edited = true;
+				$this->assertEquals( $service['credentials']['display_name'], $webhook_data['display_name'] );
+				$this->assertEquals( $service['credentials']['headers'], $webhook_data['headers'] );
+				$this->assertTrue( $service['available_accounts'][$full_id_active_account]['active'] );
+			}
+		}
+
+		$this->assertTrue( $account_edited );
+	}
 }

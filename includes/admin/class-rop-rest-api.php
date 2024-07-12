@@ -365,6 +365,21 @@ class Rop_Rest_Api {
 			}
 		}
 
+		// New users will require a pro plan.
+		$global_settings = new Rop_Global_Settings();
+		$is_new_user     = (int) get_option( 'rop_is_new_user', 0 );
+		if ( $global_settings->license_type() <= 0 && $is_new_user ) {
+			if ( 'custom_field' === $data['data']['post_content'] ) {
+				$data['data']['post_content'] = 'post_title';
+			}
+			if ( ! in_array( $data['data']['hashtags'], array( 'no-hashtags', 'common-hashtags' ), true ) ) {
+				$data['data']['hashtags'] = 'no-hashtags';
+			}
+			if ( ! in_array( $data['data']['short_url_service'], array( 'rviv.ly', 'wp_short_url' ), true ) ) {
+				$data['data']['short_url_service'] = 'rviv.ly';
+			}
+		}
+
 		try {
 			if ( $data['data']['short_url_service'] !== 'wp_short_url' ) {
 				$shortner = $sh_factory->build( $data['data']['short_url_service'] );
@@ -896,8 +911,11 @@ class Rop_Rest_Api {
 				}
 			}
 			if ( ${$data['service'] . '_services'} ) {
-				/* @noinspection PhpUndefinedMethodInspection */
-				$url = ${$data['service'] . '_services'}->sign_in_url( $data );
+				if ( method_exists( ${$data['service'] . '_services'}, 'sign_in_url' ) ) {
+					$url = ${$data['service'] . '_services'}->sign_in_url( $data );
+				} else {
+					$url = '';
+				}
 			}
 		} catch ( Exception $exception ) {
 			// Service can't be built. Not found or otherwise. Maybe log this.
@@ -1364,5 +1382,102 @@ class Rop_Rest_Api {
 			->set_code( '200' )
 			->set_data( array( 'success' => true ) )
 			->to_array();
+	}
+
+	/**
+	 * API method called to add Webhook account.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   9.1.0
+	 * @access  private
+	 *
+	 * @param  array $data Webhook account data.
+	 *
+	 * @return array
+	 */
+	private function add_account_webhook( $data ) {
+		$services        = array();
+		$webhook_service = new Rop_Webhook_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		if ( ! $webhook_service->add_webhook( $data ) ) {
+			$this->response->set_code( '422' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$services[ $webhook_service->get_service_id() ] = $webhook_service->get_service();
+		$active_accounts                                = $webhook_service->get_service_active_accounts();
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		return $this->response->to_array();
+	}
+
+	/**
+	 * API method called to edit Webhook account.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   9.1.0
+	 * @access  private
+	 *
+	 * @param  array $data Webhook account data.
+	 *
+	 * @return array
+	 */
+	private function edit_account_webhook( $data ) {
+		$webhook_service = new Rop_Webhook_Service();
+		$model           = new Rop_Services_Model();
+
+		if ( ! $webhook_service->add_webhook( $data ) ) {
+			$this->response->set_code( '422' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$service_id             = ! empty( $data['service_id'] ) ? $data['service_id'] : '';
+		$authenticated_services = $model->get_authenticated_services();
+
+		if ( ! isset( $authenticated_services[ $service_id ] ) ) {
+			$this->response->set_code( '422' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$authenticated_services[ $service_id ] = array_merge( $authenticated_services[ $service_id ], $webhook_service->get_service() );
+
+		$model->update_authenticated_services( $authenticated_services );
+
+		if ( ! empty( $data['active'] ) && ! empty( $data['full_id'] ) ) {
+			$model->add_active_accounts( array( $data['full_id'] ) );
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		return $this->response->to_array();
 	}
 }

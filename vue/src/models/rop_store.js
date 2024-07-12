@@ -39,6 +39,10 @@ export default new Vuex.Store({
             view: 'accounts',
             template: 'accounts',
         },
+        editPopup: {
+            accountId: '',
+            canShow: false,
+        },
         cron_status: {},
         toast: {
             type: 'success',
@@ -112,6 +116,14 @@ export default new Vuex.Store({
         is_new_user: Boolean( ropApiSettings.is_new_user ),
     },
     mutations: {
+
+        setEditPopup(state, data) {
+            state.editPopup = data
+        },
+
+        setEditPopupShowPermission(state, canShow) {
+            state.editPopup.canShow = canShow
+        },
 
         setTabView(state, view) {
             Vue.$log.debug('Changing tab to  ', view);
