@@ -68,7 +68,7 @@ class Rop {
 	public function __construct() {
 
 		$this->plugin_name = 'rop';
-		$this->version     = '9.0.21';
+		$this->version     = '9.0.31';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -131,14 +131,11 @@ class Rop {
 		$this->loader->add_action( 'wp_ajax_rop_notice_dismissed', $plugin_admin_notices_helpers, 'rop_notice_dismissed' );
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
-		$this->loader->add_action( 'admin_head', $plugin_admin, 'rop_roadmap_new_tab' );
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'rop_hide_pinterest_network_btn' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_rop_event_not_firing_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_cron_event_status_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin_notices, 'rop_revive_network_nag_delayed' );
 
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_remove_remote_cron_notice' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_remove_remote_cron' );
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );
@@ -181,6 +178,9 @@ class Rop {
 		 * Use PHP_INT_MAX to make sure the schedule is added. Some plugins add their schedule by clearing the previous values.
 		 */
 		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules', PHP_INT_MAX );
+		// Add upgrade to pro plugin action.
+		$plugin_slug = basename( ROP_LITE_PATH ) . '/' . basename( ROP_LITE_BASE_FILE );
+		$this->loader->add_filter( "plugin_action_links_$plugin_slug", $plugin_admin, 'rop_upgrade_to_pro_plugin_action', 10, 2 );
 	}
 
 	/**

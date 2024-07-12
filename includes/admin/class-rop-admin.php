@@ -28,6 +28,7 @@ class Rop_Admin {
 	 */
 	private $allowed_screens;
 
+	const RN_LINK = 'https://revive.social/plugins/revive-network/';
 	/**
 	 * The ID of this plugin.
 	 *
@@ -163,7 +164,7 @@ class Rop_Admin {
 		}
 		?>
 		<div class="notice notice-error is-dismissible">
-			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
+			<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
 		</div>
 		<?php
 	}
@@ -305,7 +306,7 @@ class Rop_Admin {
 			return;
 		}
 		wp_enqueue_media();
-		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array('wp-url'), ( ROP_DEBUG ) ? time() : $this->version, false );
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 
 		$rop_api_settings = array(
@@ -394,6 +395,15 @@ class Rop_Admin {
 
 		$rop_api_settings['tracking']           = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
 		$rop_api_settings['tracking_info_link'] = sanitize_url( 'https://docs.revive.social/article/2008-revive-old-posts-usage-tracking' );
+
+		$is_new_user  = (int) get_option( 'rop_is_new_user', 0 );
+		$install_time = ! $is_new_user ? (int) get_option( 'rop_first_install_date', 0 ) : 0;
+
+		if ( ! $is_new_user && ( $install_time && $install_time >= strtotime( '-1 hour' ) ) ) {
+			$is_new_user = update_option( 'rop_is_new_user', 1 );
+		}
+
+		$rop_api_settings['is_new_user'] = $is_new_user;
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $rop_api_settings );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', array( ROP_LITE_URL . 'assets/' ) );
@@ -557,29 +567,6 @@ class Rop_Admin {
 		<?php
 	}
 
-	/**
-	 * The display method for the addons page.
-	 *
-	 * @since   8.6.0
-	 * @access  public
-	 */
-	public function rop_addons_page() {
-		$this->wrong_pro_version();
-		?>
-	<div id="wrap">
-		<div><p style="font-size: 40px; color: #000;">Revive Old Posts - Addons</p></div>
-
-		<div style="background: #ffffff; padding: 10px; width: 400px; border-radius: 5px; box-shadow: 0px 0px 5px black;">
-			<img src="<?php echo ROP_LITE_URL . 'assets/img/revivenetwork.jpg'; ?>" alt="Revive Network">
-			<p style="font-size: 14px"><?php echo Rop_I18n::get_labels( 'misc.revive_network_desc' ); ?>
-			<br>
-			<br>
-			<a style="align: right"href="https://revive.social/plugins/revive-network/?utm_source=rop&utm_medium=cta&utm_campaign=revive_network_upsell&utm_content=addons_page" target="_blank"><button style="cursor: pointer;"><?php echo Rop_I18n::get_labels( 'misc.revive_network_learn_more_btn' ); ?></button></a>
-			</p>
-		</div>
-	</div>
-		<?php
-	}
 
 	/**
 	 * Notice for wrong pro version usage.
@@ -588,7 +575,7 @@ class Rop_Admin {
 		if ( defined( 'ROP_PRO_VERSION' ) && ( - 1 === version_compare( ROP_PRO_VERSION, '2.0.0' ) ) ) {
 			?>
 			<div class="error">
-				<p>In order to use the premium features for <b>v8.0</b> of Revive Old Posts you will need to update the
+				<p>In order to use the premium features for <b>v8.0</b> of Revive Social you will need to update the
 					Premium addon to at least 2.0. In case that you don't see the update, please download from your <a
 							href="https://revive.social/your-purchases/" target="_blank">purchase history</a></p>
 			</div>
@@ -619,8 +606,8 @@ class Rop_Admin {
 	 */
 	public function menu_pages() {
 		add_menu_page(
-			__( 'Revive Old Posts', 'tweet-old-post' ),
-			__( 'Revive Old Posts', 'tweet-old-post' ),
+			__( 'Revive Social', 'tweet-old-post' ),
+			__( 'Revive Social', 'tweet-old-post' ),
 			'manage_options',
 			'TweetOldPost',
 			array(
@@ -652,43 +639,30 @@ class Rop_Admin {
 				'content_filters',
 			)
 		);
+		if ( ! defined( 'REVIVE_NETWORK_VERSION' ) ) {
+			$rss_to_social = __( 'RSS to Social', 'wpcf7-redirect' ) . '<span id="rop-rn-menu" class="dashicons dashicons-external" style="font-size:initial;"></span>';
+			add_action(
+				'admin_footer',
+				function () {
+					?>
+				<script type="text/javascript">
+					jQuery(document).ready(function ($) {
+						$('.tsdk-upg-menu-item').parent().attr('target', '_blank');
+					});
+				</script>
+					<?php
+				}
+			);
 
-		add_submenu_page(
-			'TweetOldPost',
-			__( 'Addons', 'tweet-old-post' ),
-			__( 'Addons', 'tweet-old-post' ),
-			'manage_options',
-			'rop_addons_page',
-			array(
-				$this,
-				'rop_addons_page',
-			)
-		);
-
-		add_submenu_page(
-			'TweetOldPost',
-			__( 'Roadmap', 'tweet-old-post' ),
-			__( 'Plugin Roadmap', 'tweet-old-post' ),
-			'manage_options',
-			'https://trello.com/b/svAZqXO1/roadmap-revive-old-posts'
-		);
+			global $submenu;
+			$submenu['TweetOldPost'][2] = array(
+				$rss_to_social,
+				'manage_options',
+				tsdk_utmify( self::RN_LINK, 'admin', 'admin_menu' ),
+			);
+		}
 	}
 
-	/**
-	 * Open roadmap in new tab
-	 *
-	 * @since   8.5.0
-	 * @access  public
-	 */
-	function rop_roadmap_new_tab() {
-		?>
-		<script type="text/javascript">
-		   jQuery( document ).ready( function ( $ ) {
-			   $( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
-		   } );
-		</script>
-		<?php
-	}
 
 	/**
 	 * Publish now upsell
@@ -712,7 +686,7 @@ class Rop_Admin {
 				__(
 					'Share to more accounts by upgrading to the extended version for ',
 					'tweet-old-post'
-				) . '<a href="' . ROP_PRO_URL . '" target="_blank">Revive Old Posts </a>
+				) . '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'editor', 'publish_now' ) . '" target="_blank">Revive Social </a>
 						</div>';
 		}
 	}
@@ -748,7 +722,7 @@ class Rop_Admin {
 		foreach ( $screens as $screen ) {
 			add_meta_box(
 				'rop_publish_now_metabox',
-				'Revive Old Posts',
+				'Revive Social',
 				array( $this, 'rop_publish_now_metabox_html' ),
 				$screen,
 				'side',
@@ -1267,7 +1241,7 @@ class Rop_Admin {
 
 		?>
 		<div class="notice notice-error">
-			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+			<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 		</div>
 		<?php
@@ -1310,7 +1284,8 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function rop_wp_cron_notice() {
-
+        //TODO - we need to rework this as the constant is not saying that cron is not working only that the default scheduling is, the user can still use server cron instead.
+        return;
 		if ( ! defined( 'DISABLE_WP_CRON' ) ) {
 			return;
 		}
@@ -1329,7 +1304,7 @@ class Rop_Admin {
 
 			?>
 			<div class="notice notice-error">
-				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Old Posts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+				<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Social. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 			</div>
 			<?php
@@ -1475,7 +1450,7 @@ class Rop_Admin {
 
 			?>
 			<div class="notice notice-error">
-				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s There might be an issue preventing Revive Old Posts from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-cron-event-status-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+				<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s There might be an issue preventing Revive Social from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-cron-event-status-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 			</div>
 			<?php
@@ -1688,77 +1663,7 @@ class Rop_Admin {
 
 	}
 
-	/**
-	 * Hide and remove remote cron feature.
-	 *
-	 * This feature will be discontinued.
-	 *
-	 * @since   9.0.4
-	 * @access  public
-	 */
-	public function rop_remove_remote_cron_notice() {
 
-		$installed_at_version = get_option( 'rop_first_install_version' );
-
-		if ( empty( $installed_at_version ) ) {
-			return false;
-		}
-
-		if ( version_compare( $installed_at_version, '9.0.3', '>' ) ) {
-			return;
-		}
-
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-remove-remote-cron-notice-dismissed' ) ) {
-			return;
-		}
-
-		$using_remote_cron = (bool) get_option( 'rop_use_remote_cron' );
-
-		if ( $using_remote_cron ) {
-			delete_option( 'rop_use_remote_cron' );
-		}
-
-		$dismiss_link = add_query_arg(
-			array(
-				'rop-remove-remote-cron-notice-dismissed' => '1',
-			)
-		);
-
-		$rop = __( 'Revive Old Posts: ', 'tweet-old-post' );
-		$admin_url = admin_url( 'admin.php?page=TweetOldPost' );
-		$notice_text = sprintf( __( 'We\'ve removed the Remote Cron service feature of Revive Old Posts. If you used this option in the past, then please %1$shead to the Revive Old Posts dashboard%2$s to start sharing using the default WordPress cron. If post sharing is not working for you, then please see %3$shere for solutions.%2$s', 'tweet-old-post' ), "<a href='$admin_url'>", '</a>', "<a href='https://docs.revive.social/article/686-fix-revive-old-post-not-posting' target='blank'>" );
-
-		$message = <<<HTML
-		<p style="font-size: 14px">
-		<b>$rop</b> $notice_text 
-		<a style='float: right;' href='$dismiss_link'>Dismiss</a>
-		</p>
-HTML;
-
-		?>
-
-		<div class="notice notice-error">
-			<?php echo $message; ?>
-		</div>
-		<?php
-
-	}
-
-	/**
-	 * Dismiss Remote cron removal notice.
-	 *
-	 * @since   9.0.5
-	 * @access  public
-	 */
-	public function rop_dismiss_remove_remote_cron() {
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-remove-remote-cron-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-remove-remote-cron-notice-dismissed', 'true', true );
-		}
-
-	}
 
 	/**
 	 * Check the post sharing limit before sharing the post.
@@ -1864,5 +1769,35 @@ HTML;
 
 		do_action( 'themeisle_sdk_dependency_enqueue_script', 'survey' );
 		wp_localize_script( $survey_handler, 'ropSurveyData', $this->get_survey_metadata() );
+	}
+
+	/**
+	 * Add upgrade to pro plugin action link.
+	 *
+	 * @param array  $actions Plugin actions.
+	 * @param string $plugin_file Path to the plugin file relative to the plugins directory.
+	 *
+	 * @return array
+	 */
+	public function rop_upgrade_to_pro_plugin_action( $actions, $plugin_file ) {
+		$global_settings     = new \Rop_Global_Settings();
+		$actions['settings'] = '<a href="' . admin_url( 'admin.php?page=TweetOldPost' ) . '">' . __( 'Settings', 'tweet-old-post' ) . '</a>';
+		if ( $global_settings->license_type() < 1 ) {
+			return array_merge(
+				array(
+					'upgrade_link' => '<a href="' . add_query_arg(
+						array(
+							'utm_source'   => 'wpadmin',
+							'utm_medium'   => 'plugins',
+							'utm_campaign' => 'rowaction',
+						),
+						Rop_I18n::UPSELL_LINK
+					) . '" title="' . __( 'More Features', 'tweet-old-post' ) . '"  target="_blank" rel="noopener noreferrer" style="color: #009E29; font-weight: 700;" onmouseover="this.style.color=\'#008a20\';" onmouseout="this.style.color=\'#009528\';" >' . __( 'Get Revive Social Pro', 'tweet-old-post' ) . '</a>',
+				),
+				$actions
+			);
+		}
+
+		return $actions;
 	}
 }

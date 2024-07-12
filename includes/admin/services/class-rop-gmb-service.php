@@ -40,7 +40,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	 * @access public
 	 */
 	public function init() {
-		$this->display_name = 'Gmb';
+		$this->display_name = 'Google My Business';
 	}
 
 		/**

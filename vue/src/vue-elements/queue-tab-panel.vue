@@ -34,10 +34,29 @@
         </div>
 
         <!-- When sharing is started but we  have the business plan. -->
-        <div class="d-inline-block mt-2 column col-12">
+        <div class="d-inline-block mt-2 column col-8">
           <p class="text-gray info-paragraph">
             <i class="fa fa-info-circle" /> {{ labels.queue_desc }}
           </p>
+        </div>
+        <div
+          v-if="start_status"
+          class="d-inline-block mt-2 column col-4 float-right text-right"
+        >
+          <button
+            class="btn btn-secondary"
+            @click="refreshQueue(true)"
+          >
+            <i
+              v-if="!is_loading"
+              class="fa fa-refresh"
+            />
+            <i
+              v-else
+              class="fa fa-spinner fa-spin"
+            />
+            {{ labels.refresh_btn }}
+          </button>
         </div>
       </div>
       <div
@@ -71,25 +90,6 @@
           />
         </div>
       </div>
-    </div>
-    <div
-      v-if="start_status"
-      class="panel-footer text-rightcade"
-    >
-      <button
-        class="btn btn-secondary"
-        @click="refreshQueue(true)"
-      >
-        <i
-          v-if="!is_loading"
-          class="fa fa-refresh"
-        />
-        <i
-          v-else
-          class="fa fa-spinner fa-spin"
-        />
-        {{ labels.refresh_btn }}
-      </button>
     </div>
   </div>
 </template>
