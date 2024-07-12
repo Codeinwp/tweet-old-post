@@ -120,7 +120,7 @@
 				return this.$store.state.cron_status.current_status
 			},
 			is_business_and_higher: function () {
-				return (this.$store.state.licence > 1 && this.$store.state.licence !== 7)
+				return (this.$store.state.license > 1 && this.$store.state.license !== 7)
 			},
 		},
 		watch: {

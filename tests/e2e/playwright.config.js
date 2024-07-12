@@ -12,9 +12,7 @@ const baseConfig = require( '@wordpress/scripts/config/playwright.config' );
 
 const config = defineConfig( {
 	...baseConfig,
-	reporter: process.env.CI
-		? [ [ 'github' ], [ './config/flaky-tests-reporter.js' ] ]
-		: 'list',
+	reporter: 'list',
 	workers: 1,
 	globalSetup: fileURLToPath(
 		new URL( './config/global-setup.js', 'file:' + __filename ).href

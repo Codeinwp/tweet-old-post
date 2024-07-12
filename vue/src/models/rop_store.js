@@ -92,7 +92,7 @@ export default new Vuex.Store({
             }
         ],
         licenseDataView: ropApiSettings.license_data_view,
-        licence: parseInt(ropApiSettings.license_type),
+        license: parseInt(ropApiSettings.license_type),
         labels: ropApiSettings.labels,
         availableServices: [],
         generalSettings: [],

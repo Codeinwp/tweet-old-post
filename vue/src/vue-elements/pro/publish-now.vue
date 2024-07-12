@@ -114,7 +114,7 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
 
 			return {
                 rop_is_edit_post_screen: ropApiSettings.rop_is_edit_post_screen,
-				license: this.$store.state.licence,
+				license: this.$store.state.license,
 				labels: this.$store.state.labels.publish_now,
 				accounts: this.$store.state.publish_now.accounts,
 				share_on_update_enabled: this.$store.state.publish_now.instant_share_enabled,

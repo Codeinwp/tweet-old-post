@@ -71,6 +71,9 @@
             <option value="custom_field">
               {{ labels.post_content_option_custom_field }} {{ isNewUserPro ? "(Pro)" : '' }}
             </option>
+            <option value="custom_content">
+              {{ labels.post_content_option_custom_content }} {{ !isPro ? "(Pro)" : '' }}
+            </option>
             <option
               v-if="yoast_seo_active_status"
               value="yoast_seo_title"
@@ -168,9 +171,13 @@
     </div>
     <span class="divider" />
 
-    <div class="columns py-2">
+    <!-- Additional text | Message Custom Content -->
+    <div
+      class="columns py-2"
+      :class="is_message_custom_content_enabled ? 'rop-control-container-'+( isPro ) : ''"
+    >
       <div class="column col-6 col-sm-12 vertical-align">
-        <b>{{ labels.add_char_title }}</b>
+        <b>{{ !is_message_custom_content_enabled ? labels.add_char_title : labels.add_char_title_custom_content }}</b>
         <p class="text-gray">
           <span v-html="labels.add_char_desc" />
         </p>
@@ -180,13 +187,55 @@
           <textarea
             v-model="post_format.custom_text"
             class="form-input"
-            :placeholder="labels.add_char_placeholder"
+            :placeholder="!is_message_custom_content_enabled ? labels.add_char_placeholder : labels.add_char_placeholder_custom_content"
+            :disabled="is_message_custom_content_enabled && !isPro"
           />
         </div>
       </div>
     </div>
 
-    <div class="columns py-2">
+    <!-- Override Share Variations for Custom Content -->
+    <div
+      v-if="is_message_custom_content_enabled"
+      :class="'rop-control-container-'+isPro"
+      class="columns py-2"
+    >
+      <div class="column col-6 col-sm-12 vertical-align">
+        <p class="text-gray">
+          <span>{{ labels.override_share_variations }}</span>
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align">
+        <div class="input-group">
+          <label class="form-checkbox">
+            <input
+              v-model="post_format.override_share_variations"
+              :disabled="!isPro"
+              type="checkbox"
+            >
+            <i class="form-icon" /> {{ labels.yes_text }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upsell for Custom Content -->
+    <div
+      v-if="is_message_custom_content_enabled && !isPro"
+      class="columns "
+    >
+      <div class="column text-center">
+        <p class="upsell">
+          <i class="fa fa-info-circle" /> {{ labels.message_custom_content_upsell }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Additional Text Position -->
+    <div
+      v-if="!is_message_custom_content_enabled"
+      class="columns py-2"
+    >
       <div class="column col-6 col-sm-12 vertical-align">
         <p class="text-gray">
           {{ labels.add_pos_title }}
@@ -208,7 +257,9 @@
         </div>
       </div>
     </div>
+
     <span class="divider" />
+    
     <div class="columns py-2">
       <div class="column col-6 col-sm-12 vertical-align">
         <b>{{ labels.add_link_title }}</b>
@@ -337,7 +388,7 @@
     </div>
 
     <span class="divider" />
-        
+
     <div class="columns py-2">
       <div class="column col-6 col-sm-12 vertical-align">
         <b>{{ labels.use_shortner_title }}</b>
@@ -429,7 +480,7 @@
       </div>
     </div>
     </template>
-    
+
 
     <span class="divider" />
 
@@ -575,6 +626,7 @@
 
     <span class="divider" />
 
+    <!-- Share As Image Post -->
     <div
       class="columns py-2"
       :class="'rop-control-container-'+isPro"
@@ -758,7 +810,7 @@
             allAccounts: function(){
 
                     const all_accounts = {};
-                                
+
                     const services = this.$store.state.authenticatedServices;
 
                     for (const key in services) {
@@ -825,6 +877,9 @@
             shorteners: function () {
                 return this.$store.state.generalSettings.available_shorteners;
             },
+            is_message_custom_content_enabled: function() {
+              return this.post_format.post_content === 'custom_content';
+            },
             isNewUserPro: function () {
                 return Boolean( ! this.isPro && this.$store.state.is_new_user );
             },
@@ -855,7 +910,7 @@
         },
        methods:{
             refresh_language_taxonomies: function(e){
-               
+
                 if( this.wpml_active_status !== true){
                     return;
                 }

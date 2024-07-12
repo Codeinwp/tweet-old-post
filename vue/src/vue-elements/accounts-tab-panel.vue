@@ -160,7 +160,7 @@
              * @returns {boolean}
              */
             checkLicense: function () {
-                return (this.$store.state.licence < 1);
+                return (this.$store.state.license < 1);
             },
             is_preloading: function () {
                 return this.$store.state.hide_preloading;
