@@ -129,6 +129,12 @@ class Rop {
 		$tutorial_pointers = new Rop_Pointers();
 
 		add_filter( 'tweet_old_post_pro_hide_license_field', '__return_true' );
+		add_filter(
+			'tweet_old_post_pro_lc_no_valid_string',
+			function ( $message ) {
+				return str_replace( '<a href="%s">', '<a href="' . admin_url( 'admin.php?page=TweetOldPost' ) . '">', $message );
+			}
+		);
 
 		$this->loader->add_action( 'wp_ajax_rop_notice_dismissed', $plugin_admin_notices_helpers, 'rop_notice_dismissed' );
 
@@ -137,7 +143,6 @@ class Rop {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_rop_event_not_firing_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_cron_event_status_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin_notices, 'rop_revive_network_nag_delayed' );
-
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );
