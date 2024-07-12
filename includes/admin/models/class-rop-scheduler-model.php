@@ -327,7 +327,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 */
-	public function generate_upcoming_events( $base = 0, $account_id, $limit = 0 ) {
+	public function generate_upcoming_events( $base = 0, $account_id = null, $limit = 0 ) {
 
 		$schedule = $this->get_schedule( $account_id );
 		if ( empty( $schedule ) ) {
