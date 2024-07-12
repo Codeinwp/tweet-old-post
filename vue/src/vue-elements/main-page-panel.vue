@@ -95,70 +95,71 @@
         :class="'rop-license-plan-'+license"
       >
         <div class="card rop-container-start">
-          <StatusBox
-            :status-color-class="status_color_class"
-            :label="status_label_display"
-          />
+          <div class="container-column">
+            <StatusBox
+              :status-color-class="status_color_class"
+              :label="status_label_display"
+            />
 
-          <countdown :current_time="current_time" />
+            <countdown :current_time="current_time" />
           
-          <button
-            id="rop_start_stop_btn"
-            class="btn"
-            :class="btn_class"
-            :data-tooltip="labels.active_account_warning"
-            :disabled="!haveAccountsActive"
-            @click="togglePosting()"
-          >
-            <i
-              v-if="!is_loading && !start_status"
-              class="fa fa-play"
-            />
-            <i
-              v-else-if="!is_loading && start_status"
-              class="fa fa-stop"
-            />
-            <i
-              v-else
-              class="fa fa-spinner fa-spin"
-            />
-            {{ labels.click }} {{ labels.to }} {{ ( start_status ? labels.stop : labels.start ) }} {{ labels.sharing }}
-          </button>
+            <button
+              id="rop_start_stop_btn"
+              class="btn"
+              :class="btn_class"
+              :data-tooltip="labels.active_account_warning"
+              :disabled="!haveAccountsActive"
+              @click="togglePosting()"
+            >
+              <i
+                v-if="!is_loading && !start_status"
+                class="fa fa-play"
+              />
+              <i
+                v-else-if="!is_loading && start_status"
+                class="fa fa-stop"
+              />
+              <i
+                v-else
+                class="fa fa-spinner fa-spin"
+              />
+              {{ labels.click }} {{ labels.to }} {{ ( start_status ? labels.stop : labels.start ) }} {{ labels.sharing }}
+            </button>
 
-
-          <div
-            v-if="staging"
-            id="staging-status"
-            v-html="labels.staging_status"
-          />
-          <div
-            v-if="!haveAccounts"
-            class="rop-spacer"
-          />
-          <div v-if="haveAccounts">
-            <upsell-sidebar />
+            <div
+              v-if="staging"
+              id="staging-status"
+              v-html="labels.staging_status"
+            />
+            <div
+              v-if="!haveAccounts"
+              class="rop-spacer"
+            />
+            <div v-if="haveAccounts">
+              <upsell-sidebar />
+            </div>
+            <a
+              v-if="license >= 1 && labels.rop_support_url !== ''"
+              :href="labels.rop_support_url"
+              target="_blank"
+              class="btn rop-sidebar-action-btns"
+            >{{ labels.rop_support }}</a>
+            <a
+              v-if="haveAccounts"
+              href="https://docs.revive.social/"
+              target="_blank"
+              class="btn rop-sidebar-action-btns"
+            >{{ labels.rop_docs }}</a>
+            <a
+              v-if="haveAccounts"
+              href="https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post"
+              target="_blank"
+              class="btn rop-sidebar-action-btns"
+            >{{ labels.review_it }}</a>
           </div>
-          <a
-            v-if="license >= 1 && labels.rop_support_url !== ''"
-            :href="labels.rop_support_url"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.rop_support }}</a>
-          <a
-            v-if="haveAccounts"
-            href="https://docs.revive.social/"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.rop_docs }}</a>
-          <a
-            v-if="haveAccounts"
-            href="https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.review_it }}</a>
           <div
             v-if="license_data_view.installed"
-            class="license-container"
+            class="container-column license-container"
           >
             <h6 class="license-title">
               {{ license_field_title }}
@@ -533,10 +534,13 @@
         padding-right: 10px;
     }
 
-    #rop_core .license-container {
-      margin-top: 20px;
+    #rop_core .container-column {
       display: flex;
       flex-direction: column;
+    }
+
+    #rop_core .license-container {
+      margin-top: 20px;
       gap: 15px;
     }
 
