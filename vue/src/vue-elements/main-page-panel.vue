@@ -61,7 +61,7 @@
     </div>
 
     <div class="columns">
-      <div class="panel column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
         <div
           v-if="is_preloading_over > 0"
           class="panel-nav"

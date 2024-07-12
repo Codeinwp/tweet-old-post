@@ -589,7 +589,9 @@ a.active {
     -moz-appearance: none;
     appearance: none;
 }
-
+.tw-signin-advanced-config .btn-secondary, .tw-signin-advanced-config .btn.input-group-btn.circle {
+    border: 0.05rem solid #042440 !important;
+}
 #rop_core .btn:focus {
     box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
 }
@@ -2878,9 +2880,10 @@ a.active {
 
 #rop_core :is( .modal:target, .modal.active ) .modal-container {
     z-index: 99999;
-    max-width: 640px;
+    max-width: 300px;
     -webkit-animation: slide-down 0.2s ease 1;
     animation: slide-down 0.2s ease 1;
+    width: 100%;
 }
 
 #rop_core :is( .modal:target, .modal.active ) .modal-container:has(.webhook-headers) {

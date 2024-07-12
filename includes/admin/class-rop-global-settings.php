@@ -655,9 +655,14 @@ class Rop_Global_Settings {
 				$available_services[ $key ]  = $service;
 			}
 		}
-		$available_services['instagram'] = $available_services['facebook'];
-		$available_services['instagram']['name'] = 'Instagram';
-		$available_services['instagram']['active'] = false;
+		// Check is new user.
+		$is_new_user = $this->check_is_new_license();
+		// Apply new plan(middle) for new free users.
+		$is_middle_plan = $is_new_user ? $this->license_type() > 1 : $this->license_type() > 0;
+
+		$available_services['instagram']           = $available_services['facebook'];
+		$available_services['instagram']['name']   = 'Instagram';
+		$available_services['instagram']['active'] = $is_middle_plan ? true : false;
 		return $available_services;
 	}
 
@@ -712,5 +717,29 @@ class Rop_Global_Settings {
 		}
 
 		return $all;
+	}
+
+	/**
+	 * Check license is new or not.
+	 *
+	 * @return bool
+	 */
+	public function check_is_new_license() {
+		if ( $this->license_type() <= 0 ) { // Ignore free users.
+			return false;
+		}
+
+		$product_key  = 'tweet_old_post_pro';
+		$license_data = get_option( $product_key . '_license_data', '' );
+
+		if ( ! isset( $license_data->created_at ) ) {
+			return false;
+		}
+
+		// Is after 9.1?
+		$created_at = strtotime( date( 'Y-m-d', strtotime( $license_data->created_at ) ) );
+		$compare_to = strtotime( '2024-07-21' );
+
+		return $created_at > $compare_to;
 	}
 }
