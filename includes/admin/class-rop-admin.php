@@ -649,6 +649,7 @@ class Rop_Admin {
 				<script type="text/javascript">
 					jQuery(document).ready(function ($) {
 						$('.tsdk-upg-menu-item').parent().attr('target', '_blank');
+						$('#rop-rn-menu').parent().attr('target', '_blank');
 					});
 				</script>
 					<?php
