@@ -1284,8 +1284,8 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function rop_wp_cron_notice() {
-        //TODO - we need to rework this as the constant is not saying that cron is not working only that the default scheduling is, the user can still use server cron instead.
-        return;
+		// TODO - we need to rework this as the constant is not saying that cron is not working only that the default scheduling is, the user can still use server cron instead.
+		return;
 		if ( ! defined( 'DISABLE_WP_CRON' ) ) {
 			return;
 		}

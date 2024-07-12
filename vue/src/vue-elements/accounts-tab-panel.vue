@@ -104,6 +104,7 @@
     import ServiceUserTile from './service-user-tile.vue'
     import AddAccountTile from './reusables/add-account-tile.vue'
     import vue_spinner from './reusables/vue-spinner.vue'
+    import WebhookAccountModal from './reusables/webhook-account-modal.vue'
 
     export default {
         name: 'AccountView',
@@ -111,6 +112,7 @@
             SignInBtn,
             ServiceUserTile,
             AddAccountTile,
+            WebhookAccountModal,
             'vue_spinner': vue_spinner
         },
         data: function () {

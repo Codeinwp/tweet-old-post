@@ -869,6 +869,33 @@ a.active {
     border-left-color: #fff;
 }
 
+#rop_core .btn.btn-webhook {
+    border-color: #0071a6;
+    color: #fff;
+    background: #FFBC42;
+}
+
+#rop_core .btn.btn-webhook:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-webhook:is( :focus, :hover ) {
+    border-color: #006a9c;
+    color: #fff;
+    background: #0074ab;
+}
+
+#rop_core .btn.btn-webhook:is( :active, .active ) {
+    border-color: #005882;
+    color: #fff;
+    background: #006391;
+}
+
+#rop_core .btn.btn-webhook.loading::after {
+    border-bottom-color: #fff;
+    border-left-color: #fff;
+}
+
 #rop_core .btn.btn-sm {
     height: 1.2rem;
     padding: 0.05rem 0.3rem;
@@ -2849,12 +2876,15 @@ a.active {
     cursor: default;
 }
 
-#rop_core .modal:target .modal-container,
-#rop_core .modal.active .modal-container {
+#rop_core :is( .modal:target, .modal.active ) .modal-container {
     z-index: 99999;
     max-width: 640px;
     -webkit-animation: slide-down 0.2s ease 1;
     animation: slide-down 0.2s ease 1;
+}
+
+#rop_core :is( .modal:target, .modal.active ) .modal-container:has(.webhook-headers) {
+    max-width: 960px;
 }
 
 #rop_core .modal.modal-sm .modal-container {
@@ -4166,6 +4196,10 @@ a.active {
 .pinterest,
 .icon_box .fa-pinterest {
     background-color: #bd081c;
+}
+
+.icon_box.webhook {
+    background-color: #FFBC42;;
 }
 
 #rop_core .avatar .avatar-icon {

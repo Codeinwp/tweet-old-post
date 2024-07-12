@@ -10,7 +10,7 @@
         @click="requestAuthorization( network )"
       >
         <i
-          v-if="! [ 'gmb', 'twitter'].includes( network )"
+          v-if="! [ 'gmb', 'twitter', 'webhook'].includes( network )"
           class="fa fa-fw"
           :class="'fa-' + network"
         />
@@ -33,7 +33,32 @@
             <path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
           </svg>
         </i>
-        {{ displayName( service.name, false, true ) }}<span
+        <i
+          v-if="network === 'webhook'"
+          class="fa fa-fw"
+        >
+          <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+          <svg
+            height="14"
+            width="16"
+            viewBox="-10 -5 1034 1034"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            version="1.1"
+          >
+            <path
+              fill="#fff"
+              d="M482 226h-1l-10 2q-33 4 -64.5 18.5t-55.5 38.5q-41 37 -57 91q-9 30 -8 63t12 63q17 45 52 78l13 12l-83 135q-26 -1 -45 7q-30 13 -45 40q-7 15 -9 31t2 32q8 30 33 48q15 10 33 14.5t36 2t34.5 -12.5t27.5 -25q12 -17 14.5 -39t-5.5 -41q-1 -5 -7 -14l-3 -6l118 -192
+q6 -9 8 -14l-10 -3q-9 -2 -13 -4q-23 -10 -41.5 -27.5t-28.5 -39.5q-17 -36 -9 -75q4 -23 17 -43t31 -34q37 -27 82 -27q27 -1 52.5 9.5t44.5 30.5q17 16 26.5 38.5t10.5 45.5q0 17 -6 42l70 19l8 1q14 -43 7 -86q-4 -33 -19.5 -63.5t-39.5 -53.5q-42 -42 -103 -56
+q-6 -2 -18 -4l-14 -2h-37zM500 350q-17 0 -34 7t-30.5 20.5t-19.5 31.5q-8 20 -4 44q3 18 14 34t28 25q24 15 56 13q3 4 5 8l112 191q3 6 6 9q27 -26 58.5 -35.5t65 -3.5t58.5 26q32 25 43.5 61.5t0.5 73.5q-8 28 -28.5 50t-48.5 33q-31 13 -66.5 8.5t-63.5 -24.5
+q-4 -3 -13 -10l-5 -6q-4 3 -11 10l-47 46q23 23 52 38.5t61 21.5l22 4h39l28 -5q64 -13 110 -60q22 -22 36.5 -50.5t19.5 -59.5q5 -36 -2 -71.5t-25 -64.5t-44 -51t-57 -35q-34 -14 -70.5 -16t-71.5 7l-17 5l-81 -137q13 -19 16 -37q5 -32 -13 -60q-16 -25 -44 -35
+q-17 -6 -35 -6zM218 614q-58 13 -100 53q-47 44 -61 105l-4 24v37l2 11q2 13 4 20q7 31 24.5 59t42.5 49q50 41 115 49q38 4 76 -4.5t70 -28.5q53 -34 78 -91q7 -17 14 -45q6 -1 18 0l125 2q14 0 20 1q11 20 25 31t31.5 16t35.5 4q28 -3 50 -20q27 -21 32 -54
+q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43 37l-3 6q-14 0 -42 -1l-113 -1q-15 -1 -43 -1l-50 -1l3 17q8 43 -13 81q-14 27 -40 45t-57 22q-35 6 -70 -7.5t-57 -42.5q-28 -35 -27 -79q1 -37 23 -69q13 -19 32 -32t41 -19l9 -3z"
+            />
+          </svg>
+        </i>
+        {{ displayName( service.name, false, true ) }}
+        <span
           v-if="checkDisabled( service, network )"
           style="font-size:13px;line-height: 20px"
           class="dashicons dashicons-lock"
@@ -227,6 +252,28 @@
                 </p>
               </div>
             </div>
+            <WebhookHeaders
+              v-if="isWebhook && showHeaders"
+              :headers.sync="webhooksHeaders"
+            />
+            <div
+              v-if="isWebhook"
+            >
+              <button
+                v-if="!showHeaders"
+                class="btn btn-primary"
+                @click="showHeaders = true"
+              >
+                {{ labels.edit_headers }}
+              </button>
+              <button
+                v-if="showHeaders"
+                class="btn btn-secondary"
+                @click="showHeaders = false"
+              >
+                {{ labels.hide }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -257,7 +304,7 @@
             class="btn btn-primary"
             @click="closeModal()"
           >
-            {{ labels.sign_in_btn }}
+            {{ isOpenToEdit ? labels.save_selector_btn : labels.sign_in_btn }}
           </button>
         </div>
       </div>
@@ -266,11 +313,12 @@
 </template>
 
 <script>
-import Tooltip from './reusables/popover.vue'
+import Tooltip from './reusables/popover.vue';
+import WebhookHeaders from './reusables/webhook-headers.vue';
 
 export default {
   name: 'SignInBtn',
-  components: {Tooltip},
+  components: {Tooltip, WebhookHeaders},
   data: function () {
     return {
       modal: {
@@ -306,10 +354,16 @@ export default {
       showLiAppBtn: ropApiSettings.show_li_app_btn,
       showTmblrAppBtn: ropApiSettings.show_tmblr_app_btn,
       hideOwnAppOption: ropApiSettings.hide_own_app_option,
-      showBtn: false
+      currentWebhookHeader: '',
+      webhooksHeaders: [],
+      showBtn: false,
+      showHeaders: false,
     }
   },
   computed: {
+    isOpenToEdit() {
+      return this.$store.state.editPopup?.canShow;
+    },
     selected_service: function () {
       return this.services[this.selected_network]
     },
@@ -330,7 +384,7 @@ export default {
     },
     modalActiveClass: function () {
       return {
-        'active': this.modal.isOpen === true
+        'active': this.modal?.isOpen === true
       }
     },
     upsellModalActiveClass: function () {
@@ -369,6 +423,10 @@ export default {
       return this.modal.serviceName === 'Pinterest';
     },
 
+    isWebhook() {
+      return this.modal.serviceName === 'Webhook';
+    },
+
     isAllowedTumblr: function () {
       let showButton = true;
       if (!this.showTmblrAppBtn) {
@@ -377,7 +435,19 @@ export default {
       return showButton;
     }
   },
+  watch: {
+    isOpenToEdit( canShow) {
+      if ( ! canShow ) {
+        return;
+      }
+
+      this.openEditPopup();
+    }
+  },
   created() {
+    if ( this.isOpenToEdit ) {
+      this.openEditPopup();
+    }
   },
   methods: {
     /**
@@ -498,6 +568,8 @@ export default {
         this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name
         this.modal.description = this.$store.state.availableServices[this.selected_network].description
         this.modal.data = this.$store.state.availableServices[this.selected_network].credentials
+
+        this.showHeaders = false;
         this.openModal()
       } else {
         this.activePopup = this.selected_network
@@ -512,6 +584,29 @@ export default {
       this.$log.debug('Opening popup for url ', url)
       this.$store.commit('logMessage', ['Trying to open popup for url:' + url, 'notice'])
       window.open(url, '_self')
+    },
+    openEditPopup() {
+      const [ serviceName, id, _ ] = this.$store.state.editPopup?.accountId.split( '_' );
+      const accountToEdit = `${serviceName}_${id}`;
+      if ( 'webhook' === serviceName ) {
+
+        // Prepare fields.
+        const serviceSchema = this.$store.state?.availableServices?.[serviceName];
+        const fieldData = Object.keys( serviceSchema?.credentials )
+          .reduce( ( fields, fieldId ) => {
+            fields[fieldId] = { ...serviceSchema?.credentials[fieldId] };
+            fields[fieldId].value = this.$store.state?.authenticatedServices?.[accountToEdit]?.credentials?.[fieldId];
+            return fields;
+          }, {} );
+
+        // Prepare modal.
+        this.modal.serviceName = serviceSchema.name;
+        this.modal.description = '';
+        this.modal.data = fieldData;
+        this.webhooksHeaders = this.$store.state?.authenticatedServices?.[accountToEdit]?.credentials?.headers;
+
+        this.openModal();
+      }
     },
     /**
      * Get signin url. Used for authentication of the user who is using their own app.
@@ -557,19 +652,35 @@ export default {
         }
       }
 
-      if (!valid) {
+      if ( ! valid ) {
         this.$forceUpdate()
         return;
       }
 
       this.activePopup = this.selected_network
-      this.getUrlAndGo(credentials)
-      this.modal.isOpen = false
+
+      if( this.isWebhook ) {
+        credentials['headers'] = this.webhooksHeaders;
+        if( this.isOpenToEdit ) {
+          this.editAccountWebhook( credentials );
+        } else {
+          this.addAccountWebhook( credentials );
+        }
+
+        this.webhooksHeaders = [];
+      } else {
+        this.getUrlAndGo(credentials)
+      }
+      this.modal.isOpen = false;
+
+      this.$store.commit( 'setEditPopupShowPermission', false );
     },
     cancelModal: function () {
       this.$store.state.auth_in_progress = false
       this.showAdvanceConfig = false
       this.modal.isOpen = false
+
+      this.$store.commit( 'setEditPopupShowPermission', false );
     },
     /**
      * Add Facebook account.
@@ -673,6 +784,38 @@ export default {
         Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
       });
     },
+    addAccountWebhook(data) {
+      this.$store.dispatch('fetchAJAXPromise', {
+        req: 'add_account_webhook',
+        updateState: false,
+        data: data
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
+        window.location.reload();
+      }, error => {
+        this.is_loading = false;
+        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+      });
+    },
+    editAccountWebhook( data ) {
+      const [ serviceName, id, _ ] = this.$store.state.editPopup?.accountId.split( '_' );
+      data['id'] = id;
+      data['service_id'] = `${serviceName}_${id}`;
+      data['full_id'] = this.$store.state.editPopup?.accountId;
+      data['active'] = Boolean( this.$store.state?.activeAccounts?.[this.$store.state.editPopup?.accountId] );
+
+      this.$store.dispatch('fetchAJAXPromise', {
+        req: 'edit_account_webhook',
+        updateState: false,
+        data: data
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
+        window.location.reload();
+      }, error => {
+        this.is_loading = false;
+        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+      });
+    },
     /**
      * Get message from child window.
      * @param {MessageEvent<any>} event Event.
@@ -684,7 +827,7 @@ export default {
       }
 
       const accountData = JSON.parse(event.data);
-      
+
       if ('Twitter' === this.modal.serviceName) {
         this.addAccountTW( accountData );
       } else if ('Facebook' === this.modal.serviceName || 'Instagram' === this.modal.serviceName) {
@@ -697,8 +840,10 @@ export default {
         this.addAccountGmb( accountData );
       } else if ('Vk' === this.modal.serviceName) {
         this.addAccountVk( accountData );
+      } else if ('Webhook' === this.modal.serviceName) {
+        this.addAccountWebhook( accountData );
       }
-      
+
       try {
         window?.tiTrk?.with('tweet')?.add({
           feature: 'add-account',
@@ -709,8 +854,15 @@ export default {
       } catch (e) {
         console.warn( e );
       }
-      
+
       window.location.reload();
+    },
+    addWebhookHeader() {
+      if ( ! this.currentWebhookHeader ) {
+        return;
+      }
+
+      this.webhooksHeaders.push( this.currentWebhookHeader );
     },
     openPopupFB: function () {
       let loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -809,7 +961,10 @@ export default {
 .rop-disabled{
   opacity: 0.6
 }
-#rop-sign-in-area .btn {border:none;}
+#rop-sign-in-area .btn:not( .btn-secondary ) {
+  border:none;
+}
+
 #rop_core .rop-upsell-modal .modal-container{
   max-width: 500px;
   padding: 25px;
@@ -845,4 +1000,17 @@ export default {
     padding: 0px;
   }
 }
+
+@media (min-width: 768px) {
+  .content:has(.webhook-headers) {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+  }
+
+  .content:has(.webhook-headers) .auth-app {
+    min-width: 200px;
+  }
+}
+
 </style>
