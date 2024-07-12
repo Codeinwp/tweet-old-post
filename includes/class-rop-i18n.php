@@ -455,7 +455,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'revive_network_learn_more_btn' => __( 'Learn More', 'tweet-old-post' ),
 				'learn_more' => __( 'Learn More!', 'tweet-old-post' ),
 				'min_interval_6_mins' => __( 'Minimum interval between consecutive shares is 6 minutes.', 'tweet-old-post' ),
-				'min_interval_between_shares' => __( 'Lowest allowed value for "Minimum Interval Between Shares" is %s hours. Upgrade to Business Plan or higher to fine tune posting times and days.', 'tweet-old-post' ),
+				'min_interval_between_shares' => __( 'Lowest allowed value for "Minimum Interval Between Shares" is %s hours. Choosing a lower interval is available in the Pro version.', 'tweet-old-post' ),
 				'min_recurring_schedule_interval' => __( 'Lowest allowed value for "Recurring Schedule Interval" is %d minutes.', 'tweet-old-post' ),
 				'no_post_types_selected' => __( 'You need to have at least one post type to share.', 'tweet-old-post' ),
 				'min_number_of_concurrent_posts' => __( 'At least one posts need to be shared.', 'tweet-old-post' ),
