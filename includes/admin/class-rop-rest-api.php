@@ -1337,7 +1337,6 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function add_account_webhook( $data ) {
-		error_log( 'webhook data: ' . print_r( $data, true ) );
 		$services        = array();
 		$webhook_service = new Rop_Webhook_Service();
 		$model           = new Rop_Services_Model();
@@ -1387,8 +1386,6 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function edit_account_webhook( $data ) {
-		error_log( 'edit webhook data: ' . print_r( $data, true ) );
-		$services        = array();
 		$webhook_service = new Rop_Webhook_Service();
 		$model           = new Rop_Services_Model();
 
