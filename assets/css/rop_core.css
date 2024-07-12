@@ -4777,8 +4777,10 @@ a.active {
 }
 
 @media (max-width: 1280px) {
-    #rop_core .sidebar {
-        display: none;
+    #rop_core .sidebar .rop-container-start {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
     }
 
     #rop_core .sidebar-top {
@@ -4787,6 +4789,10 @@ a.active {
         display: -ms-flexbox;
         display: flex;
     }
+
+    #rop_core .container-column {
+        min-width: 350px;
+      }
 }
 
 @media (max-width: 840px) {

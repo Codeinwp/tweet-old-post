@@ -342,6 +342,7 @@ class Rop_Admin {
 		$global_settings = new Rop_Global_Settings();
 		$settings        = new Rop_Settings_Model();
 
+		$rop_api_settings['license_data_view']               = $global_settings->get_license_data_view();
 		$rop_api_settings['license_type']                    = $global_settings->license_type();
 		$rop_api_settings['fb_domain_toast_display']         = $this->facebook_exception_toast_display();
 		$rop_api_settings['labels']                          = Rop_I18n::get_labels();
