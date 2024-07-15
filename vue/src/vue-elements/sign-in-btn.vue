@@ -954,10 +954,7 @@ export default {
 .btn-gmb {
   text-transform: uppercase;
 }
-.btn-instagram{
-  background-color:#c13584 !important;
-  color:#fff!important;
-}
+
 .rop-disabled{
   opacity: 0.6
 }

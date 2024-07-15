@@ -674,13 +674,6 @@ a.active {
     box-shadow: 0 0 0 0.1rem rgba(59, 89, 152, 0.2);
 }
 
-#rop_core .btn.btn-facebook:focus,
-#rop_core .btn.btn-facebook:hover {
-    border-color: #344e86;
-    color: #fff;
-    background: #0074ab;
-}
-
 #rop_core .btn.btn-facebook:active,
 #rop_core .btn.btn-facebook.active {
     border-color: #2d4373;
@@ -701,13 +694,6 @@ a.active {
 
 #rop_core .btn.btn-twitter:focus {
     box-shadow: 0 0 0 0.1rem rgba(85, 172, 238, 0.2);
-}
-
-#rop_core .btn.btn-twitter:focus,
-#rop_core .btn.btn-twitter:hover {
-    border-color: #14171A;
-    color: #fff;
-    background: #14171A;
 }
 
 #rop_core .btn.btn-twitter:active,
@@ -736,13 +722,6 @@ a.active {
     box-shadow: 0 0 0 0.1rem rgba(221, 75, 57, 0.2);
 }
 
-#rop_core .btn.btn-tumblr:focus,
-#rop_core .btn.btn-tumblr:hover {
-    border-color: #355473;
-    color: #fff;
-    background: #0074ab;
-}
-
 #rop_core .btn.btn-tumblr:active,
 #rop_core .btn.btn-tumblr.active {
     border-color: #395c7d;
@@ -763,13 +742,6 @@ a.active {
 
 #rop_core .btn.btn-linkedin:focus {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
-}
-
-#rop_core .btn.btn-linkedin:focus,
-#rop_core .btn.btn-linkedin:hover {
-    border-color: #006a9c;
-    color: #fff;
-    background: #0074ab;
 }
 
 #rop_core .btn.btn-linkedin:active,
@@ -794,13 +766,6 @@ a.active {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
 }
 
-#rop_core .btn.btn-pinterest:focus,
-#rop_core .btn.btn-pinterest:hover {
-    border-color: #006a9c;
-    color: #fff;
-    background: #0074ab;
-}
-
 #rop_core .btn.btn-pinterest:active,
 #rop_core .btn.btn-pinterest.active {
     border-color: #005882;
@@ -821,13 +786,6 @@ a.active {
 
 #rop_core .btn.btn-gmb:focus {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
-}
-
-#rop_core .btn.btn-gmb:focus,
-#rop_core .btn.btn-gmb:hover {
-    border-color: #006a9c;
-    color: #fff;
-    background: #0074ab;
 }
 
 #rop_core .btn.btn-gmb:active,
@@ -852,13 +810,6 @@ a.active {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
 }
 
-#rop_core .btn.btn-vk:focus,
-#rop_core .btn.btn-vk:hover {
-    border-color: #006a9c;
-    color: #fff;
-    background: #0074ab;
-}
-
 #rop_core .btn.btn-vk:active,
 #rop_core .btn.btn-vk.active {
     border-color: #005882;
@@ -881,7 +832,26 @@ a.active {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
 }
 
-#rop_core .btn.btn-webhook:is( :focus, :hover ) {
+#rop_core .btn.btn-instagram{
+    background-color:#c13584;
+    color:#fff;
+}
+
+#rop_core
+.btn:is(
+    .btn-facebook,
+    .btn-instagram,
+    .btn-twitter,
+    .btn-tumblr,
+    .btn-linkedin,
+    .btn-pinterest,
+    .btn-gmb,
+    .btn-vk,
+    .btn-webhook
+):is(
+    :focus,
+    :hover 
+) {
     border-color: #006a9c;
     color: #fff;
     background: #0074ab;
