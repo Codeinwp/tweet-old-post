@@ -63,9 +63,12 @@ class Rop_Admin {
 		add_action( 'admin_notices', array( &$this, 'display_global_status_warning' ) );
 
 		$global_settings = new Rop_Global_Settings();
-		add_filter( 'rop_pro_plan', function() use ( $global_settings ) {
-			return $global_settings->license_type();
-		} );
+		add_filter(
+			'rop_pro_plan',
+			function() use ( $global_settings ) {
+				return $global_settings->license_type();
+			}
+		);
 	}
 
 
