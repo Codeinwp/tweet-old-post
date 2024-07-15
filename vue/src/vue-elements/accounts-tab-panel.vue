@@ -69,7 +69,7 @@
           </div>
         </div>
         <div
-          v-if="(checkLicense && accountsCount === 2) && !pro_installed"
+          v-if="hasActiveAccountsLimitation"
           class="columns my-2"
         >
           <div class="column col-12">
@@ -164,6 +164,9 @@
             },
             is_preloading: function () {
                 return this.$store.state.hide_preloading;
+            },
+            hasActiveAccountsLimitation: function () {
+              return !this.pro_installed && this.accountsCount >= 2 && this.checkLicense ;
             }
         },
         mounted: function () {

@@ -55,7 +55,10 @@
             type="checkbox"
             @change="startToggleAccount( account_id, type )"
           >
-          <i class="form-icon" />
+          <i
+            class="form-icon tooltip tooltip-top"
+            :data-tooltip="checkDisabled ? account_labels.upsell_accounts_toggle : account_labels.toggle_account"
+          />
         </label>
       </div>
      

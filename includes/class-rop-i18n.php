@@ -108,6 +108,8 @@ class Rop_I18n {
 				'for'                        => __( 'for', 'tweet-old-post' ),
 				'add_account'                => __( '<b>Add Your Accounts:</b>', 'tweet-old-post' ),
 				'upsell_accounts'            => sprintf( __( 'A maximum of 1 Facebook and Twitter account can be connected to the Lite version of Revive Social. Upgrade to unlock more great features including more social networks! Check out the Lite vs Pro %1$stable here%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/941-revive-old-post-free-vs-pro" target="_blank">', '</a>' ),
+				'upsell_accounts_toggle'     => 'Active accounts limit reached.',
+				'toggle_account'             => __( 'Toggle account', 'tweet-old-post' ),
 				'activate_license'           => __( 'You need to activate your license key <a href="/wp-admin/options-general.php#tweet_old_post_pro_license" style="cursor: pointer">HERE</a> to unlock the Pro features of Revive Social.', 'tweet-old-post' ),
 				'fb_app_id_title'            => __( 'Please add the APP ID from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_secret_title'        => __( 'Please add the APP SECRET from your Facebook app.', 'tweet-old-post' ),
