@@ -1033,9 +1033,10 @@ class Rop_Post_Format_Helper {
 	 *
 	 * @return string
 	 */
-	public function get_short_url( $url, $short_url_service, $credentials = array() ) {		
+	public function get_short_url( $url, $short_url_service, $credentials = array() ) {
 
 		try {
+			$shortner_factory = new Rop_Shortner_Factory();
 			$shortner_service = $shortner_factory->build( $short_url_service );
 			if ( ! empty( $credentials ) ) {
 				$shortner_service->set_credentials( $credentials );
@@ -1043,7 +1044,7 @@ class Rop_Post_Format_Helper {
 			$short_url = $shortner_service->shorten_url( $url );
 		} catch ( Exception $exception ) {
 			$log = new Rop_Logger();
-			$log->alert_error( 'Could NOT get short URL. Error: ' . $exception->getMessage() );
+			$log->alert_error( 'Could NOT get short URL for option <' . $short_url_service . '>. Error: ' . $exception->getMessage() );
 			$short_url = $url;
 		}
 
