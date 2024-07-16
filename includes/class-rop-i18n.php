@@ -133,6 +133,7 @@ class Rop_I18n {
 				'upsell_service_body'        => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the Pro plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
 				'edit_headers'               => __( 'Edit Headers', 'tweet-old-post' ),
 				'hide'                       => __( 'Hide', 'tweet-old-post' ),
+				'get_latest_pro_version'     => __( 'Get the latest Pro version to unlock.', 'tweet-old-post' ),
 			),
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),

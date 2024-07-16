@@ -407,7 +407,8 @@ class Rop_Admin {
 			$is_new_user = update_option( 'rop_is_new_user', 1 );
 		}
 
-		$rop_api_settings['is_new_user'] = $is_new_user;
+		$rop_api_settings['is_new_user']           = $is_new_user;
+		$rop_api_settings['webhook_pro_available'] = defined( 'ROP_PRO_VERSION' ) && version_compare( ROP_PRO_VERSION, '3.1.0', '>=' ) ? true : false;
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $rop_api_settings );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', array( ROP_LITE_URL . 'assets/' ) );

@@ -6,7 +6,8 @@
         :key="network"
         :title="getTooltip( service, network )"
         class="btn input-group-btn"
-        :class="'btn-' + network + ' ' + ( checkDisabled( service, network ) ? 'rop-disabled' : '' )"
+        :class="getButtonClass( service, network )"
+        :data-tooltip="canShowProPluginUpgradeWebhookNotice ? labels.get_latest_pro_version : ''"
         @click="requestAuthorization( network )"
       >
         <i
@@ -59,7 +60,7 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
         </i>
         {{ displayName( service.name, false, true ) }}
         <span
-          v-if="checkDisabled( service, network )"
+          v-if="checkDisabled( service, network ) || ('webhook' === network && canShowProPluginUpgradeWebhookNotice)"
           style="font-size:13px;line-height: 20px"
           class="dashicons dashicons-lock"
         />
@@ -358,6 +359,7 @@ export default {
       webhooksHeaders: [],
       showBtn: false,
       showHeaders: false,
+      canShowProPluginUpgradeWebhookNotice: 'valid' === ropApiSettings?.license_data_view?.license && ! ropApiSettings?.webhook_pro_available // Notice the user to upgrade to the last version of the plugin to use the webhook feature.
     }
   },
   computed: {
@@ -433,7 +435,7 @@ export default {
         showButton = false;
       }
       return showButton;
-    }
+    },
   },
   watch: {
     isOpenToEdit( canShow) {
@@ -631,6 +633,14 @@ export default {
     },
     requestAuthentication() {
       this.$store.dispatch('fetchAJAX', {req: 'authenticate_service', data: {service: this.selected_network}})
+    },
+    getButtonClass( service, network )  {
+      let cssClasses = 'btn-' + network + ' ' + ( this.checkDisabled( service, network ) ? 'rop-disabled' : '' );
+      
+      if ( 'webhook' === network && this.canShowProPluginUpgradeWebhookNotice ) {
+        cssClasses = cssClasses + ' tooltip tooltip-top';
+      }
+      return cssClasses;
     },
     /**
      * Open the modal.
