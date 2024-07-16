@@ -384,7 +384,7 @@ You can try to disable any of the security plugins that you use in order to see 
 					'tweet-old-post'
 				),
 				'rop_support'                => __( 'Get Support', 'tweet-old-post' ),
-				'rop_support_url'            => defined( 'ROP_PRO_BASEFILE' ) ? tsdk_support_link( ROP_PRO_BASEFILE ) : '',
+				'rop_support_url'            => '',
 				'rop_facebook_domain_toast'  => __(
 					'You need to verify your website domain with Facebook so your shares can show as article posts on Facebook. [ <a href="https://docs.revive.social/article/1136-facebook-text-posts-vs-article-posts" target="_blank">Read this doc</a> ] for more information',
 					'tweet-old-post'
@@ -502,5 +502,17 @@ You can try to disable any of the security plugins that you use in order to see 
 		return '';
 	}
 
+	/**
+	 * Get the labels for the frontend (e.g. dashboard).
+	 *
+	 * @return array Localized labels.
+	 */
+	public static function get_labels_frontend() {
+		$labels = self::get_labels();
 
+		// NOTE: `tsdk_support_link` must be run after `init` hook run and SDK Licenser module loading.
+		$labels['general']['rop_support_url'] = defined( 'ROP_PRO_BASEFILE' ) ? tsdk_support_link( ROP_PRO_BASEFILE ) : '';
+
+		return $labels;
+	}
 }
