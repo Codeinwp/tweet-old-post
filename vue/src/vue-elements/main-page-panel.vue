@@ -561,4 +561,10 @@
       font-size: 13px;
       line-height: 1.2em;
     }
+
+    #staging-status a {
+      color: white;
+      font-weight: bold;
+      text-decoration: underline;
+    }
 </style>
