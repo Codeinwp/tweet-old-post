@@ -365,7 +365,7 @@ class Rop_Rest_Api {
 			}
 		}
 
-		// New users will require a pro plan.
+		// New users will require a Pro plan (from version 9.1).
 		$global_settings = new Rop_Global_Settings();
 		$is_new_user     = (int) get_option( 'rop_is_new_user', 0 );
 		if ( $global_settings->license_type() <= 0 && $is_new_user ) {
@@ -378,6 +378,11 @@ class Rop_Rest_Api {
 			if ( ! in_array( $data['data']['short_url_service'], array( 'rviv.ly', 'wp_short_url' ), true ) ) {
 				$data['data']['short_url_service'] = 'rviv.ly';
 			}
+		}
+
+		// If the user forget to switch from the upsell value, set it to the default value.
+		if ( 'custom_content' === $data['data']['post_content'] && $global_settings->license_type() <= 0 ) {
+			$data['data']['post_content'] = 'post_title';
 		}
 
 		try {
