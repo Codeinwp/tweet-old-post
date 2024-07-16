@@ -351,7 +351,7 @@ abstract class Rop_Services_Abstract {
 		}
 
 		if ( 'wp_short_url' === $post_details['short_url_service'] ) {
-			return ' ' .  wp_get_shortlink( $post_details['post_id'] );
+			return ' ' . wp_get_shortlink( $post_details['post_id'] );
 		}
 
 		$post_format_helper = new Rop_Post_Format_Helper();
