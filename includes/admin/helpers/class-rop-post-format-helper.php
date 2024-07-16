@@ -1033,8 +1033,7 @@ class Rop_Post_Format_Helper {
 	 *
 	 * @return string
 	 */
-	public function get_short_url( $url, $short_url_service, $credentials = array() ) {
-		$shortner_factory = new Rop_Shortner_Factory();
+	public function get_short_url( $url, $short_url_service, $credentials = array() ) {		
 
 		try {
 			$shortner_service = $shortner_factory->build( $short_url_service );
