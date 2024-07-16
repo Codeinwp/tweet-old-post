@@ -294,8 +294,17 @@ class Rop_Post_Format_Helper {
 
 		$post_content = apply_filters( 'rop_share_post_content', get_post_field( 'post_content', $post_id ), $post_id );
 		$content      = '';
+		$post_format  = $this->post_format['post_content'];
 
-		switch ( $this->post_format['post_content'] ) {
+		// Guards against PRO options being used when the license is expired.
+		if ( 'custom_content' === $post_format ) {
+			$global_settings = new Rop_Global_Settings();
+			if ( 0 <= $global_settings->license_type() ) {
+				$post_format = 'post_title';
+			}
+		}
+
+		switch ( $post_format ) {
 			case 'post_title':
 				$content = $post_title;
 				break;
