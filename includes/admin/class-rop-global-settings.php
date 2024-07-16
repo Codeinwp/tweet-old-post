@@ -488,7 +488,7 @@ class Rop_Global_Settings {
 			'installed'    => defined( 'ROP_PRO_VERSION' ),
 			'license'      => 'invalid',
 			'expires'      => '',
-			'passwordMask' => '',
+			'passwordMask' => __( 'Add your license key here...', 'tweet-old-post' ),
 		);
 
 		if ( -1 === $license_data ) {

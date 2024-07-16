@@ -65,7 +65,8 @@
           class="columns my-2"
         >
           <div class="column col-12">
-            <i class="fa fa-info-circle " /> <span v-html="labels.activate_license" />
+            <i class="fa fa-info-circle " />
+            <span>{{ labels.activate_license }}</span>
           </div>
         </div>
         <div
