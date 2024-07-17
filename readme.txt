@@ -322,6 +322,27 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+#### [Version 9.1.0](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.31...v9.1.0) (2024-07-17)
+
+### New features
+- Connect 30+ additional networks via Zapier with our new [Webhook integration](https://docs.revive.social/article/2037-maximize-your-social-presence-effortless-integration-with-zapier) (PRO).
+- [Advanced Content Editing](https://docs.revive.social/article/2038-personalize-your-social-media-shares-with-the-custom-content-editor): Introduced a new Custom Content editor for post captions, including magic tags for dynamic content (PRO).
+### Improvements
+- Rebranded to Revive Social
+- Integrated Yoast Title & Description option for sharing content (PRO).
+- Reduced the add-on file size (PRO). 
+- Improved the UI with optimized button positions, enhanced color contrast, and a reorganized layout for options and Dashboard notices.
+- [Improved documentation](https://docs.revive.social/article/2035-troubleshooting-guide-for-facebook-account-connection-errors) to better assist with error handling when connecting to Facebook.
+### Fixes
+- Resolved issue with disconnected Facebook groups appearing in the Dashboard.
+- Corrected social network icons display issues across all site languages.
+- Removed the outdated plugin roadmap from the Dashboard.
+- Updated the “Get Support” button to direct users to the appropriate channel (Free/Pro).
+- Eliminated the outdated authentication method for connecting to X.
+
+
+
+
 ##### [Version 9.0.31](https://github.com/Codeinwp/tweet-old-post/compare/v9.0.30...v9.0.31) (2024-06-04)
 
 - Fixed sharing on LinkedIn: updated LinkedIn API Version

@@ -16,7 +16,7 @@
  * Plugin Name: Revive Social
  * Plugin URI: https://revive.social/
  * Description: WordPress plugin that automatically schedules and posts your content to multiple social networks (including Facebook, X, LinkedIn, and Instagram), helping you promote and drive more traffic to your website. For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
- * Version:           9.0.31
+ * Version:           9.1.0
  * Author:            revive.social
  * Author URI:        https://revive.social/
  * Requires at least: 4.7
@@ -161,7 +161,7 @@ function run_rop() {
 	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
 	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
 
-	define( 'ROP_LITE_VERSION', '9.0.31' );
+	define( 'ROP_LITE_VERSION', '9.1.0' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
 	$debug = false;
 	if ( function_exists( 'wp_get_environment_type' ) ) {
