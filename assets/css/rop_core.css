@@ -589,7 +589,9 @@ a.active {
     -moz-appearance: none;
     appearance: none;
 }
-
+.tw-signin-advanced-config .btn-secondary, .tw-signin-advanced-config .btn.input-group-btn.circle {
+    border: 0.05rem solid #042440 !important;
+}
 #rop_core .btn:focus {
     box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
 }
@@ -672,13 +674,6 @@ a.active {
     box-shadow: 0 0 0 0.1rem rgba(59, 89, 152, 0.2);
 }
 
-#rop_core .btn.btn-facebook:focus,
-#rop_core .btn.btn-facebook:hover {
-    border-color: #344e86;
-    color: #fff;
-    background: #0074ab;
-}
-
 #rop_core .btn.btn-facebook:active,
 #rop_core .btn.btn-facebook.active {
     border-color: #2d4373;
@@ -699,13 +694,6 @@ a.active {
 
 #rop_core .btn.btn-twitter:focus {
     box-shadow: 0 0 0 0.1rem rgba(85, 172, 238, 0.2);
-}
-
-#rop_core .btn.btn-twitter:focus,
-#rop_core .btn.btn-twitter:hover {
-    border-color: #14171A;
-    color: #fff;
-    background: #14171A;
 }
 
 #rop_core .btn.btn-twitter:active,
@@ -734,13 +722,6 @@ a.active {
     box-shadow: 0 0 0 0.1rem rgba(221, 75, 57, 0.2);
 }
 
-#rop_core .btn.btn-tumblr:focus,
-#rop_core .btn.btn-tumblr:hover {
-    border-color: #355473;
-    color: #fff;
-    background: #0074ab;
-}
-
 #rop_core .btn.btn-tumblr:active,
 #rop_core .btn.btn-tumblr.active {
     border-color: #395c7d;
@@ -761,13 +742,6 @@ a.active {
 
 #rop_core .btn.btn-linkedin:focus {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
-}
-
-#rop_core .btn.btn-linkedin:focus,
-#rop_core .btn.btn-linkedin:hover {
-    border-color: #006a9c;
-    color: #fff;
-    background: #0074ab;
 }
 
 #rop_core .btn.btn-linkedin:active,
@@ -792,13 +766,6 @@ a.active {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
 }
 
-#rop_core .btn.btn-pinterest:focus,
-#rop_core .btn.btn-pinterest:hover {
-    border-color: #006a9c;
-    color: #fff;
-    background: #0074ab;
-}
-
 #rop_core .btn.btn-pinterest:active,
 #rop_core .btn.btn-pinterest.active {
     border-color: #005882;
@@ -819,13 +786,6 @@ a.active {
 
 #rop_core .btn.btn-gmb:focus {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
-}
-
-#rop_core .btn.btn-gmb:focus,
-#rop_core .btn.btn-gmb:hover {
-    border-color: #006a9c;
-    color: #fff;
-    background: #0074ab;
 }
 
 #rop_core .btn.btn-gmb:active,
@@ -850,13 +810,6 @@ a.active {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
 }
 
-#rop_core .btn.btn-vk:focus,
-#rop_core .btn.btn-vk:hover {
-    border-color: #006a9c;
-    color: #fff;
-    background: #0074ab;
-}
-
 #rop_core .btn.btn-vk:active,
 #rop_core .btn.btn-vk.active {
     border-color: #005882;
@@ -865,6 +818,52 @@ a.active {
 }
 
 #rop_core .btn.btn-vk.loading::after {
+    border-bottom-color: #fff;
+    border-left-color: #fff;
+}
+
+#rop_core .btn.btn-webhook {
+    border-color: #0071a6;
+    color: #fff;
+    background: #FFBC42;
+}
+
+#rop_core .btn.btn-webhook:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-instagram{
+    background-color:#c13584;
+    color:#fff;
+}
+
+#rop_core
+.btn:is(
+    .btn-facebook,
+    .btn-instagram,
+    .btn-twitter,
+    .btn-tumblr,
+    .btn-linkedin,
+    .btn-pinterest,
+    .btn-gmb,
+    .btn-vk,
+    .btn-webhook
+):is(
+    :focus,
+    :hover 
+) {
+    border-color: #006a9c;
+    color: #fff;
+    background: #0074ab;
+}
+
+#rop_core .btn.btn-webhook:is( :active, .active ) {
+    border-color: #005882;
+    color: #fff;
+    background: #006391;
+}
+
+#rop_core .btn.btn-webhook.loading::after {
     border-bottom-color: #fff;
     border-left-color: #fff;
 }
@@ -1328,6 +1327,7 @@ a.active {
     display: -webkit-flex;
     display: flex;
     display: -ms-flexbox;
+    flex-wrap: wrap;
 }
 
 #rop_core .input-group .input-group-addon {
@@ -2668,7 +2668,7 @@ a.active {
     margin: 0.1rem;
     padding: 0.1rem 0.5rem;
     border-radius: 5rem;
-    color: #727e96;
+    color: #4C4E67;
     background: #f0f1f4;
     vertical-align: middle;
     text-decoration: none;
@@ -2848,12 +2848,16 @@ a.active {
     cursor: default;
 }
 
-#rop_core .modal:target .modal-container,
-#rop_core .modal.active .modal-container {
+#rop_core :is( .modal:target, .modal.active ) .modal-container {
     z-index: 99999;
-    max-width: 640px;
+    max-width: 300px;
     -webkit-animation: slide-down 0.2s ease 1;
     animation: slide-down 0.2s ease 1;
+    width: 100%;
+}
+
+#rop_core :is( .modal:target, .modal.active ) .modal-container:has(.webhook-headers) {
+    max-width: 960px;
 }
 
 #rop_core .modal.modal-sm .modal-container {
@@ -3529,7 +3533,7 @@ a.active {
 }
 
 #rop_core .text-gray {
-    color: #acb3c2;
+    color: #6A7590;
 }
 
 #rop_core a.text-gray:focus,
@@ -4167,6 +4171,10 @@ a.active {
     background-color: #bd081c;
 }
 
+.icon_box.webhook {
+    background-color: #FFBC42;;
+}
+
 #rop_core .avatar .avatar-icon {
     border-radius: 50%;
     background: #333;
@@ -4257,7 +4265,7 @@ a.active {
 }
 
 .rop-control-container-false .rop-control {
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
 #rop_core .panel-body {
@@ -4409,7 +4417,7 @@ a.active {
 #rop_core .btn-danger {
     border-color: #b71c1c;
     color: #fff;
-    background-color: #c62828;
+    background-color: #B7151F;
 }
 
 #rop_core .btn-danger:hover,
@@ -4428,7 +4436,7 @@ a.active {
 #rop_core .btn-success {
     border-color: #33691e;
     color: #fff;
-    background-color: #8bc34a;
+    background-color: #2E8726;
 }
 
 #rop_core .btn-success:hover,
@@ -4444,6 +4452,17 @@ a.active {
     background-color: #33691e;
 }
 
+#rop_core :is( .btn-success, .btn-warning, .btn-danger, .sharing-status-sharing, .rop-next-share-time, .sharing-status-notsharing ) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+ }
+
+#rop_core :is( .btn-success, .btn-warning, .btn-danger, .sharing-status-sharing, .rop-next-share-time, .rop-sidebar-action-btns, .sharing-status-notsharing ) {
+   padding: 12px 16px 12px 16px;
+   height: fit-content;
+}
+
 .rop-queue-post i.service {
     background: none;
 }
@@ -4456,6 +4475,11 @@ a.active {
 
 #rop_core .sidebar .rop-sidebar-action-btns{
     margin-bottom: 10px;
+}
+
+#rop_core .rop-container-start {
+    border: unset;
+    box-shadow: unset;
 }
 
 #rop_core .rop-container-start .tooltip::after {
@@ -4566,32 +4590,11 @@ a.active {
     pointer-events: auto;
 }
 
-#rop_core .toast.rop-next-share-time{
-  background: #8bc34a;
+#rop_core .toast.rop-next-share-time {
+  background: #E8EDFE;
+  color: #384C94;
   border: none;
-  margin-bottom: 0;
-}
-
-.sharing-box{
-    padding: 15px 10px;
-    font-size: 0.75rem;
-    margin: 10px 0 0;
-    text-align: center;
-}
-
-.sharing-status-sharing {
-    color: #fff;
-    background-color: #46bd55;
-}
-
-.sharing-status-notsharing {
-    color: #fff;
-    background-color: #e65100;
-}
-
-.sharing-status-error {
-    color: #fff;
-    background-color: #c62828;
+  margin: 0 0 10px 0;
 }
 
 #rop_vid_tuts span{
@@ -4673,6 +4676,9 @@ a.active {
 }
 
 #rop_core .upsell {
+    color: #674E13;
+    background: #FFF7E2;
+    padding: 8px;
     margin-bottom: 0;
     border-radius: 0.1rem;
 }
@@ -4744,8 +4750,10 @@ a.active {
 }
 
 @media (max-width: 1280px) {
-    #rop_core .sidebar {
-        display: none;
+    #rop_core .sidebar .rop-container-start {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
     }
 
     #rop_core .sidebar-top {
@@ -4754,6 +4762,10 @@ a.active {
         display: -ms-flexbox;
         display: flex;
     }
+
+    #rop_core .container-column {
+        min-width: 350px;
+      }
 }
 
 @media (max-width: 840px) {
@@ -4833,4 +4845,11 @@ padding: 0 20px;
 
 #rop_core .uppercase {
     text-transform: uppercase;
+}
+
+#rop_core i.fa {
+    font-family: 'FontAwesome';
+}
+#rop_core span.dashicons {
+    font-family: 'dashicons';
 }

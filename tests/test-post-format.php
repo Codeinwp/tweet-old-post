@@ -44,7 +44,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$rvivly = new Rop_Rvivly_Shortner();
 		$rvivly->set_website( $url );
 		$short_url = $rvivly->shorten_url( $url );
-		$this->assertEquals( $url, $short_url );
+		$this->assertNotEquals( $url, $short_url );
 
 		$this->assertNotFalse( filter_var( $short_url, FILTER_VALIDATE_URL ) );
 		$this->assertNotEquals( $short_url, '' );
@@ -204,7 +204,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$this->assertEquals( 'post_title', $defaults['post_content'] );
 		$this->assertEquals( '240', $defaults['maximum_length'] );
 		$this->assertEquals( false, $defaults['short_url'] );
-		$this->assertEquals( 'is.gd', $defaults['short_url_service'] );
+		$this->assertEquals( 'rviv.ly', $defaults['short_url_service'] );
 		$this->assertEquals( true, $defaults['include_link'] );
 		$new_data                      = $defaults;
 		$new_data['include_link']      = false;

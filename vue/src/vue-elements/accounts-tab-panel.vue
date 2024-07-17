@@ -65,11 +65,12 @@
           class="columns my-2"
         >
           <div class="column col-12">
-            <i class="fa fa-info-circle " /> <span v-html="labels.activate_license" />
+            <i class="fa fa-info-circle " />
+            <span>{{ labels.activate_license }}</span>
           </div>
         </div>
         <div
-          v-if="(checkLicense && accountsCount === 2) && !pro_installed"
+          v-if="hasActiveAccountsLimitation"
           class="columns my-2"
         >
           <div class="column col-12">
@@ -104,6 +105,7 @@
     import ServiceUserTile from './service-user-tile.vue'
     import AddAccountTile from './reusables/add-account-tile.vue'
     import vue_spinner from './reusables/vue-spinner.vue'
+    import WebhookAccountModal from './reusables/webhook-account-modal.vue'
 
     export default {
         name: 'AccountView',
@@ -111,6 +113,7 @@
             SignInBtn,
             ServiceUserTile,
             AddAccountTile,
+            WebhookAccountModal,
             'vue_spinner': vue_spinner
         },
         data: function () {
@@ -151,7 +154,6 @@
                 this.$log.info('All accounts: ', all_accounts);
                 this.$log.debug('Preloading: ', this.$store.state.hide_preloading);
                 this.accountsCount = Object.keys(all_accounts).length;
-                this.is_preloading = this.$store.state.hide_preloading;
                 return all_accounts;
             },
             /**
@@ -159,10 +161,13 @@
              * @returns {boolean}
              */
             checkLicense: function () {
-                return (this.$store.state.licence < 1);
+                return (this.$store.state.license < 1);
             },
             is_preloading: function () {
                 return this.$store.state.hide_preloading;
+            },
+            hasActiveAccountsLimitation: function () {
+              return !this.pro_installed && this.accountsCount >= 2 && this.checkLicense ;
             }
         },
         mounted: function () {

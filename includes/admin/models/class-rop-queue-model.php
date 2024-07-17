@@ -216,7 +216,13 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			$post_pool = $this->selector->select( $account_id );
 
 			if ( empty( $post_pool ) ) {
-				$this->logger->alert_error( 'No posts are available to share for your account. Try activating the Share more than once option or changing the minimum and maximum post age setting to widen the pool of available posts.' );
+
+				$last_log_displayed = get_transient( 'rop_no_posts_log_displayed' );
+				$display_interval   = 12 * HOUR_IN_SECONDS;
+				if ( ! $last_log_displayed || ( time() - $last_log_displayed ) > $display_interval ) {
+					$this->logger->alert_error( 'No posts are available to share for your account. Try activating the Share more than once option or changing the minimum and maximum post age setting to widen the pool of available posts.' );
+					set_transient( 'rop_no_posts_log_displayed', time(), $display_interval );
+				}
 				continue;
 			}
 

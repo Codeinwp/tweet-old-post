@@ -39,6 +39,10 @@ export default new Vuex.Store({
             view: 'accounts',
             template: 'accounts',
         },
+        editPopup: {
+            accountId: '',
+            canShow: false,
+        },
         cron_status: {},
         toast: {
             type: 'success',
@@ -87,7 +91,8 @@ export default new Vuex.Store({
                 isActive: false
             }
         ],
-        licence: parseInt(ropApiSettings.license_type),
+        licenseDataView: ropApiSettings.license_data_view,
+        license: parseInt(ropApiSettings.license_type),
         labels: ropApiSettings.labels,
         availableServices: [],
         generalSettings: [],
@@ -108,8 +113,17 @@ export default new Vuex.Store({
         rop_cron_remote: ropApiSettings.rop_cron_remote,
         dom_updated: false,
         tracking: Boolean( ropApiSettings.tracking ),
+        is_new_user: Boolean( ropApiSettings.is_new_user ),
     },
     mutations: {
+
+        setEditPopup(state, data) {
+            state.editPopup = data
+        },
+
+        setEditPopupShowPermission(state, canShow) {
+            state.editPopup.canShow = canShow
+        },
 
         setTabView(state, view) {
             Vue.$log.debug('Changing tab to  ', view);

@@ -3,14 +3,14 @@
     <div class="tile-content" />
     <div class="rop-add-account">
       <button
-        v-if="!add_more_clicked && added_networks >= 2"
+        v-if="!add_more_clicked && added_networks >= 2 && !isOpenToEdit"
         class="btn btn-secondary"
         @click="addMore()"
       >
         <i class="fa fa-plus" />{{ labels.add_all_cta }}
       </button>
 
-      <sign-in-btn v-if="add_more_clicked || added_networks < 2" />
+      <sign-in-btn v-if="add_more_clicked || added_networks < 2 || isOpenToEdit" />
     </div>
   </div>
 </template>
@@ -33,6 +33,9 @@
 			}
 		},
 		computed: {
+			isOpenToEdit() {
+				return this.$store.state.editPopup?.canShow;
+			},
 		},
   methods: {
     addMore: function () {

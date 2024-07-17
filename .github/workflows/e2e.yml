@@ -53,10 +53,9 @@ jobs:
       - name: Playwright Blocks
         run: |
           npm run test:e2e:playwright
-        continue-on-error: true
 
       - name: Upload tests artifacts
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v2
         with:
           name: artifact

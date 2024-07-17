@@ -62,6 +62,17 @@
             />
           </div>
         </div>
+        
+        <div
+          v-if="!isPro && generalSettings.default_interval < 12"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.min_interval_upsell }}
+            </p>
+          </div>
+        </div>
 
         <span
           v-if="! isBiz"
@@ -570,6 +581,34 @@
             </div>
           </div>
         </div>
+        <span class="divider" />
+
+        <!-- tracking -->
+        <div class="columns py-2">
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.tracking_field }}</b>
+            <p class="text-gray">
+              {{ labels.tracking }}<br>
+              <a
+                :href="tracking_info_link"
+                target="_blank"
+              >
+                {{ labels.tracking_info }}
+              </a>
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.tracking"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="panel-footer text-right">
@@ -616,7 +655,9 @@
                  */
                 rop_cron_remote: Boolean(ropApiSettings.rop_cron_remote),
                 rop_cron_remote_agreement: Boolean(ropApiSettings.rop_cron_remote_agreement),
-                is_cron_btn_active: false
+                is_cron_btn_active: false,
+                tracking: this.$store.state.tracking,
+                tracking_info_link: ropApiSettings.tracking_info_link
             }
         },
         computed: {
@@ -624,10 +665,10 @@
                 return this.$store.state.generalSettings
             },
             isPro: function () {
-                return (this.$store.state.licence >= 1);
+                return (this.$store.state.license >= 1);
             },
             license_price_id: function () {
-                return this.$store.state.licence;
+                return this.$store.state.license;
             },
             isTaxLimit: function () {
                 if (ropApiSettings.tax_apply_limit > 0) {
@@ -636,7 +677,7 @@
                 return false;
             },
             isBiz: function () {
-                return (this.$store.state.licence > 1 && this.$store.state.licence !== 7 );
+                return (this.$store.state.license > 1 && this.$store.state.license !== 7 );
             },
             postTypes: function () {
                 return this.$store.state.generalSettings.available_post_types;
@@ -813,6 +854,7 @@
           instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
           instant_share_choose_accounts_manually: this.generalSettings.instant_share_choose_accounts_manually,
           housekeeping: this.generalSettings.housekeeping,
+          tracking: this.generalSettings.tracking
         };
 
 				this.$store.dispatch('fetchAJAXPromise', {

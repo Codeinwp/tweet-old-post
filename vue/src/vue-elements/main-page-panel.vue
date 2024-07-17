@@ -11,30 +11,8 @@
             class="plugin-logo avatar avatar-lg"
           >
           <h1 class="plugin-title d-inline-block">
-            Revive Old Posts
+            Revive Social
           </h1>
-          <span class="powered d-inline-block">
-            {{ labels.by }} 
-            <a
-              href="https://revive.social"
-              target="_blank"
-            >
-              <b>Revive.Social</b>
-            </a> 
-            <a
-              id="rop_vid_tuts"
-              href="https://www.youtube.com/playlist?list=PLAsG7vAH40Q512C8d_0lBpVZusUQqUxuH"
-              target="_blank"
-            >
-              <span>
-                START HERE 
-                <i
-                  class="fa fa-play-circle"
-                  aria-hidden="true"
-                />
-              </span>
-            </a>
-          </span>
         </div>
       </div>
       <toast />
@@ -83,7 +61,7 @@
     </div>
 
     <div class="columns">
-      <div class="panel column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
         <div
           v-if="is_preloading_over > 0"
           class="panel-nav"
@@ -117,96 +95,117 @@
         :class="'rop-license-plan-'+license"
       >
         <div class="card rop-container-start">
-          <button
-            id="rop_start_stop_btn"
-            class="btn"
-            :class="btn_class"
-            :data-tooltip="labels.active_account_warning"
-            :disabled="!haveAccountsActive"
-            @click="togglePosting()"
-          >
-            <i
-              v-if="!is_loading && !start_status"
-              class="fa fa-play"
+          <div class="container-column">
+            <StatusBox
+              :status-color-class="status_color_class"
+              :label="status_label_display"
             />
-            <i
-              v-else-if="!is_loading && start_status"
-              class="fa fa-stop"
+
+            <countdown :current_time="current_time" />
+          
+            <button
+              id="rop_start_stop_btn"
+              class="btn"
+              :class="btn_class"
+              :data-tooltip="labels.active_account_warning"
+              :disabled="!haveAccountsActive"
+              @click="togglePosting()"
+            >
+              <i
+                v-if="!is_loading && !start_status"
+                class="fa fa-play"
+              />
+              <i
+                v-else-if="!is_loading && start_status"
+                class="fa fa-stop"
+              />
+              <i
+                v-else
+                class="fa fa-spinner fa-spin"
+              />
+              {{ labels.click }} {{ labels.to }} {{ ( start_status ? labels.stop : labels.start ) }} {{ labels.sharing }}
+            </button>
+
+            <div
+              v-if="staging"
+              id="staging-status"
+              v-html="labels.staging_status"
             />
-            <i
-              v-else
-              class="fa fa-spinner fa-spin"
+            <div
+              v-if="!haveAccounts"
+              class="rop-spacer"
             />
-            {{ labels.click }} {{ labels.to }} {{ ( start_status ? labels.stop : labels.start ) }} {{ labels.sharing }}
-          </button>
-
-          <div
-            class="sharing-box"
-            :class="status_color_class"
-          >
-            {{ status_label_display }}
-          </div>
-
-          <countdown :current_time="current_time" />
-
-          <div
-            v-if="staging"
-            id="staging-status"
-            v-html="labels.staging_status"
-          />
-          <div
-            v-if="!haveAccounts"
-            class="rop-spacer"
-          />
-          <div v-if="haveAccounts">
-            <upsell-sidebar />
-          </div>
-          <a
-            v-if="license >= 1"
-            href="https://revive.social/pro-support/"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.rop_support }}</a>
-          <a
-            v-if="license < 1"
-            href="https://revive.social/support/"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.rop_support }}</a>
-          <a
-            v-if="haveAccounts"
-            href="https://docs.revive.social/"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.rop_docs }}</a>
-          <a
-            v-if="haveAccounts"
-            href="https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post"
-            target="_blank"
-            class="btn rop-sidebar-action-btns"
-          >{{ labels.review_it }}</a>
-          <div class="rop-tracking-box">
-            <h5>{{ labels.global_settings_header }}</h5>
-            <div class="rop-tracking-item">
-              <label
-                class="form-checkbox"
-              >
-                <input
-                  v-model="tracking"
-                  type="checkbox"
-                  name="rop-tracking"
-                  @change="toggle_tracking()"
-                >
-                <i class="form-icon" />
-                {{ labels.tracking }}
-                <a
-                  :href="tracking_info_link"
-                  target="_blank"
-                >
-                  {{ labels.tracking_info }}
-                </a>
-              </label>
+            <div v-if="haveAccounts">
+              <upsell-sidebar />
             </div>
+            <a
+              v-if="license >= 1 && labels.rop_support_url !== ''"
+              :href="labels.rop_support_url"
+              target="_blank"
+              class="btn rop-sidebar-action-btns"
+            >{{ labels.rop_support }}</a>
+            <a
+              v-if="haveAccounts"
+              href="https://docs.revive.social/"
+              target="_blank"
+              class="btn rop-sidebar-action-btns"
+            >{{ labels.rop_docs }}</a>
+            <a
+              v-if="haveAccounts"
+              href="https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post"
+              target="_blank"
+              class="btn rop-sidebar-action-btns"
+            >{{ labels.review_it }}</a>
+          </div>
+          <div
+            v-if="license_data_view.installed"
+            class="container-column license-container"
+          >
+            <h6 class="license-title">
+              {{ license_field_title }}
+            </h6>
+            <p class="license-description text-gray">
+              {{ labels.license_help }}
+              <a
+                href="https://store.themeisle.com/"
+                rel="nofollow"
+                target="_blank"
+                class="text-gray"
+              >{{ labels.purchase_history }}</a>
+            </p>
+            <input
+              v-model="generalSettings.license_key"
+              type="password"
+              class="form-input"
+              :placeholder="password_mask"
+              :disabled="is_license_valid"
+            >
+            <span
+              v-if="license_data_view.expires"
+              class="text-gray expires-on"
+            >
+              {{ license_data_view.expires }}
+            </span>
+            <button
+              v-if="! is_license_valid"
+              class="btn btn-primary activate"
+              @click="activateLicense()"
+            >
+              {{ labels.activate }}
+            </button>
+            <button
+              v-if="is_license_valid"
+              class="btn btn-secondary deactivate"
+              @click="disableLicense()"
+            >
+              {{ labels.deactivate }}
+            </button>
+            <p
+              v-if="license_error"
+              class="text-error"
+            >
+              {{ license_error }}
+            </p>
           </div>
         </div>
       </div>
@@ -223,8 +222,8 @@
     import LogsTab from './logs-tab-panel.vue'
     import Toast from './reusables/toast.vue'
     import CountDown from './reusables/countdown.vue'
-    import moment from 'moment'
     import upsellSidebar from './upsell-sidebar.vue'
+    import StatusBox from './reusables/status-box.vue'
 
     export default {
         name: 'MainPagePanel',
@@ -236,25 +235,31 @@
             'logs': LogsTab,
             'upsell-sidebar': upsellSidebar,
             'toast': Toast,
-            'countdown': CountDown
+            'countdown': CountDown,
+            StatusBox
         },
         data: function () {
             return {
                 to_pro_upsell: ROP_ASSETS_URL + 'img/to_pro.png',
                 to_business_upsell: ROP_ASSETS_URL + 'img/to_business.png',
                 plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
-                license: this.$store.state.licence,
+                license: this.$store.state.license,
                 labels: this.$store.state.labels.general,
                 upsell_link: ropApiSettings.upsell_link,
                 staging: ropApiSettings.staging,
                 is_loading: false,
                 is_loading_logs: false,
                 status_is_error_display: false,
-                tracking: this.$store.state.tracking,
-                tracking_info_link: ropApiSettings.tracking_info_link
+                license_data_view: this.$store.state.licenseDataView,
+                license_field_title: window.wp.i18n.sprintf(this.$store.state.labels.general.license_product, 'Revive Old Posts Pro Add-on'),
+                license_error: false,
+                password_mask: this.$store.state.licenseDataView?.passwordMask
             }
         },
         computed: {
+            is_license_valid() {
+              return this.$store.state.licenseDataView.license === 'valid';
+            },
             is_preloading_over: function () {
                 return this.$store.state.hide_preloading;
             },
@@ -479,22 +484,31 @@
                     this.is_loading_logs = false;
                 })
             },
-
-            /**
-             * Toggle tracking from SDK (via tiTrk).
-             */
-            toggle_tracking() {
-                this.$log.info('Toggling tracking');
-                this.$store.dispatch('fetchAJAXPromise', {
-                    req: 'toggle_tracking',
-                    data: { tracking: Boolean( this.tracking) }
-                }).then(response => {
-                  // Update tracking state.
-                  this.$store.commit('updateState', {stateData: {tracking: Boolean( response?.tracking)}, requestName: 'toggle_tracking'});
-                  this.$log.info('Succesfully toggled tracking.');
-                }, error => {
-                  Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-                })
+            activateLicense() {
+              this.uploadLicense( 'activate' );
+            },
+            disableLicense() {
+              this.generalSettings.license_key = '';
+              this.uploadLicense( 'deactivate' );
+            },
+            uploadLicense( action ) {
+              this.$store.dispatch( 'fetchAJAXPromise', {
+                req: 'set_license',
+                updateState: false,
+                data: {
+                  license_key: this.generalSettings.license_key,
+                  action
+                }
+              }).then( response => {
+                if ( response?.success ) {
+                  window.location.reload();
+                } else {
+                  this.license_error = response?.message;
+                }
+              }, error => {
+                this.license_error = this.labels.could_not_send;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+              })
             }
         }
     }
@@ -520,13 +534,37 @@
         padding-right: 10px;
     }
 
-    .rop-tracking-box {
+    #rop_core .container-column {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+    }
 
-      padding: 0.25rem 0.4rem;
-      border: 0.05rem solid #042440;
-      border-radius: 0.1rem;
+    #rop_core .license-container {
+      margin-top: 20px;
+      gap: 15px;
+    }
+
+    #rop_core .license-title {
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 1;
+      color: black;
+    }
+
+    #rop_core .license-description {
+      font-size: 13px;
+      line-height: 1.2em;
+      margin: 0;
+    }
+
+    .expires-on {
+      font-size: 13px;
+      line-height: 1.2em;
+    }
+
+    #staging-status a {
+      color: white;
+      font-weight: bold;
+      text-decoration: underline;
     }
 </style>
