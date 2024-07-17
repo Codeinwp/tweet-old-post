@@ -44,7 +44,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$rvivly = new Rop_Rvivly_Shortner();
 		$rvivly->set_website( $url );
 		$short_url = $rvivly->shorten_url( $url );
-		$this->assertEquals( $url, $short_url );
+		$this->assertNotEquals( $url, $short_url );
 
 		$this->assertNotFalse( filter_var( $short_url, FILTER_VALIDATE_URL ) );
 		$this->assertNotEquals( $short_url, '' );
