@@ -547,7 +547,7 @@
     #rop_core .license-title {
       font-size: 14px;
       font-weight: bold;
-      line-height: 0;
+      line-height: 1;
       color: black;
     }
 
