@@ -132,7 +132,9 @@ class Rop {
 		add_filter(
 			'tweet_old_post_pro_lc_no_valid_string',
 			function ( $message ) {
-				return str_replace( '<a href="%s">', '<a href="' . admin_url( 'admin.php?page=TweetOldPost' ) . '">', $message );
+				$message = str_replace( '<a href="%s" target', '<a href="https://store.themeisle.com/" target', $message );
+				$message = str_replace( '<a href="%s">', '<a href="' . admin_url( 'admin.php?page=TweetOldPost' ) . '">', $message );
+				return $message;
 			}
 		);
 
