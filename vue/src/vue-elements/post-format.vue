@@ -470,15 +470,15 @@
         </div>
       </div>
       <div
-      v-if="isNewUserPro && (post_format.short_url_service !== 'rviv.ly' && post_format.short_url_service !== 'wp_short_url')"
-      class="columns "
-    >
-      <div class="column text-center">
-        <p class="upsell">
-          <i class="fa fa-info-circle" /> {{ labels.hashtag_field_upsell }}
-        </p>
+        v-if="isNewUserPro && (post_format.short_url_service !== 'rviv.ly' && post_format.short_url_service !== 'wp_short_url')"
+        class="columns "
+      >
+        <div class="column text-center">
+          <p class="upsell">
+            <i class="fa fa-info-circle" /> {{ labels.hashtag_field_upsell }}
+          </p>
+        </div>
       </div>
-    </div>
     </template>
 
 
