@@ -19,13 +19,9 @@
  * Version:           9.1.0
  * Author:            revive.social
  * Author URI:        https://revive.social/
- * Requires at least: 4.7
- * Tested up to:      6.5
- * Stable tag:        trunk
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
  * Requires License:    no
- * Requires PHP: 7.4
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: tweet-old-post
