@@ -106,6 +106,7 @@ Revive Social isn't like every other social media marketing tool. We've tailored
 - WordPress to X (previously Twitter)
 - WordPress to Facebook page
 - WordPress to Instagram [Pro]
+- WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
 - WordPress to Google My Business(GMB) [Pro]
@@ -145,6 +146,8 @@ Some of the available networks and features require the Pro version of the plugi
 - Post to Instagram. [Pro]
 
 - Post to Facebook Groups. [Pro]
+
+- Post to LinkedIn Profiles. [Pro]
 
 - Post to LinkedIn Pages. [Pro]
 
@@ -186,6 +189,8 @@ Using the PRO version of Revive Social unlocks a host of additional features to 
 - **WordPress to Instagram** scheduling and auto post
 
 - **WordPress to LinkedIn Company Pages** scheduling and auto post
+
+- **WordPress to LinkedIn Profiles** scheduling and auto post
 
 - **WordPress to Tumblr** scheduling and auto post
 
@@ -298,7 +303,7 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 **Can Revive Social share to LinkedIn Business page?**
 
-- Yes, Revive Social can share to LinkedIn business pages.
+- Yes, Revive Social can share to LinkedIn business pages as well as personal profiles.
 
 == Screenshots ==
 
