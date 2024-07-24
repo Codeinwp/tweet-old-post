@@ -106,7 +106,6 @@ Revive Social isn't like every other social media marketing tool. We've tailored
 - WordPress to X (previously Twitter)
 - WordPress to Facebook page
 - WordPress to Instagram [Pro]
-- WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
 - WordPress to Google My Business(GMB) [Pro]
@@ -129,8 +128,6 @@ Some of the available networks and features require the Pro version of the plugi
 
 - Create **common hashtags** for post shares. [Free]
 
-- **Automatically generate hashtags** for post shares from **tags**, **categories** or from **custom fields**. [Free]
-
 - Include link **back to your site**. [Free]
 
 - Compatible with **URL Shorteners**. Shorten the links for the content that you post to social media. [Free]
@@ -148,8 +145,6 @@ Some of the available networks and features require the Pro version of the plugi
 - Post to Instagram. [Pro]
 
 - Post to Facebook Groups. [Pro]
-
-- Post to LinkedIn Profiles. [Pro]
 
 - Post to LinkedIn Pages. [Pro]
 
@@ -186,11 +181,11 @@ Using the PRO version of Revive Social unlocks a host of additional features to 
 
 - Finer **WPML support** for multilingual websites. [Learn More](https://docs.revive.social/article/1338-how-to-share-different-wpml-languages-to-different-social-media-accounts)
 
+**Automatically generate hashtags** for post shares from **tags**, **categories** or from **custom fields**.
+
 - **WordPress to Instagram** scheduling and auto post
 
 - **WordPress to LinkedIn Company Pages** scheduling and auto post
-
-- **WordPress to LinkedIn Profiles** scheduling and auto post
 
 - **WordPress to Tumblr** scheduling and auto post
 
@@ -211,6 +206,8 @@ Using the PRO version of Revive Social unlocks a host of additional features to 
 - Add [Magic tags](https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts) to content variations
 
 - Magic tags support for “Additional Text” option
+
+- Enable Webhook Integration to seamlessly link with various external services, [including 30+ networks via Zapier](https://docs.revive.social/article/2037-maximize-your-social-presence-effortless-integration-with-zapier), for effortless automation & updates. Automate your social media tasks & workflows.
 
 - Automatically share images and video from your [media library to your social networks](https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature) **(our users love this feature!)**
 
@@ -301,7 +298,7 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 **Can Revive Social share to LinkedIn Business page?**
 
-- Yes, Revive Social can share to LinkedIn business pages as well as personal profiles.
+- Yes, Revive Social can share to LinkedIn business pages.
 
 == Screenshots ==
 
