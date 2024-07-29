@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="Themeisle">
     <description>Themeisle rules for PHP_CodeSnifferr</description>
-
+    <ini name="error_reporting" value="E_ALL &#38; ~E_DEPRECATED" />
     <file>.</file>
 
     <exclude-pattern>node_modules/*</exclude-pattern>
@@ -11,6 +11,9 @@
     <exclude-pattern>assets/*</exclude-pattern>
     <exclude-pattern>vue/*</exclude-pattern>
     <exclude-pattern>dist/*</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+
     <rule ref="WordPress-Core">
         <exclude name="Squiz.Commenting.FileComment.SpacingAfterComment" />
         <exclude name="Generic.Files.LowercasedFilename" />

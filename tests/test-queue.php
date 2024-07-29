@@ -19,7 +19,7 @@ class Test_RopQueue extends WP_UnitTestCase {
 	/**
 	 * Init test accounts.
 	 */
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		Rop_InitAccounts::init();
 		Rop_InitAccounts::generatePosts( 30, 'post', '-2 month' );
 	}
