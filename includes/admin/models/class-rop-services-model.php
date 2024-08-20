@@ -496,7 +496,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 
 		list( $service, $service_id, $user_id ) = $this->handle_underscore_exception( $account_id );
 
-		if ( count( $services[ $service . '_' . $service_id ]['available_accounts'] ) >= 1 ) {
+		if ( ! empty( $services[ $service . '_' . $service_id ]['available_accounts'] ) && count( $services[ $service . '_' . $service_id ]['available_accounts'] ) >= 1 ) {
 			foreach ( $services[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
 				if ( $account['id'] == $user_id ) {
 					$response = array(
