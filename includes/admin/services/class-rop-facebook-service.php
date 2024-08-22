@@ -761,9 +761,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$post_data['access_token'] = $token;
 
 			if ( 'video' === $posting_type ) {
-				$url = 'https://graph-video.facebook.com/v12.0' . $path;
+				$url = 'https://graph-video.facebook.com/v16.0' . $path;
 			} else {
-				$url = 'https://graph.facebook.com/v12.0' . $path;
+				$url = 'https://graph.facebook.com/v16.0' . $path;
 			}
 
 			// Scrape post URL before sharing
