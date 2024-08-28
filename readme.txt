@@ -324,6 +324,14 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.1.2](https://github.com/Codeinwp/tweet-old-post/compare/v9.1.1...v9.1.2) (2024-08-28)
+
+- Upgraded Facebook Graph API version
+- Fixed an issue where a PHP error was being thrown when posting
+
+
+
+
 ##### [Version 9.1.1](https://github.com/Codeinwp/tweet-old-post/compare/v9.1.0...v9.1.1) (2024-07-23)
 
 - Tested compatibility with WordPress 6.6
