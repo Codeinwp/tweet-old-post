@@ -308,6 +308,7 @@ class Rop_Admin {
 		if ( empty( $page ) ) {
 			return;
 		}
+
 		wp_enqueue_media();
 		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array('wp-url'), ( ROP_DEBUG ) ? time() : $this->version, false );
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
@@ -421,6 +422,9 @@ class Rop_Admin {
 		}
 
 		$this->register_survey();
+		if ( ! defined( 'ROP_PRO_VERSION' ) ) {
+			do_action( 'themeisle_sdk_load_banner', 'rop' );
+		}
 	}
 
 	/**
