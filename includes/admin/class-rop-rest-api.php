@@ -549,7 +549,7 @@ class Rop_Rest_Api {
 	private function exclude_post_batch( $data ) {
 		$search          = sanitize_text_field( $data['search'] );
 		$post_selector   = new Rop_Posts_Selector_Model();
-		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $search, $data['exclude'], false, false );
+		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['exclude'], $search, false, false );
 		$post_ids        = wp_list_pluck( $available_posts, 'value' );
 
 		$settings_model = new Rop_Settings_Model();
@@ -576,7 +576,7 @@ class Rop_Rest_Api {
 	 */
 	private function get_posts( $data ) {
 		$post_selector   = new Rop_Posts_Selector_Model();
-		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['search_query'], $data['exclude'], $data['show_excluded'], $data['page'] );
+		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['exclude'], $data['search_query'], $data['show_excluded'], $data['page'] );
 
 		$this->response->set_code( '200' )
 					->set_data(

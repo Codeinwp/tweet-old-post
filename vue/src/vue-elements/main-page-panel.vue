@@ -15,6 +15,10 @@
           </h1>
         </div>
       </div>
+      <div
+        id="tsdk_banner"
+        class="rop-banner"
+      />
       <toast />
       <div
         v-if=" is_rest_api_error "
@@ -380,6 +384,8 @@
             }, 1000);
 
             this.get_toast_message(false);
+            
+            document.dispatchEvent(new Event('themeisle:banner:init'));
         },
         created() {
             this.$root.$refs.main_page = this;
@@ -566,5 +572,11 @@
       color: white;
       font-weight: bold;
       text-decoration: underline;
+    }
+
+    .rop-banner:has(.tsdk-banner-cta) {
+      width: 100%;
+      margin-top: 15px;
+      margin-bottom: 30px;
     }
 </style>
