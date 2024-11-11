@@ -665,11 +665,13 @@ class Rop_Admin {
 			);
 
 			global $submenu;
-			$submenu['TweetOldPost'][2] = array(
-				$rss_to_social,
-				'manage_options',
-				tsdk_utmify( self::RN_LINK, 'admin', 'admin_menu' ),
-			);
+			if ( isset( $submenu['TweetOldPost'] ) ) {
+				$submenu['TweetOldPost'][2] = array(
+					$rss_to_social,
+					'manage_options',
+					tsdk_utmify( self::RN_LINK, 'admin', 'admin_menu' ),
+				);
+			}
 		}
 	}
 
