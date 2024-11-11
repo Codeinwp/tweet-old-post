@@ -1,3 +1,9 @@
+##### [Version 9.1.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.1.2...v9.1.3) (2024-11-11)
+
+- Fixed issue with Revive Social menu item being visible to match user permissions
+- Fixed PHP deprecation error showing in the console
+- Updated dependencies
+
 ##### [Version 9.1.2](https://github.com/Codeinwp/tweet-old-post/compare/v9.1.1...v9.1.2) (2024-08-28)
 
 - Upgraded Facebook Graph API version
