@@ -20,7 +20,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 	/**
 	 * Init test accounts.
 	 */
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		Rop_InitAccounts::init();
 		self::$post_ids = Rop_InitAccounts::generatePosts( 10, 'post', '-2 month' );
 	}
