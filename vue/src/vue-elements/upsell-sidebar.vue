@@ -5,7 +5,7 @@
       class="card rop-upsell-pro-card"
     >
       <a
-        :href="upsell_link"
+        :href="getUpsellLink('pro')"
         target="_blank"
       >
         <img
@@ -20,7 +20,7 @@
       class="card rop-upsell-business-card"
     >
       <a
-        :href="upsell_link"
+        :href="getUpsellLink('business')"
         target="_blank"
       >
         <img
@@ -38,13 +38,19 @@
 		name: "UpsellSidebar",
 		data: function () {
 			return {
-				license: this.$store.state.licence,
+				license: this.$store.state.license,
 				upsell_link: ropApiSettings.upsell_link,
 				to_pro_upsell: ROP_ASSETS_URL + 'img/to_pro.png',
 				labels: this.$store.state.labels.general,
 				to_business_upsell: ROP_ASSETS_URL + 'img/to_business.png',
 			}
-		}
+		},
+
+    methods: {
+      getUpsellLink: function (type) {
+        return wp.url.addQueryArgs(this.upsell_link, {utm_source: 'wpadmin', utm_medium: 'sidebar', utm_campaign: type});
+      }
+    }
 	}
 </script>
 

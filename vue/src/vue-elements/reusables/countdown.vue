@@ -3,9 +3,14 @@
     v-if="isOn && accounts_no > 0"
     class="toast rop-next-share-time"
   >
-    <span v-if="diff_seconds>0"> <b><i
-      class="fa fa-fast-forward"
-    /> {{ labels.next_share }}</b> {{ labels.in }}</span>
+    <span v-if="diff_seconds>0">
+      <b>
+        <i
+          class="fa fa-fast-forward"
+        />
+        {{ labels.next_share }} {{ labels.in }}
+      </b>
+    </span>
     <small v-if="timediff !== ''">{{ timediff }}</small>
   </div>
 </template>

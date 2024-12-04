@@ -19,5 +19,6 @@ test.describe( 'Accounts', () => {
         await expect( page.getByRole('button', { name: 'Tumblr' }) ).toBeVisible();
         await expect( page.getByRole('button', { name: 'GMB' }) ).toBeVisible();
         await expect( page.getByRole('button', { name: 'Vk' }) ).toBeVisible();
+        await expect( page.getByRole('button', { name: 'Webhook' }) ).toBeVisible();
 	} );
 } );

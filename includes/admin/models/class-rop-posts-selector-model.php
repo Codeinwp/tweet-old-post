@@ -186,14 +186,14 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @param array  $selected_post_types The selected post types.
 	 * @param array  $taxonomies The selected taxonomies.
-	 * @param string $search A search query.
 	 * @param bool   $exclude The exclude taxonomies flag.
+	 * @param string $search A search query.
 	 *
 	 * @return array
 	 * @since   8.0.0
 	 * @access  public
 	 */
-	public function get_posts( $selected_post_types, $taxonomies, $search = '', $exclude, $show_excluded_posts = false, $page = 1 ) {
+	public function get_posts( $selected_post_types, $taxonomies, $exclude, $search = '', $show_excluded_posts = false, $page = 1 ) {
 		$search = strval( $search );
 
 		$args = array(

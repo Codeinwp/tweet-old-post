@@ -21,6 +21,13 @@
 class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 	/**
+	 * The version of the Linkedin API.
+	 *
+	 * @see https://learn.microsoft.com/en-us/linkedin/marketing/versioning?view=li-lms-2024-05
+	 */
+	public const LINKEDIN_VERSION = 202405;
+
+	/**
 	 * An instance of authenticated LinkedIn user.
 	 *
 	 * @since   8.0.0
@@ -341,8 +348,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$users = array( $user_details );
 
-		// only new installs can connect company accounts because they will have the organization scope
-		if ( $this->rop_show_li_app_btn() ) {
+		// only new installs & new users can connect company accounts because they will have the organization scope
+		if ( $this->rop_is_business_plan() ) {
 			try {
 				// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
 				$admined_linkedin_pages = $this->api->api(
@@ -573,7 +580,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'x-li-format'               => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
 					'Authorization'             => 'Bearer ' . $token,
-					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : 202304,
+					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : self::LINKEDIN_VERSION,
 				),
 			)
 		);
@@ -971,7 +978,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'x-li-format'               => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
 					'Authorization'             => 'Bearer ' . $token,
-					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : 202304,
+					'Linkedin-Version'          => defined( 'ROP_LINKEDIN_VERSION' ) ? ROP_LINKEDIN_VERSION : self::LINKEDIN_VERSION,
 				),
 			)
 		);
@@ -1029,6 +1036,23 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		return $body;
+	}
+
+	/**
+	 * Method used to decide whether or not to show Linked button
+	 *
+	 * @return  bool
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_is_business_plan() {
+		if ( $this->rop_show_li_app_btn() ) {
+			$global_settings = new Rop_Global_Settings();
+			// New users will require a higher plan than the old.
+			return $global_settings->check_is_new_license() ? $global_settings->license_type() > 1 : $global_settings->license_type() > 0;
+		}
+
+		return false;
 	}
 
 }

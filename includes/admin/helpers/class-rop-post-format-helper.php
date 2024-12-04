@@ -112,6 +112,17 @@ class Rop_Post_Format_Helper {
 	}
 
 	/**
+	 * Get the post format settings.
+	 *
+	 * @access  public
+	 *
+	 * @return array|bool
+	 */
+	public function get_post_format() {
+		return $this->post_format;
+	}
+
+	/**
 	 * Get service by account name.
 	 *
 	 * @return string Service slug.
@@ -141,8 +152,13 @@ class Rop_Post_Format_Helper {
 		$content_helper  = new Rop_Content_Helper();
 		$max_length      = $this->post_format['maximum_length'];
 
-		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+
+			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
+				$pro_format_helper->set_content_helper( $content_helper );
+				$pro_format_helper->set_post_format( $this->post_format );
+			}
 		}
 
 		/**
@@ -173,7 +189,11 @@ class Rop_Post_Format_Helper {
 		$custom_messages = get_post_meta( $post_id, 'rop_custom_messages_group', true );
 
 		// If share variations exist for this post and the option to use them is turned on
-		if ( ! empty( $custom_messages ) && ! empty( $general_settings['custom_messages'] ) ) {
+		if (
+			! empty( $custom_messages ) &&
+			! empty( $general_settings['custom_messages'] ) &&
+			( empty( $this->post_format['override_share_variations'] ) || 0 === $this->post_format['override_share_variations'] )
+		) {
 
 			$custom_messages_share_order = $settings->get_custom_messages_share_order();
 
@@ -273,8 +293,18 @@ class Rop_Post_Format_Helper {
 		$post_title = html_entity_decode( $post_title );
 
 		$post_content = apply_filters( 'rop_share_post_content', get_post_field( 'post_content', $post_id ), $post_id );
+		$content      = '';
+		$post_format  = $this->post_format['post_content'];
 
-		switch ( $this->post_format['post_content'] ) {
+		// Guards against PRO options being used when the license is expired.
+		if ( 'custom_content' === $post_format ) {
+			$global_settings = new Rop_Global_Settings();
+			if ( 0 <= $global_settings->license_type() ) {
+				$post_format = 'post_title';
+			}
+		}
+
+		switch ( $post_format ) {
 			case 'post_title':
 				$content = $post_title;
 				break;
@@ -296,6 +326,9 @@ class Rop_Post_Format_Helper {
 			case 'custom_field':
 				$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
 				break;
+			case 'custom_content':
+				$content = '';
+				break;
 			case 'yoast_seo_title':
 				if ( function_exists( 'YoastSEO' ) ) {
 					// See https://developer.yoast.com/blog/yoast-seo-14-0-using-yoast-seo-surfaces/
@@ -314,6 +347,22 @@ class Rop_Post_Format_Helper {
 				// So lets fall back to post content
 				if ( empty( $content ) ) {
 					$content = $post_content;
+				}
+				break;
+			case 'yoast_seo_title_description':
+				if ( function_exists( 'YoastSEO' ) ) {
+					$title       = YoastSEO()->meta->for_post( $post_id )->title;
+					$description = YoastSEO()->meta->for_post( $post_id )->description;
+
+					// This is empty if user doesn't add a custom description
+					// So lets fall back to post content
+					if ( empty( $description ) ) {
+						$description = $post_content;
+					}
+
+					$content = $title . ' ' . $description;
+				} else {
+					$content = $post_title . apply_filters( 'rop_title_content_separator', ' ' ) . $post_content;
 				}
 				break;
 			default:
@@ -485,7 +534,7 @@ class Rop_Post_Format_Helper {
 	 */
 	private function get_categories_hashtags( $post_id ) {
 
-		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
@@ -514,7 +563,7 @@ class Rop_Post_Format_Helper {
 	 */
 	private function get_tags_hashtags( $post_id ) {
 
-		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
@@ -737,17 +786,24 @@ class Rop_Post_Format_Helper {
 	 */
 	private function append_custom_text( $content, $post_id ) {
 
-		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
-		}
 
-		if ( isset( $pro_format_helper ) ) {
+			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
+				$pro_format_helper->set_content_helper( new Rop_Content_Helper() );
+				$pro_format_helper->set_post_format( $this->post_format );
+			}
 			$this->post_format['custom_text'] = $pro_format_helper->rop_replace_magic_tags( $this->post_format['custom_text'], $post_id );
 		}
 
-		if ( empty( $this->post_format['custom_text'] ) > 0 ) {
+		if ( empty( $this->post_format['custom_text'] ) ) {
 			return $content;
 		}
+
+		if ( 'custom_content' === $this->post_format['post_content'] ) {
+			return $this->post_format['custom_text'];
+		}
+
 		switch ( $this->post_format['custom_text_pos'] ) {
 			case 'beginning':
 				$content = $this->post_format['custom_text'] . ' ' . $content;
@@ -978,9 +1034,9 @@ class Rop_Post_Format_Helper {
 	 * @return string
 	 */
 	public function get_short_url( $url, $short_url_service, $credentials = array() ) {
-		$shortner_factory = new Rop_Shortner_Factory();
 
 		try {
+			$shortner_factory = new Rop_Shortner_Factory();
 			$shortner_service = $shortner_factory->build( $short_url_service );
 			if ( ! empty( $credentials ) ) {
 				$shortner_service->set_credentials( $credentials );
@@ -988,7 +1044,7 @@ class Rop_Post_Format_Helper {
 			$short_url = $shortner_service->shorten_url( $url );
 		} catch ( Exception $exception ) {
 			$log = new Rop_Logger();
-			$log->alert_error( 'Could NOT get short URL. Error: ' . $exception->getMessage() );
+			$log->alert_error( 'Could NOT get short URL for option <' . $short_url_service . '>. Error: ' . $exception->getMessage() );
 			$short_url = $url;
 		}
 

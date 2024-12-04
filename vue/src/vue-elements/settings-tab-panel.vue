@@ -62,6 +62,17 @@
             />
           </div>
         </div>
+        
+        <div
+          v-if="!isPro && generalSettings.default_interval < 12"
+          class="columns "
+        >
+          <div class="column text-center">
+            <p class="upsell">
+              <i class="fa fa-info-circle" /> {{ labels.min_interval_upsell }}
+            </p>
+          </div>
+        </div>
 
         <span
           v-if="! isBiz"
@@ -570,6 +581,34 @@
             </div>
           </div>
         </div>
+        <span class="divider" />
+
+        <!-- tracking -->
+        <div class="columns py-2">
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.tracking_field }}</b>
+            <p class="text-gray">
+              {{ labels.tracking }}<br>
+              <a
+                :href="tracking_info_link"
+                target="_blank"
+              >
+                {{ labels.tracking_info }}
+              </a>
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.tracking"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="panel-footer text-right">
@@ -616,7 +655,9 @@
                  */
                 rop_cron_remote: Boolean(ropApiSettings.rop_cron_remote),
                 rop_cron_remote_agreement: Boolean(ropApiSettings.rop_cron_remote_agreement),
-                is_cron_btn_active: false
+                is_cron_btn_active: false,
+                tracking: this.$store.state.tracking,
+                tracking_info_link: ropApiSettings.tracking_info_link
             }
         },
         computed: {
@@ -624,10 +665,10 @@
                 return this.$store.state.generalSettings
             },
             isPro: function () {
-                return (this.$store.state.licence >= 1);
+                return (this.$store.state.license >= 1);
             },
             license_price_id: function () {
-                return this.$store.state.licence;
+                return this.$store.state.license;
             },
             isTaxLimit: function () {
                 if (ropApiSettings.tax_apply_limit > 0) {
@@ -636,7 +677,7 @@
                 return false;
             },
             isBiz: function () {
-                return (this.$store.state.licence > 1 && this.$store.state.licence !== 7 );
+                return (this.$store.state.license > 1 && this.$store.state.license !== 7 );
             },
             postTypes: function () {
                 return this.$store.state.generalSettings.available_post_types;
@@ -792,33 +833,73 @@
 				let postsSelected = this.generalSettings.selected_posts
 				this.is_loading = true;
 				this.$log.info('Sending request for saving general settings..');
+        
+        const savedSettings = {
+          available_taxonomies: this.generalSettings.available_taxonomies,
+          default_interval: this.generalSettings.default_interval,
+          minimum_post_age: this.generalSettings.minimum_post_age,
+          maximum_post_age: this.generalSettings.maximum_post_age,
+          number_of_posts: this.generalSettings.number_of_posts,
+          more_than_once: this.generalSettings.more_than_once,
+          selected_post_types: postTypesSelected,
+          selected_taxonomies: taxonomiesSelected,
+          exclude_taxonomies: excludeTaxonomies,
+          update_post_published_date: this.generalSettings.update_post_published_date,
+          ga_tracking: this.generalSettings.ga_tracking,
+          custom_messages: this.generalSettings.custom_messages,
+          custom_messages_share_order: this.generalSettings.custom_messages_share_order,
+          instant_share: this.generalSettings.instant_share,
+          true_instant_share: this.generalSettings.true_instant_share,
+          instant_share_default: this.generalSettings.instant_share_default,
+          instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
+          instant_share_choose_accounts_manually: this.generalSettings.instant_share_choose_accounts_manually,
+          housekeeping: this.generalSettings.housekeeping,
+          tracking: this.generalSettings.tracking
+        };
+
 				this.$store.dispatch('fetchAJAXPromise', {
 					req: 'save_general_settings',
 					updateState: false,
-					data: {
-						available_taxonomies: this.generalSettings.available_taxonomies,
-						default_interval: this.generalSettings.default_interval,
-						minimum_post_age: this.generalSettings.minimum_post_age,
-						maximum_post_age: this.generalSettings.maximum_post_age,
-						number_of_posts: this.generalSettings.number_of_posts,
-						more_than_once: this.generalSettings.more_than_once,
-						selected_post_types: postTypesSelected,
-						selected_taxonomies: taxonomiesSelected,
-						exclude_taxonomies: excludeTaxonomies,
-						update_post_published_date: this.generalSettings.update_post_published_date,
-						ga_tracking: this.generalSettings.ga_tracking,
-						custom_messages: this.generalSettings.custom_messages,
-						custom_messages_share_order: this.generalSettings.custom_messages_share_order,
-						instant_share: this.generalSettings.instant_share,
-						true_instant_share: this.generalSettings.true_instant_share,
-						instant_share_default: this.generalSettings.instant_share_default,
-						instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
-                        instant_share_choose_accounts_manually: this.generalSettings.instant_share_choose_accounts_manually,
-						housekeeping: this.generalSettings.housekeeping,
-					}
+					data: savedSettings
 				}).then(response => {
 					this.is_loading = false;
 					this.$log.info('Successfully saved general settings.');
+
+          const ignoredKeys = [
+            'available_post_types',
+            'available_taxonomies',
+            'selected_posts',
+            'exclude_taxonomies',
+            'selected_taxonomies',
+          ];
+
+          const trackingPayload = Object.entries(savedSettings)
+            .map(([key, value]) => {
+              if( 'selected_post_types' === key ) {
+                value = value.map( postType => postType.value ).join( ',' );
+              }
+              
+              return [key, value];
+            })
+            .filter(
+              ([key, value]) => (
+              !ignoredKeys.includes(key) && 
+              ! ( value === undefined || value === null || value === '' ) &&
+              ! Array.isArray(value) &&
+              typeof value !== 'object'
+            ) )
+            .reduce((acc, [key, value]) => {
+              acc[key] = value;
+              return acc;
+            }, {});
+         
+          window?.tiTrk?.with('tweet').add({
+            feature: 'general-settings',
+            featureComponent: 'saved-settings',
+            featureData: trackingPayload,
+          });
+
+          window?.tiTrk?.uploadEvents();
 				}, error => {
 
 					this.$log.error('Successfully saved general settings.');

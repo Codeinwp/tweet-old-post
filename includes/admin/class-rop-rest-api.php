@@ -365,6 +365,26 @@ class Rop_Rest_Api {
 			}
 		}
 
+		// New users will require a Pro plan (from version 9.1).
+		$global_settings = new Rop_Global_Settings();
+		$is_new_user     = (int) get_option( 'rop_is_new_user', 0 );
+		if ( $global_settings->license_type() <= 0 && $is_new_user ) {
+			if ( 'custom_field' === $data['data']['post_content'] ) {
+				$data['data']['post_content'] = 'post_title';
+			}
+			if ( ! in_array( $data['data']['hashtags'], array( 'no-hashtags', 'common-hashtags' ), true ) ) {
+				$data['data']['hashtags'] = 'no-hashtags';
+			}
+			if ( ! in_array( $data['data']['short_url_service'], array( 'rviv.ly', 'wp_short_url' ), true ) ) {
+				$data['data']['short_url_service'] = 'rviv.ly';
+			}
+		}
+
+		// If the user forget to switch from the upsell value, set it to the default value.
+		if ( 'custom_content' === $data['data']['post_content'] && $global_settings->license_type() <= 0 ) {
+			$data['data']['post_content'] = 'post_title';
+		}
+
 		try {
 			if ( $data['data']['short_url_service'] !== 'wp_short_url' ) {
 				$shortner = $sh_factory->build( $data['data']['short_url_service'] );
@@ -529,7 +549,7 @@ class Rop_Rest_Api {
 	private function exclude_post_batch( $data ) {
 		$search          = sanitize_text_field( $data['search'] );
 		$post_selector   = new Rop_Posts_Selector_Model();
-		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $search, $data['exclude'], false, false );
+		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['exclude'], $search, false, false );
 		$post_ids        = wp_list_pluck( $available_posts, 'value' );
 
 		$settings_model = new Rop_Settings_Model();
@@ -556,7 +576,7 @@ class Rop_Rest_Api {
 	 */
 	private function get_posts( $data ) {
 		$post_selector   = new Rop_Posts_Selector_Model();
-		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['search_query'], $data['exclude'], $data['show_excluded'], $data['page'] );
+		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['exclude'], $data['search_query'], $data['show_excluded'], $data['page'] );
 
 		$this->response->set_code( '200' )
 					->set_data(
@@ -589,6 +609,10 @@ class Rop_Rest_Api {
 		$settings_model->save_settings( $data );
 		$this->response->set_code( '200' )
 					   ->set_data( $settings_model->get_settings() );
+
+		// Save tracking flag.
+		$tracking = filter_var( $data['tracking'], FILTER_VALIDATE_BOOLEAN );
+		update_option( 'tweet_old_post_logger_flag', $tracking ? 'yes' : 'no' );
 
 		$cron_status = filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
 
@@ -682,10 +706,34 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function get_active_accounts() {
-		$model = new Rop_Services_Model();
-		// $model->reset_authenticated_services();
+		$model                 = new Rop_Services_Model();
+		$saved_active_accounts = $model->get_active_accounts();
+		$available_services    = $model->get_authenticated_services();
+
+		// Return the active accounts that are also available.
+		$valid_accounts         = array();
+		$available_accounts_ids = array();
+
+		foreach ( $available_services as $_ => $service ) {
+			if ( ! isset( $service['available_accounts'] ) ) {
+				continue;
+			}
+
+			foreach ( $service['available_accounts'] as $account_id => $_ ) {
+				$available_accounts_ids[] = $account_id;
+			}
+		}
+
+		foreach ( $saved_active_accounts as $active_account_id => $active_account ) {
+			if ( ! in_array( $active_account_id, $available_accounts_ids, true ) ) {
+				continue;
+			}
+
+			$valid_accounts[ $active_account_id ] = $active_account;
+		}
+
 		$this->response->set_code( '200' )
-					   ->set_data( $model->get_active_accounts() );
+					   ->set_data( $valid_accounts );
 
 		return $this->response->to_array();
 	}
@@ -868,8 +916,11 @@ class Rop_Rest_Api {
 				}
 			}
 			if ( ${$data['service'] . '_services'} ) {
-				/* @noinspection PhpUndefinedMethodInspection */
-				$url = ${$data['service'] . '_services'}->sign_in_url( $data );
+				if ( method_exists( ${$data['service'] . '_services'}, 'sign_in_url' ) ) {
+					$url = ${$data['service'] . '_services'}->sign_in_url( $data );
+				} else {
+					$url = '';
+				}
 			}
 		} catch ( Exception $exception ) {
 			// Service can't be built. Not found or otherwise. Maybe log this.
@@ -1293,4 +1344,145 @@ class Rop_Rest_Api {
 		return $this->response->to_array();
 	}
 
+	/**
+	 * API method to call the license processor.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since 9.1.0
+	 *
+	 * @param array $data Data passed from the AJAX call.
+	 *
+	 * @return array
+	 */
+	private function set_license( $data ) {
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			$this->response
+				->set_code( '403' )
+				->set_message( 'Forbidden' )
+				->set_data( array( 'success' => false, 'message' => Rop_I18n::get_labels( 'general.no_permission' ) ) );
+
+			return $this->response->to_array();
+		}
+
+		// NOTE: The license processor requires the license key, even if we want to deactivate the license.
+		if ( empty( $data['license_key'] ) ) {
+			$general_settings = new Rop_Global_Settings;
+			$license_data     = $general_settings->get_license_data();
+			if ( ! empty( $license_data ) && isset( $license_data->key ) ) {
+				$data['license_key'] = $license_data->key;
+			}
+		}
+
+		$response = apply_filters( 'themeisle_sdk_license_process_rop', $data['license_key'], $data['action'] );
+
+		if ( is_wp_error( $response ) ) {
+			return $this->response
+				->set_data( array( 'success' => false, 'message' => 'activate' === $data['action'] ? Rop_I18n::get_labels( 'general.validation_failed' ) : Rop_I18n::get_labels( 'general.could_not_change_license' ) ) )
+				->to_array();
+		}
+
+		return $this->response
+			->set_code( '200' )
+			->set_data( array( 'success' => true ) )
+			->to_array();
+	}
+
+	/**
+	 * API method called to add Webhook account.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   9.1.0
+	 * @access  private
+	 *
+	 * @param  array $data Webhook account data.
+	 *
+	 * @return array
+	 */
+	private function add_account_webhook( $data ) {
+		$services        = array();
+		$webhook_service = new Rop_Webhook_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		if ( ! $webhook_service->add_webhook( $data ) ) {
+			$this->response->set_code( '422' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$services[ $webhook_service->get_service_id() ] = $webhook_service->get_service();
+		$active_accounts                                = $webhook_service->get_service_active_accounts();
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		return $this->response->to_array();
+	}
+
+	/**
+	 * API method called to edit Webhook account.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   9.1.0
+	 * @access  private
+	 *
+	 * @param  array $data Webhook account data.
+	 *
+	 * @return array
+	 */
+	private function edit_account_webhook( $data ) {
+		$webhook_service = new Rop_Webhook_Service();
+		$model           = new Rop_Services_Model();
+
+		if ( ! $webhook_service->add_webhook( $data ) ) {
+			$this->response->set_code( '422' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$service_id             = ! empty( $data['service_id'] ) ? $data['service_id'] : '';
+		$authenticated_services = $model->get_authenticated_services();
+
+		if ( ! isset( $authenticated_services[ $service_id ] ) ) {
+			$this->response->set_code( '422' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$authenticated_services[ $service_id ] = array_merge( $authenticated_services[ $service_id ], $webhook_service->get_service() );
+
+		$model->update_authenticated_services( $authenticated_services );
+
+		if ( ! empty( $data['active'] ) && ! empty( $data['full_id'] ) ) {
+			$model->add_active_accounts( array( $data['full_id'] ) );
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		return $this->response->to_array();
+	}
 }

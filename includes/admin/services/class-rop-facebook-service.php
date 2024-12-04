@@ -163,7 +163,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				array(
 					'app_id'                => $this->strip_whitespace( $app_id ),
 					'app_secret'            => $this->strip_whitespace( $secret ),
-					'default_graph_version' => 'v12.0',
+					'default_graph_version' => 'v20.0',
 				)
 			);
 		} catch ( Exception $exception ) {
@@ -761,9 +761,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$post_data['access_token'] = $token;
 
 			if ( 'video' === $posting_type ) {
-				$url = 'https://graph-video.facebook.com/v12.0' . $path;
+				$url = 'https://graph-video.facebook.com/v20.0' . $path;
 			} else {
-				$url = 'https://graph.facebook.com/v12.0' . $path;
+				$url = 'https://graph.facebook.com/v20.0' . $path;
 			}
 
 			// Scrape post URL before sharing

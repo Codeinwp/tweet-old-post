@@ -13,19 +13,15 @@
  * @package           ROP
  *
  * @wordpress-plugin
- * Plugin Name: Revive Old Posts
+ * Plugin Name: Revive Social
  * Plugin URI: https://revive.social/
- * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
- * Version:           9.0.21
+ * Description: WordPress plugin that automatically schedules and posts your content to multiple social networks (including Facebook, X, LinkedIn, and Instagram), helping you promote and drive more traffic to your website. For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
+ * Version:           9.1.3
  * Author:            revive.social
  * Author URI:        https://revive.social/
- * Requires at least: 4.7
- * Tested up to:      6.0
- * Stable tag:        trunk
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
  * Requires License:    no
- * Requires PHP: 7.4
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: tweet-old-post
@@ -64,7 +60,7 @@ function rop_buffer_present_notice() {
 	?>
 
 	<div class="notice notice-error is-dismissible">
-		<?php echo sprintf( __( '%1$s %2$sRevive Old Posts:%3$s You have Buffer account(s) connected to Revive Old Posts. You need to remove these accounts to avoid issues with the plugin. Plugin has been deactivated. %4$sClick here to read the article with the fix.%5$s %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1318-fix-php-fatal-error-uncaught-exception-invalid-service-name-given" target="_blank">', '</a>', '</p>' ); ?>
+		<?php echo sprintf( __( '%1$s %2$sRevive Social:%3$s You have Buffer account(s) connected to Revive Social. You need to remove these accounts to avoid issues with the plugin. Plugin has been deactivated. %4$sClick here to read the article with the fix.%5$s %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1318-fix-php-fatal-error-uncaught-exception-invalid-service-name-given" target="_blank">', '</a>', '</p>' ); ?>
 	</div>
 	<?php
 }
@@ -110,7 +106,7 @@ function rop_php_notice() {
 	?>
 
 	<div class="notice notice-error is-dismissible">
-		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 7.4! Revive Old Posts requires at least %2$sPHP 7.4%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 7.4! Revive Social requires at least %2$sPHP 7.4%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
 	</div>
 	<?php
 }
@@ -161,8 +157,7 @@ function run_rop() {
 	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
 	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
 
-	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
-	define( 'ROP_LITE_VERSION', '9.0.21' );
+	define( 'ROP_LITE_VERSION', '9.1.3' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
 	$debug = false;
 	if ( function_exists( 'wp_get_environment_type' ) ) {
@@ -190,6 +185,28 @@ function run_rop() {
 	define( 'ROP_POST_SHARING_CONTROL_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/post-sharing-control' );
 	define( 'ROP_POST_ON_X_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/post-on-x' );
 
+	add_filter(
+		'themeisle_sdk_compatibilities/' . basename( ROP_LITE_PATH ),
+		function ( $compatibilities ) {
+			$compatibilities['RopPRO'] = array(
+				'basefile'  => defined( 'ROP_PRO_DIR_PATH' ) ? ROP_PRO_DIR_PATH . 'tweet-old-post-pro.php' : '',
+				'required'  => '3.0',
+				'tested_up' => '3.1',
+			);
+			return $compatibilities;
+		}
+	);
+	add_filter(
+		'tweet_old_post_welcome_metadata',
+		function () {
+			return array(
+				'is_enabled' => ! defined( 'ROP_PRO_DIR_PATH' ),
+				'pro_name'   => 'Revive Old Post Pro',
+				'logo'       => ROP_LITE_URL . 'assets/img/logo_rop.png',
+				'cta_link'   => tsdk_utmify( add_query_arg( array( 'discount' => 'LOYALUSER582' ), Rop_I18n::UPSELL_LINK ), 'rop-welcome', 'notice' ),
+			);
+		}
+	);
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {
 		require_once $vendor_file;
@@ -225,6 +242,8 @@ function run_rop() {
 			);
 		}
 	);
+
+	add_filter( 'themeisle_sdk_enable_telemetry', '__return_true' );
 
 	$plugin = new Rop();
 	$plugin->run();
