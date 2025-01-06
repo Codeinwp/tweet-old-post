@@ -42,7 +42,7 @@ jobs:
   php-unit:
     name: PHPUnit
     needs: code-sniff
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       mysql:
         image: mysql:5.7
