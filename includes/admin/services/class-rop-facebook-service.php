@@ -476,6 +476,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$share_as_image_post = $post_details['post_with_image'];
 		$global_settings = new Rop_Global_Settings();
 
+		$share_link_text = '';
+		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
+			$share_link_text = str_replace( '{link}', $post_url, $post_format['share_link_text'] );
+		}
+
 		if ( array_key_exists( 'account_type', $args ) ) {
 
 			if ( ( $args['account_type'] === 'instagram_account' || $args['account_type'] === 'facebook_group' ) && $global_settings->license_type() < 1 ) {
@@ -533,6 +538,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			return false;
 		}
+
+		$sharing_data['post_data']['share_link_text'] = $share_link_text;
 
 		if ( $this->try_post( $sharing_data['post_data'], $args['id'], $args['access_token'], $post_id, $sharing_data['type'] ) ) {
 			$this->logger->alert_success(
@@ -694,6 +701,20 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		}
 
+		if ( ! class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
+			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
+			if ( is_plugin_active( 'tweet-old-post-pro/tweet-old-post-pro.php' ) ) {
+				require_once ROP_PRO_PATH . 'includes/helpers/class-rop-pro-facebook-helper.php';
+			}
+		}
+
+		$share_link_text = '';
+		if ( isset( $new_post['share_link_text'] ) ) {
+			$share_link_text = $new_post['share_link_text'];
+			unset( $new_post['share_link_text'] );
+		}
+
 		if ( $this->get_api() && empty( $installed_with_app ) ) {
 			// Page was added using user application (old method)
 			// Try post via Facebook Graph SDK
@@ -819,6 +840,14 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 
 			if ( ! empty( $body['id'] ) ) {
+				$fb_helper = new ROP_Pro_Facebook_Helper();
+				$fb_helper->share_as_first_comment(
+					$body['id'],
+					array(
+						'message'      => $share_link_text,
+						'access_token' => $token,
+					)
+				);
 				return true;
 			} elseif ( ! empty( $body['error']['message'] ) ) {
 				if (

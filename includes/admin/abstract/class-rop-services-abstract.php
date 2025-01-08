@@ -321,6 +321,16 @@ abstract class Rop_Services_Abstract {
 	}
 
 	/**
+	 * Share the post link in the first comment.
+	 *
+	 * @access  public
+	 *
+	 * @param string $url API endpoint.
+	 * @param array  $data API data.
+	 */
+	public function share_as_first_comment( $url, $data = array() ) {}
+
+	/**
 	 * Method to request a token from api.
 	 *
 	 * @since   8.0.0

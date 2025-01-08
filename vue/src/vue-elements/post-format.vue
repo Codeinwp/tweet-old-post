@@ -283,6 +283,75 @@
         />
       </div>
     </div>
+
+    <span
+      v-if="post_format.include_link"
+      class="divider"
+    />
+    <div
+      v-if="post_format.include_link"
+      class="columns py-2"
+      :class="'rop-control-container-'+isPro"
+    >
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
+        <b>{{ labels.share_link_title }}</b>
+        <p class="text-gray">
+          {{ labels.share_link_desc }}
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
+        <div class="input-group">
+          <label class="form-checkbox">
+            <input
+              v-model="post_format.share_link_in_comment"
+              type="checkbox"
+              :disabled="!isPro"
+            >
+            <i class="form-icon" /> {{ labels.yes_text }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-if="!isPro && post_format.include_link"
+      class="columns "
+    >
+      <div class="column text-center">
+        <p class="upsell">
+          <i class="fa fa-info-circle" /> {{ labels.share_link_upsell }}
+        </p>
+      </div>
+    </div>
+
+    <span
+      v-if="isPro && ( post_format.include_link && post_format.share_link_in_comment )"
+      class="divider"
+    />
+    <!-- Share First Comment -->
+    <div
+      v-if="isPro && ( post_format.include_link && post_format.share_link_in_comment )"
+      class="columns py-2"
+      :class="'rop-control-container-'+isPro"
+    >
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
+        <b>{{ labels.first_comment_title }}</b>
+        <p class="text-gray">
+          <span v-html="labels.first_comment_desc" />
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
+        <div class="form-group">
+          <textarea
+            v-model="post_format.share_link_text"
+            class="form-input"
+            :placeholder="labels.first_comment_placeholder"
+            :disabled="!isPro"
+          />
+        </div>
+      </div>
+    </div>
+
     <span class="divider" />
     <div
       class="columns py-2"
