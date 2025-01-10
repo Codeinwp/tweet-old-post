@@ -309,7 +309,7 @@ class Rop_I18n {
 				'first_comment_title'               => __( 'Comment Text', 'tweet-old-post' ),
 				'first_comment_desc'                => __( 'Should Revive Social add the post link in the first comment when sharing a post?', 'tweet-old-post' ),
 				'first_comment_placeholder'         => __( 'Read more on {link}', 'tweet-old-post' ),
-				'share_link_title'                  => __( 'Share link', 'tweet-old-post' ),
+				'share_link_title'                  => __( 'Share link in comment', 'tweet-old-post' ),
 				'share_link_desc'                   => __( 'Share the post link in the first comment?', 'tweet-old-post' ),
 				'share_link_upsell'                 => __( 'Share first comment is only available in the Pro version.', 'tweet-old-post' ),
 			),
