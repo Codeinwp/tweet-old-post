@@ -713,6 +713,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( isset( $new_post['share_link_text'] ) ) {
 			$share_link_text = $new_post['share_link_text'];
 			unset( $new_post['share_link_text'] );
+			// Remove the link from the main post when it's shared in the comment.
+			unset( $new_post['link'] );
 		}
 
 		if ( $this->get_api() && empty( $installed_with_app ) ) {
