@@ -53,7 +53,7 @@
     "wp-coding-standards/wpcs": "^2.3",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
     "phpunit/phpunit": "9.*",
-    "yoast/phpunit-polyfills": "^2.0",
+    "yoast/phpunit-polyfills": "^3.1",
     "codeinwp/phpcs-ruleset": "dev-main"
   },
   "config": {
