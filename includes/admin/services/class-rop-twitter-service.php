@@ -602,9 +602,18 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$api = $this->get_api();
 		}
 
+		$model       = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format( $post_details['account_id'] );
+
 		$post_id = $post_details['post_id'];
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
+
+		$share_link_text = '';
+		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
+			$share_link_text = str_replace( '{link}', $post_url, $post_format['share_link_text'] );
+			$post_url        = '';
+		}
 
 		// Twitter link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
@@ -627,9 +636,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
 			return false;
 		}
-
-		$model       = new Rop_Post_Format_Model;
-		$post_format = $model->get_post_format( $post_details['account_id'] );
 
 		$hashtags = $post_details['hashtags'];
 
@@ -732,6 +738,33 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		if ( isset( $response['data'] ) && ! empty( $response['data']['id'] ) ) {
+			if ( $api && ! empty( $share_link_text ) ) {
+				// Post the first comment (replying to the tweet).
+				$comment = $api->post(
+					'tweets',
+					array(
+						'text'  => $share_link_text,
+						'reply' => array(
+							'in_reply_to_tweet_id' => $response['data']['id'],
+						),
+					),
+					true
+				);
+
+				$comment          = (array) $comment;
+				$response_headers = $api->getLastXHeaders();
+				$this->logger->info( sprintf( '[X API] First Comment Response: %s', json_encode( $response_headers ) ) );
+
+				if ( $comment && ! empty( $comment['data']['id'] ) ) {
+					$this->logger->alert_success(
+						sprintf(
+							'Successfully shared first comment to %s on %s ',
+							html_entity_decode( get_the_title( $post_id ) ),
+							$post_details['service']
+						)
+					);
+				}
+			}
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
