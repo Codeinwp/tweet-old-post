@@ -285,11 +285,11 @@
     </div>
 
     <span
-      v-if="post_format.include_link"
+      v-if="postCommentAllowed && post_format.include_link"
       class="divider"
     />
     <div
-      v-if="post_format.include_link"
+      v-if="postCommentAllowed && post_format.include_link"
       class="columns py-2"
       :class="'rop-control-container-'+isPro"
     >
@@ -314,7 +314,7 @@
     </div>
 
     <div
-      v-if="!isPro && post_format.include_link"
+      v-if="!isPro && ( postCommentAllowed && post_format.include_link )"
       class="columns "
     >
       <div class="column text-center">
@@ -325,12 +325,12 @@
     </div>
 
     <span
-      v-if="isPro && ( post_format.include_link && post_format.share_link_in_comment )"
+      v-if="isPro && ( postCommentAllowed && post_format.include_link && post_format.share_link_in_comment )"
       class="divider"
     />
     <!-- Share First Comment -->
     <div
-      v-if="isPro && ( post_format.include_link && post_format.share_link_in_comment )"
+      v-if="isPro && ( postCommentAllowed && post_format.include_link && post_format.share_link_in_comment )"
       class="columns py-2"
       :class="'rop-control-container-'+isPro"
     >
@@ -872,6 +872,7 @@
                 selected_tax_filter: [],
                 // selected_language: this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id].wpml_language : [],
                 // post_types: this.$store.state.generalSettings.available_post_types,
+                postCommentSupportedServices: [ 'twitter', 'facebook' ],
             }
         },
         computed: {
@@ -951,6 +952,10 @@
             },
             isNewUserPro: function () {
                 return Boolean( ! this.isPro && this.$store.state.is_new_user );
+            },
+            postCommentAllowed: function () {
+              // Check if the service of the current account exists in allowedServices
+              return this.postCommentSupportedServices.includes(this.allAccounts[this.account_id].service);
             },
         },
         watch: {
