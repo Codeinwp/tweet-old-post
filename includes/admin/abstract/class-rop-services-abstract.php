@@ -92,6 +92,14 @@ abstract class Rop_Services_Abstract {
 	 * @var     Rop_Logger $logger The logger handler.
 	 */
 	protected $logger;
+	/**
+	 * Stores a share first comment text.
+	 *
+	 * @since   9.1.3
+	 * @access  protected
+	 * @var     string $share_link_text Comment text.
+	 */
+	protected $share_link_text = '';
 
 	/**
 	 * Rop_Services_Abstract constructor.

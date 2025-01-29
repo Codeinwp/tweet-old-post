@@ -476,9 +476,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$share_as_image_post = $post_details['post_with_image'];
 		$global_settings = new Rop_Global_Settings();
 
-		$share_link_text = '';
 		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
-			$share_link_text = str_replace( '{link}', $post_url, $post_format['share_link_text'] );
+			$this->share_link_text = str_replace( '{link}', self::get_url( $post_details ), $post_format['share_link_text'] );
 		}
 
 		if ( array_key_exists( 'account_type', $args ) ) {
@@ -492,7 +491,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			if ( $args['account_type'] === 'instagram_account' && class_exists( 'Rop_Pro_Instagram_Service' ) ) {
 
 				$args['correct_aspect_ratio']    = isset( $post_format['correct_aspect_ratio'] ) ? $post_format['correct_aspect_ratio'] : '';
-				$post_details['share_link_text'] = $share_link_text;
+				$post_details['share_link_text'] = $this->share_link_text;
 
 				$response = Rop_Pro_Instagram_Service::share( $post_details, $hashtags, $args );
 
@@ -540,8 +539,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$sharing_data['post_data']['share_link_text'] = $share_link_text;
-
 		if ( $this->try_post( $sharing_data['post_data'], $args['id'], $args['access_token'], $post_id, $sharing_data['type'] ) ) {
 			$this->logger->alert_success(
 				sprintf(
@@ -576,7 +573,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $hashtags;
 
-		$new_post['link'] = $this->get_url( $post_details );
+		if ( empty( $this->share_link_text ) ) {
+			$new_post['link'] = $this->get_url( $post_details );
+		}
 
 		return array(
 			'post_data' => $new_post,
@@ -609,7 +608,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$new_post['url']     = $attachment_url;
 		$new_post['source']  = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] ); // get image path
-		$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $hashtags;
+		$post_url            = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$new_post['caption'] = $post_details['content'] . $post_url . $hashtags;
 
 		return array(
 			'post_data' => $new_post,
@@ -636,7 +636,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$new_post['source']      = $image;
 		// $new_post['source']      = $api->videoToUpload( $image );
 		$new_post['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES );
-		$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $hashtags;
+		$post_url                = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$new_post['description'] = $post_details['content'] . $post_url . $hashtags;
 
 		return array(
 			'post_data' => $new_post,
@@ -710,14 +711,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		$share_link_text = '';
-		if ( isset( $new_post['share_link_text'] ) ) {
-			$share_link_text = $new_post['share_link_text'];
-			unset( $new_post['share_link_text'] );
-			// Remove the link from the main post when it's shared in the comment.
-			unset( $new_post['link'] );
-		}
-
 		if ( $this->get_api() && empty( $installed_with_app ) ) {
 			// Page was added using user application (old method)
 			// Try post via Facebook Graph SDK
@@ -735,7 +728,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$fb_helper->share_as_first_comment(
 					$fb_post_id,
 					array(
-						'message'      => $share_link_text,
+						'message'      => $this->share_link_text,
 						'access_token' => $token,
 					)
 				);
@@ -768,7 +761,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 						$fb_helper->share_as_first_comment(
 							$fb_post_id,
 							array(
-								'message'      => $share_link_text,
+								'message'      => $this->share_link_text,
 								'access_token' => $token,
 							)
 						);
@@ -864,7 +857,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$fb_helper->share_as_first_comment(
 					$body['id'],
 					array(
-						'message'      => $share_link_text,
+						'message'      => $this->share_link_text,
 						'access_token' => $token,
 					)
 				);
@@ -931,7 +924,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 						$fb_helper->share_as_first_comment(
 							$body['id'],
 							array(
-								'message'      => $share_link_text,
+								'message'      => $this->share_link_text,
 								'access_token' => $token,
 							)
 						);

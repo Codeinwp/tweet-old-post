@@ -425,7 +425,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	private function twitter_article_post( $post_details ) {
 
-		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
+		$post_url         = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_url;
 
 		return $new_post;
 	}
@@ -557,7 +558,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			wp_delete_file( $media_path );
 		}
 
-		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
+		$post_url         = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_url;
 
 		return $new_post;
 	}
@@ -609,10 +611,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
 
-		$share_link_text = '';
 		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
-			$share_link_text = str_replace( '{link}', $post_url, $post_format['share_link_text'] );
-			$post_url        = '';
+			$this->share_link_text = str_replace( '{link}', self::get_url( $post_details ), $post_format['share_link_text'] );
 		}
 
 		// Twitter link post
@@ -738,12 +738,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		if ( isset( $response['data'] ) && ! empty( $response['data']['id'] ) ) {
-			if ( $api && ! empty( $share_link_text ) ) {
+			if ( $api && ! empty( $this->share_link_text ) ) {
 				// Post the first comment (replying to the tweet).
 				$comment = $api->post(
 					'tweets',
 					array(
-						'text'  => $share_link_text,
+						'text'  => $this->share_link_text,
 						'reply' => array(
 							'in_reply_to_tweet_id' => $response['data']['id'],
 						),
@@ -751,12 +751,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					true
 				);
 
-				$comment          = (array) $comment;
 				$response_headers = $api->getLastXHeaders();
 				$this->logger->info( sprintf( '[X API] First Comment Response: %s', json_encode( $response_headers ) ) );
 
-				if ( $comment && ! empty( $comment['data']['id'] ) ) {
-					$this->logger->alert_success(
+				if ( $comment && ! empty( $comment->data->id ) ) {
+					$this->logger->info(
 						sprintf(
 							'Successfully shared first comment to %s on %s ',
 							html_entity_decode( get_the_title( $post_id ) ),
