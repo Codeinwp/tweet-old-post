@@ -610,19 +610,21 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					}
 				}
 
-				$linkedin_helper = new ROP_Pro_Linkdin_Helper();
-				$linkedin_helper->share_as_first_comment(
-					$post_id,
-					array(
-						'token' => $token,
-						'body'  => array(
-							'actor'   => $new_post['author'],
-							'message' => array(
-								'text' => $this->share_link_text,
+				if ( class_exists( 'ROP_Pro_Linkdin_Helper' ) ) {
+					$linkedin_helper = new ROP_Pro_Linkdin_Helper();
+					$linkedin_helper->share_as_first_comment(
+						$post_id,
+						array(
+							'token' => $token,
+							'body'  => array(
+								'actor'   => $new_post['author'],
+								'message' => array(
+									'text' => $this->share_link_text,
+								),
 							),
-						),
-					)
-				);
+						)
+					);
+				}
 			}
 
 			$title = isset( $new_post['content']['media']['title'] ) ? $new_post['content']['media']['title'] : $new_post['content']['article']['title'];

@@ -724,14 +724,17 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 				$response   = $api->post( $path, $new_post, $token );
 				$fb_post_id = $response->getGraphNode()->getField( 'id' );
-				$fb_helper  = new ROP_Pro_Facebook_Helper();
-				$fb_helper->share_as_first_comment(
-					$fb_post_id,
-					array(
-						'message'      => $this->share_link_text,
-						'access_token' => $token,
-					)
-				);
+
+				if ( class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
+					$fb_helper  = new ROP_Pro_Facebook_Helper();
+					$fb_helper->share_as_first_comment(
+						$fb_post_id,
+						array(
+							'message'      => $this->share_link_text,
+							'access_token' => $token,
+						)
+					);
+				}
 
 				return true;
 			} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
@@ -757,14 +760,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					try {
 						$response   = $api->post( $path, $new_post, $token );
 						$fb_post_id = $response->getGraphNode()->getField( 'id' );
-						$fb_helper  = new ROP_Pro_Facebook_Helper();
-						$fb_helper->share_as_first_comment(
-							$fb_post_id,
-							array(
-								'message'      => $this->share_link_text,
-								'access_token' => $token,
-							)
-						);
+						if ( class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
+							$fb_helper  = new ROP_Pro_Facebook_Helper();
+							$fb_helper->share_as_first_comment(
+								$fb_post_id,
+								array(
+									'message'      => $this->share_link_text,
+									'access_token' => $token,
+								)
+							);
+						}
 						return true;
 					} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 						$this->logger->alert_error( 'Unable to share post for facebook. (FacebookResponseException) Error: ' . $e->getMessage() );
@@ -853,14 +858,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 
 			if ( ! empty( $body['id'] ) ) {
-				$fb_helper = new ROP_Pro_Facebook_Helper();
-				$fb_helper->share_as_first_comment(
-					$body['id'],
-					array(
-						'message'      => $this->share_link_text,
-						'access_token' => $token,
-					)
-				);
+				if ( class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
+					$fb_helper = new ROP_Pro_Facebook_Helper();
+					$fb_helper->share_as_first_comment(
+						$body['id'],
+						array(
+							'message'      => $this->share_link_text,
+							'access_token' => $token,
+						)
+					);
+				}
 				return true;
 			} elseif ( ! empty( $body['error']['message'] ) ) {
 				if (
@@ -920,14 +927,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					}
 
 					if ( ! empty( $body['id'] ) ) {
-						$fb_helper = new ROP_Pro_Facebook_Helper();
-						$fb_helper->share_as_first_comment(
-							$body['id'],
-							array(
-								'message'      => $this->share_link_text,
-								'access_token' => $token,
-							)
-						);
+						if ( class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
+							$fb_helper = new ROP_Pro_Facebook_Helper();
+							$fb_helper->share_as_first_comment(
+								$body['id'],
+								array(
+									'message'      => $this->share_link_text,
+									'access_token' => $token,
+								)
+							);
+						}
 						return true;
 					} elseif ( ! empty( $body['error']['message'] ) ) {
 						$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
