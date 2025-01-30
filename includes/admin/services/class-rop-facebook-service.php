@@ -495,6 +495,17 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 				$response = Rop_Pro_Instagram_Service::share( $post_details, $hashtags, $args );
 
+				if ( $response ) {
+					// Save log.
+					$this->save_logs_on_rop(
+						array(
+							'network' => $post_details['service'],
+							'handle'  => $args['user'],
+							'content' => $post_details['content'],
+							'link'    => $post_details['post_url'],
+						)
+					);
+				}
 				return $response;
 
 			}
@@ -540,6 +551,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		if ( $this->try_post( $sharing_data['post_data'], $args['id'], $args['access_token'], $post_id, $sharing_data['type'] ) ) {
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => $post_details['service'],
+					'handle'  => $args['user'],
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',

@@ -620,6 +620,17 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			}
 
 			$title = isset( $new_post['content']['media']['title'] ) ? $new_post['content']['media']['title'] : $new_post['content']['article']['title'];
+
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => $post_details['service'],
+					'handle'  => $args['user'],
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',

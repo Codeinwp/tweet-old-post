@@ -498,6 +498,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		);
 
 		if ( ! empty( $response['post_id'] ) ) {
+
 			// Create the first comment if the share link text is not empty.
 			if ( ! empty( $this->share_link_text ) ) {
 				$create_comment = $client->wall()->createComment(
@@ -519,6 +520,16 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 					);
 				}
 			}
+
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => 'Vkontakte',
+					'handle'  => $args['user'],
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
 
 			$this->logger->alert_success(
 				sprintf(
