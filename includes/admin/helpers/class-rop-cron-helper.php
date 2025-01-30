@@ -204,15 +204,22 @@ class Rop_Cron_Helper {
 		 */
 		$this->cron_status_global_change( false );
 
-		$rop_cron_hooks = array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE );
+		// Clear jobs.
+		$this->clear_jobs();
 
-		if ( function_exists( 'as_get_scheduled_actions' ) ) {
-			$this->clear_action_scheduler_jobs( $rop_cron_hooks );
-			return false;
-		}
-
-		$this->clear_wp_cron_jobs( $rop_cron_hooks );
 		return false;
+	}
+
+	/**
+	 * Clear cron jobs.
+	 */
+	public function clear_jobs() {
+		// Check action scheduler is exists or not.
+		if ( function_exists( 'as_get_scheduled_actions' ) ) {
+			$this->clear_action_scheduler_jobs();
+		} else {
+			$this->clear_wp_cron_jobs();
+		}
 	}
 
 	/**
@@ -486,10 +493,10 @@ class Rop_Cron_Helper {
 	/**
 	 * Remove action scheduler event.
 	 *
-	 * @param array $cron_hooks Cron hooks.
 	 * @return void
 	 */
-	private function clear_action_scheduler_jobs( $cron_hooks ) {
+	private function clear_action_scheduler_jobs() {
+		$rop_cron_hooks = array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE );
 		foreach ( $cron_hooks as $cron_hook ) {
 			$scheduled_actions = as_get_scheduled_actions(
 				array(
@@ -511,12 +518,12 @@ class Rop_Cron_Helper {
 	/**
 	 * Remove scheduled cron jobs from WP-Cron.
 	 *
-	 * @param array $cron_hooks Cron hooks.
 	 * @return void
 	 */
-	private function clear_wp_cron_jobs( $cron_hooks ) {
+	private function clear_wp_cron_jobs() {
 		global $wpdb;
 
+		$rop_cron_hooks    = array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE );
 		$current_cron_list = _get_cron_array();
 		$rop_cron_key      = self::get_schedule_key( $rop_cron_hooks );
 
