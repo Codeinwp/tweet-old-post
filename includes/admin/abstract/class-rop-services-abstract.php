@@ -958,16 +958,12 @@ abstract class Rop_Services_Abstract {
 			)
 		);
 
-		$this->logger->info( '[ROP] Response: ' . print_r( $response, true ) );
-
 		if ( is_wp_error( $response ) ) {
 			return false;
 		}
 
 		$body          = json_decode( wp_remote_retrieve_body( $response ) );
 		$response_code = wp_remote_retrieve_response_code( $response );
-
-		$this->logger->info( '[ROP] Response Body: ' . wp_json_encode( $body ) );
 		return 200 === $response_code ? $body->status : false;
 	}
 
