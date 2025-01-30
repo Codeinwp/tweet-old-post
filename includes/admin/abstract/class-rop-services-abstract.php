@@ -928,6 +928,7 @@ abstract class Rop_Services_Abstract {
 	 * @since   9.1.3
 	 * @access  public
 	 *
+	 * @param array $data API payload data.
 	 * @return bool
 	 */
 	public function save_logs_on_rop( $data = array() ) {
@@ -959,17 +960,15 @@ abstract class Rop_Services_Abstract {
 
 		$this->logger->info( '[ROP] Response: ' . print_r( $response, true ) );
 
-		if ( ! is_wp_error( $response ) ) {
-			$body          = json_decode( wp_remote_retrieve_body( $response ) );
-			$response_code = wp_remote_retrieve_response_code( $response );
-
-			$this->logger->info( '[ROP] Response Body: ' . wp_json_encode( $body ) );
-
-			if ( 200 === $response_code ) {
-				return $body->status;
-			}
+		if ( is_wp_error( $response ) ) {
+			return false;
 		}
-		return false;
+
+		$body          = json_decode( wp_remote_retrieve_body( $response ) );
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		$this->logger->info( '[ROP] Response Body: ' . wp_json_encode( $body ) );
+		return 200 === $response_code ? $body->status : false;
 	}
 
 }
