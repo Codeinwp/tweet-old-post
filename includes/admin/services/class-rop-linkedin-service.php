@@ -602,16 +602,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			if ( ! empty( $this->share_link_text ) ) {
 				$post_id = isset( $headers['x-restli-id'] ) ? $headers['x-restli-id'] : '';
-				if ( ! class_exists( 'ROP_Pro_Linkdin_Helper' ) ) {
-					include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
-					if ( is_plugin_active( 'tweet-old-post-pro/tweet-old-post-pro.php' ) ) {
-						require_once ROP_PRO_PATH . 'includes/helpers/class-rop-pro-linkdin-helper.php';
-					}
-				}
-
-				if ( class_exists( 'ROP_Pro_Linkdin_Helper' ) ) {
-					$linkedin_helper = new ROP_Pro_Linkdin_Helper();
+				if ( class_exists( 'Rop_Pro_Linkdin_Helper' ) ) {
+					$linkedin_helper = new Rop_Pro_Linkdin_Helper();
 					$linkedin_helper->share_as_first_comment(
 						$post_id,
 						array(

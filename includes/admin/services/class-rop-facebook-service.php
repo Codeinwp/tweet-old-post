@@ -703,14 +703,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		}
 
-		if ( ! class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
-			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
-			if ( is_plugin_active( 'tweet-old-post-pro/tweet-old-post-pro.php' ) ) {
-				require_once ROP_PRO_PATH . 'includes/helpers/class-rop-pro-facebook-helper.php';
-			}
-		}
-
 		if ( $this->get_api() && empty( $installed_with_app ) ) {
 			// Page was added using user application (old method)
 			// Try post via Facebook Graph SDK
@@ -725,8 +717,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$response   = $api->post( $path, $new_post, $token );
 				$fb_post_id = $response->getGraphNode()->getField( 'id' );
 
-				if ( class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
-					$fb_helper  = new ROP_Pro_Facebook_Helper();
+				if ( class_exists( 'Rop_Pro_Facebook_Helper' ) ) {
+					$fb_helper  = new Rop_Pro_Facebook_Helper();
 					$fb_helper->share_as_first_comment(
 						$fb_post_id,
 						array(
@@ -760,8 +752,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					try {
 						$response   = $api->post( $path, $new_post, $token );
 						$fb_post_id = $response->getGraphNode()->getField( 'id' );
-						if ( class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
-							$fb_helper  = new ROP_Pro_Facebook_Helper();
+						if ( class_exists( 'Rop_Pro_Facebook_Helper' ) ) {
+							$fb_helper  = new Rop_Pro_Facebook_Helper();
 							$fb_helper->share_as_first_comment(
 								$fb_post_id,
 								array(
@@ -858,8 +850,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 
 			if ( ! empty( $body['id'] ) ) {
-				if ( class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
-					$fb_helper = new ROP_Pro_Facebook_Helper();
+				if ( class_exists( 'Rop_Pro_Facebook_Helper' ) ) {
+					$fb_helper = new Rop_Pro_Facebook_Helper();
 					$fb_helper->share_as_first_comment(
 						$body['id'],
 						array(
@@ -927,8 +919,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					}
 
 					if ( ! empty( $body['id'] ) ) {
-						if ( class_exists( 'ROP_Pro_Facebook_Helper' ) ) {
-							$fb_helper = new ROP_Pro_Facebook_Helper();
+						if ( class_exists( 'Rop_Pro_Facebook_Helper' ) ) {
+							$fb_helper = new Rop_Pro_Facebook_Helper();
 							$fb_helper->share_as_first_comment(
 								$body['id'],
 								array(
