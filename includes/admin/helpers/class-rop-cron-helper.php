@@ -207,54 +207,11 @@ class Rop_Cron_Helper {
 		$rop_cron_hooks = array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE );
 
 		if ( function_exists( 'as_get_scheduled_actions' ) ) {
-			foreach ( $rop_cron_hooks as $cron_hook ) {
-				$scheduled_actions = as_get_scheduled_actions(
-					array(
-						'hook'   => $cron_hook,
-						'status' => ActionScheduler_Store::STATUS_PENDING,
-					)
-				);
-
-				if ( ! empty( $scheduled_actions ) ) {
-					foreach ( $scheduled_actions as $scheduled_action ) {
-						as_unschedule_action( $scheduled_action->get_hook(), $scheduled_action->get_args() );
-					}
-				}
-			}
-			$this->fresh_start();
-
+			$this->clear_action_scheduler_jobs( $rop_cron_hooks );
 			return false;
 		}
 
-		$current_cron_list = _get_cron_array();
-		$rop_cron_key      = self::get_schedule_key( $rop_cron_hooks );
-
-		if ( ! empty( $rop_cron_key ) ) {
-			$wpdb->query( 'START TRANSACTION' );
-			foreach ( $rop_cron_key as $rop_active_cron ) {
-				$cron_time      = (int) $rop_active_cron['time'];
-				$cron_key       = $rop_active_cron['key'];
-				$cron_namespace = $rop_active_cron['namespace'];
-
-				unset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] );
-				if ( empty( $current_cron_list[ $cron_time ][ $cron_namespace ] ) ) {
-					unset( $current_cron_list[ $cron_time ][ $cron_namespace ] );
-				}
-
-				if ( empty( $current_cron_list[ $cron_time ] ) ) {
-					unset( $current_cron_list[ $cron_time ] );
-				}
-			}
-			uksort( $current_cron_list, 'strnatcasecmp' );
-			_set_cron_array( $current_cron_list );
-
-			wp_cache_delete( 'alloptions', 'options' );
-
-			$wpdb->query( 'COMMIT' );
-		}
-
-		$this->fresh_start();
-
+		$this->clear_wp_cron_jobs( $rop_cron_hooks );
 		return false;
 	}
 
@@ -524,5 +481,69 @@ class Rop_Cron_Helper {
 		}
 
 		return wp_schedule_event( $time, $recurrence, $hook, $args );
+	}
+
+	/**
+	 * Remove action scheduler event.
+	 *
+	 * @param array $cron_hooks Cron hooks.
+	 * @return void
+	 */
+	private function clear_action_scheduler_jobs( $cron_hooks ) {
+		foreach ( $cron_hooks as $cron_hook ) {
+			$scheduled_actions = as_get_scheduled_actions(
+				array(
+					'hook'   => $cron_hook,
+					'status' => ActionScheduler_Store::STATUS_PENDING,
+				)
+			);
+
+			if ( ! empty( $scheduled_actions ) ) {
+				foreach ( $scheduled_actions as $scheduled_action ) {
+					as_unschedule_action( $scheduled_action->get_hook(), $scheduled_action->get_args() );
+				}
+			}
+		}
+
+		$this->fresh_start();
+	}
+
+	/**
+	 * Remove scheduled cron jobs from WP-Cron.
+	 *
+	 * @param array $cron_hooks Cron hooks.
+	 * @return void
+	 */
+	private function clear_wp_cron_jobs( $cron_hooks ) {
+		global $wpdb;
+
+		$current_cron_list = _get_cron_array();
+		$rop_cron_key      = self::get_schedule_key( $rop_cron_hooks );
+
+		if ( ! empty( $rop_cron_key ) ) {
+			$wpdb->query( 'START TRANSACTION' );
+			foreach ( $rop_cron_key as $rop_active_cron ) {
+				$cron_time      = (int) $rop_active_cron['time'];
+				$cron_key       = $rop_active_cron['key'];
+				$cron_namespace = $rop_active_cron['namespace'];
+
+				unset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] );
+				if ( empty( $current_cron_list[ $cron_time ][ $cron_namespace ] ) ) {
+					unset( $current_cron_list[ $cron_time ][ $cron_namespace ] );
+				}
+
+				if ( empty( $current_cron_list[ $cron_time ] ) ) {
+					unset( $current_cron_list[ $cron_time ] );
+				}
+			}
+			uksort( $current_cron_list, 'strnatcasecmp' );
+			_set_cron_array( $current_cron_list );
+
+			wp_cache_delete( 'alloptions', 'options' );
+
+			$wpdb->query( 'COMMIT' );
+		}
+
+		$this->fresh_start();
 	}
 }
