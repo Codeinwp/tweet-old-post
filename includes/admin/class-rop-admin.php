@@ -1284,8 +1284,9 @@ class Rop_Admin {
 		$should_cron_run = get_option( $key, 'yes' );
 		$should_cron_run = filter_var( $should_cron_run, FILTER_VALIDATE_BOOLEAN );
 		if ( false === $should_cron_run ) {
-			wp_clear_scheduled_hook( Rop_Cron_Helper::CRON_NAMESPACE );
-			wp_clear_scheduled_hook( Rop_Cron_Helper::CRON_NAMESPACE_ONCE );
+			$cron = new Rop_Cron_Helper();
+			$cron->clear_scheduled_hook( Rop_Cron_Helper::CRON_NAMESPACE );
+			$cron->clear_scheduled_hook( Rop_Cron_Helper::CRON_NAMESPACE_ONCE );
 		}
 	}
 
