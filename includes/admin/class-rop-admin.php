@@ -1537,7 +1537,7 @@ class Rop_Admin {
 	 */
 	public function rop_get_wpml_active_status() {
 
-		if ( function_exists( 'icl_object_id' ) ) {
+		if ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) {
 			return true;
 		} else {
 			return false;
@@ -1572,17 +1572,26 @@ class Rop_Admin {
 	public function rop_get_wpml_languages() {
 
 		if ( $this->rop_get_wpml_active_status() === false ) {
-					 return;
+			return;
 		}
 
 		$wpml_active_languages = apply_filters( 'wpml_active_languages', null, array('skip_missing' => 1) );
 
+		// Get TranslatePress publish plugin languages.
+		if ( empty( $wpml_active_languages ) && class_exists( 'TRP_Translate_Press' ) ) {
+			$trp_settings = TRP_Translate_Press::get_trp_instance()->get_component( 'settings' )->get_settings();
+			if ( $trp_settings ) {
+				$trp_languages         = TRP_Translate_Press::get_trp_instance()->get_component( 'languages' );
+				$publish_languages     = ! empty( $trp_settings['publish-languages'] ) ? $trp_settings['publish-languages'] : array();
+				$wpml_active_languages = $trp_languages->get_language_names( $publish_languages, 'english_name' );
+			}
+		}
 		$languages_array = array();
 
 		foreach ( $wpml_active_languages as $key => $value ) {
-			$languages_array[] = array( 'code' => $key, 'label' => $value['native_name'] );
+			$key               = false !== strpos( $key, '_' ) ? substr( $key, 0, strpos( $key, '_' ) ) : $key;
+			$languages_array[] = array( 'code' => $key, 'label' => isset( $value['native_name'] ) ? $value['native_name'] : $value );
 		}
-
 		return $languages_array;
 	}
 
