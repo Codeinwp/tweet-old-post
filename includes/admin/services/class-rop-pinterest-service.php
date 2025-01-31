@@ -397,14 +397,14 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 
 		// Check if image is present.
 		if ( empty( $post_details['post_image'] ) ) {
-			$this->logger->alert_error( sprintf( 'No featured image set for %s cannot pin to %s on Pinterest', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'] ) );
+			$this->logger->alert_error( sprintf( 'No featured image set for %s cannot pin to %s on Pinterest', html_entity_decode( $post_details['title'] ), $args['id'] ) );
 
 			return false;
 		}
 
 		if ( strpos( $post_details['mimetype']['type'], 'image' ) === false ) {
 
-			$this->logger->alert_error( sprintf( 'No valid image present in %s to pin to %s for %s', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'], $post_details['service'] ) );
+			$this->logger->alert_error( sprintf( 'No valid image present in %s to pin to %s for %s', html_entity_decode( $post_details['title'] ), $args['id'], $post_details['service'] ) );
 
 			return false;
 		}
@@ -453,7 +453,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			sprintf(
 				'Successfully pinned %s in %s to %s on %s',
 				basename( $post_details['post_image'] ),
-				html_entity_decode( get_the_title( $post_id ) ),
+				html_entity_decode( $post_details['title'] ),
 				$args['id'],
 				$post_details['service']
 			)

@@ -1603,7 +1603,10 @@ class Rop_Admin {
 		$post_format_model = new Rop_Post_Format_Model();
 		$filtered_share_to_accounts = array();
 
-		$post_lang_code = apply_filters( 'wpml_post_language_details', '', $post_id )['language_code'];
+		$post_lang_code = '';
+		if ( function_exists( 'icl_object_id' ) ) {
+			$post_lang_code = apply_filters( 'wpml_post_language_details', '', $post_id )['language_code'];
+		}
 
 		foreach ( $share_to_accounts as $account_id ) {
 
@@ -1614,8 +1617,9 @@ class Rop_Admin {
 			};
 
 			$rop_account_lang_code = $rop_account_post_format['wpml_language'];
-
-			if ( $post_lang_code === $rop_account_lang_code ) {
+			if ( class_exists( 'TRP_Translate_Press' ) ) {
+				$filtered_share_to_accounts[] = $account_id;
+			} elseif ( $post_lang_code === $rop_account_lang_code ) {
 				$filtered_share_to_accounts[] = $account_id;
 			}
 		}
@@ -1826,7 +1830,6 @@ class Rop_Admin {
 				$publish_languages = $trp_languages->get_language_names( $publish_languages, 'native_name' );
 				$languages         = array();
 				foreach ( $publish_languages as $key => $publish_language ) {
-					$key               = false !== strpos( $key, '_' ) ? substr( $key, 0, strpos( $key, '_' ) ) : $key;
 					$languages[ $key ] = array(
 						'native_name' => $publish_language,
 					);
