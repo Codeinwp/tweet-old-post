@@ -60,6 +60,7 @@ class Rop_I18n {
 		$services['facebook']['credentials']['app_id']['description'] = Rop_I18n::get_labels( 'accounts.fb_app_id_title' );
 		$services['facebook']['description']                          = Rop_I18n::get_labels( 'accounts.fb_app_desc' );
 		$services['twitter']['description']                           = Rop_I18n::get_labels( 'accounts.twt_app_desc' );
+		$services['telegram']['description']                          = Rop_I18n::get_labels( 'accounts.tlg_app_desc' );
 
 		return $services;
 	}
@@ -134,6 +135,7 @@ class Rop_I18n {
 				'edit_headers'               => __( 'Edit Headers', 'tweet-old-post' ),
 				'hide'                       => __( 'Hide', 'tweet-old-post' ),
 				'get_latest_pro_version'     => __( 'Get the latest Pro version to unlock.', 'tweet-old-post' ),
+				'tlg_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="#" target="_blank">', '</a>' ),
 			),
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),

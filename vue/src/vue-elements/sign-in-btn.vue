@@ -429,6 +429,10 @@ export default {
       return this.modal.serviceName === 'Webhook';
     },
 
+    isTelegram() {
+      return this.modal.serviceName === 'Telegram';
+    },
+
     isAllowedTumblr: function () {
       let showButton = true;
       if (!this.showTmblrAppBtn) {
@@ -678,6 +682,8 @@ export default {
         }
 
         this.webhooksHeaders = [];
+      } else if ( this.isTelegram ) {
+        this.addAccountTelegram(credentials);
       } else {
         this.getUrlAndGo(credentials)
       }
@@ -852,6 +858,8 @@ export default {
         this.addAccountVk( accountData );
       } else if ('Webhook' === this.modal.serviceName) {
         this.addAccountWebhook( accountData );
+      } else if ('Telegram' === this.modal.serviceName) {
+        this.addAccountTelegram( accountData );
       }
 
       try {
@@ -946,6 +954,19 @@ export default {
         this.cancelModal();
       }
       window.addEventListener("message", this.getChildWindowMessage );
+    },
+    addAccountTelegram(data) {
+      this.$store.dispatch('fetchAJAXPromise', {
+        req: 'add_account_telegram',
+        updateState: false,
+        data: data
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
+        window.location.reload();
+      }, error => {
+        this.is_loading = false;
+        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+      });
     },
   }
 }

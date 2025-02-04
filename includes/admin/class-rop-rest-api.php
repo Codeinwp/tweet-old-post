@@ -1485,4 +1485,53 @@ class Rop_Rest_Api {
 
 		return $this->response->to_array();
 	}
+
+	/**
+	 * API method called to add Telegram via app.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   9.1.3
+	 * @access  private
+	 *
+	 * @param   array $data Telegram accounts data.
+	 *
+	 * @return  array
+	 */
+	private function add_account_telegram( $data ) {
+		$services        = array();
+		$webhook_service = new Rop_Telegram_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		if ( ! $webhook_service->add_account_with_app( $data ) ) {
+			$this->response->set_code( '422' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$services[ $webhook_service->get_service_id() ] = $webhook_service->get_service();
+		$active_accounts                                = $webhook_service->get_service_active_accounts();
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		return $this->response->to_array();
+	}
 }

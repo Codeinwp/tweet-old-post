@@ -150,6 +150,7 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
 				if (service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest')
 				if (service === 'vk') serviceIcon = serviceIcon.concat('vk')
 				if (service === 'gmb') serviceIcon = serviceIcon.concat('google')
+				if (service === 'telegram') serviceIcon = serviceIcon.concat('telegram')
 
 				return serviceIcon;
 			},

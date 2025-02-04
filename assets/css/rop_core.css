@@ -837,6 +837,11 @@ a.active {
     color:#fff;
 }
 
+#rop_core .btn.btn-telegram{
+    background-color:#3390ec;
+    color:#fff;
+}
+
 #rop_core
 .btn:is(
     .btn-facebook,
@@ -848,6 +853,7 @@ a.active {
     .btn-gmb,
     .btn-vk,
     .btn-webhook
+    .btn-telegram
 ):is(
     :focus,
     :hover 
