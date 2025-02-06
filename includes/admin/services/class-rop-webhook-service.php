@@ -146,6 +146,16 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( $log_account_used . Rop_I18n::get_labels( 'errors.webhook_error' ) . $response->get_error_message() );
 			return false;
 		} elseif ( true === $response ) {
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => $this->service_name,
+					'handle'  => $this->display_name,
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',

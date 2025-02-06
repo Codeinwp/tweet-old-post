@@ -738,6 +738,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		if ( isset( $response['data'] ) && ! empty( $response['data']['id'] ) ) {
+
 			if ( $api && ! empty( $this->share_link_text ) ) {
 				// Post the first comment (replying to the tweet).
 				$comment = $api->post(
@@ -764,6 +765,17 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					);
 				}
 			}
+
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => $post_details['service'],
+					'handle'  => $args['user'],
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',

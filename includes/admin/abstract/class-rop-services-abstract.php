@@ -922,4 +922,49 @@ abstract class Rop_Services_Abstract {
 		return $valid;
 	}
 
+	/**
+	 * Capture logs on ROP API.
+	 *
+	 * @since   9.1.3
+	 * @access  public
+	 *
+	 * @param array $data API payload data.
+	 * @return bool
+	 */
+	public function save_logs_on_rop( $data = array() ) {
+		if ( empty( $data ) ) {
+			return false;
+		}
+
+		$license_key    = apply_filters( 'product_rop_license_key', '' );
+		$license_status = apply_filters( 'product_rop_license_status', 'invalid' );
+
+		// Send API request.
+		$response = wp_remote_post(
+			ROP_POST_LOGS_API,
+			apply_filters(
+				'rop_post_capture_logs_api_args',
+				array(
+					'timeout' => 100,
+					'body'    => array_merge(
+						array(
+							'website'        => get_site_url(),
+							'license'        => $license_key,
+							'license_status' => $license_status,
+						),
+						$data
+					),
+				)
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+
+		$body          = json_decode( wp_remote_retrieve_body( $response ) );
+		$response_code = wp_remote_retrieve_response_code( $response );
+		return 200 === $response_code ? $body->status : false;
+	}
+
 }
