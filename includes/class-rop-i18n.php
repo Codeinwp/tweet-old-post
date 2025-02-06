@@ -309,6 +309,12 @@ class Rop_I18n {
 				'custom_meta_field_upsell'          => __( 'Custom meta fields are only available in the Pro version.', 'tweet-old-post' ),
 				'custom_meta_upsell'                => __( 'Custom fields are only available in the Pro version.', 'tweet-old-post' ),
 				'hashtag_field_upsell'              => __( 'The selected option is only available in the Pro version.', 'tweet-old-post' ),
+				'first_comment_title'               => __( 'Comment Text', 'tweet-old-post' ),
+				'first_comment_desc'                => __( 'Should Revive Social add the post link in the first comment when sharing a post?', 'tweet-old-post' ),
+				'first_comment_placeholder'         => __( 'Read more on {link}', 'tweet-old-post' ),
+				'share_link_title'                  => __( 'Share link in comment', 'tweet-old-post' ),
+				'share_link_desc'                   => __( 'Share the post link in the first comment?', 'tweet-old-post' ),
+				'share_link_upsell'                 => __( 'Share first comment is only available in the Pro version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
