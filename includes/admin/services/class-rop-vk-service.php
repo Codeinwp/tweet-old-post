@@ -309,7 +309,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$new_post = array(
 			'owner_id' => $owner_id,
 			'message' => $post_details['content'] . $hashtags,
-			'attachments' => $attachment . ',' . $this->get_url( $post_details ),
+			'attachments' => empty( $this->share_link_text ) ? $attachment . ',' . $this->get_url( $post_details ) : $attachment,
 		);
 		return $new_post;
 
@@ -371,7 +371,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$new_post = array(
 			'owner_id' => $response['owner_id'],
 			'message' => $post_details['content'] . $hashtags,
-			'attachments' => $attachment . ',' . $this->get_url( $post_details ),
+			'attachments' => empty( $this->share_link_text ) ? $attachment . ',' . $this->get_url( $post_details ) : $attachment,
 		);
 
 		return $new_post;
@@ -425,6 +425,9 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			'attachments' => $this->get_url( $post_details ),
 		);
 
+		if ( ! empty( $this->share_link_text ) ) {
+			unset( $new_post['attachments'] );
+		}
 		return $new_post;
 
 	}
@@ -459,6 +462,10 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$model       = new Rop_Post_Format_Model;
 		$post_format = $model->get_post_format( $post_details['account_id'] );
 
+		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
+			$this->share_link_text = str_replace( '{link}', self::get_url( $post_details ), $post_format['share_link_text'] );
+		}
+
 		$hashtags = $post_details['hashtags'];
 
 		if ( ! empty( $post_format['hashtags_randomize'] ) && $post_format['hashtags_randomize'] ) {
@@ -491,6 +498,27 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		);
 
 		if ( ! empty( $response['post_id'] ) ) {
+			// Create the first comment if the share link text is not empty.
+			if ( ! empty( $this->share_link_text ) ) {
+				$create_comment = $client->wall()->createComment(
+					$args['credentials']['access_token'],
+					array(
+						'post_id' => $response['post_id'],
+						'message' => $this->share_link_text,
+					)
+				);
+				$this->logger->info( sprintf( '[VK API] Response: %s', json_encode( $create_comment ) ) );
+
+				if ( $create_comment && ! empty( $create_comment['post_id'] ) ) {
+					$this->logger->info(
+						sprintf(
+							'Successfully shared first comment to %s on %s ',
+							html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+							$post_details['service']
+						)
+					);
+				}
+			}
 
 			$this->logger->alert_success(
 				sprintf(
