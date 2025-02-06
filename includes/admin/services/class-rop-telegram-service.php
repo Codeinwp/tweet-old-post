@@ -126,7 +126,16 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 			if ( empty( $token ) ) {
 				return false;
 			}
-			$this->api = new Api( $token, $async, new Rop_Telegram_Http_Client() );
+			$guzzle_client = new \GuzzleHttp\Client(
+				apply_filters(
+					'rop_telegram_guzzle_client_args',
+					array(
+						'verify' => false,
+					)
+				)
+			);
+			$client        = new Rop_Telegram_Http_Client( $guzzle_client );
+			$this->api     = new Api( $token, $async, $client );
 		} catch ( \Telegram\Bot\Exceptions\TelegramSDKException $e ) {
 			$this->logger->alert_error( 'Can not load Telegram api. Error: ' . $e->getMessage() );
 		} catch ( \Exception $e ) {
@@ -176,8 +185,8 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 			$telegram = $this->get_api( $data['access_token'] );
 			$response = $telegram->getMe();
 			$response = $response->getRawResponse();
-			if ( empty( $response ) ) {
-				throw new \Telegram\Bot\Exceptions\TelegramSDKException( 'Telegram API return empty response.' );
+			if ( empty( $response['id'] ) ) {
+				throw new \Telegram\Bot\Exceptions\TelegramSDKException( 'Telegram API Error: ' . wp_json_encode( $response ) );
 			}
 
 			$id            = $response['id'];
