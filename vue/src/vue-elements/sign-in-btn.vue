@@ -560,7 +560,7 @@ export default {
         }
         this.upsellModal.title = wp.i18n.sprintf( this.labels.upsell_service_title, featureName.charAt(0).toUpperCase()
             + featureName.slice(1));
-        this.upsellModal.body = wp.i18n.sprintf( this.labels.upsell_service_body,  featureName);
+        this.upsellModal.body = wp.i18n.sprintf( network === 'telegram' ? this.labels.upsell_bz_service_body : this.labels.upsell_service_body,  featureName);
         this.upsellModal.link = wp.url.addQueryArgs(this.upsell_link, {
           utm_source: 'wp-admin',
           utm_medium: 'add_account',

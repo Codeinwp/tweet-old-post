@@ -135,7 +135,8 @@ class Rop_I18n {
 				'edit_headers'               => __( 'Edit Headers', 'tweet-old-post' ),
 				'hide'                       => __( 'Hide', 'tweet-old-post' ),
 				'get_latest_pro_version'     => __( 'Get the latest Pro version to unlock.', 'tweet-old-post' ),
-				'tlg_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="#" target="_blank">', '</a>' ),
+				'tlg_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/2223-how-to-connect-revive-social-to-telegram" target="_blank">', '</a>' ),
+				'upsell_bz_service_body'     => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the business plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
 			),
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),
