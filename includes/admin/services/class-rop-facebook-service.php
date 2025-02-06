@@ -543,7 +543,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_id ), ENT_QUOTES ), // TODO Set ENT_QUOTES for all other entity decode occurences in plugin
+					html_entity_decode( $post_details['title'], ENT_QUOTES ), // TODO Set ENT_QUOTES for all other entity decode occurences in plugin
 					$args['user'],
 					$post_details['service']
 				)
@@ -635,7 +635,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$image     = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
 		$new_post['source']      = $image;
 		// $new_post['source']      = $api->videoToUpload( $image );
-		$new_post['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES );
+		$new_post['title']       = html_entity_decode( $post_details['title'], ENT_QUOTES );
 		$post_url                = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
 		$new_post['description'] = $post_details['content'] . $post_url . $hashtags;
 

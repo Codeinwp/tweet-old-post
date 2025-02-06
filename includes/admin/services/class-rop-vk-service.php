@@ -334,7 +334,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	private function vk_video_post( $post_details, $hashtags, $attachment_path, $args, $owner_id, $client, $access_token ) {
 
 		$params = array(
-			'name' => get_the_title( $post_details['post_id'] ),
+			'name' => $post_details['title'],
 			'description' => $post_details['content'],
 		);
 
@@ -523,7 +523,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on Vkontakte ',
-					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+					html_entity_decode( $post_details['title'] ),
 					$args['user']
 				)
 			);

@@ -513,7 +513,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 			$new_post['type']        = 'link';
 			$new_post['url']         = trim( $this->get_url( $post_details ) );
-			$new_post['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES );
+			$new_post['title']       = html_entity_decode( $post_details['title'], ENT_QUOTES );
 			$new_post['description'] = $this->strip_excess_blank_lines( html_entity_decode( $post_details['content'], ENT_QUOTES ) );
 			$new_post['author']      = $this->get_author( $post_id );
 			$new_post['tags']        = $hashtags;
@@ -573,7 +573,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_id ) ),
+					html_entity_decode( $post_details['title'] ),
 					$args['user'],
 					$post_details['service']
 				)

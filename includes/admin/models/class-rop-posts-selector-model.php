@@ -89,17 +89,17 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$taxonomies = array();
 
-		$wpml_current_lang = apply_filters( 'wpml_current_language', null );
+		$wpml_current_lang = $this->get_current_language();
 
-		if ( function_exists( 'icl_object_id' ) && ! empty( $language_code ) ) {
+		if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && ! empty( $language_code ) ) {
 			// changes the language of global query to use the specfied language
-			do_action( 'wpml_switch_language', $language_code );
+			$this->switch_language( $language_code );
 		}
 
 		// Here We are refreshing the taxonomies "on page load"
 		// This method fires whenever the post format page is brought into view.
 		// We're refreshing the taxonomies based on whether that first account has a language assigned or not
-		if ( function_exists( 'icl_object_id' ) && empty( $language_code ) ) {
+		if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && empty( $language_code ) ) {
 			// check the first active account and it's post format and see if it has a language code.
 			$first_account_id = array_keys( $this->data['active_accounts'] )[0];
 			$post_format_model = new Rop_Post_Format_Model;
@@ -108,7 +108,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 			if ( ! empty( $first_account_lang ) ) {
 				// changes the language of global query to use the specfied language
-				do_action( 'wpml_switch_language', $first_account_lang );
+				$this->switch_language( $first_account_lang );
 			}
 		}
 
@@ -154,9 +154,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			}
 		}
 
-		if ( function_exists( 'icl_object_id' ) && ! ( empty( $language_code ) && empty( $first_account_lang ) ) ) {
+		if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && ! ( empty( $language_code ) && empty( $first_account_lang ) ) ) {
 			// set language back to original
-			do_action( 'wpml_switch_language', $wpml_current_lang );
+			$this->switch_language( $wpml_current_lang );
 		}
 
 		if ( empty( $taxonomies ) ) {
@@ -351,10 +351,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$post_format_model = new Rop_Post_Format_Model( $service );
 			$post_format       = $post_format_model->get_post_format( $account_id );
 
-			if ( function_exists( 'icl_object_id' ) && ! empty( $post_format['wpml_language'] ) ) {
-				$wpml_current_lang = apply_filters( 'wpml_current_language', null );
-					// changes the language of global query to use the specfied language for the account
-				do_action( 'wpml_switch_language', $post_format['wpml_language'] );
+			if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && ! empty( $post_format['wpml_language'] ) ) {
+				$wpml_current_lang = $this->get_current_language();
+				// changes the language of global query to use the specfied language for the account.
+				$this->switch_language( $post_format['wpml_language'] );
 			}
 
 			$custom_data = array();
@@ -430,9 +430,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$this->selection = $results;
 
-		if ( function_exists( 'icl_object_id' ) && ! empty( $post_format['wpml_language'] ) ) {
-				// Sets WP language back to what user set it.
-			do_action( 'wpml_switch_language', $wpml_current_lang );
+		if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && ! empty( $post_format['wpml_language'] ) ) {
+			// Sets WP language back to what user set it.
+			$this->switch_language( $wpml_current_lang );
 		}
 
 		return $results;
@@ -490,7 +490,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 */
 		$posts = array_values( $posts );
 
-		if ( function_exists( 'icl_object_id' ) ) {
+		if ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) {
 			$posts = $this->rop_wpml_id( $posts, $account_id );
 		}
 
@@ -767,7 +767,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	public function rop_wpml_id( $post_id, $account_id = '' ) {
 
-		$default_lang = apply_filters( 'wpml_default_language', null );
+		$default_lang = $this->get_default_language();
 		$lang_code    = '';
 
 		$post = $post_id;
@@ -777,12 +777,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$post_format_model = new Rop_Post_Format_Model();
 			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
 			// If no language set, use default WPML language
-			$rop_account_lang_code = ! empty( $rop_account_post_format['wpml_language'] ) ? $rop_account_post_format['wpml_language'] : $default_lang;
+			$lang_code = ! empty( $rop_account_post_format['wpml_language'] ) ? $rop_account_post_format['wpml_language'] : $default_lang;
 
-		}
-
-		if ( ! empty( $rop_account_lang_code ) ) {
-				$lang_code = apply_filters( 'rop_wpml_lang', $rop_account_lang_code );
 		}
 
 		if ( is_array( $post_id ) ) {
@@ -834,7 +830,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	public function rop_wpml_link( $url, $account_id ) {
 
-		$default_lang = apply_filters( 'wpml_default_language', null );
+		$default_lang = $this->get_default_language();
 		$lang_code    = '';
 
 		if ( ! empty( $account_id ) ) {
@@ -842,16 +838,70 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$post_format_model = new Rop_Post_Format_Model();
 			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
 			// If no language set, use default WPML language
-			$rop_account_lang_code = ! empty( $rop_account_post_format['wpml_language'] ) ? $rop_account_post_format['wpml_language'] : $default_lang;
+			$lang_code = ! empty( $rop_account_post_format['wpml_language'] ) ? $rop_account_post_format['wpml_language'] : $default_lang;
 
 		}
 
-		if ( ! empty( $rop_account_lang_code ) ) {
-				$lang_code = apply_filters( 'rop_wpml_lang', $rop_account_lang_code );
-		}
-
-		$wpml_url     = apply_filters( 'wpml_permalink', $url, $lang_code );
+		$wpml_url = $this->converter_permalink( $url, $lang_code );
 
 		return $wpml_url;
+	}
+
+	/**
+	 * Get default language.
+	 *
+	 * @return string
+	 */
+	public function get_default_language() {
+		if ( class_exists( 'TRP_Translate_Press' ) ) {
+			$trp_settings     = TRP_Translate_Press::get_trp_instance()->get_component( 'settings' )->get_settings();
+			$default_language = isset( $trp_settings['default-language'] ) ? $trp_settings['default-language'] : '';
+			return $default_language;
+		}
+		return apply_filters( 'wpml_default_language', null );
+	}
+
+	/**
+	 * Converter post permalink using language code.
+	 *
+	 * @param string $url Post URL.
+	 * @param string $lang_code Language code.
+	 *
+	 * @return string
+	 */
+	public function converter_permalink( $url, $lang_code ) {
+		if ( class_exists( 'TRP_Translate_Press' ) ) {
+			$url_converter = TRP_Translate_Press::get_trp_instance()->get_component( 'url_converter' );
+			return $url_converter->get_url_for_language( $lang_code, $url );
+		}
+		return apply_filters( 'wpml_permalink', $url, $lang_code );
+	}
+
+	/**
+	 * Get current language code.
+	 *
+	 * @return string
+	 */
+	public function get_current_language() {
+		if ( class_exists( 'TRP_Translate_Press' ) ) {
+			global $TRP_LANGUAGE;
+			return $TRP_LANGUAGE;
+		}
+		return apply_filters( 'wpml_current_language', null );
+	}
+
+	/**
+	 * Language Switch.
+	 *
+	 * @param string $language_code Language code.
+	 *
+	 * @return void
+	 */
+	public function switch_language( $language_code ) {
+		if ( class_exists( 'TRP_Translate_Press' ) ) {
+			trp_switch_language( $language_code );
+		} else {
+			do_action( 'wpml_switch_language', $language_code );
+		}
 	}
 }
