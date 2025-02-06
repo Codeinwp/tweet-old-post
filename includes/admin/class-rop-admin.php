@@ -542,6 +542,12 @@ class Rop_Admin {
 			return;
 		}
 
+		/**
+		 * For mastodon code/state params.
+		 */
+		if ( ( empty( $oauth_token ) || empty( $oauth_verifier ) ) && $state === 'mastodon' ) {
+			$network = $state;
+		}
 		switch ( $network ) {
 			case 'linkedin':
 				$lk_service = new Rop_Linkedin_Service();
@@ -554,6 +560,10 @@ class Rop_Admin {
 			case 'pinterest':
 				$pinterest_service = new Rop_Pinterest_Service();
 				$pinterest_service->authorize();
+				break;
+			case 'mastodon':
+				$mastodon_service = new Rop_Mastodon_Service();
+				$mastodon_service->authorize();
 				break;
 			default:
 				$fb_service = new Rop_Facebook_Service();
