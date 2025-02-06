@@ -149,7 +149,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES ),
+					html_entity_decode( $post_details['title'], ENT_QUOTES ),
 					$this->display_name,
 					$this->service_name
 				)

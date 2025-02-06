@@ -1538,7 +1538,7 @@ class Rop_Admin {
 	 */
 	public function rop_get_wpml_active_status() {
 
-		if ( function_exists( 'icl_object_id' ) ) {
+		if ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) {
 			return true;
 		} else {
 			return false;
@@ -1573,17 +1573,15 @@ class Rop_Admin {
 	public function rop_get_wpml_languages() {
 
 		if ( $this->rop_get_wpml_active_status() === false ) {
-					 return;
+			return;
 		}
 
-		$wpml_active_languages = apply_filters( 'wpml_active_languages', null, array('skip_missing' => 1) );
-
+		$languages       = $this->get_languages();
 		$languages_array = array();
 
-		foreach ( $wpml_active_languages as $key => $value ) {
+		foreach ( $languages as $key => $value ) {
 			$languages_array[] = array( 'code' => $key, 'label' => $value['native_name'] );
 		}
-
 		return $languages_array;
 	}
 
@@ -1606,7 +1604,10 @@ class Rop_Admin {
 		$post_format_model = new Rop_Post_Format_Model();
 		$filtered_share_to_accounts = array();
 
-		$post_lang_code = apply_filters( 'wpml_post_language_details', '', $post_id )['language_code'];
+		$post_lang_code = '';
+		if ( function_exists( 'icl_object_id' ) ) {
+			$post_lang_code = apply_filters( 'wpml_post_language_details', '', $post_id )['language_code'];
+		}
 
 		foreach ( $share_to_accounts as $account_id ) {
 
@@ -1617,8 +1618,9 @@ class Rop_Admin {
 			};
 
 			$rop_account_lang_code = $rop_account_post_format['wpml_language'];
-
-			if ( $post_lang_code === $rop_account_lang_code ) {
+			if ( class_exists( 'TRP_Translate_Press' ) ) {
+				$filtered_share_to_accounts[] = $account_id;
+			} elseif ( $post_lang_code === $rop_account_lang_code ) {
 				$filtered_share_to_accounts[] = $account_id;
 			}
 		}
@@ -1812,5 +1814,30 @@ class Rop_Admin {
 		}
 
 		return $actions;
+	}
+
+	/**
+	 * Get available languages.
+	 *
+	 * @return array
+	 */
+	public function get_languages() {
+		// Get TranslatePress publish plugin languages.
+		if ( class_exists( 'TRP_Translate_Press' ) ) {
+			$trp_settings = TRP_Translate_Press::get_trp_instance()->get_component( 'settings' )->get_settings();
+			if ( $trp_settings ) {
+				$trp_languages     = TRP_Translate_Press::get_trp_instance()->get_component( 'languages' );
+				$publish_languages = ! empty( $trp_settings['publish-languages'] ) ? $trp_settings['publish-languages'] : array();
+				$publish_languages = $trp_languages->get_language_names( $publish_languages, 'native_name' );
+				$languages         = array();
+				foreach ( $publish_languages as $key => $publish_language ) {
+					$languages[ $key ] = array(
+						'native_name' => $publish_language,
+					);
+				}
+				return $languages;
+			}
+		}
+		return apply_filters( 'wpml_active_languages', null, array( 'skip_missing' => 1 ) );
 	}
 }
