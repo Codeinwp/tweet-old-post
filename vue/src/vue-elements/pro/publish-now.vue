@@ -162,6 +162,7 @@
 				if (service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest')
 				if (service === 'vk') serviceIcon = serviceIcon.concat('vk')
 				if (service === 'gmb') serviceIcon = serviceIcon.concat('google')
+				if (service === 'telegram') serviceIcon = serviceIcon.concat('telegram')
 
 				return serviceIcon;
 			},

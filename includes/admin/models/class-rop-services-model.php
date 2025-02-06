@@ -344,7 +344,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 
 		$service_key = $service . '_' . $service_id;
 
-		if ( count( $services[ $service_key ]['available_accounts'] ) > 0 ) {
+		if ( isset( $services[ $service_key ] ) && count( $services[ $service_key ]['available_accounts'] ) > 0 ) {
 			foreach ( $services[ $service_key ]['available_accounts'] as $key => $account ) {
 				if ( $account['id'] == $account_id ) {
 					/**

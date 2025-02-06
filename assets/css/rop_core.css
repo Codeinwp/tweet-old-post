@@ -837,6 +837,10 @@ a.active {
     color:#fff;
 }
 
+#rop_core .btn.btn-telegram{
+    background-color:#3390ec;
+    color:#fff;
+}
 #rop_core .btn.btn-mastodon{
     background-color:#6364FF;
     color:#fff;
@@ -855,6 +859,7 @@ a.active {
     .btn-gmb,
     .btn-vk,
     .btn-webhook
+    .btn-telegram
     .btn-mastodon
 ):is(
     :focus,

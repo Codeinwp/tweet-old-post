@@ -448,6 +448,10 @@ export default {
       return this.modal.serviceName === 'Webhook';
     },
 
+    isTelegram() {
+      return this.modal.serviceName === 'Telegram';
+    },
+
     isMastodon() {
       return this.modal.serviceName === 'Mastodon';
     },
@@ -579,7 +583,7 @@ export default {
         }
         this.upsellModal.title = wp.i18n.sprintf( this.labels.upsell_service_title, featureName.charAt(0).toUpperCase()
             + featureName.slice(1));
-        this.upsellModal.body = wp.i18n.sprintf( this.labels.upsell_service_body,  featureName);
+        this.upsellModal.body = wp.i18n.sprintf( network === 'telegram' ? this.labels.upsell_bz_service_body : this.labels.upsell_service_body,  featureName);
         this.upsellModal.link = wp.url.addQueryArgs(this.upsell_link, {
           utm_source: 'wp-admin',
           utm_medium: 'add_account',
@@ -701,6 +705,8 @@ export default {
         }
 
         this.webhooksHeaders = [];
+      } else if ( this.isTelegram ) {
+        this.addAccountTelegram(credentials);
       } else {
         this.getUrlAndGo(credentials)
       }
@@ -875,6 +881,8 @@ export default {
         this.addAccountVk( accountData );
       } else if ('Webhook' === this.modal.serviceName) {
         this.addAccountWebhook( accountData );
+      } else if ('Telegram' === this.modal.serviceName) {
+        this.addAccountTelegram( accountData );
       }
 
       try {
@@ -969,6 +977,19 @@ export default {
         this.cancelModal();
       }
       window.addEventListener("message", this.getChildWindowMessage );
+    },
+    addAccountTelegram(data) {
+      this.$store.dispatch('fetchAJAXPromise', {
+        req: 'add_account_telegram',
+        updateState: false,
+        data: data
+      }).then(() => {
+        window.removeEventListener("message", this.getChildWindowMessage );
+        window.location.reload();
+      }, error => {
+        this.is_loading = false;
+        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+      });
     },
   }
 }
