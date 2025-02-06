@@ -884,7 +884,7 @@ abstract class Rop_Services_Abstract {
 			$data = array_map(
 				function( $d ) {
 					$d = base64_decode( $d, true );
-					$d = unserialize( $d, array( 'allowed_classes' => false ) );
+					$d = maybe_unserialize( $d, array( 'allowed_classes' => false ) );
 					if ( $d instanceof \__PHP_Incomplete_Class ) {
 						return false;
 					}
@@ -896,7 +896,7 @@ abstract class Rop_Services_Abstract {
 			$valid = empty( $data ) ? false : true;
 		} else {
 			$data = base64_decode( $data, true );
-			$data = unserialize( $data, array( 'allowed_classes' => false ) );
+			$data = maybe_unserialize( $data, array( 'allowed_classes' => false ) );
 			if ( $data instanceof \__PHP_Incomplete_Class ) {
 				$valid = false;
 			}
