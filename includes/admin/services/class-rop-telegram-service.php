@@ -423,6 +423,15 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 			}
 
 			if ( $response && $response->getMessageId() ) {
+				// Save log.
+				$this->save_logs_on_rop(
+					array(
+						'network' => $post_details['service'],
+						'handle'  => $args['user'],
+						'content' => $post_details['content'],
+						'link'    => $post_details['post_url'],
+					)
+				);
 				$this->logger->alert_success(
 					sprintf(
 						'Successfully shared %s to %s on Telegram ',
