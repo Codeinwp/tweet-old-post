@@ -131,8 +131,8 @@ class Rop_Cron_Helper {
 	 * @return bool
 	 */
 	private function publish_now() {
-		if ( ! wp_next_scheduled( self::CRON_NAMESPACE_PUBLISH_NOW ) ) {
-			wp_schedule_single_event( time() + 10, self::CRON_NAMESPACE_PUBLISH_NOW );
+		if ( ! $this->is_scheduled( self::CRON_NAMESPACE_PUBLISH_NOW ) ) {
+			$this->schedule_single_event( time() + 10, self::CRON_NAMESPACE_PUBLISH_NOW );
 		}
 
 		return true;
@@ -149,14 +149,14 @@ class Rop_Cron_Helper {
 	 * @access  public
 	 */
 	public function create_cron( $first = true ) {
-		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && false === ROP_CRON_ALTERNATIVE && ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
+		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && false === ROP_CRON_ALTERNATIVE && ! $this->is_scheduled( self::CRON_NAMESPACE ) ) {
 			if ( $first ) {
 				$this->fresh_start();
 				$settings = new Rop_Global_Settings();
 				$settings->update_start_time();
-				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE_ONCE );
+				$this->schedule_single_event( time() + 30, self::CRON_NAMESPACE_ONCE );
 			}
-			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
+			$this->schedule_event( time(), '5min', self::CRON_NAMESPACE );
 			/**
 			 * Changing this option to true, upon page refresh the WP Cron Jobs will work as normal.
 			 * This value must become true anytime the "Start Share" button is clicked.
@@ -204,36 +204,22 @@ class Rop_Cron_Helper {
 		 */
 		$this->cron_status_global_change( false );
 
-		$current_cron_list = _get_cron_array();
-		$rop_cron_key      = self::get_schedule_key( array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE ) );
-
-		if ( ! empty( $rop_cron_key ) ) {
-			$wpdb->query( 'START TRANSACTION' );
-			foreach ( $rop_cron_key as $rop_active_cron ) {
-				$cron_time      = (int) $rop_active_cron['time'];
-				$cron_key       = $rop_active_cron['key'];
-				$cron_namespace = $rop_active_cron['namespace'];
-
-				unset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] );
-				if ( empty( $current_cron_list[ $cron_time ][ $cron_namespace ] ) ) {
-					unset( $current_cron_list[ $cron_time ][ $cron_namespace ] );
-				}
-
-				if ( empty( $current_cron_list[ $cron_time ] ) ) {
-					unset( $current_cron_list[ $cron_time ] );
-				}
-			}
-			uksort( $current_cron_list, 'strnatcasecmp' );
-			_set_cron_array( $current_cron_list );
-
-			wp_cache_delete( 'alloptions', 'options' );
-
-			$wpdb->query( 'COMMIT' );
-		}
-
-		$this->fresh_start();
+		// Clear jobs.
+		$this->clear_jobs();
 
 		return false;
+	}
+
+	/**
+	 * Clear cron jobs.
+	 */
+	public function clear_jobs() {
+		// Check action scheduler is exists or not.
+		if ( function_exists( 'as_get_scheduled_actions' ) ) {
+			$this->clear_action_scheduler_jobs();
+		} else {
+			$this->clear_wp_cron_jobs();
+		}
 	}
 
 	/**
@@ -308,7 +294,7 @@ class Rop_Cron_Helper {
 		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
 			return filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
 		} else {
-			return is_int( wp_next_scheduled( self::CRON_NAMESPACE ) );
+			return is_int( $this->is_scheduled( self::CRON_NAMESPACE ) );
 		}
 
 	}
@@ -431,5 +417,140 @@ class Rop_Cron_Helper {
 		 * Clear all blocked posts.
 		 */
 		$selector->clear_blocked_posts();
+	}
+
+	/**
+	 * Check if an action hook is scheduled.
+	 *
+	 * @param string $hook The hook to check.
+	 * @param array  $args Optional. Arguments to pass to the hook.
+	 *
+	 * @return bool|int
+	 */
+	public function is_scheduled( string $hook, array $args = array() ) {
+		if ( function_exists( 'as_has_scheduled_action' ) ) {
+			return as_has_scheduled_action( $hook, $args ) ? time() : false;
+		}
+
+		if ( function_exists( 'as_next_scheduled_action' ) ) {
+			// For older versions of AS.
+			return as_next_scheduled_action( $hook, $args );
+		}
+
+		return wp_next_scheduled( $hook, $args );
+	}
+
+	/**
+	 * Clear scheduled hook.
+	 *
+	 * @param string $hook The name of the hook to clear.
+	 * @param array  $args Optional. Arguments that were to be passed to the hook's callback function. Default empty array.
+	 * @return mixed The scheduled action ID if a scheduled action was found, or null if no matching action found. If WP_Cron is used, on success an integer indicating number of events unscheduled, false or WP_Error if unscheduling one or more events fail.
+	 */
+	public static function clear_scheduled_hook( $hook, $args = array() ) {
+		if ( function_exists( 'as_unschedule_all_actions' ) ) {
+			return as_unschedule_all_actions( $hook, $args );
+		}
+
+		return wp_clear_scheduled_hook( $hook, $args );
+	}
+
+	/**
+	 * Scheduled single event cron.
+	 *
+	 * @param int    $timestamp The Unix timestamp representing the date you want the action to run.
+	 * @param string $hook Name of the action hook.
+	 */
+	public static function schedule_single_event( $timestamp, $hook ) {
+		if ( function_exists( 'as_schedule_single_action' ) ) {
+			return as_schedule_single_action( $timestamp, $hook );
+		}
+
+		return wp_schedule_single_event( $timestamp, $hook );
+	}
+
+	/**
+	 * Schedule an event.
+	 *
+	 * @param int    $time       The first time that the event will occur.
+	 * @param string $recurrence How often the event should recur. See wp_get_schedules() for accepted values.
+	 * @param string $hook       The name of the hook that will be triggered by the event.
+	 * @param array  $args       Optional. Arguments to pass to the hook's callback function. Default empty array.
+	 * @return integer|bool|WP_Error The action ID if Action Scheduler is used. True if event successfully scheduled, False or WP_Error on failure if WP Cron is used.
+	 */
+	public static function schedule_event( $time, $recurrence, $hook, $args = array() ) {
+		if ( function_exists( 'as_schedule_recurring_action' ) ) {
+			$schedules = wp_get_schedules();
+			if ( isset( $schedules[ $recurrence ] ) ) {
+				$interval = $schedules[ $recurrence ]['interval'];
+				return as_schedule_recurring_action( $time, $interval, $hook, $args );
+			}
+		}
+
+		return wp_schedule_event( $time, $recurrence, $hook, $args );
+	}
+
+	/**
+	 * Remove action scheduler event.
+	 *
+	 * @return void
+	 */
+	private function clear_action_scheduler_jobs() {
+		$rop_cron_hooks = array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE );
+		foreach ( $cron_hooks as $cron_hook ) {
+			$scheduled_actions = as_get_scheduled_actions(
+				array(
+					'hook'   => $cron_hook,
+					'status' => ActionScheduler_Store::STATUS_PENDING,
+				)
+			);
+
+			if ( ! empty( $scheduled_actions ) ) {
+				foreach ( $scheduled_actions as $scheduled_action ) {
+					as_unschedule_action( $scheduled_action->get_hook(), $scheduled_action->get_args() );
+				}
+			}
+		}
+
+		$this->fresh_start();
+	}
+
+	/**
+	 * Remove scheduled cron jobs from WP-Cron.
+	 *
+	 * @return void
+	 */
+	private function clear_wp_cron_jobs() {
+		global $wpdb;
+
+		$rop_cron_hooks    = array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE );
+		$current_cron_list = _get_cron_array();
+		$rop_cron_key      = self::get_schedule_key( $rop_cron_hooks );
+
+		if ( ! empty( $rop_cron_key ) ) {
+			$wpdb->query( 'START TRANSACTION' );
+			foreach ( $rop_cron_key as $rop_active_cron ) {
+				$cron_time      = (int) $rop_active_cron['time'];
+				$cron_key       = $rop_active_cron['key'];
+				$cron_namespace = $rop_active_cron['namespace'];
+
+				unset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] );
+				if ( empty( $current_cron_list[ $cron_time ][ $cron_namespace ] ) ) {
+					unset( $current_cron_list[ $cron_time ][ $cron_namespace ] );
+				}
+
+				if ( empty( $current_cron_list[ $cron_time ] ) ) {
+					unset( $current_cron_list[ $cron_time ] );
+				}
+			}
+			uksort( $current_cron_list, 'strnatcasecmp' );
+			_set_cron_array( $current_cron_list );
+
+			wp_cache_delete( 'alloptions', 'options' );
+
+			$wpdb->query( 'COMMIT' );
+		}
+
+		$this->fresh_start();
 	}
 }

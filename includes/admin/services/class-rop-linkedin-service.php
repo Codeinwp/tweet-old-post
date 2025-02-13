@@ -533,6 +533,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$model       = new Rop_Post_Format_Model;
 		$post_format = $model->get_post_format( $post_details['account_id'] );
 
+		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
+			$this->share_link_text = str_replace( '{link}', self::get_url( $post_details ), $post_format['share_link_text'] );
+		}
+
 		$hashtags = $post_details['hashtags'];
 
 		if ( ! empty( $post_format['hashtags_randomize'] ) && $post_format['hashtags_randomize'] ) {
@@ -591,11 +595,42 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+		$body    = json_decode( wp_remote_retrieve_body( $response ), true );
+		$headers = wp_remote_retrieve_headers( $response );
 
 		if ( null === $body ) {
 
+			if ( ! empty( $this->share_link_text ) ) {
+				$post_id = isset( $headers['x-restli-id'] ) ? $headers['x-restli-id'] : '';
+				if ( class_exists( 'Rop_Pro_Linkdin_Helper' ) ) {
+					$linkedin_helper = new Rop_Pro_Linkdin_Helper();
+					$linkedin_helper->share_as_first_comment(
+						$post_id,
+						array(
+							'token' => $token,
+							'body'  => array(
+								'actor'   => $new_post['author'],
+								'message' => array(
+									'text' => $this->share_link_text,
+								),
+							),
+						)
+					);
+				}
+			}
+
 			$title = isset( $new_post['content']['media']['title'] ) ? $new_post['content']['media']['title'] : $new_post['content']['article']['title'];
+
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => $post_details['service'],
+					'handle'  => $args['user'],
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
@@ -634,7 +669,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
-		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags;
+		$post_url   = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_url . $hashtags;
 		$commentary = preg_replace_callback(
 			'/([\(\)\{\}\[\]])|([@*<>\\\\\_~])/m',
 			function ( $matches ) {
@@ -691,7 +727,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
-		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags;
+		$post_url   = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_url . $hashtags;
 		$commentary = preg_replace_callback(
 			'/([\(\)\{\}\[\]])|([@*<>\\\\\_~])/m',
 			function ( $matches ) {
@@ -758,7 +795,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		$asset      = $asset_data['value']['image'];
-		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $hashtags;
+		$post_url   = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$commentary = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_url . $hashtags;
 		$commentary = preg_replace_callback(
 			'/([\(\)\{\}\[\]])|([@*<>\\\\\_~])/m',
 			function ( $matches ) {

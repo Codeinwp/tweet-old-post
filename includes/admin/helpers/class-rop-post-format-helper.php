@@ -69,7 +69,7 @@ class Rop_Post_Format_Helper {
 			}
 		}
 
-		if ( function_exists( 'icl_object_id' ) ) {
+		if ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) {
 			$selector = new Rop_Posts_Selector_Model;
 			$post_id  = $selector->rop_wpml_id( $post_id, $this->account_id );
 		}
@@ -78,7 +78,7 @@ class Rop_Post_Format_Helper {
 		$content                            = $this->build_content( $post_id );
 		$filtered_post                      = array();
 		$filtered_post['post_id']           = $post_id;
-		$filtered_post['title']             = html_entity_decode( get_the_title( $post_id ) );
+		$filtered_post['title']             = html_entity_decode( $this->get_translate_content( get_the_title( $post_id ) ) );
 		$filtered_post['account_id']        = $this->account_id;
 		$filtered_post['service']           = $service;
 		$filtered_post['content']           = apply_filters( 'rop_content_filter', $content['display_content'], $post_id, $account_id, $service );
@@ -289,10 +289,10 @@ class Rop_Post_Format_Helper {
 	 */
 	private function build_base_content( $post_id ) {
 
-		$post_title = apply_filters( 'rop_share_post_title', get_the_title( $post_id ), $post_id );
+		$post_title = apply_filters( 'rop_share_post_title', $this->get_translate_content( get_the_title( $post_id ) ), $post_id );
 		$post_title = html_entity_decode( $post_title );
 
-		$post_content = apply_filters( 'rop_share_post_content', get_post_field( 'post_content', $post_id ), $post_id );
+		$post_content = apply_filters( 'rop_share_post_content', $this->get_translate_content( get_post_field( 'post_content', $post_id ) ), $post_id );
 		$content      = '';
 		$post_format  = $this->post_format['post_content'];
 
@@ -322,9 +322,11 @@ class Rop_Post_Format_Helper {
 				} else {
 					$content = $post_content;
 				}
+				$content = $this->get_translate_content( $content );
 				break;
 			case 'custom_field':
 				$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
+				$content = $this->get_translate_content( $content );
 				break;
 			case 'custom_content':
 				$content = '';
@@ -336,6 +338,7 @@ class Rop_Post_Format_Helper {
 				} else {
 					$content = $post_title;
 				}
+				$content = $this->get_translate_content( $content );
 				break;
 			case 'yoast_seo_description':
 				if ( function_exists( 'YoastSEO' ) ) {
@@ -348,6 +351,7 @@ class Rop_Post_Format_Helper {
 				if ( empty( $content ) ) {
 					$content = $post_content;
 				}
+				$content = $this->get_translate_content( $content );
 				break;
 			case 'yoast_seo_title_description':
 				if ( function_exists( 'YoastSEO' ) ) {
@@ -364,6 +368,7 @@ class Rop_Post_Format_Helper {
 				} else {
 					$content = $post_title . apply_filters( 'rop_title_content_separator', ' ' ) . $post_content;
 				}
+				$content = $this->get_translate_content( $content );
 				break;
 			default:
 				$content = $post_title;
@@ -839,7 +844,7 @@ class Rop_Post_Format_Helper {
 		}
 
 		// WPML compatibility
-		if ( function_exists( 'icl_object_id' ) ) {
+		if ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) {
 			$selector = new Rop_Posts_Selector_Model;
 			$post_url = $selector->rop_wpml_link( $post_url, $this->account_id );
 		}
@@ -1072,6 +1077,26 @@ class Rop_Post_Format_Helper {
 
 		$content = preg_replace( '/\[\/?et_pb.*?\]/', '', $content );
 		return $content;
+	}
+
+	/**
+	 * Get translated content if TranslatePress plugin is activated.
+	 *
+	 * @param string $content Orignal content.
+	 *
+	 * @return string
+	 */
+	private function get_translate_content( $content ) {
+		if ( ! class_exists( 'TRP_Translate_Press' ) || empty( $this->post_format['wpml_language'] ) ) {
+			return $content;
+		}
+
+		trp_switch_language( $this->post_format['wpml_language'] );
+
+		$trp                = TRP_Translate_Press::get_trp_instance();
+		$languages          = $trp->get_component( 'languages' );
+		$translation_render = $trp->get_component( 'translation_render' );
+		return $translation_render->translate_page( $content );
 	}
 
 }

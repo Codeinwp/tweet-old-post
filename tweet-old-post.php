@@ -184,6 +184,7 @@ function run_rop() {
 	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
 	define( 'ROP_POST_SHARING_CONTROL_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/post-sharing-control' );
 	define( 'ROP_POST_ON_X_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/post-on-x' );
+	define( 'ROP_POST_LOGS_API', ROP_AUTH_APP_URL . '/wp-json/auth-option/v1/logs' );
 
 	add_filter(
 		'themeisle_sdk_compatibilities/' . basename( ROP_LITE_PATH ),

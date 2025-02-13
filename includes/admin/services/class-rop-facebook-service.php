@@ -476,6 +476,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$share_as_image_post = $post_details['post_with_image'];
 		$global_settings = new Rop_Global_Settings();
 
+		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
+			$this->share_link_text = str_replace( '{link}', self::get_url( $post_details ), $post_format['share_link_text'] );
+		}
+
 		if ( array_key_exists( 'account_type', $args ) ) {
 
 			if ( ( $args['account_type'] === 'instagram_account' || $args['account_type'] === 'facebook_group' ) && $global_settings->license_type() < 1 ) {
@@ -486,10 +490,22 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			// **** Instagram Sharing ***** //
 			if ( $args['account_type'] === 'instagram_account' && class_exists( 'Rop_Pro_Instagram_Service' ) ) {
 
-				$args['correct_aspect_ratio'] = $post_format['correct_aspect_ratio'];
+				$args['correct_aspect_ratio']    = isset( $post_format['correct_aspect_ratio'] ) ? $post_format['correct_aspect_ratio'] : '';
+				$post_details['share_link_text'] = $this->share_link_text;
 
 				$response = Rop_Pro_Instagram_Service::share( $post_details, $hashtags, $args );
 
+				if ( $response ) {
+					// Save log.
+					$this->save_logs_on_rop(
+						array(
+							'network' => $post_details['service'],
+							'handle'  => $args['user'],
+							'content' => $post_details['content'],
+							'link'    => $post_details['post_url'],
+						)
+					);
+				}
 				return $response;
 
 			}
@@ -535,10 +551,20 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		if ( $this->try_post( $sharing_data['post_data'], $args['id'], $args['access_token'], $post_id, $sharing_data['type'] ) ) {
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => $post_details['service'],
+					'handle'  => $args['user'],
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_id ), ENT_QUOTES ), // TODO Set ENT_QUOTES for all other entity decode occurences in plugin
+					html_entity_decode( $post_details['title'], ENT_QUOTES ), // TODO Set ENT_QUOTES for all other entity decode occurences in plugin
 					$args['user'],
 					$post_details['service']
 				)
@@ -568,7 +594,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $hashtags;
 
-		$new_post['link'] = $this->get_url( $post_details );
+		if ( empty( $this->share_link_text ) ) {
+			$new_post['link'] = $this->get_url( $post_details );
+		}
 
 		return array(
 			'post_data' => $new_post,
@@ -601,7 +629,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$new_post['url']     = $attachment_url;
 		$new_post['source']  = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] ); // get image path
-		$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $hashtags;
+		$post_url            = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$new_post['caption'] = $post_details['content'] . $post_url . $hashtags;
 
 		return array(
 			'post_data' => $new_post,
@@ -627,8 +656,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$image     = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
 		$new_post['source']      = $image;
 		// $new_post['source']      = $api->videoToUpload( $image );
-		$new_post['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES );
-		$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $hashtags;
+		$new_post['title']       = html_entity_decode( $post_details['title'], ENT_QUOTES );
+		$post_url                = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$new_post['description'] = $post_details['content'] . $post_url . $hashtags;
 
 		return array(
 			'post_data' => $new_post,
@@ -705,7 +735,19 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					$this->rop_fb_scrape_url( $posting_type, $post_id, $token );
 				}
 
-				$api->post( $path, $new_post, $token );
+				$response   = $api->post( $path, $new_post, $token );
+				$fb_post_id = $response->getGraphNode()->getField( 'id' );
+
+				if ( class_exists( 'Rop_Pro_Facebook_Helper' ) ) {
+					$fb_helper  = new Rop_Pro_Facebook_Helper();
+					$fb_helper->share_as_first_comment(
+						$fb_post_id,
+						array(
+							'message'      => $this->share_link_text,
+							'access_token' => $token,
+						)
+					);
+				}
 
 				return true;
 			} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
@@ -729,8 +771,18 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					}
 
 					try {
-						$api->post( $path, $new_post, $token );
-
+						$response   = $api->post( $path, $new_post, $token );
+						$fb_post_id = $response->getGraphNode()->getField( 'id' );
+						if ( class_exists( 'Rop_Pro_Facebook_Helper' ) ) {
+							$fb_helper  = new Rop_Pro_Facebook_Helper();
+							$fb_helper->share_as_first_comment(
+								$fb_post_id,
+								array(
+									'message'      => $this->share_link_text,
+									'access_token' => $token,
+								)
+							);
+						}
 						return true;
 					} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 						$this->logger->alert_error( 'Unable to share post for facebook. (FacebookResponseException) Error: ' . $e->getMessage() );
@@ -819,6 +871,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 
 			if ( ! empty( $body['id'] ) ) {
+				if ( class_exists( 'Rop_Pro_Facebook_Helper' ) ) {
+					$fb_helper = new Rop_Pro_Facebook_Helper();
+					$fb_helper->share_as_first_comment(
+						$body['id'],
+						array(
+							'message'      => $this->share_link_text,
+							'access_token' => $token,
+						)
+					);
+				}
 				return true;
 			} elseif ( ! empty( $body['error']['message'] ) ) {
 				if (
@@ -878,6 +940,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					}
 
 					if ( ! empty( $body['id'] ) ) {
+						if ( class_exists( 'Rop_Pro_Facebook_Helper' ) ) {
+							$fb_helper = new Rop_Pro_Facebook_Helper();
+							$fb_helper->share_as_first_comment(
+								$body['id'],
+								array(
+									'message'      => $this->share_link_text,
+									'access_token' => $token,
+								)
+							);
+						}
 						return true;
 					} elseif ( ! empty( $body['error']['message'] ) ) {
 						$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );

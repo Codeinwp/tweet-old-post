@@ -521,10 +521,19 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		if ( in_array( $response->state, array( 'LIVE', 'PROCESSING' ), true ) ) {
 
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => $post_details['service'],
+					'handle'  => $args['user'],
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on Google My Business ',
-					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+					html_entity_decode( $post_details['title'] ),
 					$args['user']
 				)
 			);

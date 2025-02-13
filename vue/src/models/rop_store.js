@@ -219,6 +219,9 @@ export default new Vuex.Store({
                 case 'get_active_accounts':
                 case 'update_active_accounts':
                 case 'remove_account':
+                    if ( 'remove_account' === requestName ) {
+                        break;
+                    }
                     state.activeAccounts = stateData
                     break
                 case 'get_taxonomies':

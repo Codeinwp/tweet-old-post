@@ -92,6 +92,14 @@ abstract class Rop_Services_Abstract {
 	 * @var     Rop_Logger $logger The logger handler.
 	 */
 	protected $logger;
+	/**
+	 * Stores a share first comment text.
+	 *
+	 * @since   9.1.3
+	 * @access  protected
+	 * @var     string $share_link_text Comment text.
+	 */
+	protected $share_link_text = '';
 
 	/**
 	 * Rop_Services_Abstract constructor.
@@ -319,6 +327,16 @@ abstract class Rop_Services_Abstract {
 		}
 
 	}
+
+	/**
+	 * Share the post link in the first comment.
+	 *
+	 * @access  public
+	 *
+	 * @param string $url API endpoint.
+	 * @param array  $data API data.
+	 */
+	public function share_as_first_comment( $url, $data = array() ) {}
 
 	/**
 	 * Method to request a token from api.
@@ -884,7 +902,7 @@ abstract class Rop_Services_Abstract {
 			$data = array_map(
 				function( $d ) {
 					$d = base64_decode( $d, true );
-					$d = unserialize( $d, array( 'allowed_classes' => false ) );
+					$d = maybe_unserialize( $d, array( 'allowed_classes' => false ) );
 					if ( $d instanceof \__PHP_Incomplete_Class ) {
 						return false;
 					}
@@ -896,12 +914,57 @@ abstract class Rop_Services_Abstract {
 			$valid = empty( $data ) ? false : true;
 		} else {
 			$data = base64_decode( $data, true );
-			$data = unserialize( $data, array( 'allowed_classes' => false ) );
+			$data = maybe_unserialize( $data, array( 'allowed_classes' => false ) );
 			if ( $data instanceof \__PHP_Incomplete_Class ) {
 				$valid = false;
 			}
 		}
 		return $valid;
+	}
+
+	/**
+	 * Capture logs on ROP API.
+	 *
+	 * @since   9.1.3
+	 * @access  public
+	 *
+	 * @param array $data API payload data.
+	 * @return bool
+	 */
+	public function save_logs_on_rop( $data = array() ) {
+		if ( empty( $data ) ) {
+			return false;
+		}
+
+		$license_key    = apply_filters( 'product_rop_license_key', '' );
+		$license_status = apply_filters( 'product_rop_license_status', 'invalid' );
+
+		// Send API request.
+		$response = wp_remote_post(
+			ROP_POST_LOGS_API,
+			apply_filters(
+				'rop_post_capture_logs_api_args',
+				array(
+					'timeout' => 100,
+					'body'    => array_merge(
+						array(
+							'website'        => get_site_url(),
+							'license'        => $license_key,
+							'license_status' => $license_status,
+						),
+						$data
+					),
+				)
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+
+		$body          = json_decode( wp_remote_retrieve_body( $response ) );
+		$response_code = wp_remote_retrieve_response_code( $response );
+		return 200 === $response_code ? $body->status : false;
 	}
 
 }

@@ -837,6 +837,17 @@ a.active {
     color:#fff;
 }
 
+#rop_core .btn.btn-telegram{
+    background-color:#3390ec;
+    color:#fff;
+}
+#rop_core .btn.btn-mastodon{
+    background-color:#6364FF;
+    color:#fff;
+    display: flex;
+    align-items: center;
+}
+
 #rop_core
 .btn:is(
     .btn-facebook,
@@ -848,6 +859,8 @@ a.active {
     .btn-gmb,
     .btn-vk,
     .btn-webhook
+    .btn-telegram
+    .btn-mastodon
 ):is(
     :focus,
     :hover 

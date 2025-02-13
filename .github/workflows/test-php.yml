@@ -1,43 +1,52 @@
 name: Test PHP
 
-concurrency: 
-  group: ${{ github.head_ref }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
   cancel-in-progress: true
-
 on:
-  pull_request:
-    branches: 
-      - master 
-      - development
+  push:
+    branches-ignore:
+      - 'master'
+
 jobs:
   code-sniff:
+    name: PHP Lint
     runs-on: ubuntu-latest
     steps:
        - name: Checkout source code
          uses: actions/checkout@v2
        - name: Setup PHP
          uses: shivammathur/setup-php@v2
-         with: 
+         with:
           php-version: '7.4'
           tools: phpcs, phpcbf
+       - name: Get Composer Cache Directory
+         id: composer-cache
+         run: |
+           echo "::set-output name=dir::$(composer config cache-files-dir)"
+       - name: Setup Composer cache
+         uses: actions/cache@v1
+         with:
+           path: ${{ steps.composer-cache.outputs.dir }}
+           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+           restore-keys: |
+             ${{ runner.os }}-composer-
        - name: Run Composer Install
          run: composer install --prefer-dist --no-progress --quiet
-       - name: Run PHPCBF 
-         run: composer run format
-# PHPCBF returns exit code 1 when it fixes errors, so we continue letting PHPCS find unfixed issues
          continue-on-error: true
        - name: Run PHPCS
          run: composer run lint
          continue-on-error: false
 
 
-  php-unit: 
-    needs: code-sniff 
-    runs-on: ubuntu-latest
+  php-unit:
+    name: PHPUnit
+    needs: code-sniff
+    runs-on: ubuntu-22.04
     services:
       mysql:
         image: mysql:5.7
-        env: 
+        env:
           MYSQL_ROOT_PASSWORD: root
         ports:
          - 3306/tcp
@@ -52,6 +61,17 @@ jobs:
           tools: phpunit-polyfills
      - name: Install WordPress Test Suite
        run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1:${{ job.services.mysql.ports['3306'] }}
+     - name: Get Composer Cache Directory
+       id: composer-cache
+       run: |
+         echo "::set-output name=dir::$(composer config cache-files-dir)"
+     - name: Setup Composer cache
+       uses: actions/cache@v1
+       with:
+         path: ${{ steps.composer-cache.outputs.dir }}
+         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+         restore-keys: |
+           ${{ runner.os }}-composer-
      - name: Install composer
        run: composer install --prefer-dist --no-progress
      - name: Run PHP Unit

@@ -124,7 +124,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 			'postId'        => isset( $post_details['post_id'] ) ? $post_details['post_id'] : '',
 			'message'       => isset( $post_details['content'] ) ? $post_details['content'] : '',
 			'postUrl'       => isset( $post_details['post_url'] ) ? $post_details['post_url'] : '',
-			'featuredImage' => isset( $post_details['featured_image'] ) ? $post_details['featured_image'] : '',
+			'featuredImage' => isset( $post_details['post_image'] ) ? $post_details['post_image'] : '',
 		);
 
 		if ( ! class_exists( 'ROP_Pro_Webhook_Helper' ) ) {
@@ -146,10 +146,20 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( $log_account_used . Rop_I18n::get_labels( 'errors.webhook_error' ) . $response->get_error_message() );
 			return false;
 		} elseif ( true === $response ) {
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => $this->service_name,
+					'handle'  => $this->display_name,
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES ),
+					html_entity_decode( $post_details['title'], ENT_QUOTES ),
 					$this->display_name,
 					$this->service_name
 				)

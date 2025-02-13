@@ -18,7 +18,7 @@ class Test_RopScheduler extends WP_UnitTestCase {
 	/**
 	 * Init test accounts.
 	 */
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		Rop_InitAccounts::init();
 	}
 

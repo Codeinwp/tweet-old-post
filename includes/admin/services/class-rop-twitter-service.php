@@ -425,7 +425,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	private function twitter_article_post( $post_details ) {
 
-		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
+		$post_url         = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_url;
 
 		return $new_post;
 	}
@@ -557,7 +558,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			wp_delete_file( $media_path );
 		}
 
-		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
+		$post_url         = empty( $this->share_link_text ) ? $this->get_url( $post_details ) : '';
+		$new_post['text'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_url;
 
 		return $new_post;
 	}
@@ -602,9 +604,16 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$api = $this->get_api();
 		}
 
+		$model       = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format( $post_details['account_id'] );
+
 		$post_id = $post_details['post_id'];
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
+
+		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
+			$this->share_link_text = str_replace( '{link}', self::get_url( $post_details ), $post_format['share_link_text'] );
+		}
 
 		// Twitter link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
@@ -627,9 +636,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
 			return false;
 		}
-
-		$model       = new Rop_Post_Format_Model;
-		$post_format = $model->get_post_format( $post_details['account_id'] );
 
 		$hashtags = $post_details['hashtags'];
 
@@ -732,10 +738,48 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		if ( isset( $response['data'] ) && ! empty( $response['data']['id'] ) ) {
+
+			if ( $api && ! empty( $this->share_link_text ) ) {
+				// Post the first comment (replying to the tweet).
+				$comment = $api->post(
+					'tweets',
+					array(
+						'text'  => $this->share_link_text,
+						'reply' => array(
+							'in_reply_to_tweet_id' => $response['data']['id'],
+						),
+					),
+					true
+				);
+
+				$response_headers = $api->getLastXHeaders();
+				$this->logger->info( sprintf( '[X API] First Comment Response: %s', json_encode( $response_headers ) ) );
+
+				if ( $comment && ! empty( $comment->data->id ) ) {
+					$this->logger->info(
+						sprintf(
+							'Successfully shared first comment to %s on %s ',
+							html_entity_decode( get_the_title( $post_id ) ),
+							$post_details['service']
+						)
+					);
+				}
+			}
+
+			// Save log.
+			$this->save_logs_on_rop(
+				array(
+					'network' => $post_details['service'],
+					'handle'  => $args['user'],
+					'content' => $post_details['content'],
+					'link'    => $post_details['post_url'],
+				)
+			);
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_id ) ),
+					html_entity_decode( $post_details['title'] ),
 					$args['user'],
 					$post_details['service']
 				)

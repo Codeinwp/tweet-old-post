@@ -60,6 +60,7 @@ class Rop_I18n {
 		$services['facebook']['credentials']['app_id']['description'] = Rop_I18n::get_labels( 'accounts.fb_app_id_title' );
 		$services['facebook']['description']                          = Rop_I18n::get_labels( 'accounts.fb_app_desc' );
 		$services['twitter']['description']                           = Rop_I18n::get_labels( 'accounts.twt_app_desc' );
+		$services['telegram']['description']                          = Rop_I18n::get_labels( 'accounts.tlg_app_desc' );
 
 		return $services;
 	}
@@ -134,6 +135,8 @@ class Rop_I18n {
 				'edit_headers'               => __( 'Edit Headers', 'tweet-old-post' ),
 				'hide'                       => __( 'Hide', 'tweet-old-post' ),
 				'get_latest_pro_version'     => __( 'Get the latest Pro version to unlock.', 'tweet-old-post' ),
+				'tlg_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/2223-how-to-connect-revive-social-to-telegram" target="_blank">', '</a>' ),
+				'upsell_bz_service_body'     => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the business plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
 			),
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),
@@ -306,6 +309,12 @@ class Rop_I18n {
 				'custom_meta_field_upsell'          => __( 'Custom meta fields are only available in the Pro version.', 'tweet-old-post' ),
 				'custom_meta_upsell'                => __( 'Custom fields are only available in the Pro version.', 'tweet-old-post' ),
 				'hashtag_field_upsell'              => __( 'The selected option is only available in the Pro version.', 'tweet-old-post' ),
+				'first_comment_title'               => __( 'Comment Text', 'tweet-old-post' ),
+				'first_comment_desc'                => __( 'Should Revive Social add the post link in the first comment when sharing a post?', 'tweet-old-post' ),
+				'first_comment_placeholder'         => __( 'Read more on {link}', 'tweet-old-post' ),
+				'share_link_title'                  => __( 'Share link in comment', 'tweet-old-post' ),
+				'share_link_desc'                   => __( 'Share the post link in the first comment?', 'tweet-old-post' ),
+				'share_link_upsell'                 => __( 'Share first comment is only available in the Pro version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
