@@ -570,7 +570,10 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 	 */
 	private function mastodon_article_post( $post_details ) {
 
-		$new_post['status']     = $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details );
+		$new_post['status'] = $this->strip_excess_blank_lines( $post_details['content'] );
+		if ( empty( $this->share_link_text ) ) {
+			$new_post['status'] .= $this->get_url( $post_details );
+		}
 		$new_post['visibility'] = 'public';
 		return $new_post;
 	}
@@ -623,9 +626,13 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 		}
 
 		$new_post = array(
-			'status'     => $post_details['content'] . $this->get_url( $post_details ),
+			'status'     => $post_details['content'],
 			'visibility' => 'public',
 		);
+
+		if ( empty( $this->share_link_text ) ) {
+			$new_post['status'] .= $this->get_url( $post_details );
+		}
 
 		$media_id = $this->upload_media( $attachment_path );
 		if ( $media_id > 0 ) {
@@ -763,6 +770,13 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 		$post_url            = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
 
+		$model       = new Rop_Post_Format_Model();
+		$post_format = $model->get_post_format( $post_details['account_id'] );
+
+		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
+			$this->share_link_text = str_replace( '{link}', self::get_url( $post_details ), $post_format['share_link_text'] );
+		}
+
 		// Mastodon link post.
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
 			$new_post = $this->mastodon_article_post( $post_details );
@@ -799,6 +813,27 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 		$response = $this->request_new_post( $new_post );
 
 		if ( isset( $response->id ) ) {
+			// Create the first comment if the share link text is not empty.
+			if ( ! empty( $this->share_link_text ) ) {
+				$create_reply = $this->request_new_post(
+					array(
+						'status'         => $this->share_link_text,
+						'in_reply_to_id' => $response->id,
+					)
+				);
+				$this->logger->info( sprintf( '[Mastodon reply API] Response: %s', json_encode( $create_reply ) ) );
+
+				if ( $create_reply && isset( $create_reply->id ) ) {
+					$this->logger->info(
+						sprintf(
+							'Successfully shared first comment to %s on %s ',
+							html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+							$post_details['service']
+						)
+					);
+				}
+			}
+
 			// Save log.
 			$this->save_logs_on_rop(
 				array(
@@ -808,6 +843,7 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 					'link'    => $post_details['post_url'],
 				)
 			);
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',

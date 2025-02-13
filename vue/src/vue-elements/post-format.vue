@@ -872,7 +872,7 @@
                 selected_tax_filter: [],
                 // selected_language: this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id].wpml_language : [],
                 // post_types: this.$store.state.generalSettings.available_post_types,
-                postCommentSupportedServices: [ 'twitter', 'facebook', 'linkedin', 'vk' ],
+                postCommentSupportedServices: [ 'twitter', 'facebook', 'linkedin', 'vk', 'mastodon' ],
             }
         },
         computed: {
