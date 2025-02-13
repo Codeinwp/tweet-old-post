@@ -1,3 +1,18 @@
+#### [Version 9.2.0](https://github.com/Codeinwp/tweet-old-post/compare/v9.1.3...v9.2.0) (2025-02-13)
+
+### New Features
+- Added Telegram network service [PRO]
+- Added Mastodon network service [PRO]
+- Ability to share the link in the first comment of a shared post and customize the comment [PRO]
+- Added compatibility with Polylang and TranslatePress translation plugins [PRO]
+
+### Improvements
+- Adds action scheduler support
+
+### Fixes
+- Fixed issue with image not being sent via Zapier integrations
+- Fixed issue with remaining accounts being temporarily invisible in the Post Form tab after removing any existing account
+
 ##### [Version 9.1.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.1.2...v9.1.3) (2024-11-11)
 
 - Fixed issue with Revive Social menu item being visible to match user permissions
