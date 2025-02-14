@@ -44,8 +44,7 @@
     "facebook/graph-sdk": "^5.7",
     "abraham/twitteroauth": "^4.0",
     "codeinwp/themeisle-sdk": "^3.3",
-    "vkcom/vk-php-sdk": "5.101.0",
-    "irazasyed/telegram-bot-sdk": "3.9.0"
+    "vkcom/vk-php-sdk": "5.101.0"
   },
   "extra": {
     "installer-disable": true
