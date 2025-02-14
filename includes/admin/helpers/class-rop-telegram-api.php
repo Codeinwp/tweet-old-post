@@ -200,41 +200,4 @@ class Rop_Telegram_Api {
 			return false;
 		}
 	}
-
-	/**
-	 * Returns a MIME content type for a certain file.
-	 *
-	 * @param  string $file_path File path.
-	 * @return string            MIME type.
-	 */
-	private function get_content_type( $file_path ) {
-		if ( function_exists( 'mime_content_type' ) ) {
-			$result = mime_content_type( $file_path );
-
-			if ( is_string( $result ) ) {
-				return $result;
-			}
-		}
-
-		if ( function_exists( 'finfo_open' ) && function_exists( 'finfo_file' ) ) {
-			$finfo  = finfo_open( FILEINFO_MIME_TYPE );
-			$result = finfo_file( $finfo, $file_path );
-
-			if ( is_string( $result ) ) {
-				return $result;
-			}
-		}
-
-		$ext = pathinfo( $file_path, PATHINFO_EXTENSION );
-		if ( ! empty( $ext ) ) {
-			$mime_types = wp_get_mime_types();
-			foreach ( $mime_types as $key => $value ) {
-				if ( in_array( $ext, explode( '|', $key ), true ) ) {
-					return $value;
-				}
-			}
-		}
-
-		return 'application/octet-stream';
-	}
 }
