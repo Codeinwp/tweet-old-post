@@ -122,7 +122,7 @@ class Rop_Telegram_Api {
 				$this->logger->alert_error( 'Telegram Profile Photos API Error: ' . print_r( $response, true ) );
 				return '';
 			}
-			if ( isset( $response->result ) ) {
+			if ( ! empty( $response->result->photos ) ) {
 				$photos = reset( $response->result->photos[0] );
 				if ( isset( $photos->file_id ) ) {
 					$response = wp_remote_get(
