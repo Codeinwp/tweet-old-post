@@ -7,5 +7,7 @@ updates:
     ignore:
     - dependency-name: "facebook/graph-sdk*" 
     target-branch: "development"
+    ignore:
+    - dependency-name: "facebook/graph-sdk*" 
     schedule:
       interval: "weekly"
