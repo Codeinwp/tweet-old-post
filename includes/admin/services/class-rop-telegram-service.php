@@ -126,18 +126,7 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 			if ( empty( $token ) ) {
 				return false;
 			}
-			$guzzle_client = new \GuzzleHttp\Client(
-				apply_filters(
-					'rop_telegram_guzzle_client_args',
-					array(
-						'verify' => false,
-					)
-				)
-			);
-			$client        = new Rop_Telegram_Http_Client( $guzzle_client );
-			$this->api     = new Api( $token, $async, $client );
-		} catch ( \Telegram\Bot\Exceptions\TelegramSDKException $e ) {
-			$this->logger->alert_error( 'Can not load Telegram api. Error: ' . $e->getMessage() );
+			$this->api = new Rop_Telegram_Api( $token, $this->logger );
 		} catch ( \Exception $e ) {
 			$this->logger->alert_error( 'Can not load Telegram api. Error: ' . $e->getMessage() );
 		}
@@ -183,15 +172,14 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 		}
 		try {
 			$telegram = $this->get_api( $data['access_token'] );
-			$response = $telegram->getMe();
-			$response = $response->getRawResponse();
-			if ( empty( $response['id'] ) ) {
-				throw new \Telegram\Bot\Exceptions\TelegramSDKException( 'Telegram API Error: ' . wp_json_encode( $response ) );
+			$response = $telegram->get_user_accounts();
+			if ( empty( $response->id ) ) {
+				throw new Exception( 'Telegram API Error: ' . wp_json_encode( $response ) );
 			}
 
-			$id            = $response['id'];
-			$display_name  = $response['first_name'];
-			$account       = $response['username'];
+			$id            = $response->id;
+			$display_name  = $response->first_name;
+			$account       = $response->username;
 			$this->service = array(
 				'id'                 => $id,
 				'service'            => $this->service_name,
@@ -206,58 +194,17 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 						'user'    => $display_name,
 						'account' => $account,
 						'service' => $this->service_name,
-						'img'     => apply_filters( 'rop_custom_telegram_avatar', $this->get_profile_photo( $telegram, $data['access_token'], $id ) ),
+						'img'     => apply_filters( 'rop_custom_telegram_avatar', $telegram->get_profile_photo( $id ) ),
 						'created' => date( 'd/m/Y H:i' ),
 						'active'  => isset( $data['active'] ) ? $data['active'] : true,
 					),
 				),
 			);
-		} catch ( \Telegram\Bot\Exceptions\TelegramSDKException $e ) {
-			$this->logger->alert_error( 'Telegram API Error: ' . $e->getMessage() );
-			return false;
 		} catch ( \Exception $e ) {
 			$this->logger->alert_error( 'Telegram API Error: ' . $e->getMessage() );
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Get user profile photo.
-	 *
-	 * @param Telegram\Bot\Api $api Telegram API.
-	 * @param string           $token Telegram Bot token.
-	 * @param int              $user_id Telegram user ID.
-	 * @return string
-	 */
-	private function get_profile_photo( $api = null, $token = '', $user_id = 0 ) {
-		if ( ! $api ) {
-			return '';
-		}
-		try {
-			$response = $api->getUserProfilePhotos(
-				array(
-					'user_id' => $user_id,
-					'limit'   => 1,
-				)
-			);
-			$response = $response->getRawResponse();
-			if ( ! empty( $response['photos'] ) ) {
-				$file_id       = $response['photos'][0][0]['file_id'];
-				$file_response = $api->getFile(
-					array(
-						'file_id' => $file_id,
-					)
-				);
-				$file_path     = $file_response->file_path;
-				return "https://api.telegram.org/file/bot$token/{$file_path}";
-			}
-		} catch ( \Telegram\Bot\Exceptions\TelegramSDKException $e ) {
-			$this->logger->alert_error( 'Telegram API Error: ' . $e->getMessage() );
-		} catch ( \Exception $e ) {
-			$this->logger->alert_error( 'Telegram API Error: ' . $e->getMessage() );
-		}
-		return '';
 	}
 
 	/**
@@ -283,16 +230,6 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 			return $this->tlg_article_post( $post_details, $hashtags, $args, $owner_id );
 		}
 
-		$passed_image_url_host = parse_url( $attachment_url )['host'];
-		$admin_site_url_host   = parse_url( get_site_url() )['host'];
-
-		/** If this image is not local then lets download it locally to get its path  */
-		if ( ( $passed_image_url_host === $admin_site_url_host ) && strpos( $post_details['mimetype']['type'], 'video' ) !== true ) {
-			$attachment_path = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] );
-		} else {
-			$attachment_path = $this->rop_download_external_image( $attachment_url );
-		}
-
 		$new_post = array(
 			'chat_id' => $chat_id,
 			'caption' => $post_details['content'] . $this->get_url( $post_details ) . $hashtags,
@@ -300,11 +237,9 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 
 		// If attachment is video.
 		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
-			$new_post['video'] = fopen( $attachment_path, 'r' );
+			$new_post['video'] = $attachment_url;
 		} else {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
-			$new_post['photo'] = fopen( $attachment_path, 'r' );
+			$new_post['photo'] = $attachment_url;
 		}
 		return $new_post;
 	}
@@ -414,15 +349,8 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 
 		$api = $this->get_api( $access_token );
 		try {
-			if ( ! empty( $new_post['photo'] ) ) {
-				$response = $api->sendPhoto( $new_post );
-			} elseif ( ! empty( $new_post['video'] ) ) {
-				$response = $api->sendVideo( $new_post );
-			} else {
-				$response = $api->sendMessage( $new_post );
-			}
-
-			if ( $response && $response->getMessageId() ) {
+			$response = $api->send_message( $new_post );
+			if ( $response && $response->message_id ) {
 				// Save log.
 				$this->save_logs_on_rop(
 					array(
