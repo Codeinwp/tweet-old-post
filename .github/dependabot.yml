@@ -5,5 +5,7 @@ updates:
   - package-ecosystem: "composer"
     directory: "/"
     target-branch: "development"
+    ignore:
+    - dependency-name: "facebook/graph-sdk*" 
     schedule:
       interval: "weekly"
