@@ -1,3 +1,7 @@
+##### [Version 9.2.1](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.0...v9.2.1) (2025-02-17)
+
+- Removed Telegram SDK and added a custom Telegram API handler
+
 #### [Version 9.2.0](https://github.com/Codeinwp/tweet-old-post/compare/v9.1.3...v9.2.0) (2025-02-13)
 
 ### New Features
