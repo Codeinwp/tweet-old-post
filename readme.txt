@@ -338,6 +338,13 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.2.2](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.1...v9.2.2) (2025-02-18)
+
+- Tested compatibility between versions of the plugin
+
+
+
+
 ##### [Version 9.2.1](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.0...v9.2.1) (2025-02-17)
 
 - Removed Telegram SDK and added a custom Telegram API handler
