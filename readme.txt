@@ -112,6 +112,8 @@ Revive Social isn't like every other social media marketing tool. We've tailored
 - WordPress to Google My Business(GMB) [Pro]
 - WordPress to Vkontakte(VK) Profiles [Pro]
 - WordPress to Vkontakte(VK) Communities [Pro]
+- WordPress to Telegram [Pro]
+- WordPress to Mastodon [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -159,9 +161,15 @@ Some of the available networks and features require the Pro version of the plugi
 
 - Post to Vk Communities [Pro]
 
+- Post to Telegram [Pro]
+
+- Post to Mastodon [Pro]
+
 - WordPress Auto Republish post after sharing [Pro]
 
-- Share multilingual posts to respective pages with WPML example, share English Posts to your English social media accounts, and Spanish posts to your Spanish social media accounts. [Pro]
+- Automatically shares the post’s link in the first comment when published on social media [PRO]
+
+- Share multilingual posts to respective pages with WPML, TranslatePress and Polylang support, share English Posts to your English social media accounts, and Spanish posts to your Spanish social media accounts. [Pro]
 
 And More! Try Revive Social, and see why it's the **best** WordPress social media marketing tool to boost your site traffic and keep your followers engaged.
 
@@ -182,7 +190,7 @@ Using the PRO version of Revive Social unlocks a host of additional features to 
 
 - Share **WordPress scheduled posts** to social media on publish. [Learn More](https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts)
 
-- Finer **WPML support** for multilingual websites. [Learn More](https://docs.revive.social/article/1338-how-to-share-different-wpml-languages-to-different-social-media-accounts)
+- Finer **WPML, Polylang, TranslatePress support** for multilingual websites. [Learn More](https://docs.revive.social/article/1338-how-to-share-different-wpml-languages-to-different-social-media-accounts)
 
 **Automatically generate hashtags** for post shares from **tags**, **categories** or from **custom fields**.
 
@@ -200,7 +208,13 @@ Using the PRO version of Revive Social unlocks a host of additional features to 
 
 - **WordPress to Vkontakte(VK) Communities** scheduling and auto post
 
+- **WordPress to Telegram** scheduling and auto post
+
+- **WordPress to Mastodons** scheduling and auto post
+
 - Connect **multiple social media accounts** to WP
+
+- Automatically shares the post’s link in the first comment when published on social media
 
 - Add [custom UTM tags](https://docs.revive.social/article/925-how-to-use-custom-utm-tags) for analytics to your social media shares
 
