@@ -192,7 +192,7 @@ function run_rop() {
 			$compatibilities['RopPRO'] = array(
 				'basefile'  => defined( 'ROP_PRO_DIR_PATH' ) ? ROP_PRO_DIR_PATH . 'tweet-old-post-pro.php' : '',
 				'required'  => '3.0',
-				'tested_up' => '3.1',
+				'tested_up' => '3.2',
 			);
 			return $compatibilities;
 		}
