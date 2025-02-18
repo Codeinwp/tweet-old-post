@@ -1748,24 +1748,10 @@ class Rop_Admin {
 		$license_data = get_option( 'tweet_old_post_pro_license_data', array() );
 
 		$install_days_number = intval( ( time() - get_option( 'rop_first_install_date', time() ) ) / DAY_IN_SECONDS );
-		$install_category    = 0; // Normalized value.
-
-		if ( 0 === $install_days_number || 1 === $install_days_number ) {
-			$install_category = 0;
-		} elseif ( 1 < $install_days_number && 8 > $install_days_number ) {
-			$install_category = 7;
-		} elseif ( 8 <= $install_days_number && 31 > $install_days_number ) {
-			$install_category = 30;
-		} elseif ( 30 < $install_days_number && 90 > $install_days_number ) {
-			$install_category = 90;
-		} elseif ( 90 <= $install_days_number ) {
-			$install_category = 91;
-		}
 
 		$data = array(
 			'environmentId' => 'clwgcs7ia03df11mgz7gh15od',
 			'attributes'    => array(
-				'days_since_install'  => strval( $install_category ),
 				'license_status'      => ! empty( $license_data->license ) ? $license_data->license : 'invalid',
 				'free_version'        => $this->version,
 				'install_days_number' => $install_days_number,
