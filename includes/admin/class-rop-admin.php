@@ -330,6 +330,7 @@ class Rop_Admin {
 
 		$added_services = $services->get_authenticated_services();
 		$added_networks = 0;
+		$accounts_count = count( $added_services );
 		if ( $added_services ) {
 
 			$uniq_auth_accounts = array();
@@ -421,7 +422,29 @@ class Rop_Admin {
 			wp_deregister_script( 'vue-libs' );
 		}
 
-		$this->register_survey();
+		$is_post_sharing_active = ( new Rop_Cron_Helper() )->get_status() ? 'yes' : 'no';
+
+		if ( ! defined( 'TI_E2E_TESTING' ) || ! TI_E2E_TESTING ) {
+			add_filter(
+				'themeisle-sdk/survey/' . ROP_PRODUCT_SLUG,
+				function( $data, $page_slug ) use ( $accounts_count, $is_post_sharing_active ) {
+					$data = $this->get_survey_metadata();
+
+					$extra_attributes = array(
+						'accounts_number'      => min( 20, $accounts_count ),
+						'post_sharing_enabled' => $is_post_sharing_active,
+					);
+
+					$data['attributes'] = array_merge( $data['attributes'], $extra_attributes );
+
+					return $data;
+				},
+				10,
+				2
+			);
+		}
+		do_action( 'themeisle_internal_page', ROP_PRODUCT_SLUG, 'dashboard' );
+
 		if ( ! defined( 'ROP_PRO_VERSION' ) ) {
 			do_action( 'themeisle_sdk_load_banner', 'rop' );
 		}
@@ -1738,62 +1761,34 @@ class Rop_Admin {
 	 * @return array The survey metadata.
 	 */
 	public function get_survey_metadata() {
-		$license_data = get_option( 'tweet_old_post_pro_license_data', array() );
-		$attributes   = array();
-		$user_id      = 'rop_' . ( ! empty( $license_data->key ) ? $license_data->key : preg_replace( '/[^\w\d]*/', '', get_site_url() ) ); // Use a normalized version of the site URL as a user ID for free users.
+		$license_status = apply_filters( 'product_rop_license_status', 'invalid' );
+		$license_plan   = apply_filters( 'product_rop_license_plan', false );
+		$license_key    = apply_filters( 'product_rop_license_key', false );
 
-		$days_since_install = round( ( time() - get_option( 'rop_first_install_date', 0 ) ) / DAY_IN_SECONDS );
-		$install_category   = 0; // Normalized value.
-		if ( 0 === $days_since_install || 1 === $days_since_install ) {
-			$install_category = 0;
-		} elseif ( 1 < $days_since_install && 8 > $days_since_install ) {
-			$install_category = 7;
-		} elseif ( 8 <= $days_since_install && 31 > $days_since_install ) {
-			$install_category = 30;
-		} elseif ( 30 < $days_since_install && 90 > $days_since_install ) {
-			$install_category = 90;
-		} elseif ( 90 <= $days_since_install ) {
-			$install_category = 91;
+		$install_days_number = intval( ( time() - get_option( 'rop_first_install_date', time() ) ) / DAY_IN_SECONDS );
+
+		$data = array(
+			'environmentId' => 'clwgcs7ia03df11mgz7gh15od',
+			'attributes'    => array(
+				'license_status'      => $license_status,
+				'free_version'        => $this->version,
+				'install_days_number' => $install_days_number,
+			),
+		);
+
+		if ( ! empty( $license_plan ) ) {
+			$data['attributes']['plan'] = strval( $license_plan );
 		}
 
-		$attributes['days_since_install'] = strval( $install_category );
-		$attributes['license_status']     = ! empty( $license_data->license ) ? $license_data->license : 'invalid';
-		$attributes['free_version']       = $this->version;
-
-		if ( ! empty( $license_data->plan ) ) {
-			$attributes['plan'] = strval( $license_data->plan );
+		if ( ! empty( $license_key ) ) {
+			$data['attributes']['license_key'] = apply_filters( 'themeisle_sdk_secret_masking', $license_key );
 		}
 
 		if ( defined( 'ROP_PRO_VERSION' ) ) {
-			$attributes['pro_version'] = ROP_PRO_VERSION;
+			$data['attributes']['pro_version'] = ROP_PRO_VERSION;
 		}
 
-		return array(
-			'userId'     => $user_id,
-			'attributes' => $attributes,
-		);
-	}
-
-	/**
-	 * Register the survey script.
-	 *
-	 * It does not register if we are in a testing environment.
-	 *
-	 * @return void
-	 */
-	public function register_survey() {
-
-		if ( defined( 'TI_E2E_TESTING' ) && TI_E2E_TESTING ) {
-			return;
-		}
-
-		$survey_handler = apply_filters( 'themeisle_sdk_dependency_script_handler', 'survey' );
-		if ( empty( $survey_handler ) ) {
-			return;
-		}
-
-		do_action( 'themeisle_sdk_dependency_enqueue_script', 'survey' );
-		wp_localize_script( $survey_handler, 'ropSurveyData', $this->get_survey_metadata() );
+		return $data;
 	}
 
 	/**
