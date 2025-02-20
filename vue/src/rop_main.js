@@ -22,16 +22,3 @@ window.addEventListener( 'load', function () {
 		},
 	} );
 } );
-
-/**
- * Initialize the formbricks survey.
- * 
- * @see https://github.com/formbricks/setup-examples/tree/main/html
- */
-window.addEventListener('themeisle:survey:loaded', function () {
-    window?.tsdk_formbricks?.init?.({
-        environmentId: "clwgcs7ia03df11mgz7gh15od",
-        apiHost: "https://app.formbricks.com",
-        ...(window?.ropSurveyData ?? {}),
-    });
-});
