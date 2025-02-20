@@ -1745,25 +1745,27 @@ class Rop_Admin {
 	 * @return array The survey metadata.
 	 */
 	public function get_survey_metadata( $data, $page_slug ) {
-		$license_data = get_option( 'tweet_old_post_pro_license_data', array() );
+		$license_status = apply_filters( 'product_rop_license_status', 'invalid' );
+		$license_plan   = apply_filters( 'product_rop_license_plan', false );
+		$license_key    = apply_filters( 'product_rop_license_key', false );
 
 		$install_days_number = intval( ( time() - get_option( 'rop_first_install_date', time() ) ) / DAY_IN_SECONDS );
 
 		$data = array(
 			'environmentId' => 'clwgcs7ia03df11mgz7gh15od',
 			'attributes'    => array(
-				'license_status'      => ! empty( $license_data->license ) ? $license_data->license : 'invalid',
+				'license_status'      => $license_status,
 				'free_version'        => $this->version,
 				'install_days_number' => $install_days_number,
 			),
 		);
 
-		if ( ! empty( $license_data->plan ) ) {
-			$data['attributes']['plan'] = strval( $license_data->plan );
+		if ( ! empty( $license_plan ) ) {
+			$data['attributes']['plan'] = strval( $license_plan );
 		}
 
-		if ( ! empty( $license_data->key ) ) {
-			$data['attributes']['license_key'] = apply_filters( 'themeisle_sdk_secret_masking', $license_data->key );
+		if ( ! empty( $license_key ) ) {
+			$data['attributes']['license_key'] = apply_filters( 'themeisle_sdk_secret_masking', $license_key );
 		}
 
 		if ( defined( 'ROP_PRO_VERSION' ) ) {
