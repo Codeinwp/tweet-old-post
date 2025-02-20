@@ -330,6 +330,7 @@ class Rop_Admin {
 
 		$added_services = $services->get_authenticated_services();
 		$added_networks = 0;
+		$accounts_count = count( $added_services );
 		if ( $added_services ) {
 
 			$uniq_auth_accounts = array();
@@ -421,8 +422,26 @@ class Rop_Admin {
 			wp_deregister_script( 'vue-libs' );
 		}
 
+		$is_post_sharing_active = ( new Rop_Cron_Helper() )->get_status() ? 'yes' : 'no';
+
 		if ( ! defined( 'TI_E2E_TESTING' ) || ! TI_E2E_TESTING ) {
-			add_filter( 'themeisle-sdk/survey/' . ROP_PRODUCT_SLUG, array( $this, 'get_survey_metadata'), 10, 2 );
+			add_filter(
+				'themeisle-sdk/survey/' . ROP_PRODUCT_SLUG,
+				function( $data, $page_slug ) use ( $accounts_count, $is_post_sharing_active ) {
+					$data = $this->get_survey_metadata();
+
+					$extra_attributes = array(
+						'accounts_number'      => min( 20, $accounts_count ),
+						'post_sharing_enabled' => $is_post_sharing_active,
+					);
+
+					$data['attributes'] = array_merge( $data['attributes'], $extra_attributes );
+
+					return $data;
+				},
+				10,
+				2
+			);
 		}
 		do_action( 'themeisle_internal_page', ROP_PRODUCT_SLUG, 'dashboard' );
 
@@ -1739,12 +1758,9 @@ class Rop_Admin {
 	/**
 	 * Get the data used for the survey.
 	 *
-	 * @param array  $data The data for survey in Formbricks format.
-	 * @param string $page_slug The slug of the page.
-	 *
 	 * @return array The survey metadata.
 	 */
-	public function get_survey_metadata( $data, $page_slug ) {
+	public function get_survey_metadata() {
 		$license_status = apply_filters( 'product_rop_license_status', 'invalid' );
 		$license_plan   = apply_filters( 'product_rop_license_plan', false );
 		$license_key    = apply_filters( 'product_rop_license_key', false );
