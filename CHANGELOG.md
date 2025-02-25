@@ -1,3 +1,8 @@
+##### [Version 9.2.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.2...v9.2.3) (2025-02-25)
+
+- Fixed Instagram sharing with additional content issue [PRO]
+- Updated dependencies
+
 ##### [Version 9.2.2](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.1...v9.2.2) (2025-02-18)
 
 - Tested compatibility between versions of the plugin
