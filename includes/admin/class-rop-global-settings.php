@@ -89,6 +89,7 @@ class Rop_Global_Settings {
 			),
 			'allowed_accounts' => 1,
 			'description'      => '',
+			'allowed_comment'  => false,
 		),
 		'twitter'   => array(
 			'active'           => true,
@@ -105,41 +106,50 @@ class Rop_Global_Settings {
 			),
 			'two_step_sign_in' => true,
 			'allowed_accounts' => 1,
+			'allowed_comment'  => false,
 		),
 		'linkedin'  => array(
 			'active' => false,
 			'name'   => 'LinkedIn',
+			'allowed_comment'  => false,
 		),
 		'tumblr'    => array(
 			'active' => false,
 			'name'   => 'Tumblr',
+			'allowed_comment'  => false,
 		),
 		'pinterest' => array(
 			'active' => false,
 			'name'   => 'Pinterest',
+			'allowed_comment'  => false,
 		),
 		'gmb'    => array(
 			'active' => false,
 			'name'   => 'Gmb',
 			'fullname' => 'Google My Business',
+			'allowed_comment'  => false,
 		),
 		'vk'    => array(
 			'active' => false,
 			'name'   => 'Vk',
+			'allowed_comment'  => false,
 		),
 		'webhook' => array(
 			'active' => false,
 			'name'   => 'Webhook',
 			'two_step_sign_in' => true,
+			'allowed_comment'  => false,
 		),
 		'telegram'    => array(
 			'active' => false,
 			'name'   => 'Telegram',
+			'allowed_comment'  => false,
 		),
 		'mastodon' => array(
 			'active' => false,
 			'name'   => 'Mastodon',
 			'two_step_sign_in' => true,
+			'allowed_comment'  => false,
 		),
 	);
 
@@ -718,6 +728,7 @@ class Rop_Global_Settings {
 		$available_services['instagram']           = $available_services['facebook'];
 		$available_services['instagram']['name']   = 'Instagram';
 		$available_services['instagram']['active'] = $is_middle_plan ? true : false;
+		$available_services['instagram']['allowed_comment'] = false;
 		return $available_services;
 	}
 

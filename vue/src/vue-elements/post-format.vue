@@ -872,7 +872,6 @@
                 selected_tax_filter: [],
                 // selected_language: this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id].wpml_language : [],
                 // post_types: this.$store.state.generalSettings.available_post_types,
-                postCommentSupportedServices: [ 'twitter', 'facebook', 'linkedin', 'vk', 'mastodon' ],
             }
         },
         computed: {
@@ -954,8 +953,12 @@
                 return Boolean( ! this.isPro && this.$store.state.is_new_user );
             },
             postCommentAllowed: function () {
+              var serviceName = this.allAccounts[this.account_id].service;
+              if ( this.is_instagram_account ) {
+                serviceName = 'instagram';
+              }
               // Check if the service of the current account exists in allowedServices
-              return this.postCommentSupportedServices.includes(this.allAccounts[this.account_id].service);
+              return this.$store.state.availableServices[serviceName]?.allowed_comment;
             },
         },
         watch: {
