@@ -550,12 +550,24 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		$consumer_key = isset( $_SESSION['rop_mastodon_credentials']['consumer_key'] ) ? $this->str_decrypt( $_SESSION['rop_mastodon_credentials']['consumer_key'] ) : '';
+		$domain       = isset( $_SESSION['rop_mastodon_credentials']['md_domain'] ) ? $_SESSION['rop_mastodon_credentials']['md_domain'] : 'mastodon.social';
 		if ( empty( $consumer_key ) ) {
 			return false;
 		}
 		$url    = $this->get_legacy_url();
 		$scopes = $this->scopes;
-		return "https://mastodon.social/oauth/authorize?client_id=$consumer_key&redirect_uri=$url&scope=$scopes&response_type=code&state=mastodon";
+
+		$auth_url = $this->get_api_endpoint( $domain, 'oauth/authorize' );
+		return add_query_arg(
+			array(
+				'client_id'     => $consumer_key,
+				'redirect_uri'  => $url,
+				'scope'         => $scopes,
+				'response_type' => 'code',
+				'state'         => 'mastodon',
+			),
+			$auth_url
+		);
 	}
 
 	/**
