@@ -338,6 +338,13 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.2.4](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.3...v9.2.4) (2025-04-16)
+
+- Fixed issue with Mastodon network when using a custom domain
+
+
+
+
 ##### [Version 9.2.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.2...v9.2.3) (2025-02-25)
 
 - Fixed Instagram sharing with additional content issue [PRO]
