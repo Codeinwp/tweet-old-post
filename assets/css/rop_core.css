@@ -382,7 +382,7 @@ a.active {
     font-size: 1.4rem;
 }
 
-#rop_core h4,
+#rop_core h4:not(.themeisle-sale-title),
 #rop_core .h4 {
     font-size: 1.2rem;
 }
