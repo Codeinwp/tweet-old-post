@@ -42,7 +42,7 @@
   },
   "require": {
     "facebook/graph-sdk": "^5.7",
-    "abraham/twitteroauth": "^4.0",
+    "codeinwp/twitteroauth": "dev-main",
     "codeinwp/themeisle-sdk": "^3.3",
     "vkcom/vk-php-sdk": "5.101.0"
   },
@@ -60,5 +60,11 @@
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/Codeinwp/twitteroauth"
+    }
+  ]
 }
