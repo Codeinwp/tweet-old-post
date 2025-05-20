@@ -2729,12 +2729,12 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "codeinwp/twitteroauth": 20,
-        "codeinwp/phpcs-ruleset": 20
+        "codeinwp/phpcs-ruleset": 20,
+        "codeinwp/twitteroauth": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }
