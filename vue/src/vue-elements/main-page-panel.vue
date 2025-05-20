@@ -15,10 +15,6 @@
           </h1>
         </div>
       </div>
-      <div
-        id="tsdk_banner"
-        class="rop-banner"
-      />
       <toast />
       <div
         v-if=" is_rest_api_error "
@@ -63,6 +59,11 @@
         </button>
       </div>
     </div>
+
+    <div
+      id="tsdk_banner"
+      class="rop-banner"
+    />
 
     <div class="columns">
       <div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -384,8 +385,10 @@
             }, 1000);
 
             this.get_toast_message(false);
-            
-            document.dispatchEvent(new Event('themeisle:banner:init'));
+
+            if ( window.tsdk_reposition_notice ) {
+              window.tsdk_reposition_notice?.();
+            }
         },
         created() {
             this.$root.$refs.main_page = this;
@@ -574,9 +577,12 @@
       text-decoration: underline;
     }
 
-    .rop-banner:has(.tsdk-banner-cta) {
+    .rop-banner:has(.themeisle-sale) {
       width: 100%;
-      margin-top: 15px;
       margin-bottom: 30px;
+    }
+
+    #tsdk_banner :is(.themeisle-sale, p) {
+      margin: 0;
     }
 </style>

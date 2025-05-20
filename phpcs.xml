@@ -12,7 +12,7 @@
     <exclude-pattern>vue/*</exclude-pattern>
     <exclude-pattern>dist/*</exclude-pattern>
 
-    <arg name="extensions" value="php"/>
+    <arg name="extensions" value="php" />
 
     <rule ref="WordPress-Core">
         <exclude name="Squiz.Commenting.FileComment.SpacingAfterComment" />
@@ -50,6 +50,13 @@
     </rule>
     <rule ref="WordPress-Docs">
 
+    </rule>
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="tweet-old-post" />
+            </property>
+        </properties>
     </rule>
 
     <rule ref="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing">

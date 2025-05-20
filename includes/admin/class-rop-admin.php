@@ -69,6 +69,8 @@ class Rop_Admin {
 				return $global_settings->license_type();
 			}
 		);
+
+		add_filter( 'themeisle_sdk_blackfriday_data', array( $this, 'add_black_friday_data' ) );
 	}
 
 
@@ -444,10 +446,6 @@ class Rop_Admin {
 			);
 		}
 		do_action( 'themeisle_internal_page', ROP_PRODUCT_SLUG, 'dashboard' );
-
-		if ( ! defined( 'ROP_PRO_VERSION' ) ) {
-			do_action( 'themeisle_sdk_load_banner', 'rop' );
-		}
 	}
 
 	/**
@@ -682,7 +680,7 @@ class Rop_Admin {
 			)
 		);
 		if ( ! defined( 'REVIVE_NETWORK_VERSION' ) ) {
-			$rss_to_social = __( 'RSS to Social', 'wpcf7-redirect' ) . '<span id="rop-rn-menu" class="dashicons dashicons-external" style="font-size:initial;"></span>';
+			$rss_to_social = __( 'RSS to Social', 'tweet-old-post' ) . '<span id="rop-rn-menu" class="dashicons dashicons-external" style="font-size:initial;"></span>';
 			add_action(
 				'admin_footer',
 				function () {
@@ -1844,5 +1842,48 @@ class Rop_Admin {
 			}
 		}
 		return apply_filters( 'wpml_active_languages', null, array( 'skip_missing' => 1 ) );
+	}
+
+	/**
+	 * Add the Black Friday configuration.
+	 *
+	 * @param array $configs An array of configurations.
+	 *
+	 * @return array The configurations.
+	 */
+	public static function add_black_friday_data( $configs ) {
+		$config = $configs['default'];
+
+		// translators: %1$s - HTML tag, %2$s - discount, %3$s - HTML tag, %4$s - product name.
+		$message_template = __( 'Our biggest sale of the year: %1$sup to %2$s OFF%3$s on %4$s. Don\'t miss this limited-time offer.', 'tweet-old-post' );
+		$product_label    = __( 'Revive Social', 'tweet-old-post' );
+		$discount         = '50%';
+
+		$plan    = apply_filters( 'product_rop_license_plan', 0 );
+		$license = apply_filters( 'product_rop_license_key', false );
+		$is_pro  = 0 < $plan;
+
+		if ( $is_pro ) {
+			// translators: %1$s - HTML tag, %2$s - discount, %3$s - HTML tag, %4$s - product name.
+			$message_template = __( 'Get %1$sup to %2$s off%3$s when you upgrade your %4$s plan or renew early.', 'tweet-old-post' );
+			$product_label    = __( 'Revive Social Pro', 'tweet-old-post' );
+			$discount         = '20%';
+		}
+
+		$product_label = sprintf( '<strong>%s</strong>', $product_label );
+		$url_params    = array(
+			'utm_term' => $is_pro ? 'plan-' . $plan : 'free',
+			'lkey'     => ! empty( $license ) ? $license : false,
+		);
+
+		$config['message']  = sprintf( $message_template, '<strong>', $discount, '</strong>', $product_label );
+		$config['sale_url'] = add_query_arg(
+			$url_params,
+			tsdk_translate_link( tsdk_utmify( 'https://themeisle.com/rs-bf', 'bfcm', 'revive' ) )
+		);
+
+		$configs[ ROP_PRODUCT_SLUG ] = $config;
+
+		return $configs;
 	}
 }

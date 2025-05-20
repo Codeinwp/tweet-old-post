@@ -522,24 +522,25 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$this->logger->info( 'Before upload to twitter . ' . json_encode( $upload_args ) );
 		$api->setTimeouts( 10, 60 );
-		$api->setApiVersion( '1.1' );
-		$media_response = $api->upload( 'media/upload', $upload_args, true );
+		$api->setApiVersion( '2' );
+		$options['chunkedUpload'] = true;
+		$media_response = $api->upload( 'media/upload', $upload_args, $options );
 
-		if ( isset( $media_response->media_id_string ) ) {
+		if ( isset( $media_response->data->id ) ) {
 
-			$media_id = $media_response->media_id_string;
+			$media_id = $media_response->data->id;
 
 			$limit = 0;
 			do {
 				if ( ! $status_check ) {
 					break;
 				}
-				$upload_status = $api->mediaStatus( $media_response->media_id_string );
+				$upload_status = $api->mediaStatus( $media_response->data->id );
 				if ( $upload_status->processing_info->state === 'failed' ) {
 					$media_id = '';
 					break;
 				}
-				$media_id = $media_response->media_id_string;
+				$media_id = $media_response->data->id;
 				$this->logger->info( 'State : ' . json_encode( $upload_status ) );
 				sleep( 3 );
 				$limit ++;
@@ -652,8 +653,9 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$server_response  = array();
 
 		if ( ! $share_via_rop_server ) {
+			$options = array( 'jsonPayload' => true );
 			$api->setApiVersion( '2' ); // Note: Make sure to always set the correct API version before making a request.
-			$response         = $api->post( 'tweets', $new_post, true );
+			$response         = $api->post( 'tweets', $new_post, $options );
 			$response_headers = $api->getLastXHeaders();
 
 			$this->logger->info( sprintf( '[X API] Response: %s', json_encode( $response_headers ) ) );
@@ -740,6 +742,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( isset( $response['data'] ) && ! empty( $response['data']['id'] ) ) {
 
 			if ( $api && ! empty( $this->share_link_text ) ) {
+				$options = array( 'jsonPayload' => true );
 				// Post the first comment (replying to the tweet).
 				$comment = $api->post(
 					'tweets',
@@ -749,7 +752,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 							'in_reply_to_tweet_id' => $response['data']['id'],
 						),
 					),
-					true
+					$options
 				);
 
 				$response_headers = $api->getLastXHeaders();
