@@ -338,6 +338,15 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.2.5](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.4...v9.2.5) (2025-05-20)
+
+- Fixed posting issue with LinkedIn network
+- Updated X API version
+- Updated dependencies
+
+
+
+
 ##### [Version 9.2.4](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.3...v9.2.4) (2025-04-16)
 
 - Fixed issue with Mastodon network when using a custom domain
