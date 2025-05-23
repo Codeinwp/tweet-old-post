@@ -102,7 +102,7 @@ class Rop_Admin {
 	 */
 	public function enqueue_styles() {
 
-		$page = $this->get_current_page();
+		$page = $this->get_current_internal_page_slug();
 
 		if ( empty( $page ) ) {
 			// Always enqueue notices style
@@ -203,7 +203,7 @@ class Rop_Admin {
 	 *
 	 * @return bool|string Page slug.
 	 */
-	private function get_current_page() {
+	private function get_current_internal_page_slug() {
 		$screen = get_current_screen();
 
 		if ( ! isset( $screen->id ) ) {
@@ -306,14 +306,10 @@ class Rop_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		$page = $this->get_current_page();
-		if ( empty( $page ) ) {
+		$internal_page_slug = $this->get_current_internal_page_slug();
+		if ( empty( $internal_page_slug ) ) {
 			return;
 		}
-
-		wp_enqueue_media();
-		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array('wp-url'), ( ROP_DEBUG ) ? time() : $this->version, false );
-		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 
 		$rop_api_settings = array(
 			'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
@@ -396,10 +392,7 @@ class Rop_Admin {
 			'pluginVersion'       => ROP_LITE_VERSION,
 		);
 
-		if ( 'publish_now' === $page ) {
-			$rop_api_settings['publish_now'] = apply_filters( 'rop_publish_now_attributes', $rop_api_settings['publish_now'] );
-			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
-		}
+		wp_enqueue_media();
 
 		$rop_api_settings['tracking']           = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
 		$rop_api_settings['tracking_info_link'] = sanitize_url( 'https://docs.revive.social/article/2008-revive-old-posts-usage-tracking' );
@@ -414,38 +407,51 @@ class Rop_Admin {
 		$rop_api_settings['is_new_user']           = $is_new_user;
 		$rop_api_settings['webhook_pro_available'] = defined( 'ROP_PRO_VERSION' ) && version_compare( ROP_PRO_VERSION, '3.1.0', '>=' ) ? true : false;
 
-		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $rop_api_settings );
-		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', array( ROP_LITE_URL . 'assets/' ) );
-		wp_localize_script( $this->plugin_name . '-' . $page, 'ropAuthAppData', $rop_auth_app_data );
-		wp_enqueue_script( $this->plugin_name . '-' . $page );
-
-		// Deregister the LMS vue-libs script for the ROP dashboard and exclude the page.
-		if ( function_exists( 'learn_press_get_current_version' ) && wp_script_is( $this->plugin_name . '-' . $page ) ) {
-			wp_deregister_script( 'vue-libs' );
+		if ( 'dashboard' === $internal_page_slug ) {
+			wp_enqueue_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array('wp-url'), ( ROP_DEBUG ) ? time() : $this->version, false );
 		}
 
-		$is_post_sharing_active = ( new Rop_Cron_Helper() )->get_status() ? 'yes' : 'no';
-
-		if ( ! defined( 'TI_E2E_TESTING' ) || ! TI_E2E_TESTING ) {
-			add_filter(
-				'themeisle-sdk/survey/' . ROP_PRODUCT_SLUG,
-				function( $data, $page_slug ) use ( $accounts_count, $is_post_sharing_active ) {
-					$data = $this->get_survey_metadata();
-
-					$extra_attributes = array(
-						'accounts_number'      => min( 20, $accounts_count ),
-						'post_sharing_enabled' => $is_post_sharing_active,
-					);
-
-					$data['attributes'] = array_merge( $data['attributes'], $extra_attributes );
-
-					return $data;
-				},
-				10,
-				2
-			);
+		if ( 'exclude' === $internal_page_slug ) {
+			wp_enqueue_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		}
-		do_action( 'themeisle_internal_page', ROP_PRODUCT_SLUG, 'dashboard' );
+
+		if ( 'publish_now' === $internal_page_slug ) {
+			$rop_api_settings['publish_now'] = apply_filters( 'rop_publish_now_attributes', $rop_api_settings['publish_now'] );
+			wp_enqueue_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+		}
+
+		wp_localize_script( $this->plugin_name . '-' . $internal_page_slug, 'ropApiSettings', $rop_api_settings );
+		wp_localize_script( $this->plugin_name . '-' . $internal_page_slug, 'ROP_ASSETS_URL', array( ROP_LITE_URL . 'assets/' ) );
+		wp_localize_script( $this->plugin_name . '-' . $internal_page_slug, 'ropAuthAppData', $rop_auth_app_data );
+
+		if ( 'publish_now' !== $internal_page_slug ) {
+			// Deregister the LMS vue-libs script for the ROP dashboard and exclude the page.
+			if ( function_exists( 'learn_press_get_current_version' ) && wp_script_is( $this->plugin_name . '-' . $internal_page_slug ) ) {
+				wp_deregister_script( 'vue-libs' );
+			}
+
+			if ( ! defined( 'TI_E2E_TESTING' ) || ! TI_E2E_TESTING ) {
+				$is_post_sharing_active = ( new Rop_Cron_Helper() )->get_status() ? 'yes' : 'no';
+				add_filter(
+					'themeisle-sdk/survey/' . ROP_PRODUCT_SLUG,
+					function( $data, $page_slug ) use ( $accounts_count, $is_post_sharing_active ) {
+						$data = $this->get_survey_metadata();
+
+						$extra_attributes = array(
+							'accounts_number'      => min( 20, $accounts_count ),
+							'post_sharing_enabled' => $is_post_sharing_active,
+						);
+
+						$data['attributes'] = array_merge( $data['attributes'], $extra_attributes );
+
+						return $data;
+					},
+					10,
+					2
+				);
+			}
+			do_action( 'themeisle_internal_page', ROP_PRODUCT_SLUG, $internal_page_slug );
+		}
 	}
 
 	/**
@@ -714,7 +720,7 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function publish_now_upsell() {
-		$page = $this->get_current_page();
+		$page = $this->get_current_internal_page_slug();
 		if ( empty( $page ) ) {
 			return;
 		}
