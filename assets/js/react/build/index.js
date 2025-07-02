@@ -2097,13 +2097,19 @@ const render = () => {
   })), isPro && Boolean(ropApiSettings.custom_messages) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_variations__WEBPACK_IMPORTED_MODULE_7__["default"], {
     meta: meta,
     updateMetaValue: updateMetaValue
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__.PluginPrePublishPanel, {
+  })), Boolean(ropApiSettings.publish_now.instant_share_enabled) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__.PluginPrePublishPanel, {
     title: ropApiSettings.labels.publish_now.instant_sharing,
     icon: icon
-  }, Boolean(ropApiSettings.publish_now.instant_share_enabled) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_instant__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_instant__WEBPACK_IMPORTED_MODULE_6__["default"], {
     meta: meta,
     updateMetaValue: updateMetaValue
-  })));
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__.PluginPostPublishPanel, {
+    title: ropApiSettings.labels.publish_now.instant_sharing,
+    icon: icon
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_instant__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    meta: meta,
+    updateMetaValue: updateMetaValue
+  }))));
 };
 if (Boolean(ropApiSettings.publish_now.instant_share_enabled) || isPro && Boolean(ropApiSettings.custom_messages)) {
   (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_5__.registerPlugin)('revive-social', {

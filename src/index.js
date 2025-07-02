@@ -8,6 +8,7 @@ import { useSelect } from '@wordpress/data';
 
 import {
 	PluginPrePublishPanel,
+	PluginPostPublishPanel,
 	PluginSidebar,
 	PluginSidebarMoreMenuItem,
 	store as editorStore
@@ -78,17 +79,29 @@ const render = () => {
 				) }
 			</PluginSidebar>
 
-			<PluginPrePublishPanel
-				title={ ropApiSettings.labels.publish_now.instant_sharing }
-				icon={ icon }
-			>
-				{ Boolean( ropApiSettings.publish_now.instant_share_enabled ) && (
-					<InstantSharing
-						meta={ meta }
-						updateMetaValue={ updateMetaValue }
-					/>
-				) }
-			</PluginPrePublishPanel>
+			{ Boolean( ropApiSettings.publish_now.instant_share_enabled ) && (
+				<>
+					<PluginPrePublishPanel
+						title={ ropApiSettings.labels.publish_now.instant_sharing }
+						icon={ icon }
+					>
+						<InstantSharing
+							meta={ meta }
+							updateMetaValue={ updateMetaValue }
+						/>
+					</PluginPrePublishPanel>
+
+					<PluginPostPublishPanel
+						title={ ropApiSettings.labels.publish_now.instant_sharing }
+						icon={ icon }
+					>
+						<InstantSharing
+							meta={ meta }
+							updateMetaValue={ updateMetaValue }
+						/>
+					</PluginPostPublishPanel>
+				</>
+			) }
 		</>
 	);
 };

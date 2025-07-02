@@ -748,6 +748,13 @@ class Rop_Admin {
 			return;
 		}
 
+		// To prevent multiple calls.
+		if ( false !== get_transient( 'rop_maybe_publish_now_' . $post_id ) ) {
+			return;
+		}
+
+		set_transient( 'rop_maybe_publish_now_' . $post_id, true, MINUTE_IN_SECONDS );
+
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
@@ -768,9 +775,9 @@ class Rop_Admin {
 		}
 
 		$services = new Rop_Services_Model();
-		$settings = new Rop_Settings_Model();
 
-		$active = array_keys( $services->get_active_accounts() );
+		$accounts = $services->get_active_accounts();
+		$active   = array_keys( $accounts );
 
 		// has something been added extra?
 		$extra = array_diff( array_keys( $enabled_accounts ), $active );
@@ -778,35 +785,90 @@ class Rop_Admin {
 		// reject the extra.
 		$enabled = array_diff( array_keys( $enabled_accounts ), $extra );
 
-		/**
-		 * Save an account as active to instant share via its ID along with the custom message in the post meta.
-		 */
-		$publish_now_active_accounts_settings = array();
-
-		foreach ( $enabled as $account_id ) {
-			$custom_message = ! empty( $enabled_accounts[ $account_id ] ) ? $enabled_accounts[ $account_id ] : '';
-			$publish_now_active_accounts_settings[ $account_id ] = $custom_message;
+		if ( empty( $enabled ) ) {
+			return;
 		}
 
-		// If user wants to run this operation on page refresh instead of via Cron.
-		$this->rop_cron_job_publish_now( $post_id, $publish_now_active_accounts_settings );
+		foreach ( $enabled as $account_id ) {
+			$this->update_publish_now_history(
+				$post_id,
+				array(
+					'account'   => $account_id,
+					'service'   => $accounts[$account_id]['service'],
+					'timestamp' => time(),
+					'status'    => 'queued',
+				)
+			);
+		}
+
+		// We update the existing publish now meta due to some Block Editor issues where the defaults are returned
+		// when we make get_post_meta calls but the values are not saved in the database.
+		update_post_meta( $post_id, 'rop_publish_now', $publish );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled_accounts );
+		update_post_meta( $post_id, 'rop_publish_now_status', 'queued' );
+
+		$cron = new Rop_Cron_Helper();
+		$cron->manage_cron( array( 'action' => 'publish-now' ) );
 	}
+
+	/**
+	 * Update the publish now history for a post.
+	 *
+	 * @access  public
+	 * @param int   $post_id The Post ID.
+	 * @param array $new_item The new item to add to the history.
+	 *
+	 * @return void
+	 */
+	public function update_publish_now_history( $post_id, $new_item ) {
+		$meta_key = 'rop_publish_now_history';
+
+		$history = get_post_meta( $post_id, $meta_key, true );
+
+		if ( ! is_array( $history ) ) {
+			$history = [];
+		}
+
+		$updated = false;
+
+		foreach ( $history as $index => $item ) {
+			if (
+				isset( $item['account'], $item['service'], $item['status'] ) &&
+				$item['account'] === $new_item['account'] &&
+				$item['service'] === $new_item['service'] &&
+				$item['status'] === 'queued'
+			) {
+				$history[ $index ] = array_merge( $item, $new_item );
+				$updated = true;
+				break;
+			}
+		}
+
+		if ( ! $updated ) {
+			$history[] = $new_item;
+		}
+
+		update_post_meta( $post_id, $meta_key, $history );
+
+		// If there are no more items in the history with status 'queued', we set the status to 'done'.
+		$statuses = wp_list_pluck( $history, 'status' );
+		if ( ! in_array( 'queued', $statuses, true ) ) {
+			update_post_meta( $post_id, 'rop_publish_now_status', 'done' );
+		}
+	}
+
 
 	/**
 	 * The publish now Cron Job for the plugin.
 	 *
 	 * @since   8.1.0
 	 * @access  public
-	 * @param int   $post_id the Post ID.
-	 * @param array $accounts_data The accounts data, may either be the accounts the user has selected to share the post to (by clicking the instant sharing checkbox on post edit screen, would also contain the custom share message if any was entered), or an array of active accounts to share to by the share_scheduled_future_post() method.
-	 * @param bool  $is_future_post Whether method was called by share_scheduled_future_post() method.
 	 */
-	public function rop_cron_job_publish_now( $post_id = '', $accounts_data = array(), $is_future_post = false ) {
+	public function rop_cron_job_publish_now() {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
-		$settings = new Rop_Settings_Model();
 		$pro_format_helper = false;
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
@@ -816,11 +878,7 @@ class Rop_Admin {
 			}
 		}
 
-		if ( $this->rop_get_wpml_active_status() ) {
-			$accounts_data = $this->rop_wpml_filter_accounts( $post_id, $accounts_data );
-		}
-
-		$queue_stack = $queue->build_queue_publish_now( $post_id, $accounts_data, $is_future_post, true );
+		$queue_stack = $queue->build_queue_publish_now();
 
 		if ( empty( $queue_stack ) ) {
 			$logger->info( 'Publish now queue stack is empty.' );
@@ -856,9 +914,32 @@ class Rop_Admin {
 							}
 						}
 						$logger->info( 'Posting', array( 'extra' => $post_data ) );
-						$service->share( $post_data, $account_data );
+
+						$response = $service->share( $post_data, $account_data );
+
+						if ( $response ) {
+							$this->update_publish_now_history( $post_id, array(
+								'account'   => $account_id,
+								'service'   => $account_data['service'],
+								'timestamp' => time(),
+								'status'    => 'success',
+							) );
+						} else {
+							$this->update_publish_now_history( $post_id, array(
+								'account'   => $account_id,
+								'service'   => $account_data['service'],
+								'timestamp' => time(),
+								'status'    => 'error',
+							) );
+						}
 					}
 				} catch ( Exception $exception ) {
+					$this->update_publish_now_history( $post_id, array(
+						'account'   => $account_id,
+						'service'   => $account_data['service'],
+						'timestamp' => time(),
+						'status'    => 'error',
+					) );
 					$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
 					$logger->alert_error( $error_message . ' Error: ' . print_r( $exception->getMessage(), true ) );
 				}
@@ -873,7 +954,6 @@ class Rop_Admin {
 	 */
 	public function rop_cron_job_once() {
 		$this->rop_cron_job();
-
 	}
 
 	/**
@@ -1739,6 +1819,32 @@ class Rop_Admin {
 						],
 					],
 				],
+			]
+		);
+
+		register_post_meta(
+			'',
+			'rop_publish_now_history',
+			[
+				'single' => true,
+				'type'   => 'array',
+				'show_in_rest' => array(
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array(
+							'type'       => 'object',
+							'properties' => array(
+								'service'   => array( 'type' => 'string' ),
+								'timestamp' => array( 'type' => 'string', 'format' => 'date-time' ),
+								'status'    => array( 'type' => 'string' ),
+								'account'   => array( 'type' => 'string' ),
+							),
+							'required' => array( 'service', 'timestamp', 'status', 'account' ),
+						),
+					),
+				),
+				'sanitize_callback' => $sanitize_passthrough,
+				'auth_callback'     => $auth_can_edit_posts,
 			]
 		);
 	}
