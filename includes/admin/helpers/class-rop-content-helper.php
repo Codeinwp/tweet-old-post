@@ -111,7 +111,7 @@ class Rop_Content_Helper {
 			$this->length = $this->adjust_for_ellipse( $new_length );
 		}
 
-		$parts       = preg_split( '/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE );
+		$parts       = preg_split( '/([\s\n\r]+)/', $string, -1, PREG_SPLIT_DELIM_CAPTURE );
 		$parts_count = count( $parts );
 
 		$length = 0;

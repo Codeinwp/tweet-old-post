@@ -11,7 +11,6 @@ module.exports = (env, argv) => (
 		entry: {
 			dashboard: './vue/src/rop_main.js' ,
 			exclude: './vue/src/rop_exclude_posts.js' ,
-			publish_now: './vue/src/rop_publish_now.js' ,
 		},
 		output: {
 			path: path.resolve( __dirname, './assets/js/build' ),

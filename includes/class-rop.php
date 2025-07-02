@@ -163,11 +163,7 @@ class Rop {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'check_cron_status', 20 );
 		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
 		$this->loader->add_action( 'future_to_publish', $plugin_admin, 'share_scheduled_future_post', 10, 1 );
-		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'rop_publish_now_metabox' );
 
-		// Not being used in as of v8.5.0. Feature moved to metabox until proper Gutenberg support
-		// $this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_publish_actions' );
-		// $this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'publish_now_upsell' );
 		$this->loader->add_action( 'save_post', $plugin_admin, 'maybe_publish_now' );
 		$this->loader->add_filter( 'rop_publish_now_attributes', $plugin_admin, 'publish_now_attributes' );
 
@@ -190,6 +186,8 @@ class Rop {
 		// Add upgrade to pro plugin action.
 		$plugin_slug = basename( ROP_LITE_PATH ) . '/' . basename( ROP_LITE_BASE_FILE );
 		$this->loader->add_filter( "plugin_action_links_$plugin_slug", $plugin_admin, 'rop_upgrade_to_pro_plugin_action', 10, 2 );
+
+		$this->loader->add_filter( 'init', $plugin_admin, 'register_meta' );
 	}
 
 	/**

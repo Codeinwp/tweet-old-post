@@ -316,12 +316,14 @@ class Rop_Admin {
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 
 		$rop_api_settings = array(
-			'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
+			'root'      => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
+			'dashboard' => admin_url( 'admin.php?page=TweetOldPost' ),
 		);
 		if ( current_user_can( 'manage_options' ) ) {
 			$rop_api_settings = array(
-				'root'  => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
-				'nonce' => wp_create_nonce( 'wp_rest' ),
+				'root'       => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
+				'nonce'      => wp_create_nonce( 'wp_rest' ),
+				'dashboard' => admin_url( 'admin.php?page=TweetOldPost' ),
 			);
 		}
 
@@ -373,6 +375,7 @@ class Rop_Admin {
 			'choose_accounts_manually' => $settings->get_instant_share_choose_accounts_manually(),
 			'accounts' => $active_accounts,
 		);
+		$rop_api_settings['custom_messages']                 = $settings->get_custom_messages();
 		$rop_api_settings['added_networks']                  = $added_networks;
 		$rop_api_settings['rop_cron_remote']                 = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
 		$rop_api_settings['rop_cron_remote_agreement']       = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
@@ -398,7 +401,17 @@ class Rop_Admin {
 
 		if ( 'publish_now' === $page ) {
 			$rop_api_settings['publish_now'] = apply_filters( 'rop_publish_now_attributes', $rop_api_settings['publish_now'] );
-			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+			wp_enqueue_script( $this->plugin_name . '-publish_now-old', ROP_LITE_URL . 'assets/js/build/publish_now.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+			wp_localize_script( $this->plugin_name . '-' . $page . '-old', 'ropApiSettings', $rop_api_settings );
+
+			$asset_file = include ROP_LITE_PATH . '/assets/js/react/build/index.asset.php';
+			wp_register_script(
+				$this->plugin_name . '-publish_now',
+				ROP_LITE_URL . 'assets/js/react/build/index.js', 
+				$asset_file['dependencies'],
+				$asset_file['version'],
+				false
+			);
 		}
 
 		$rop_api_settings['tracking']           = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
@@ -706,113 +719,6 @@ class Rop_Admin {
 		}
 	}
 
-
-	/**
-	 * Publish now upsell
-	 *
-	 * @since   8.1.0
-	 * @access  public
-	 */
-	public function publish_now_upsell() {
-		$page = $this->get_current_page();
-		if ( empty( $page ) ) {
-			return;
-		}
-		$global_settings = new Rop_Global_Settings;
-		$settings        = new Rop_Settings_Model;
-
-		$services        = new Rop_Services_Model();
-		$active_accounts = $services->get_active_accounts();
-
-		if ( $settings->get_instant_sharing() && count( $active_accounts ) >= 2 && ! defined( 'ROP_PRO_VERSION' ) ) {
-			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
-				__(
-					'Share to more accounts by upgrading to the extended version for ',
-					'tweet-old-post'
-				) . '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'editor', 'publish_now' ) . '" target="_blank">Revive Social </a>
-						</div>';
-		}
-	}
-
-	/**
-	 * Creates publish now metabox.
-	 *
-	 * @since   8.5.0
-	 * @access  public
-	 */
-	public function rop_publish_now_metabox() {
-
-		$settings_model = new Rop_Settings_Model();
-
-		// Get selected post types from General settings
-		$screens = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
-
-		if ( empty( $screens ) ) {
-			return;
-		}
-
-		if ( ! $settings_model->get_instant_sharing() ) {
-			return;
-		}
-
-		$revive_network_post_type_key = array_search( 'revive-network-share', $screens, true );
-		// Remove Revive Network post type. Publish now feature not available for RSS feed items.
-
-		if ( ! empty( $revive_network_post_type_key ) ) {
-			unset( $screens[ $revive_network_post_type_key ] );
-		}
-
-		foreach ( $screens as $screen ) {
-			add_meta_box(
-				'rop_publish_now_metabox',
-				'Revive Social',
-				array( $this, 'rop_publish_now_metabox_html' ),
-				$screen,
-				'side',
-				'high'
-			);
-		}
-	}
-
-	/**
-	 * Publish now metabox html.
-	 *
-	 * @since   8.5.0
-	 * @access  public
-	 */
-	public function rop_publish_now_metabox_html() {
-
-		wp_nonce_field( 'rop_publish_now_nonce', 'rop_publish_now_nonce' );
-		include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
-
-		$this->publish_now_upsell();
-
-	}
-
-
-	/**
-	 * Adds the publish now buttons.
-	 */
-	public function add_publish_actions() {
-		global $post, $pagenow;
-
-		$settings_model  = new Rop_Settings_Model();
-		$global_settings = new Rop_Global_Settings();
-
-		$post_types = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
-		if ( in_array( $post->post_type, $post_types ) && in_array(
-			$pagenow,
-			array(
-				'post.php',
-				'post-new.php',
-			)
-		) && ( ( method_exists( $settings_model, 'get_instant_sharing' ) && $settings_model->get_instant_sharing() ) || ! method_exists( $settings_model, 'get_instant_sharing' ) )
-		) {
-			wp_nonce_field( 'rop_publish_now_nonce', 'rop_publish_now_nonce' );
-			include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
-		}
-	}
-
 	/**
 	 * Publish now attributes to be provided to the javascript.
 	 *
@@ -838,21 +744,8 @@ class Rop_Admin {
 	 * @param int $post_id The post ID.
 	 */
 	public function maybe_publish_now( $post_id ) {
-
-		if ( empty( $_POST['rop_publish_now_nonce'] ) ) {
-			return;
-		}
-		if ( ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
-			return;
-		}
-
-		if ( empty( $_POST['publish_now_accounts'] ) || empty( $_POST['publish_now'] ) ) {
-			delete_post_meta( $post_id, 'rop_publish_now' );
-			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
-			return;
-		}
-
 		$post_status = get_post_status( $post_id );
+
 		if ( ! in_array( $post_status, array( 'publish' ), true ) ) {
 			return;
 		}
@@ -865,20 +758,27 @@ class Rop_Admin {
 			return;
 		}
 
-		$enabled = $_POST['publish_now_accounts'];
+		$publish = get_post_meta( $post_id, 'rop_publish_now', true );
+		$enabled_accounts = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
 
-		if ( ! is_array( $enabled ) ) {
-				$enabled = array();
+		if ( empty( $publish ) || 'yes' !== $publish ) {
+			return;
+		}
+
+		if ( ! is_array( $enabled_accounts ) ) {
+			$enabled_accounts = array();
 		}
 
 		$services = new Rop_Services_Model();
 		$settings = new Rop_Settings_Model();
 
 		$active = array_keys( $services->get_active_accounts() );
+
 		// has something been added extra?
-		$extra = array_diff( $enabled, $active );
+		$extra = array_diff( array_keys( $enabled_accounts ), $active );
+
 		// reject the extra.
-		$enabled = array_diff( $enabled, $extra );
+		$enabled = array_diff( array_keys( $enabled_accounts ), $extra );
 
 		/**
 		 * Save an account as active to instant share via its ID along with the custom message in the post meta.
@@ -886,12 +786,9 @@ class Rop_Admin {
 		$publish_now_active_accounts_settings = array();
 
 		foreach ( $enabled as $account_id ) {
-			$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
+			$custom_message = ! empty( $enabled_accounts[ $account_id ] ) ? $enabled_accounts[ $account_id ] : '';
 			$publish_now_active_accounts_settings[ $account_id ] = $custom_message;
 		}
-
-		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
-		update_post_meta( $post_id, 'rop_publish_now_accounts', $publish_now_active_accounts_settings );
 
 		// If user wants to run this operation on page refresh instead of via Cron.
 		if ( $settings->get_true_instant_share() ) {
@@ -1885,5 +1782,107 @@ class Rop_Admin {
 		$configs[ ROP_PRODUCT_SLUG ] = $config;
 
 		return $configs;
+	}
+
+	/**
+	 * Register meta for the plugin.
+	 * 
+	 * @return void
+	 */
+	public function register_meta() {
+		$auth_can_edit_posts = function () {
+			return current_user_can( 'edit_posts' );
+		};
+
+		// JSON-encoded automatically by WP
+		$sanitize_passthrough = function ( $value ) {
+			return $value;
+		};
+
+		register_post_meta(
+			'',
+			'rop_custom_images_group',
+			[
+				'single'            => true,
+				'type'              => 'object',
+				'show_in_rest'      => [
+					'schema' => [
+						'type'       => 'object',
+						'properties' => [], // Leave blank to allow dynamic keys, or define expected keys
+						'additionalProperties' => [
+							'type'       => 'object',
+							'properties' => [
+								'rop_custom_image' => [
+									'type' => 'integer',
+								],
+							],
+						],
+					],
+				],
+				'sanitize_callback' => $sanitize_passthrough,
+				'auth_callback'     => $auth_can_edit_posts,
+			]
+		);
+
+		register_post_meta(
+			'',
+			'rop_custom_messages_group',
+			[
+				'single'            => true,
+				'type'              => 'array',
+				'sanitize_callback' => $sanitize_passthrough,
+				'auth_callback'     => $auth_can_edit_posts,
+				'show_in_rest'      => [
+					'schema' => [
+						'type'  => 'array',
+						'items' => [
+							'type'       => 'object',
+							'properties' => [
+								'rop_custom_description' => [
+									'type' => 'string',
+								],
+							],
+						],
+					],
+				],
+			]
+		);
+
+		register_post_meta(
+			'',
+			'rop_publish_now',
+			[
+				'single'            => true,
+				'type'              => 'string',
+				'default'           => 'yes',
+				'sanitize_callback' => 'sanitize_text_field',
+				'auth_callback'     => $auth_can_edit_posts,
+				'show_in_rest'      => true,
+			]
+		);
+
+		$services = new Rop_Services_Model();
+		$active   = array_keys( $services->get_active_accounts() );
+		$accounts = array_fill_keys( $active, '' );
+
+		register_post_meta(
+			'',
+			'rop_publish_now_accounts',
+			[
+				'single'            => true,
+				'type'              => 'object',
+				'default'           => $accounts,
+				'sanitize_callback' => $sanitize_passthrough,
+				'auth_callback'     => $auth_can_edit_posts,
+				'show_in_rest'      => [
+					'schema' => [
+						'type'                 => 'object',
+						'additionalProperties' => [
+							'type' => 'string',
+						],
+					],
+				],
+			]
+		);
 	}
 }

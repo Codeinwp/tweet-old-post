@@ -423,7 +423,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'variation_num'          => __( 'Content Variation #', 'tweet-old-post' ),
 				'variation_image'        => __( 'Upload image', 'tweet-old-post' ),
 				'variation_image_change' => __( 'Change image', 'tweet-old-post' ),
-				'variation_remove_image' => __( 'Remove image', 'tweet-old-post' ),
+				'variation_remove_image' => __( 'Remove', 'tweet-old-post' ),
 			),
 			'emails'      => array(
 				'share_once_sharing_done_subject' => __( 'Revive Social - All Posts Shared', 'tweet-old-post' ),
@@ -450,6 +450,13 @@ You can try to disable any of the security plugins that you use in order to see 
 				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Social</small>  ', 'tweet-old-post' ),
 				'clear_on_share'  => __( 'These checkboxes will be cleared once the post is shared.', 'tweet-old-post' ),
 				'custom_instant_share_messages_upsell'  => sprintf( __( '%1$sCustom instant share messages are available in the %2$sPro version%3$s of the plugin.%4$s', 'tweet-old-post' ), '<small>', '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'custom_instant', 'settings' ) . '" target="_blank">', '</a>', '</small>' ),
+				'edit_message' => __( 'Edit Message', 'tweet-old-post' ),
+				'custom_share_message' => __( 'Custom Share Message', 'tweet-old-post' ),
+				'custom_share_message_placeholder' => __( 'Write your message here...', 'tweet-old-post' ),
+				'instant_sharing' => __( 'Instant Sharing', 'tweet-old-post' ),
+				'instant_sharing_desc' => __( 'Before you hit publish, you can select the social accounts where you want to share your post.', 'tweet-old-post' ),
+				'share_immediately' => __( 'Share Immediately', 'tweet-old-post' ),
+				'add_platform' => __( 'Add Account', 'tweet-old-post' ),
 			),
 
 			'sharing' => array(

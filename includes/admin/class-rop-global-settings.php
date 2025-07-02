@@ -519,7 +519,7 @@ class Rop_Global_Settings {
 	 * @since   9.1.0
 	 * @access  public
 	 *
-	 * @return  object
+	 * @return  object|int
 	 */
 	public function get_license_data() {
 		if ( ! defined( 'ROP_PRO_VERSION' ) ) {

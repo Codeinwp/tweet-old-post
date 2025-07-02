@@ -18,3 +18,58 @@
 .toplevel_page_TweetOldPost #wpbody-content > #rop_core {
     display: block !important;
 }
+
+.revive-social-sidebar .revive-social__toggle > .components-base-control__field > .components-flex {
+    flex-direction: row-reverse;
+}
+
+.revive-social-platform-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.revive-social_checkbox {
+    --checkbox-input-size: 20px;
+}
+
+.facebook-icon {
+    background-color: #1877f2;
+}
+.twitter-icon {
+    background-color: #000000;
+}
+.linkedin-icon {
+    background-color: #0077b5;
+}
+.instagram-icon {
+    background: linear-gradient(135deg, #fbbf24, #ef4444, #8b5cf6);
+}
+.telegram-icon {
+    background-color: #0088cc;
+}
+.tumblr-icon {
+    background-color: #001935;
+}
+.vk-icon {
+    background-color: #0074ab;
+}
+.mastodon-icon {
+    background-color: #6364ff;
+}
+.gmb-icon {
+    background-color: #323b43;
+}
+.webhook-icon {
+    background-color: #ffbc42;
+}
+.bluesky-icon {
+    background-color: #0ea5e9;
+}
