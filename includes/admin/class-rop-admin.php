@@ -371,8 +371,6 @@ class Rop_Admin {
 		$rop_api_settings['exclude_apply_limit']             = $this->limit_exclude_list();
 		$rop_api_settings['publish_now']                     = array(
 			'instant_share_enabled' => $settings->get_instant_sharing(),
-			'instant_share_by_default'   => $settings->get_instant_sharing_by_default(),
-			'choose_accounts_manually' => $settings->get_instant_share_choose_accounts_manually(),
 			'accounts' => $active_accounts,
 		);
 		$rop_api_settings['custom_messages']                 = $settings->get_custom_messages();
@@ -791,149 +789,8 @@ class Rop_Admin {
 		}
 
 		// If user wants to run this operation on page refresh instead of via Cron.
-		if ( $settings->get_true_instant_share() ) {
-			$this->rop_cron_job_publish_now( $post_id, $publish_now_active_accounts_settings );
-			return;
-		}
-
-		if ( empty( $enabled ) ) {
-			return;
-		}
-
-		$cron = new Rop_Cron_Helper();
-		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+		$this->rop_cron_job_publish_now( $post_id, $publish_now_active_accounts_settings );
 	}
-
-	/**
-	 * Method to share future scheduled WP posts to social media on publish.
-	 *
-	 * @param object $post The post object.
-	 *
-	 * @access  public
-	 * @since   8.5.2
-	 */
-	public function share_scheduled_future_post( $post ) {
-
-		$post_id = $post->ID;
-		$settings            = new Rop_Settings_Model();
-		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
-
-		if ( ! $settings->get_instant_share_future_scheduled() ) {
-			return;
-		}
-
-		if ( ! in_array( $post->post_type, $selected_post_types ) ) {
-			return;
-		}
-
-		$global_settings = new Rop_Global_Settings();
-
-		$services = new Rop_Services_Model();
-		$active_accounts = array_keys( $services->get_active_accounts() );
-
-		$active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
-		$rop_active_status = in_array( 'tweet-old-post-pro/tweet-old-post-pro.php', $active_plugins );
-
-		// This would only be possible in Pro plugin
-		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
-
-			$logger          = new Rop_Logger();
-			// Get the current plugin options.
-			$options = get_option( 'rop_data' );
-
-			$social_accounts = array();
-			$post_formats = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
-			$account_from_formats = array_keys( $post_formats );
-
-			if ( empty( $post_formats ) ) {
-				$logger->alert_error( Rop_I18n::get_labels( 'post_format.no_post_format_error' ) );
-				return;
-			}
-
-			foreach ( $post_formats as $key => $value ) {
-
-				// check if an account is active, but has no post format saved in the DB
-				 // if it doesn't then sharing scheduled posts on publish would not work for that account
-				foreach ( $active_accounts as $account ) {
-						$active_social_network = ucfirst( explode( '_', $account )[0] );
-					if ( ! in_array( $account, $account_from_formats ) ) {
-						$logger->alert_error( Rop_I18n::get_labels( 'post_format.active_account_no_post_format_error' ) . $active_social_network );
-					}
-				}
-
-				if ( ! array_key_exists( 'taxonomy_filter', $value ) || empty( $value['taxonomy_filter'] ) ) {
-					// share to accounts where no filters are selected, or no filters exist
-					$social_accounts[] = $key;
-					continue;
-				}
-
-				// get account specific taxonomy filter
-				$taxonomy_filter = array_column( $value['taxonomy_filter'], 'tax', 'value' );
-				$taxonomies_are_excluded = $value['exclude_taxonomies'];
-
-				$taxonomies_slug = array_values( $taxonomy_filter );
-				$taxonomies_ids = array_keys( $taxonomy_filter );
-
-				// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-				$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
-
-				// get the common term ids between what's assigned to the post and what's selected in General Settings
-				$common = array_intersect( $taxonomies_ids, $post_term_ids );
-
-				// if the post contains any of the taxonomies that are excluded, bail
-				if ( count( $common ) > 0 && $taxonomies_are_excluded ) {
-					continue;
-				}
-				// if the post doesn't contain any of the selected taxonomies that are whitelisted for posting, bail
-				if ( count( $common ) < 1 && ! $taxonomies_are_excluded ) {
-					continue;
-				}
-
-				$social_accounts[] = $key;
-
-			}
-
-			// accounts to share to
-			$active_accounts = array_intersect( $active_accounts, $social_accounts );
-
-			if ( empty( $active_accounts ) ) {
-				return;
-			}
-		}
-
-		// get taxonomies selected in general settings
-		$selected_taxonomies = $settings->get_selected_taxonomies();
-
-		// only run if free version
-		if ( ! empty( $selected_taxonomies ) && ( $global_settings->license_type() < 1 || ! $rop_active_status ) ) {
-
-			$taxonomies = array_column( $selected_taxonomies, 'tax', 'value' );
-
-			$taxonomies_slug = array_values( $taxonomies );
-			$taxonomies_ids = array_keys( $taxonomies );
-
-			// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-			$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
-
-			// get the common term ids between what's assigned to the post and what's selected in General Settings
-			$common = array_intersect( $taxonomies_ids, $post_term_ids );
-
-			// check if "Exclude" is checked
-			$taxonomies_are_excluded = $settings->get_exclude_taxonomies();
-
-			// if the post contains any of the taxonomies that are excluded, bail
-			if ( count( $common ) > 0 && $taxonomies_are_excluded ) {
-				return;
-			}
-			// if the post doesn't contain any of the selected taxonomies that are whitelisted for posting, bail
-			if ( count( $common ) < 1 && ! $taxonomies_are_excluded ) {
-				return;
-			}
-		}
-
-		$this->rop_cron_job_publish_now( $post_id, $active_accounts, true );
-	}
-
 
 	/**
 	 * The publish now Cron Job for the plugin.
@@ -963,7 +820,7 @@ class Rop_Admin {
 			$accounts_data = $this->rop_wpml_filter_accounts( $post_id, $accounts_data );
 		}
 
-		$queue_stack = $queue->build_queue_publish_now( $post_id, $accounts_data, $is_future_post, $settings->get_true_instant_share() );
+		$queue_stack = $queue->build_queue_publish_now( $post_id, $accounts_data, $is_future_post, true );
 
 		if ( empty( $queue_stack ) ) {
 			$logger->info( 'Publish now queue stack is empty.' );

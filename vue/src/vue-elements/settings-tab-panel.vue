@@ -362,132 +362,6 @@
 
         <span class="divider" />
 
-        <!-- Use True Instant Share -->
-        <div
-          v-if="isInstantShare"
-          class="columns py-2"
-        >
-          <div class="column col-6 col-sm-12 vertical-align rop-control">
-            <b>{{ labels.true_instant_share_title }}</b>
-            <p class="text-gray">
-              <span v-html="labels.true_instant_share_desc" />
-            </p>
-          </div>
-          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-            <div class="form-group">
-              <label class="form-checkbox">
-                <input
-                  v-model="generalSettings.true_instant_share"
-                  type="checkbox"
-                >
-                <i class="form-icon" />{{ labels.yes_text }}
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <span
-          v-if="isInstantShare"
-          class="divider"
-        />
-
-        <!-- Enable Instant Sharing By Default -->
-        <div
-          v-if="isInstantShare"
-          class="columns py-2"
-        >
-          <div class="column col-6 col-sm-12 vertical-align rop-control">
-            <b>{{ labels.instant_share_default_title }}</b>
-            <p class="text-gray">
-              {{ labels.instant_share_default_desc }}
-            </p>
-          </div>
-          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-            <div class="form-group">
-              <label class="form-checkbox">
-                <input
-                  v-model="generalSettings.instant_share_default"
-                  type="checkbox"
-                >
-                <i class="form-icon" />{{ labels.yes_text }}
-              </label>
-            </div>
-          </div>
-        </div>
-        <span
-          v-if="isInstantShare && isInstantShareByDefault"
-          class="divider"
-        />
-                
-        <!-- Choose Accounts Manually -->
-        <div
-          v-if="isInstantShare && isInstantShareByDefault"
-          class="columns py-2"
-        >
-          <div class="column col-6 col-sm-12 vertical-align rop-control">
-            <b>{{ labels.instant_share_choose_accounts_manually_title }}</b>
-            <p class="text-gray">
-              {{ labels.instant_share_choose_accounts_manually_desc }}
-            </p>
-          </div>
-          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-            <div class="form-group">
-              <label class="form-checkbox">
-                <input
-                  v-model="generalSettings.instant_share_choose_accounts_manually"
-                  type="checkbox"
-                >
-                <i class="form-icon" />{{ labels.yes_text }}
-              </label>
-            </div>
-          </div>
-        </div>
-        <span
-          v-if="isInstantShare"
-          class="divider"
-        />
-                
-        <!-- Share Scheduled Posts to Social Media On Publish -->
-        <div
-          v-if="isInstantShare"
-          class="columns py-2"
-          :class="'rop-control-container-'+isPro"
-        >
-          <div class="column col-6 col-sm-12 vertical-align rop-control">
-            <b>{{ labels.instant_share_future_scheduled_title }}</b>
-            <p class="text-gray">
-              <span v-html="labels.instant_share_future_scheduled_desc" />
-            </p>
-          </div>
-          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-            <div class="form-group">
-              <label class="form-checkbox">
-                <input
-                  v-model="generalSettings.instant_share_future_scheduled"
-                  type="checkbox"
-                  :disabled="!isPro"
-                >
-                <i class="form-icon" />{{ labels.yes_text }}
-              </label>
-            </div>
-          </div>
-        </div>
-        <!-- Upsell -->
-        <div
-          v-if="!isPro && isInstantShare"
-          class="columns "
-        >
-          <div class="column text-center">
-            <p class="upsell">
-              <i class="fa fa-info-circle" /> {{ labels.available_in_pro }}
-            </p>
-          </div>
-        </div>
-        <span
-          v-if="isInstantShare"
-          class="divider"
-        />
-
         <!-- Enable Share Content Variations -->
         <div
           class="columns py-2"
@@ -702,9 +576,6 @@
             isInstantShare: function () {
                 return this.$store.state.generalSettings.instant_share;
             },
-            isInstantShareByDefault: function () {
-                return this.$store.state.generalSettings.instant_share_default;
-            },
             isCustomMsgs: function () {
                 return this.$store.state.generalSettings.custom_messages;
             },
@@ -849,10 +720,6 @@
           custom_messages: this.generalSettings.custom_messages,
           custom_messages_share_order: this.generalSettings.custom_messages_share_order,
           instant_share: this.generalSettings.instant_share,
-          true_instant_share: this.generalSettings.true_instant_share,
-          instant_share_default: this.generalSettings.instant_share_default,
-          instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
-          instant_share_choose_accounts_manually: this.generalSettings.instant_share_choose_accounts_manually,
           housekeeping: this.generalSettings.housekeeping,
           tracking: this.generalSettings.tracking
         };
