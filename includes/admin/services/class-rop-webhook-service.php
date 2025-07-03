@@ -163,6 +163,8 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 					$this->service_name
 				)
 			);
+
+			return true;
 		}
 
 		return false;

@@ -36,8 +36,25 @@
   flex-shrink: 0;
 }
 
-.revive-social_checkbox {
+.revive-social__checkbox {
     --checkbox-input-size: 20px;
+}
+
+.revive-social__modal table {
+    width: 100%;
+}
+
+.revive-social__modal th {
+    text-align: left;
+    padding: 0 0 1rem 0;
+}
+
+.revive-social__spinner svg {
+    margin: 0;
+}
+
+.revive-social__spinner p {
+    margin: 0;
 }
 
 .facebook-icon {

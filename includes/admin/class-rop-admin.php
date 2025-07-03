@@ -1742,6 +1742,8 @@ class Rop_Admin {
 			[
 				'single'            => true,
 				'type'              => 'object',
+				'sanitize_callback' => $sanitize_passthrough,
+				'auth_callback'     => $auth_can_edit_posts,
 				'show_in_rest'      => [
 					'schema' => [
 						'type'       => 'object',
@@ -1756,8 +1758,6 @@ class Rop_Admin {
 						],
 					],
 				],
-				'sanitize_callback' => $sanitize_passthrough,
-				'auth_callback'     => $auth_can_edit_posts,
 			]
 		);
 
@@ -1791,7 +1791,7 @@ class Rop_Admin {
 			[
 				'single'            => true,
 				'type'              => 'string',
-				'default'           => 'yes',
+				'default'           => 'initial', // Weird Gutenberg behavior that sends the default before sending the actual value, so we send a default that does not conflict with the actual values.
 				'sanitize_callback' => 'sanitize_text_field',
 				'auth_callback'     => $auth_can_edit_posts,
 				'show_in_rest'      => true,
@@ -1826,25 +1826,39 @@ class Rop_Admin {
 			'',
 			'rop_publish_now_history',
 			[
-				'single' => true,
-				'type'   => 'array',
+				'single'            => true,
+				'type'              => 'array',
+				'default'           => array(),
+				'sanitize_callback' => $sanitize_passthrough,
+				'auth_callback'     => $auth_can_edit_posts,
 				'show_in_rest' => array(
 					'schema' => array(
 						'type'  => 'array',
 						'items' => array(
 							'type'       => 'object',
 							'properties' => array(
-								'service'   => array( 'type' => 'string' ),
-								'timestamp' => array( 'type' => 'string', 'format' => 'date-time' ),
-								'status'    => array( 'type' => 'string' ),
 								'account'   => array( 'type' => 'string' ),
+								'service'   => array( 'type' => 'string' ),
+								'timestamp' => array( 'type' => 'integer' ),
+								'status'    => array( 'type' => 'string' ),
 							),
-							'required' => array( 'service', 'timestamp', 'status', 'account' ),
+							'required' => array( 'account', 'service', 'timestamp', 'status' ),
 						),
 					),
 				),
-				'sanitize_callback' => $sanitize_passthrough,
+			]
+		);
+
+		register_post_meta(
+			'',
+			'rop_publish_now_status',
+			[
+				'single'            => true,
+				'type'              => 'string',
+				'default'           => 'pending',
+				'sanitize_callback' => 'sanitize_text_field',
 				'auth_callback'     => $auth_can_edit_posts,
+				'show_in_rest'      => true,
 			]
 		);
 	}

@@ -14,6 +14,8 @@ import {
 	store as editorStore
 } from '@wordpress/editor';
 
+import { useEffect } from '@wordpress/element';
+
 import { registerPlugin } from '@wordpress/plugins';
 
 import InstantSharing from './instant';
@@ -36,6 +38,7 @@ const isPro = Boolean( ropApiSettings.license_type ) > 0;
 
 const render = () => {
 	const postType = useSelect( select => select( editorStore ).getCurrentPostType(), [] );
+	const postStatus = useSelect( select => select( editorStore ).getCurrentPostAttribute( 'status' ), [] );
 
 	const [ meta, setMeta ] = useEntityProp( 'postType', postType, 'meta' );
 
@@ -46,6 +49,12 @@ const render = () => {
 			setMeta( { ...meta, [keyOrObject]: newValue } );
 		}
 	};
+
+	useEffect( () => {
+		if ( meta.rop_publish_now ) {
+			updateMetaValue( 'rop_publish_now', 'yes' );
+		}
+	}, [] );
 
 	return (
 		<>
@@ -65,8 +74,11 @@ const render = () => {
 				{ Boolean( ropApiSettings.publish_now.instant_share_enabled ) && (
 					<PanelBody title={ ropApiSettings.labels.publish_now.instant_sharing }>
 						<InstantSharing
+							screen="pre-publish"
 							meta={ meta }
 							updateMetaValue={ updateMetaValue }
+							postStatus={ postStatus }
+							publishStatus={ meta.rop_publish_now_status }
 						/>
 					</PanelBody>
 				) }
@@ -83,21 +95,28 @@ const render = () => {
 				<>
 					<PluginPrePublishPanel
 						title={ ropApiSettings.labels.publish_now.instant_sharing }
+						isInitialOpen={ true }
 						icon={ icon }
 					>
 						<InstantSharing
+							screen="pre-publish"
 							meta={ meta }
 							updateMetaValue={ updateMetaValue }
+							postStatus={ postStatus }
+							publishStatus={ meta.rop_publish_now_status }
 						/>
 					</PluginPrePublishPanel>
 
 					<PluginPostPublishPanel
-						title={ ropApiSettings.labels.publish_now.instant_sharing }
 						icon={ icon }
+						isInitialOpen={ true }
 					>
 						<InstantSharing
+							screen="post-publish"
 							meta={ meta }
 							updateMetaValue={ updateMetaValue }
+							postStatus={ postStatus }
+							publishStatus={ meta.rop_publish_now_status }
 						/>
 					</PluginPostPublishPanel>
 				</>

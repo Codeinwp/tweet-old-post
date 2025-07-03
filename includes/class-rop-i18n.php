@@ -449,6 +449,18 @@ You can try to disable any of the security plugins that you use in order to see 
 				'instant_sharing_desc' => __( 'Before you hit publish, you can select the social accounts where you want to share your post.', 'tweet-old-post' ),
 				'share_immediately' => __( 'Share Immediately', 'tweet-old-post' ),
 				'add_platform' => __( 'Add Account', 'tweet-old-post' ),
+				'queued' => __( 'Posting to social media…', 'tweet-old-post' ),
+				'shared_title' => __( 'Post shared!', 'tweet-old-post' ),
+				'shared_desc' => __( 'Your post has been shared to the selected social media accounts.', 'tweet-old-post' ),
+				'share_failed_title' => __( 'Post not shared!', 'tweet-old-post' ),
+				'share_failed_desc' => __( 'There was an issue sharing your post to the selected social media accounts. Please check the logs for more information.', 'tweet-old-post' ),
+				'share_partially_shared_title' => __( 'Post partially shared!', 'tweet-old-post' ),
+				'share_partially_shared_desc' => __( 'Your post has been shared to some of the selected social media accounts. Please check the logs for more information.', 'tweet-old-post'),
+				'view_history' => __( 'View History', 'tweet-old-post' ),
+				'sharing_history' => __( 'Sharing History', 'tweet-old-post' ),
+				'account' => __( 'Account', 'tweet-old-post' ),
+				'time' => __( 'Time', 'tweet-old-post' ),
+				'status' => __( 'Status', 'tweet-old-post' ),
 			),
 
 			'sharing' => array(

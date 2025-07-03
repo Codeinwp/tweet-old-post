@@ -1,5 +1,3 @@
-import { __ } from '@wordpress/i18n';
-
 import {
 	Button,
 	ToggleControl,
@@ -7,19 +5,54 @@ import {
 	__experimentalVStack as VStack,
 } from '@wordpress/components';
 
+import {
+	useEffect,
+	useState
+} from '@wordpress/element';
+
 import { plus } from '@wordpress/icons';
 
+import PostUpdate from './PostUpdate';
 import ListItem from './ListItem';
 
 const isPro = Boolean( ropApiSettings.license_type ) > 0;
+const hasAccounts = Object.keys( ropApiSettings.publish_now.accounts )?.length >= 1;
 
 const InstantSharing = ({
+	screen,
 	meta,
-	updateMetaValue
-}) => {
+	updateMetaValue,
+	postStatus,
+	publishStatus
+	}) => {
+	const isPrePublish = 'pre-publish' === screen;
+	const isPostPublish = 'post-publish' === screen;
+	const isPostPublished = 'publish' === postStatus;
+	const [ status, setStatus ] = useState( publishStatus || 'pending' );
+	const [ history, setHistory ] = useState( meta.rop_publish_now_history || [] );
+
+	useEffect( () => {
+		setStatus( publishStatus || 'pending' );
+	}, [ publishStatus ] );
+
 	const accounts = Object.keys( ropApiSettings.publish_now.accounts ).filter( key => true === ropApiSettings.publish_now.accounts[ key ].active );
 
-	if ( ropApiSettings.publish_now.accounts?.length < 1 ) {
+	if ( ! hasAccounts && isPostPublish ) {
+		return null;
+	}
+
+	if ( isPostPublished && isPostPublish && 'pending' !== status ) {
+		return (
+			<PostUpdate
+				status={ status }
+				history={ history }
+				setStatus={ setStatus }
+				setHistory={ setHistory }
+			/>
+		);
+	}
+
+	if ( ! hasAccounts && isPrePublish ) {
 		return (
 			<>
 				<p>{ ropApiSettings.labels.publish_now.add_account_to_use_instant_share }</p>
@@ -38,6 +71,21 @@ const InstantSharing = ({
 						{ ropApiSettings.labels.publish_now.add_platform }
 					</Button>
 				</Spacer>
+			</>
+		);
+	}
+
+	if ( isPostPublished ) {
+		return (
+			<>
+				{ history.length > 0 && (
+					<PostUpdate
+						status={ status }
+						history={ history }
+						setStatus={ setStatus }
+						setHistory={ setHistory }
+					/>
+				) }
 			</>
 		);
 	}

@@ -163,7 +163,7 @@ class Rop {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'check_cron_status', 20 );
 		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
 
-		$this->loader->add_action( 'save_post', $plugin_admin, 'maybe_publish_now' );
+		$this->loader->add_action( 'wp_after_insert_post', $plugin_admin, 'maybe_publish_now' );
 		$this->loader->add_filter( 'rop_publish_now_attributes', $plugin_admin, 'publish_now_attributes' );
 
 		$this->loader->add_action( 'wp_loaded', $this, 'register_service_api_endpoints', 1 );
