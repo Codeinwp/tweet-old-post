@@ -740,8 +740,9 @@ class Rop_Admin {
 	 * The values from the Publish Now metabox are saved to the post meta.
 	 *
 	 * @param int $post_id The post ID.
+	 * @param bool $force Whether to force the action.
 	 */
-	public function maybe_publish_now( $post_id ) {
+	public function maybe_publish_now( $post_id, $force = false ) {
 		$post_status = get_post_status( $post_id );
 
 		if ( ! in_array( $post_status, array( 'publish' ), true ) ) {
@@ -749,7 +750,7 @@ class Rop_Admin {
 		}
 
 		// To prevent multiple calls.
-		if ( false !== get_transient( 'rop_maybe_publish_now_' . $post_id ) ) {
+		if ( false === $force && false !== get_transient( 'rop_maybe_publish_now_' . $post_id ) ) {
 			return;
 		}
 

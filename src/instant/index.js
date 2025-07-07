@@ -13,6 +13,7 @@ import {
 import { plus } from '@wordpress/icons';
 
 import PostUpdate from './PostUpdate';
+import Reshare from './Reshare';
 import ListItem from './ListItem';
 
 const isPro = Boolean( ropApiSettings.license_type ) > 0;
@@ -52,7 +53,7 @@ const InstantSharing = ({
 		);
 	}
 
-	if ( ! hasAccounts && isPrePublish ) {
+	if ( ! hasAccounts ) {
 		return (
 			<>
 				<p>{ ropApiSettings.labels.publish_now.add_account_to_use_instant_share }</p>
@@ -78,10 +79,17 @@ const InstantSharing = ({
 	if ( isPostPublished ) {
 		return (
 			<>
+				<Reshare
+					accounts={ accounts }
+					isPro={ isPro }
+					setHistory={ setHistory }
+				/>
+
 				{ history.length > 0 && (
 					<PostUpdate
 						status={ status }
 						history={ history }
+						isPostPublish={ isPostPublish }
 						setStatus={ setStatus }
 						setHistory={ setHistory }
 					/>

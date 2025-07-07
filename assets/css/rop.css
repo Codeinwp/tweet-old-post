@@ -49,12 +49,32 @@
     padding: 0 0 1rem 0;
 }
 
+.revive-social__modal tbody tr {
+    height: 40px;
+}
+
 .revive-social__spinner svg {
     margin: 0;
 }
 
 .revive-social__spinner p {
     margin: 0;
+}
+
+.revive-social__sharing-buttons .components-button {
+    padding: 0;
+    height: auto;
+}
+
+.revive-social__sharing-buttons .revive-social-platform-icon {
+    border-radius: 0;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+}
+
+.revive-social__sharing-buttons .revive-social-platform-icon:hover {
+    opacity: 0.8;
 }
 
 .facebook-icon {
@@ -89,4 +109,11 @@
 }
 .bluesky-icon {
     background-color: #0ea5e9;
+}
+.whatsapp-icon {
+    background-color: #25d366;
+}
+
+.link-icon {
+    background-color: #0073aa;
 }

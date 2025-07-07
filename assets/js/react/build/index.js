@@ -201,34 +201,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_date__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/date */ "@wordpress/date");
-/* harmony import */ var _wordpress_date__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_date__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
-/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _wordpress_date__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/date */ "@wordpress/date");
+/* harmony import */ var _wordpress_date__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_date__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
 
 
 
 
 
 
-
-
-
-const getPostMeta = () => {
-  const data = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.select)(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).getEntityRecord('postType', (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.select)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_5__.store).getCurrentPostType(), (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.select)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_5__.store).getCurrentPostId(), {
-    cache: Date.now()
-  });
-  return data.meta;
-};
 let interval;
 const getLabels = history => {
   const length = history.reduce((acc, item) => {
@@ -259,7 +244,7 @@ const getLabels = history => {
   }
 };
 const formatTimestamp = timestamp => {
-  return (0,_wordpress_date__WEBPACK_IMPORTED_MODULE_4__.dateI18n)('j F, Y g:i A', timestamp);
+  return (0,_wordpress_date__WEBPACK_IMPORTED_MODULE_2__.dateI18n)('j F, Y g:i A', timestamp);
 };
 const TableRow = ({
   service,
@@ -269,7 +254,7 @@ const TableRow = ({
 }) => {
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalHStack, {
     justify: "flex-start"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getIcon)(service)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, ropApiSettings.publish_now.accounts[account]?.user))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, formatTimestamp(Number(timestamp + '000'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,lodash__WEBPACK_IMPORTED_MODULE_7__.capitalize)(status)));
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_utils__WEBPACK_IMPORTED_MODULE_5__.getIcon)(service)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, ropApiSettings.publish_now.accounts[account]?.user))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, formatTimestamp(Number(timestamp + '000'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,lodash__WEBPACK_IMPORTED_MODULE_4__.capitalize)(status)));
 };
 const HistoryTable = ({
   data
@@ -319,20 +304,21 @@ const HistoryModal = ({
 const PostUpdate = ({
   status,
   history,
+  isPostPublish,
   setStatus,
   setHistory
 }) => {
-  const [isOpen, setOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_6__.useState)(false);
+  const [isOpen, setOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
   const isQueued = history.some(item => 'queued' === item.status);
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_6__.useEffect)(() => {
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
     interval = setInterval(() => {
-      const currentStatus = getPostMeta();
+      const currentStatus = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.getPostMeta)();
       setStatus(currentStatus?.rop_publish_now_status);
       setHistory(currentStatus?.rop_publish_now_history || []);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_6__.useEffect)(() => {
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
     if ('done' === status && !isQueued) {
       clearInterval(interval);
     }
@@ -347,7 +333,7 @@ const PostUpdate = ({
     return null;
   }
   const labels = getLabels(history);
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, labels.title), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, labels.description), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HistoryModal, {
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isPostPublish && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, labels.title), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, labels.description)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HistoryModal, {
     history: history,
     isOpen: isOpen,
     setOpen: setOpen
@@ -361,6 +347,127 @@ const PostUpdate = ({
   }, ropApiSettings.labels.publish_now.view_history));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PostUpdate);
+
+/***/ }),
+
+/***/ "./src/instant/Reshare.js":
+/*!********************************!*\
+  !*** ./src/instant/Reshare.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/notices */ "@wordpress/notices");
+/* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_notices__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _ListItem__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./ListItem */ "./src/instant/ListItem.js");
+
+
+
+
+
+
+
+
+const Reshare = ({
+  accounts,
+  isPro,
+  setHistory
+}) => {
+  const [meta, setMeta] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)({
+    rop_publish_now_accounts: {}
+  });
+  const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(false);
+  const postId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => select(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__.store).getCurrentPostId(), []);
+  const {
+    createNotice
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)(_wordpress_notices__WEBPACK_IMPORTED_MODULE_6__.store);
+  const shareRequest = async (id, data) => {
+    setIsLoading(true);
+    try {
+      const request = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1___default()({
+        path: `tweet-old-post/v8/share/${id}`,
+        method: 'POST',
+        data: {
+          ...data
+        }
+      });
+      if (true !== request.success) {
+        createNotice('error', request.message, {
+          isDismissible: true,
+          type: 'snackbar'
+        });
+        return request;
+      }
+      if (request?.history) {
+        setHistory(request.history);
+      }
+      createNotice('info', request.message, {
+        isDismissible: true,
+        type: 'snackbar'
+      });
+      updateMetaValue('rop_publish_now_accounts', {});
+      return request;
+    } catch (error) {
+      createNotice('error', error?.message, {
+        isDismissible: true,
+        type: 'snackbar'
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // We basically create a dummy meta object to hold the accounts
+  // and their respective messages.
+  const updateMetaValue = (key, value) => {
+    setMeta({
+      ...meta,
+      [key]: value
+    });
+  };
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, ropApiSettings.labels.publish_now.reshare_description), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalVStack, {
+    spacing: "4",
+    style: {
+      marginTop: '1.5rem'
+    }
+  }, accounts?.map(key => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ListItem__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    key: key,
+    id: key,
+    platform: ropApiSettings.publish_now.accounts[key],
+    meta: meta,
+    updateMetaValue: updateMetaValue,
+    isPro: isPro
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalSpacer, {
+    paddingTop: "4",
+    paddingBottom: "1"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    variant: "primary",
+    disabled: isLoading || Object.keys(meta.rop_publish_now_accounts || {}).length === 0,
+    onClick: () => shareRequest(postId, meta),
+    isBusy: isLoading,
+    style: {
+      width: '100%',
+      justifyContent: 'center'
+    }
+  }, ropApiSettings.labels.publish_now.reshare_button)));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Reshare);
 
 /***/ }),
 
@@ -380,9 +487,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/plus.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/plus.js");
 /* harmony import */ var _PostUpdate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./PostUpdate */ "./src/instant/PostUpdate.js");
-/* harmony import */ var _ListItem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ListItem */ "./src/instant/ListItem.js");
+/* harmony import */ var _Reshare__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Reshare */ "./src/instant/Reshare.js");
+/* harmony import */ var _ListItem__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ListItem */ "./src/instant/ListItem.js");
+
 
 
 
@@ -418,12 +527,12 @@ const InstantSharing = ({
       setHistory: setHistory
     });
   }
-  if (!hasAccounts && isPrePublish) {
+  if (!hasAccounts) {
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, ropApiSettings.labels.publish_now.add_account_to_use_instant_share), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalSpacer, {
       paddingY: "4"
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
       variant: "secondary",
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
       style: {
         width: '100%',
         justifyContent: 'center'
@@ -433,9 +542,14 @@ const InstantSharing = ({
     }, ropApiSettings.labels.publish_now.add_platform)));
   }
   if (isPostPublished) {
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, history.length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_PostUpdate__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Reshare__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      accounts: accounts,
+      isPro: isPro,
+      setHistory: setHistory
+    }), history.length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_PostUpdate__WEBPACK_IMPORTED_MODULE_3__["default"], {
       status: status,
       history: history,
+      isPostPublish: isPostPublish,
       setStatus: setStatus,
       setHistory: setHistory
     }));
@@ -450,7 +564,7 @@ const InstantSharing = ({
     style: {
       marginTop: '1.5rem'
     }
-  }, accounts?.map(key => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ListItem__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, accounts?.map(key => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ListItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
     key: key,
     id: key,
     platform: ropApiSettings.publish_now.accounts[key],
@@ -461,7 +575,7 @@ const InstantSharing = ({
     paddingY: "4"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     variant: "secondary",
-    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
     style: {
       width: '100%',
       justifyContent: 'center'
@@ -474,6 +588,89 @@ const InstantSharing = ({
 
 /***/ }),
 
+/***/ "./src/manual/index.js":
+/*!*****************************!*\
+  !*** ./src/manual/index.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/notices */ "@wordpress/notices");
+/* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_notices__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+
+
+
+
+
+
+const allowedPlatforms = ['facebook', 'twitter', 'linkedin', 'bluesky', 'tumblr', 'telegram', 'whatsapp', 'link'];
+
+const getSocialShareLinks = (title, url) => {
+  const encodedTitle = encodeURIComponent(title);
+  const encodedURL = encodeURIComponent(url);
+  return {
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedURL}`,
+    twitter: `https://x.com/intent/post?text=${encodedTitle}%20-%20${encodedURL}`,
+    linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodedURL}&title=${encodedTitle}`,
+    tumblr: `https://www.tumblr.com/widgets/share/tool?canonicalUrl=${encodedURL}&title=${encodedTitle}`,
+    telegram: `https://t.me/share/url?url=${encodedURL}&text=${encodedTitle}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodedTitle}%20-%20${encodedURL}`,
+    bluesky: `https://bsky.app/intent/compose?text=${encodedTitle}%20-%20${encodedURL}`,
+    link: `${encodedTitle} - ${encodedURL}`
+  };
+};
+const ManualSharing = () => {
+  const {
+    title,
+    permalink
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
+    const getAttr = select(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__.store).getCurrentPostAttribute;
+    return {
+      title: getAttr('title'),
+      permalink: getAttr('link')
+    };
+  }, []);
+  const {
+    createNotice
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)(_wordpress_notices__WEBPACK_IMPORTED_MODULE_5__.store);
+  const links = getSocialShareLinks(title, permalink);
+  const ref = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__.useCopyToClipboard)(links.link, () => createNotice('info', ropApiSettings.labels.publish_now.copied_to_clipboard, {
+    isDismissible: true,
+    type: 'snackbar'
+  }));
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, ropApiSettings.labels.publish_now.manual_sharing_desc), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalHStack, {
+    wrap: "wrap",
+    justify: "flex-start",
+    className: "revive-social__sharing-buttons"
+  }, allowedPlatforms.map(service => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    key: service,
+    ...(service === 'link' ? {
+      ref
+    } : {
+      target: "_blank",
+      rel: "noopener noreferrer",
+      href: links[service]
+    })
+  }, (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getIcon)(service)))));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ManualSharing);
+
+/***/ }),
+
 /***/ "./src/utils.js":
 /*!**********************!*\
   !*** ./src/utils.js ***!
@@ -482,11 +679,27 @@ const InstantSharing = ({
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getIcon: () => (/* binding */ getIcon)
+/* harmony export */   getIcon: () => (/* binding */ getIcon),
+/* harmony export */   getPostMeta: () => (/* binding */ getPostMeta)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_3__);
 
+
+
+
+const getPostMeta = () => {
+  const data = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.select)(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_1__.store).getEntityRecord('postType', (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.select)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_3__.store).getCurrentPostType(), (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.select)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_3__.store).getCurrentPostId(), {
+    cache: Date.now()
+  });
+  return data.meta;
+};
 const getIcon = service => {
   const socialPlatforms = {
     facebook: {
@@ -532,6 +745,14 @@ const getIcon = service => {
     bluesky: {
       className: 'bluesky-icon',
       iconClass: 'fa fa-cloud'
+    },
+    whatsapp: {
+      className: 'whatsapp-icon',
+      iconClass: 'fa fa-whatsapp'
+    },
+    link: {
+      className: 'link-icon',
+      iconClass: 'fa fa-link'
     }
   };
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -2106,6 +2327,16 @@ module.exports = window["lodash"];
 
 /***/ }),
 
+/***/ "@wordpress/api-fetch":
+/*!**********************************!*\
+  !*** external ["wp","apiFetch"] ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["apiFetch"];
+
+/***/ }),
+
 /***/ "@wordpress/block-editor":
 /*!*************************************!*\
   !*** external ["wp","blockEditor"] ***!
@@ -2123,6 +2354,16 @@ module.exports = window["wp"]["blockEditor"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["components"];
+
+/***/ }),
+
+/***/ "@wordpress/compose":
+/*!*********************************!*\
+  !*** external ["wp","compose"] ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["compose"];
 
 /***/ }),
 
@@ -2173,6 +2414,16 @@ module.exports = window["wp"]["editor"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "@wordpress/notices":
+/*!*********************************!*\
+  !*** external ["wp","notices"] ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["notices"];
 
 /***/ }),
 
@@ -2286,7 +2537,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/plugins */ "@wordpress/plugins");
 /* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_plugins__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _instant__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./instant */ "./src/instant/index.js");
-/* harmony import */ var _variations__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./variations */ "./src/variations/index.js");
+/* harmony import */ var _manual__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./manual */ "./src/manual/index.js");
+/* harmony import */ var _variations__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./variations */ "./src/variations/index.js");
+
 
 
 
@@ -2337,7 +2590,7 @@ const render = () => {
     icon: icon,
     title: ropApiSettings.labels.general.plugin_name,
     className: "revive-social-sidebar"
-  }, Boolean(ropApiSettings.publish_now.instant_share_enabled) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+  }, Boolean(ropApiSettings.publish_now.instant_share_enabled) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
     title: ropApiSettings.labels.publish_now.instant_sharing
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_instant__WEBPACK_IMPORTED_MODULE_7__["default"], {
     screen: "pre-publish",
@@ -2345,7 +2598,9 @@ const render = () => {
     updateMetaValue: updateMetaValue,
     postStatus: postStatus,
     publishStatus: meta.rop_publish_now_status
-  })), isPro && Boolean(ropApiSettings.custom_messages) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_variations__WEBPACK_IMPORTED_MODULE_8__["default"], {
+  })), postStatus === 'publish' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+    title: ropApiSettings.labels.publish_now.manual_sharing
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_manual__WEBPACK_IMPORTED_MODULE_8__["default"], null))), isPro && Boolean(ropApiSettings.custom_messages) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_variations__WEBPACK_IMPORTED_MODULE_9__["default"], {
     meta: meta,
     updateMetaValue: updateMetaValue
   })), Boolean(ropApiSettings.publish_now.instant_share_enabled) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__.PluginPrePublishPanel, {
@@ -2367,7 +2622,11 @@ const render = () => {
     updateMetaValue: updateMetaValue,
     postStatus: postStatus,
     publishStatus: meta.rop_publish_now_status
-  }))));
+  })), postStatus === 'publish' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__.PluginPostPublishPanel, {
+    title: ropApiSettings.labels.publish_now.manual_sharing,
+    icon: icon,
+    isInitialOpen: true
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_manual__WEBPACK_IMPORTED_MODULE_8__["default"], null))));
 };
 if (Boolean(ropApiSettings.publish_now.instant_share_enabled) || isPro && Boolean(ropApiSettings.custom_messages)) {
   (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_6__.registerPlugin)('revive-social', {

@@ -1,3 +1,22 @@
+import { store as coreStore } from '@wordpress/core-data';
+
+import { select } from '@wordpress/data';
+
+import { store as editorStore } from '@wordpress/editor';
+
+export const getPostMeta = () => {
+    const data = select( coreStore ).getEntityRecord(
+        'postType',
+        select( editorStore ).getCurrentPostType(),
+        select( editorStore ).getCurrentPostId(),
+        {
+            cache: Date.now(),
+        }
+    );
+
+    return data.meta;
+};
+
 export const getIcon = service => {
     const socialPlatforms = {
         facebook: {
@@ -44,6 +63,14 @@ export const getIcon = service => {
             className: 'bluesky-icon',
             iconClass: 'fa fa-cloud'
         },
+        whatsapp: {
+            className: 'whatsapp-icon',
+            iconClass: 'fa fa-whatsapp'
+        },
+        link: {
+            className: 'link-icon',
+            iconClass: 'fa fa-link'
+        }
     };
 
     return (

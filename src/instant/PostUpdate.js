@@ -5,13 +5,7 @@ import {
     __experimentalHStack as HStack,
 } from '@wordpress/components';
 
-import { store as coreStore } from '@wordpress/core-data';
-
-import { select } from '@wordpress/data';
-
 import { dateI18n } from '@wordpress/date';
-
-import { store as editorStore } from '@wordpress/editor';
 
 import {
     useEffect,
@@ -20,20 +14,10 @@ import {
 
 import { capitalize } from 'lodash';
 
-import { getIcon } from '../utils';
-
-const getPostMeta = () => {
-    const data = select( coreStore ).getEntityRecord(
-        'postType',
-        select( editorStore ).getCurrentPostType(),
-        select( editorStore ).getCurrentPostId(),
-        {
-            cache: Date.now(),
-        }
-    );
-
-    return data.meta;
-};
+import {
+    getIcon,
+    getPostMeta
+} from '../utils';
 
 let interval
 
@@ -161,6 +145,7 @@ const HistoryModal = ({
 const PostUpdate = ({
     status,
     history,
+    isPostPublish,
     setStatus,
     setHistory
 }) => {
@@ -202,8 +187,12 @@ const PostUpdate = ({
 
     return (
         <>
-            <h4>{ labels.title}</h4>
-            <p>{ labels.description }</p>
+            { isPostPublish && (
+                <>
+                    <h4>{ labels.title}</h4>
+                    <p>{ labels.description }</p>
+                </>
+            ) }
 
             <HistoryModal
                 history={ history }

@@ -461,6 +461,11 @@ You can try to disable any of the security plugins that you use in order to see 
 				'account' => __( 'Account', 'tweet-old-post' ),
 				'time' => __( 'Time', 'tweet-old-post' ),
 				'status' => __( 'Status', 'tweet-old-post' ),
+				'reshare_description' => __( 'You can select the social media accounts and click on the "Share Now" button to reshare this post immediately.', 'tweet-old-post' ),
+				'reshare_button' => __( 'Share Now', 'tweet-old-post' ),
+				'manual_sharing' => __( 'Manual Sharing', 'tweet-old-post' ),
+				'manual_sharing_desc' => __( 'You can share your post to social media accounts manually by clicking on the icons.', 'tweet-old-post' ),
+				'copied_to_clipboard' => __( 'Sharing link copied to clipboard.', 'tweet-old-post' ),
 			),
 
 			'sharing' => array(

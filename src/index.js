@@ -19,6 +19,7 @@ import { useEffect } from '@wordpress/element';
 import { registerPlugin } from '@wordpress/plugins';
 
 import InstantSharing from './instant';
+import ManualSharing from './manual';
 import Variations from './variations';
 
 const icon = (
@@ -72,15 +73,23 @@ const render = () => {
 				className="revive-social-sidebar"
 			>
 				{ Boolean( ropApiSettings.publish_now.instant_share_enabled ) && (
-					<PanelBody title={ ropApiSettings.labels.publish_now.instant_sharing }>
-						<InstantSharing
-							screen="pre-publish"
-							meta={ meta }
-							updateMetaValue={ updateMetaValue }
-							postStatus={ postStatus }
-							publishStatus={ meta.rop_publish_now_status }
-						/>
-					</PanelBody>
+					<>
+						<PanelBody title={ ropApiSettings.labels.publish_now.instant_sharing }>
+							<InstantSharing
+								screen="pre-publish"
+								meta={ meta }
+								updateMetaValue={ updateMetaValue }
+								postStatus={ postStatus }
+								publishStatus={ meta.rop_publish_now_status }
+							/>
+						</PanelBody>
+
+						{ postStatus === 'publish' && (
+							<PanelBody title={ ropApiSettings.labels.publish_now.manual_sharing }>
+								<ManualSharing />
+							</PanelBody>
+						) }
+					</>
 				) }
 
 				{ ( isPro && Boolean( ropApiSettings.custom_messages ) ) && (
@@ -119,6 +128,16 @@ const render = () => {
 							publishStatus={ meta.rop_publish_now_status }
 						/>
 					</PluginPostPublishPanel>
+
+					{ postStatus === 'publish' && (
+						<PluginPostPublishPanel
+							title={ ropApiSettings.labels.publish_now.manual_sharing }
+							icon={ icon }
+							isInitialOpen={ true }
+						>
+							<ManualSharing />
+						</PluginPostPublishPanel>
+					) }
 				</>
 			) }
 		</>
