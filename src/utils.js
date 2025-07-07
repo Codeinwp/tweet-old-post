@@ -4,6 +4,23 @@ import { select } from '@wordpress/data';
 
 import { store as editorStore } from '@wordpress/editor';
 
+import { addQueryArgs } from '@wordpress/url';
+
+export const getUtmLink = ({
+    link,
+    source,
+    medium,
+    campaign,
+}) => {
+    const queryArgs = {
+        utm_source: source,
+        utm_medium: medium,
+        utm_campaign: campaign,
+    };
+
+    return addQueryArgs( link, queryArgs );
+};
+
 export const getPostMeta = () => {
     const data = select( coreStore ).getEntityRecord(
         'postType',

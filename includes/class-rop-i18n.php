@@ -416,6 +416,14 @@ You can try to disable any of the security plugins that you use in order to see 
 				'variation_image'        => __( 'Upload image', 'tweet-old-post' ),
 				'variation_image_change' => __( 'Change image', 'tweet-old-post' ),
 				'variation_remove_image' => __( 'Remove', 'tweet-old-post' ),
+				'upsell'                 => array(
+					'title'      => __( 'Unlock More Variations', 'tweet-old-post' ),
+					'subtitle'   => __( 'Upgrade to Pro and take full control of your social shares.', 'tweet-old-post' ),
+					'line_one'   => __( 'Save unlimited message variations.', 'tweet-old-post' ),
+					'line_two'   => __( 'Add a unique image for each variation.', 'tweet-old-post' ),
+					'line_three' => __( 'Rotate messages to avoid repetition.', 'tweet-old-post' ),
+					'cta'        => __( 'Upgrade to Pro', 'tweet-old-post' ),
+				),
 			),
 			'emails'      => array(
 				'share_once_sharing_done_subject' => __( 'Revive Social - All Posts Shared', 'tweet-old-post' ),

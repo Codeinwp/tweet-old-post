@@ -16,7 +16,7 @@ import PostUpdate from './PostUpdate';
 import Reshare from './Reshare';
 import ListItem from './ListItem';
 
-const isPro = Boolean( ropApiSettings.license_type ) > 0;
+const isPro = Number( ropApiSettings.license_type ) > 0;
 const hasAccounts = Object.keys( ropApiSettings.publish_now.accounts )?.length >= 1;
 
 const InstantSharing = ({
@@ -38,7 +38,7 @@ const InstantSharing = ({
 
 	const accounts = Object.keys( ropApiSettings.publish_now.accounts ).filter( key => true === ropApiSettings.publish_now.accounts[ key ].active );
 
-	if ( ! hasAccounts && isPostPublish ) {
+	if ( ( ! hasAccounts && isPostPublish ) || ( isPostPublish && ! isPostPublished ) ) {
 		return null;
 	}
 

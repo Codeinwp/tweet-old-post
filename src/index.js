@@ -21,6 +21,7 @@ import { registerPlugin } from '@wordpress/plugins';
 import InstantSharing from './instant';
 import ManualSharing from './manual';
 import Variations from './variations';
+import Upsell from './variations/Upsell';
 
 const icon = (
 	<Icon
@@ -35,7 +36,7 @@ const icon = (
 	/>
 );
 
-const isPro = Boolean( ropApiSettings.license_type ) > 0;
+const isPro = Number( ropApiSettings.license_type ) > 0;
 
 const render = () => {
 	const postType = useSelect( select => select( editorStore ).getCurrentPostType(), [] );
@@ -98,6 +99,10 @@ const render = () => {
 						updateMetaValue={ updateMetaValue }
 					/>
 				) }
+
+				{ ! isPro && (
+					<Upsell />
+				) }
 			</PluginSidebar>
 
 			{ Boolean( ropApiSettings.publish_now.instant_share_enabled ) && (
@@ -116,27 +121,29 @@ const render = () => {
 						/>
 					</PluginPrePublishPanel>
 
-					<PluginPostPublishPanel
-						icon={ icon }
-						isInitialOpen={ true }
-					>
-						<InstantSharing
-							screen="post-publish"
-							meta={ meta }
-							updateMetaValue={ updateMetaValue }
-							postStatus={ postStatus }
-							publishStatus={ meta.rop_publish_now_status }
-						/>
-					</PluginPostPublishPanel>
-
 					{ postStatus === 'publish' && (
-						<PluginPostPublishPanel
-							title={ ropApiSettings.labels.publish_now.manual_sharing }
-							icon={ icon }
-							isInitialOpen={ true }
-						>
-							<ManualSharing />
-						</PluginPostPublishPanel>
+						<>
+							<PluginPostPublishPanel
+								icon={ icon }
+								isInitialOpen={ true }
+							>
+								<InstantSharing
+									screen="post-publish"
+									meta={ meta }
+									updateMetaValue={ updateMetaValue }
+									postStatus={ postStatus }
+									publishStatus={ meta.rop_publish_now_status }
+								/>
+							</PluginPostPublishPanel>
+
+							<PluginPostPublishPanel
+								title={ ropApiSettings.labels.publish_now.manual_sharing }
+								icon={ icon }
+								isInitialOpen={ true }
+							>
+								<ManualSharing />
+							</PluginPostPublishPanel>
+						</>
 					) }
 				</>
 			) }
