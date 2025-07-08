@@ -463,7 +463,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'share_failed_title' => __( 'Post not shared!', 'tweet-old-post' ),
 				'share_failed_desc' => __( 'There was an issue sharing your post to the selected social media accounts. Please check the logs for more information.', 'tweet-old-post' ),
 				'share_partially_shared_title' => __( 'Post partially shared!', 'tweet-old-post' ),
-				'share_partially_shared_desc' => __( 'Your post has been shared to some of the selected social media accounts. Please check the logs for more information.', 'tweet-old-post'),
+				'share_partially_shared_desc' => __( 'Your post has been shared to some of the selected social media accounts. Please check the logs for more information.', 'tweet-old-post' ),
 				'view_history' => __( 'View History', 'tweet-old-post' ),
 				'sharing_history' => __( 'Sharing History', 'tweet-old-post' ),
 				'account' => __( 'Account', 'tweet-old-post' ),

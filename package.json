@@ -26,7 +26,7 @@
 		"build": "webpack --mode production",
 		"build-dev": "webpack --mode development",
 		"sharing": "wp-scripts build src/index.js --output-path=assets/js/react/build --config webpack.sharing.config.js",
-		"start": "wp-scripts start src/index.js --output-path=assets/js/react/build --config webpack.sharing.config.js",
+		"sharing-dev": "wp-scripts start src/index.js --output-path=assets/js/react/build --config webpack.sharing.config.js",
 		"dist": "bash bin/dist.sh",
 		"release": "semantic-release --debug",
 		"lint": "wp-scripts lint-js ./vue -c .eslintrc.js --ext .js,.vue",

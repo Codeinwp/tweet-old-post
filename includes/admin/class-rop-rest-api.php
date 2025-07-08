@@ -1599,7 +1599,7 @@ class Rop_Rest_Api {
 
 	/**
 	 * Share API method.
-	 * 
+	 *
 	 * @access  public
 	 *
 	 * @param   WP_REST_Request $request The request object.
@@ -1616,7 +1616,7 @@ class Rop_Rest_Api {
 					'invalid_request',
 					__( 'Invalid request. Missing accounts.', 'tweet-old-post' ),
 					array(
-						'status' => 400
+						'status' => 400,
 					)
 				)
 			);

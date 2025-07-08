@@ -399,17 +399,18 @@ class Rop_Admin {
 
 		if ( 'publish_now' === $page ) {
 			$rop_api_settings['publish_now'] = apply_filters( 'rop_publish_now_attributes', $rop_api_settings['publish_now'] );
-			wp_enqueue_script( $this->plugin_name . '-publish_now-old', ROP_LITE_URL . 'assets/js/build/publish_now.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
-			wp_localize_script( $this->plugin_name . '-' . $page . '-old', 'ropApiSettings', $rop_api_settings );
-
-			$asset_file = include ROP_LITE_PATH . '/assets/js/react/build/index.asset.php';
-			wp_register_script(
-				$this->plugin_name . '-publish_now',
-				ROP_LITE_URL . 'assets/js/react/build/index.js', 
-				$asset_file['dependencies'],
-				$asset_file['version'],
-				false
-			);
+			if ( self::is_classic_editor() ) {
+				wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+			} else {
+				$asset_file = include ROP_LITE_PATH . '/assets/js/react/build/index.asset.php';
+				wp_register_script(
+					$this->plugin_name . '-publish_now',
+					ROP_LITE_URL . 'assets/js/react/build/index.js',
+					$asset_file['dependencies'],
+					$asset_file['version'],
+					false
+				);
+			}
 		}
 
 		$rop_api_settings['tracking']           = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
@@ -718,6 +719,149 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Publish now upsell
+	 *
+	 * @since   8.1.0
+	 * @access  public
+	 */
+	public function publish_now_upsell() {
+		$page = $this->get_current_page();
+		if ( empty( $page ) ) {
+			return;
+		}
+		$global_settings = new Rop_Global_Settings;
+		$settings        = new Rop_Settings_Model;
+
+		$services        = new Rop_Services_Model();
+		$active_accounts = $services->get_active_accounts();
+
+		if ( $settings->get_instant_sharing() && count( $active_accounts ) >= 2 && ! defined( 'ROP_PRO_VERSION' ) ) {
+			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
+				__(
+					'Share to more accounts by upgrading to the extended version for ',
+					'tweet-old-post'
+				) . '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'editor', 'publish_now' ) . '" target="_blank">Revive Social </a>
+						</div>';
+		}
+	}
+
+	/**
+	 * Check if we are using the classic editor.
+	 *
+	 * This is quite complex as it needs to check various conditions:
+	 * - If the Classic Editor plugin is active.
+	 * - If the post is saved with the Classic Editor.
+	 * - If the user has selected the Classic Editor in their profile.
+	 * - If the post is a new post (post_id is 0).
+	 * - If the Classic Editor is set to replace the block editor.
+	 * - If the user has the option to switch editors.
+	 * Some edge cases might still exist, but this should cover most scenarios.
+	 *
+	 * @return bool
+	 * @since 8.0.0
+	 */
+	public static function is_classic_editor() {
+		if ( ! class_exists( 'Classic_Editor' ) ) {
+			return false;
+		}
+
+		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+
+		$allow_users_to_switch_editors = ( 'allow' === get_option( 'classic-editor-allow-users' ) );
+
+		if ( $post_id && $allow_users_to_switch_editors && ! isset( $_GET['classic-editor__forget'] ) ) {
+			$was_saved_with_classic_editor = ( 'classic-editor' === get_post_meta( $post_id, 'classic-editor-remember', true ) );
+			if ( $was_saved_with_classic_editor ) {
+				return true;
+			}
+		}
+
+		if ( isset( $_GET['classic-editor'] ) ) {
+			return true;
+		}
+
+		$option = get_option( 'classic-editor-replace' );
+
+		$use_classic_editor = ( empty( $option ) || $option === 'classic' || $option === 'replace' );
+
+		$user_classic_editor = get_user_meta( get_current_user_id(), 'wp_classic-editor-settings', true );
+
+		if ( ! $allow_users_to_switch_editors && $use_classic_editor ) {
+			return true;
+		}
+
+		// if user has selected the classic editor, we will use it.
+		if ( $allow_users_to_switch_editors && ! empty( $user_classic_editor ) && $user_classic_editor === 'classic' ) {
+			return true;
+		}
+
+		// if post_id is zero, we are on the new post screen.
+		if ( $post_id === 0 && $use_classic_editor && $user_classic_editor !== 'block' ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Creates publish now metabox.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_publish_now_metabox( $screen ) {
+		if ( ! self::is_classic_editor() ) {
+			return;
+		}
+
+		$settings_model = new Rop_Settings_Model();
+
+		// Get selected post types from General settings
+		$screens = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
+
+		if ( empty( $screens ) ) {
+			return;
+		}
+
+		if ( ! $settings_model->get_instant_sharing() ) {
+			return;
+		}
+
+		$revive_network_post_type_key = array_search( 'revive-network-share', $screens, true );
+		// Remove Revive Network post type. Publish now feature not available for RSS feed items.
+
+		if ( ! empty( $revive_network_post_type_key ) ) {
+			unset( $screens[ $revive_network_post_type_key ] );
+		}
+
+		foreach ( $screens as $screen ) {
+			add_meta_box(
+				'rop_publish_now_metabox',
+				'Revive Social',
+				array( $this, 'rop_publish_now_metabox_html' ),
+				$screen,
+				'side',
+				'high'
+			);
+		}
+	}
+
+	/**
+	 * Publish now metabox html.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_publish_now_metabox_html() {
+
+		wp_nonce_field( 'rop_publish_now_nonce', 'rop_publish_now_nonce' );
+		include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
+
+		$this->publish_now_upsell();
+
+	}
+
+	/**
 	 * Publish now attributes to be provided to the javascript.
 	 *
 	 * @param array $default The default attributes.
@@ -739,7 +883,7 @@ class Rop_Admin {
 	 * This is hooked to the `save_post` action.
 	 * The values from the Publish Now metabox are saved to the post meta.
 	 *
-	 * @param int $post_id The post ID.
+	 * @param int  $post_id The post ID.
 	 * @param bool $force Whether to force the action.
 	 */
 	public function maybe_publish_now( $post_id, $force = false ) {
@@ -764,11 +908,27 @@ class Rop_Admin {
 			return;
 		}
 
-		$publish = get_post_meta( $post_id, 'rop_publish_now', true );
-		$enabled_accounts = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
+		if ( isset( $_POST['publish_now'] ) && ! empty( $_POST['publish_now'] ) ) {
+			$publish = sanitize_text_field( $_POST['publish_now'] ) === '1' ? 'yes' : 'no';
+		} else {
+			$publish = get_post_meta( $post_id, 'rop_publish_now', true );
+		}
 
 		if ( empty( $publish ) || 'yes' !== $publish ) {
 			return;
+		}
+
+		if ( isset( $_POST['publish_now_accounts'] ) && ! empty( $_POST['publish_now_accounts'] ) ) {
+			$publish_now_active_accounts_settings = $_POST['publish_now_accounts'];
+
+			$enabled_accounts = array();
+
+			foreach ( $publish_now_active_accounts_settings as $account_id ) {
+				$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
+				$enabled_accounts[ $account_id ] = $custom_message;
+			}
+		} else {
+			$enabled_accounts = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
 		}
 
 		if ( ! is_array( $enabled_accounts ) ) {
@@ -795,7 +955,7 @@ class Rop_Admin {
 				$post_id,
 				array(
 					'account'   => $account_id,
-					'service'   => $accounts[$account_id]['service'],
+					'service'   => $accounts[ $account_id ]['service'],
 					'timestamp' => time(),
 					'status'    => 'queued',
 				)
@@ -807,6 +967,7 @@ class Rop_Admin {
 		update_post_meta( $post_id, 'rop_publish_now', $publish );
 		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled_accounts );
 		update_post_meta( $post_id, 'rop_publish_now_status', 'queued' );
+		$this->rop_cron_job_publish_now();
 
 		$cron = new Rop_Cron_Helper();
 		$cron->manage_cron( array( 'action' => 'publish-now' ) );
@@ -827,7 +988,7 @@ class Rop_Admin {
 		$history = get_post_meta( $post_id, $meta_key, true );
 
 		if ( ! is_array( $history ) ) {
-			$history = [];
+			$history = array();
 		}
 
 		$updated = false;
@@ -919,28 +1080,37 @@ class Rop_Admin {
 						$response = $service->share( $post_data, $account_data );
 
 						if ( $response ) {
-							$this->update_publish_now_history( $post_id, array(
-								'account'   => $account_id,
-								'service'   => $account_data['service'],
-								'timestamp' => time(),
-								'status'    => 'success',
-							) );
+							$this->update_publish_now_history(
+								$post_id,
+								array(
+									'account'   => $account_id,
+									'service'   => $account_data['service'],
+									'timestamp' => time(),
+									'status'    => 'success',
+								)
+							);
 						} else {
-							$this->update_publish_now_history( $post_id, array(
-								'account'   => $account_id,
-								'service'   => $account_data['service'],
-								'timestamp' => time(),
-								'status'    => 'error',
-							) );
+							$this->update_publish_now_history(
+								$post_id,
+								array(
+									'account'   => $account_id,
+									'service'   => $account_data['service'],
+									'timestamp' => time(),
+									'status'    => 'error',
+								)
+							);
 						}
 					}
 				} catch ( Exception $exception ) {
-					$this->update_publish_now_history( $post_id, array(
-						'account'   => $account_id,
-						'service'   => $account_data['service'],
-						'timestamp' => time(),
-						'status'    => 'error',
-					) );
+					$this->update_publish_now_history(
+						$post_id,
+						array(
+							'account'   => $account_id,
+							'service'   => $account_data['service'],
+							'timestamp' => time(),
+							'status'    => 'error',
+						)
+					);
 					$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
 					$logger->alert_error( $error_message . ' Error: ' . print_r( $exception->getMessage(), true ) );
 				}
@@ -1723,8 +1893,22 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Check if the current screen is the classic editor screen.
+	 *
+	 * @return bool True if it's the classic editor screen, false otherwise.
+	 */
+	public function is_classic_editor_screen() {
+		if ( ! class_exists( 'Classic_Editor' ) ) {
+			return false;
+		}
+
+		$current_screen = get_current_screen();
+		return method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor();
+	}
+
+	/**
 	 * Register meta for the plugin.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function register_meta() {
@@ -1740,63 +1924,63 @@ class Rop_Admin {
 		register_post_meta(
 			'',
 			'rop_custom_images_group',
-			[
+			array(
 				'single'            => true,
 				'type'              => 'object',
 				'sanitize_callback' => $sanitize_passthrough,
 				'auth_callback'     => $auth_can_edit_posts,
-				'show_in_rest'      => [
-					'schema' => [
+				'show_in_rest'      => array(
+					'schema' => array(
 						'type'       => 'object',
-						'properties' => [], // Leave blank to allow dynamic keys, or define expected keys
-						'additionalProperties' => [
+						'properties' => array(), // Leave blank to allow dynamic keys, or define expected keys
+						'additionalProperties' => array(
 							'type'       => 'object',
-							'properties' => [
-								'rop_custom_image' => [
+							'properties' => array(
+								'rop_custom_image' => array(
 									'type' => 'integer',
-								],
-							],
-						],
-					],
-				],
-			]
+								),
+							),
+						),
+					),
+				),
+			)
 		);
 
 		register_post_meta(
 			'',
 			'rop_custom_messages_group',
-			[
+			array(
 				'single'            => true,
 				'type'              => 'array',
 				'sanitize_callback' => $sanitize_passthrough,
 				'auth_callback'     => $auth_can_edit_posts,
-				'show_in_rest'      => [
-					'schema' => [
+				'show_in_rest'      => array(
+					'schema' => array(
 						'type'  => 'array',
-						'items' => [
+						'items' => array(
 							'type'       => 'object',
-							'properties' => [
-								'rop_custom_description' => [
+							'properties' => array(
+								'rop_custom_description' => array(
 									'type' => 'string',
-								],
-							],
-						],
-					],
-				],
-			]
+								),
+							),
+						),
+					),
+				),
+			)
 		);
 
 		register_post_meta(
 			'',
 			'rop_publish_now',
-			[
+			array(
 				'single'            => true,
 				'type'              => 'string',
 				'default'           => 'initial', // Weird Gutenberg behavior that sends the default before sending the actual value, so we send a default that does not conflict with the actual values.
 				'sanitize_callback' => 'sanitize_text_field',
 				'auth_callback'     => $auth_can_edit_posts,
 				'show_in_rest'      => true,
-			]
+			)
 		);
 
 		$services = new Rop_Services_Model();
@@ -1806,27 +1990,27 @@ class Rop_Admin {
 		register_post_meta(
 			'',
 			'rop_publish_now_accounts',
-			[
+			array(
 				'single'            => true,
 				'type'              => 'object',
 				'default'           => $accounts,
 				'sanitize_callback' => $sanitize_passthrough,
 				'auth_callback'     => $auth_can_edit_posts,
-				'show_in_rest'      => [
-					'schema' => [
+				'show_in_rest'      => array(
+					'schema' => array(
 						'type'                 => 'object',
-						'additionalProperties' => [
+						'additionalProperties' => array(
 							'type' => 'string',
-						],
-					],
-				],
-			]
+						),
+					),
+				),
+			)
 		);
 
 		register_post_meta(
 			'',
 			'rop_publish_now_history',
-			[
+			array(
 				'single'            => true,
 				'type'              => 'array',
 				'default'           => array(),
@@ -1847,20 +2031,20 @@ class Rop_Admin {
 						),
 					),
 				),
-			]
+			)
 		);
 
 		register_post_meta(
 			'',
 			'rop_publish_now_status',
-			[
+			array(
 				'single'            => true,
 				'type'              => 'string',
 				'default'           => 'pending',
 				'sanitize_callback' => 'sanitize_text_field',
 				'auth_callback'     => $auth_can_edit_posts,
 				'show_in_rest'      => true,
-			]
+			)
 		);
 	}
 }
