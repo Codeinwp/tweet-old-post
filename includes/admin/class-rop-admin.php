@@ -967,7 +967,6 @@ class Rop_Admin {
 		update_post_meta( $post_id, 'rop_publish_now', $publish );
 		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled_accounts );
 		update_post_meta( $post_id, 'rop_publish_now_status', 'queued' );
-		$this->rop_cron_job_publish_now();
 
 		$cron = new Rop_Cron_Helper();
 		$cron->manage_cron( array( 'action' => 'publish-now' ) );
