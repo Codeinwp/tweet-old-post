@@ -322,6 +322,7 @@
 				if (account.service === 'vk') serviceIcon = serviceIcon.concat('vk')
 				if (account.service === 'gmb') serviceIcon = serviceIcon.concat('google')
 				if (account.service === 'telegram') serviceIcon = serviceIcon.concat('telegram')
+				if (account.service === 'bluesky') serviceIcon = serviceIcon.concat('cloud')
 
 				return serviceIcon;
 			},

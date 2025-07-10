@@ -1579,4 +1579,49 @@ class Rop_Rest_Api {
 
 		return $this->response->to_array();
 	}
+
+	/**
+	 * API method called to add Bluesky via app.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   9.3.0
+	 * @access  private
+	 *
+	 * @param   array $data Bluesky accounts data.
+	 *
+	 * @return  array
+	 */
+	private function add_account_bluesky( $data ) {
+		$services        = array();
+		$active_accounts = array();
+		$bs_service      = new Rop_Bluesky_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		$bs_service->add_account_with_app( $data );
+
+		$services[ $bs_service->get_service_id() ] = $bs_service->get_service();
+		$active_accounts                           = array_merge( $active_accounts, $bs_service->get_service_active_accounts() );
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+			->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+		               ->set_message( 'OK' )
+		               ->set_data( array() );
+
+		return $this->response->to_array();
+	}
 }
