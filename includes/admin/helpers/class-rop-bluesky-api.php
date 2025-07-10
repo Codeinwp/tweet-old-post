@@ -57,27 +57,38 @@ class Rop_Bluesky_Api {
 	protected $password = '';
 
 	/**
+	 * Bluesky refresh token.
+	 * 
+	 * @var string
+	 */
+	protected $refresh_token = '';
+
+	/**
 	 * Construct.
 	 *
-	 * @param string $identifier Bluesky identifier.
-	 * @param string $password   App password.
+	 * @param string $identifier    Bluesky identifier.
+	 * @param string $password      App password.
+	 * @param string $refresh_token Refresh token.
 	 */
-	public function __construct( $identifier = '', $password = '' ) {
+	public function __construct( $identifier = '', $password = '', $refresh_token = '' ) {
 		if ( empty( $identifier ) || empty( $password ) ) {
 			return;
 		}
 
-		$this->logger     = new Rop_Logger();
-		$this->identifier = $identifier;
-		$this->password   = $password;
+		$this->logger        = new Rop_Logger();
+		$this->identifier    = $identifier;
+		$this->password      = $password;
+		$this->refresh_token = $refresh_token;
 	}
 
 	/**
 	 * Create a session with Bluesky.
 	 * 
+	 * @param bool $update_token Whether to refresh the token or not.
+	 * 
 	 * @return mixed|false
 	 */
-	public function create_session() {
+	public function create_session( $update_token = false ) {
 		try {
 			$response = wp_remote_post(
 				"{$this->api_url}/com.atproto.server.createSession",
@@ -115,6 +126,82 @@ class Rop_Bluesky_Api {
 			) {
 				$this->logger->alert_error( 'Bluesky create session API Error: Invalid response: ' . print_r( $response, true ) );
 				return false;
+			}
+
+			if ( $update_token ) {
+				$this->refresh_token = $response->refreshJwt;
+				$rop_data            = get_option( 'rop_data' );
+
+				$services  = $rop_data['services'];
+				$matched_key = null;
+
+				foreach ( $services as $key => $service ) {
+					if ( isset( $service['id'] ) && $service['id'] === $response->did ) {
+						$matched_key = $key;
+						break;
+					}
+				}
+
+				if ( $matched_key ) {
+					$update_token = array(
+						'services' => array(
+							$matched_key => array(
+								'credentials' => array(
+									'identifier' => $this->identifier,
+									'password'   => $this->password,
+									'refreshJwt' => $this->refresh_token,
+								),
+							),
+						),
+
+					);
+
+					$rop_updated_data = array_replace_recursive( $rop_data, $update_token );
+
+					update_option( 'rop_data', $rop_updated_data );
+				}
+			}
+
+			return $response;
+		} catch ( \Exception $e ) {
+			$this->logger->alert_error( 'Bluesky API Error: ' . $e->getMessage() );
+			return false;
+		}
+	}
+
+	/**
+	 * Refresh session with Bluesky.
+	 * 
+	 * @return mixed|false
+	 */
+	public function refresh_session() {
+		if ( empty( $this->refresh_token ) ) {
+			return $this->create_session( true );
+		}
+
+		try {
+			$response = wp_remote_post(
+				"{$this->api_url}/com.atproto.server.refreshSession",
+				[
+					'headers' => [
+						'Content-Type'  => 'application/json',
+						'timeout'       => 120,
+						'Authorization' => 'Bearer ' . $this->refresh_token,
+					],
+				]
+			);
+
+			if ( is_wp_error( $response ) ) {
+				$this->logger->alert_error( 'Bluesky refresh session API Error: ' . $response->get_error_message() );
+				return false;
+			}
+
+			$response = wp_remote_retrieve_body( $response );
+			$this->logger->info( 'Bluesky refresh session API response: ' . print_r( $response, true ) );
+			$response = json_decode( $response );
+
+			if ( isset( $response->error ) ) {
+				return $this->create_session( true );
 			}
 
 			return $response;

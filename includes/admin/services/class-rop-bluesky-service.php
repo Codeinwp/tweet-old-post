@@ -59,12 +59,13 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 	 *
 	 * @param string $identifier The Bluesky identifier.
 	 * @param string $password   The Bluesky app password.
+	 * @param string $refresh_token The refresh token for the API.
 	 *
 	 * @return Rop_Bluesky_Api
 	 */
-	public function get_api( $identifier = '', $password = '' ) {
+	public function get_api( $identifier = '', $password = '', $refresh_token = '' ) {
 		if ( null === $this->api ) {
-			$this->set_api( $identifier, $password );
+			$this->set_api( $identifier, $password, $refresh_token );
 		}
 
 		return $this->api;
@@ -78,16 +79,17 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 	 *
 	 * @param string $identifier The Bluesky identifier.
 	 * @param string $password   The Bluesky app password.
+	 * @param string $refresh_token The refresh token for the API.
 	 *
 	 * @return mixed
 	 */
-	public function set_api( $identifier = '', $password = '' ) {
+	public function set_api( $identifier = '', $password = '', $refresh_token = '' ) {
 		try {
 			if ( empty( $identifier ) || empty( $password ) ) {
 				return false;
 			}
 
-			$this->api = new Rop_Bluesky_Api( $identifier, $password );
+			$this->api = new Rop_Bluesky_Api( $identifier, $password, $refresh_token );
 		} catch ( \Exception $e ) {
 			$this->logger->alert_error( 'Can not load Bluesky api. Error: ' . $e->getMessage() );
 		}
@@ -163,6 +165,7 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 		$post_id             = $post_details['post_id'];
 		$identifier          = $args['credentials']['identifier'];
 		$password            = $args['credentials']['password'];
+		$refresh_token       = isset( $args['credentials']['refreshJwt'] ) ? $args['credentials']['refreshJwt'] : '';
 		$post_url            = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
 		$model               = new Rop_Post_Format_Model();
@@ -184,19 +187,13 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 		}
 
 		try {
-			$api = $this->get_api( $identifier, $password );
+			$api = $this->get_api( $identifier, $password, $refresh_token );
 
 			if ( ! $api ) {
 				throw new Exception( 'Bluesky API Error: Unable to initialize API with provided credentials.' );
 			}
 
-			$response = $api->create_session();
-
-			if ( empty( $response ) || ! is_object( $response ) || ! isset( $response->did ) ) {
-				throw new Exception( 'Bluesky API Error: ' . wp_json_encode( $response ) );
-			}
-
-			$response = $api->create_session();
+			$response = $api->refresh_session();
 
 			if ( empty( $response ) || ! is_object( $response ) || ! isset( $response->did ) ) {
 				throw new Exception( 'Bluesky API Error: ' . wp_json_encode( $response ) );
@@ -274,8 +271,9 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 				'id'                 => $id,
 				'service'            => $this->service_name,
 				'credentials'        => array(
-					'identifier'   => $data['identifier'],
-					'password'     => $data['password'],
+					'identifier' => $data['identifier'],
+					'password'   => $data['password'],
+					'refreshJwt' => $response->refreshJwt
 				),
 				'available_accounts' => array(
 					$this->service_name . '_' . $id => array(
