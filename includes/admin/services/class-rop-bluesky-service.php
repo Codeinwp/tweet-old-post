@@ -154,6 +154,7 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 	 * @param   array $args Optional arguments needed by the method.
 	 *
 	 * @return mixed
+	 * @throws Exception If there is an error during the sharing process.
 	 */
 	public function share( $post_details, $args = array() ) {
 
@@ -199,7 +200,7 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 				throw new Exception( 'Bluesky API Error: ' . wp_json_encode( $response ) );
 			}
 
-			$id 		   = $response->did;
+			$id            = $response->did;
 			$access_token  = $response->accessJwt;
 
 			$response = $api->create_post( $id, $post_details, $post_type, $hashtags, $access_token );
@@ -243,6 +244,7 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 	 * @param   array $data Account data.
 	 *
 	 * @return  bool
+	 * @throws Exception If there is an error during the account creation process.
 	 */
 	public function add_account_with_app( $data ) {
 		if ( empty( $data['identifier'] ) || empty( $data['password'] ) ) {
@@ -262,9 +264,9 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 				throw new Exception( 'Bluesky API Error: ' . wp_json_encode( $response ) );
 			}
 
-			$id 		   = $response->did;
+			$id            = $response->did;
 			$access_token  = $response->accessJwt;
-			$active 	   = isset( $data['active'] ) ? $data['active'] : true;
+			$active        = isset( $data['active'] ) ? $data['active'] : true;
 			$user          = $bluesky->get_user_details( $id, $access_token );
 
 			$this->service = array(
@@ -273,7 +275,7 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 				'credentials'        => array(
 					'identifier' => $data['identifier'],
 					'password'   => $data['password'],
-					'refreshJwt' => $response->refreshJwt
+					'refreshJwt' => $response->refreshJwt,
 				),
 				'available_accounts' => array(
 					$this->service_name . '_' . $id => array(

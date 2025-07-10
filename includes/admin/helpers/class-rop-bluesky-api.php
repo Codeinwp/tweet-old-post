@@ -44,21 +44,21 @@ class Rop_Bluesky_Api {
 
 	/**
 	 * Bluesky indentifier.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $identifier = '';
 
 	/**
 	 * Bluesky app password.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $password = '';
 
 	/**
 	 * Bluesky refresh token.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $refresh_token = '';
@@ -83,25 +83,27 @@ class Rop_Bluesky_Api {
 
 	/**
 	 * Create a session with Bluesky.
-	 * 
+	 *
 	 * @param bool $update_token Whether to refresh the token or not.
-	 * 
+	 *
 	 * @return mixed|false
 	 */
 	public function create_session( $update_token = false ) {
 		try {
 			$response = wp_remote_post(
 				"{$this->api_url}/com.atproto.server.createSession",
-				[
-					'headers' => [
+				array(
+					'headers' => array(
 						'Content-Type' => 'application/json',
 						'timeout'      => 120,
-					],
-					'body'    => json_encode([
-						'identifier' => $this->identifier,
-						'password'   => $this->password,
-					]),
-				]
+					),
+					'body'    => json_encode(
+						array(
+							'identifier' => $this->identifier,
+							'password'   => $this->password,
+						)
+					),
+				)
 			);
 
 			if ( is_wp_error( $response ) ) {
@@ -171,7 +173,7 @@ class Rop_Bluesky_Api {
 
 	/**
 	 * Refresh session with Bluesky.
-	 * 
+	 *
 	 * @return mixed|false
 	 */
 	public function refresh_session() {
@@ -182,13 +184,13 @@ class Rop_Bluesky_Api {
 		try {
 			$response = wp_remote_post(
 				"{$this->api_url}/com.atproto.server.refreshSession",
-				[
-					'headers' => [
+				array(
+					'headers' => array(
 						'Content-Type'  => 'application/json',
 						'timeout'       => 120,
 						'Authorization' => 'Bearer ' . $this->refresh_token,
-					],
-				]
+					),
+				)
 			);
 
 			if ( is_wp_error( $response ) ) {
@@ -213,10 +215,10 @@ class Rop_Bluesky_Api {
 
 	/**
 	 * Get user details.
-	 * 
+	 *
 	 * @param string $did The DID of the user.
 	 * @param string $access_token Optional access token for authenticated requests.
-	 * 
+	 *
 	 * @return mixed|false
 	 */
 	public function get_user_details( $did, $access_token = '' ) {
@@ -227,14 +229,14 @@ class Rop_Bluesky_Api {
 
 		try {
 			$response = wp_remote_get(
-				"{$this->api_url}/app.bsky.actor.getProfile?" . http_build_query( [ 'actor' => $did ] ),
-				[
-					'headers' => [
+				"{$this->api_url}/app.bsky.actor.getProfile?" . http_build_query( array( 'actor' => $did ) ),
+				array(
+					'headers' => array(
 						'Content-Type' => 'application/json',
 						'timeout'      => 120,
 						'Authorization' => 'Bearer ' . $access_token,
-					],
-				]
+					),
+				)
 			);
 
 			if ( is_wp_error( $response ) ) {
@@ -260,13 +262,13 @@ class Rop_Bluesky_Api {
 
 	/**
 	 * Create a post on Bluesky.
-	 * 
+	 *
 	 * @param string $did The DID of the user.
 	 * @param array  $post The post.
-	 * @param array  $hashtags Optional hashtags for the post.
 	 * @param string $post_type Type of the post.
+	 * @param array  $hashtags Optional hashtags for the post.
 	 * @param string $access_token The access token for authenticated requests.
-	 * 
+	 *
 	 * @return mixed|false
 	 * @since 9.3.0
 	 * @throws Exception If the API request fails or returns an error.
@@ -280,11 +282,11 @@ class Rop_Bluesky_Api {
 		try {
 			$url = "{$this->api_url}/com.atproto.repo.createRecord";
 
-			$headers = [
+			$headers = array(
 				'Content-Type'  => 'application/json',
 				'timeout'       => 120,
 				'Authorization' => 'Bearer ' . $access_token,
-			];
+			);
 
 			$now  = gmdate( 'Y-m-d\TH:i:s\Z' );
 
@@ -295,14 +297,14 @@ class Rop_Bluesky_Api {
 			);
 
 			if ( $post_type === 'link' ) {
-				$record['embed'] = [
+				$record['embed'] = array(
 					'$type'   => 'app.bsky.embed.external',
-					'external' => [
+					'external' => array(
 						'uri'         => isset( $post['url'] ) ? $post['url'] : '',
 						'title'       => isset( $post['title'] ) ? $post['title'] : '',
 						'description' => isset( $post['description'] ) ? $post['description'] : '',
-					],
-				];
+					),
+				);
 
 				if (
 					isset( $post['post_image'], $post['mimetype'] ) &&
@@ -321,28 +323,30 @@ class Rop_Bluesky_Api {
 				$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
 
 				if ( false !== $image_blob ) {
-					$record['embed'] = [
+					$record['embed'] = array(
 						'$type'   => 'app.bsky.embed.images',
-						'images' => [
-							[
+						'images' => array(
+							array(
 								'alt'   => isset( $post['title'] ) ? $post['title'] : '',
 								'image' => $image_blob,
-							],
-						],
-					];
+							),
+						),
+					);
 				}
 			}
 
 			$response = wp_remote_post(
 				$url,
-				[
+				array(
 					'headers' => $headers,
-					'body'    => json_encode( [
-						'repo'       => $did,
-						'collection' => 'app.bsky.feed.post',
-						'record'     => $record,
-					] ),
-				]
+					'body'    => json_encode(
+						array(
+							'repo'       => $did,
+							'collection' => 'app.bsky.feed.post',
+							'record'     => $record,
+						)
+					),
+				)
 			);
 
 			if ( is_wp_error( $response ) ) {
@@ -376,7 +380,7 @@ class Rop_Bluesky_Api {
 	 * Upload a blob to Bluesky.
 	 *
 	 * @param string $access_token The access token for authenticated requests.
-	 * @param string $img_body     The image URL.
+	 * @param string $image        The image URL.
 	 * @param string $mime         The MIME type of the image.
 	 * @return array|false
 	 */
@@ -396,13 +400,13 @@ class Rop_Bluesky_Api {
 
 			$upload_response = wp_remote_post(
 				"{$this->api_url}/com.atproto.repo.uploadBlob",
-				[
-					'headers' => [
+				array(
+					'headers' => array(
 						'Content-Type'  => $mime,
 						'Authorization' => 'Bearer ' . $access_token,
-					],
+					),
 					'body'    => $data,
-				]
+				)
 			);
 
 			if ( is_wp_error( $upload_response ) ) {
@@ -428,7 +432,7 @@ class Rop_Bluesky_Api {
 	 * Fetch image binary data from a URL.
 	 *
 	 * @param string $image_url The image URL.
-	 * 
+	 *
 	 * @return string|false Image binary data or false on failure.
 	 */
 	public function get_image_blob_from_url( $image_url ) {
@@ -437,7 +441,7 @@ class Rop_Bluesky_Api {
 			return false;
 		}
 
-		$response = wp_remote_get( $image_url, [ 'timeout' => 30 ] );
+		$response = wp_remote_get( $image_url, array( 'timeout' => 30 ) );
 
 		if ( is_wp_error( $response ) ) {
 			$this->logger->alert_error( 'Bluesky get image blob Error: ' . $response->get_error_message() );

@@ -152,7 +152,7 @@ class Rop_Global_Settings {
 			'allowed_comment'  => false,
 		),
 		'bluesky'  => array(
-			'active'=> false,
+			'active' => false,
 			'name' => 'Bluesky',
 			'two_step_sign_in' => true,
 			'allowed_comment'  => false,

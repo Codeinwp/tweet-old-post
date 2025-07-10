@@ -1619,8 +1619,8 @@ class Rop_Rest_Api {
 		}
 
 		$this->response->set_code( '200' )
-		               ->set_message( 'OK' )
-		               ->set_data( array() );
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
 
 		return $this->response->to_array();
 	}
