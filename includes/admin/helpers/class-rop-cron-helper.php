@@ -497,7 +497,7 @@ class Rop_Cron_Helper {
 	 */
 	private function clear_action_scheduler_jobs() {
 		$rop_cron_hooks = array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE );
-		foreach ( $cron_hooks as $cron_hook ) {
+		foreach ( $rop_cron_hooks as $cron_hook ) {
 			$scheduled_actions = as_get_scheduled_actions(
 				array(
 					'hook'   => $cron_hook,

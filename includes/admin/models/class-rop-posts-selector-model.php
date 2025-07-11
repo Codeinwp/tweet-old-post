@@ -749,7 +749,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				$query->the_post();
 				$posts[] = $query->post;
 				// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
-				delete_post_meta( $query->post, 'rop_publish_now' );
+				update_post_meta( $query->post, 'rop_publish_now', 'no' );
 			}
 		}
 

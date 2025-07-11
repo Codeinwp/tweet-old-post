@@ -18,3 +18,102 @@
 .toplevel_page_TweetOldPost #wpbody-content > #rop_core {
     display: block !important;
 }
+
+.revive-social-sidebar .revive-social__toggle > .components-base-control__field > .components-flex {
+    flex-direction: row-reverse;
+}
+
+.revive-social-platform-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.revive-social__checkbox {
+    --checkbox-input-size: 20px;
+}
+
+.revive-social__modal table {
+    width: 100%;
+}
+
+.revive-social__modal th {
+    text-align: left;
+    padding: 0 0 1rem 0;
+}
+
+.revive-social__modal tbody tr {
+    height: 40px;
+}
+
+.revive-social__spinner svg {
+    margin: 0;
+}
+
+.revive-social__spinner p {
+    margin: 0;
+}
+
+.revive-social__sharing-buttons .components-button {
+    padding: 0;
+    height: auto;
+}
+
+.revive-social__sharing-buttons .revive-social-platform-icon {
+    border-radius: 0;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+}
+
+.revive-social__sharing-buttons .revive-social-platform-icon:hover {
+    opacity: 0.8;
+}
+
+.facebook-icon {
+    background-color: #1877f2;
+}
+.twitter-icon {
+    background-color: #000000;
+}
+.linkedin-icon {
+    background-color: #0077b5;
+}
+.instagram-icon {
+    background: linear-gradient(135deg, #fbbf24, #ef4444, #8b5cf6);
+}
+.telegram-icon {
+    background-color: #0088cc;
+}
+.tumblr-icon {
+    background-color: #001935;
+}
+.vk-icon {
+    background-color: #0074ab;
+}
+.mastodon-icon {
+    background-color: #6364ff;
+}
+.gmb-icon {
+    background-color: #323b43;
+}
+.webhook-icon {
+    background-color: #ffbc42;
+}
+.bluesky-icon {
+    background-color: #0ea5e9;
+}
+.whatsapp-icon {
+    background-color: #25d366;
+}
+
+.link-icon {
+    background-color: #0073aa;
+}

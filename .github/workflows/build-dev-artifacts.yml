@@ -41,6 +41,7 @@ jobs:
         run: |
           npm ci
           npm run build-dev
+          npm run sharing
       - name: Create Zip file
         run: npm run dist
       - name: Retrieve branch name
