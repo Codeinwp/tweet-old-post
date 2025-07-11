@@ -847,6 +847,12 @@ a.active {
     display: flex;
     align-items: center;
 }
+#rop_core .btn.btn-bluesky {
+    background-color: #1A8CD8;
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
 
 #rop_core
 .btn:is(
