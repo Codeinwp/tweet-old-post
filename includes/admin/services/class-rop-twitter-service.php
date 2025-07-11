@@ -500,7 +500,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			'media_category' => 'tweet_image',
 		);
 
-
 		$options['chunkedUpload'] = false;
 
 		if ( ! empty( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
