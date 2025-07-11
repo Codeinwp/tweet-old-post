@@ -40,6 +40,7 @@ jobs:
       - name: Make build
         run: |
           npm run build
+          npm run sharing
 
       - name: Setup WP Env
         run: |

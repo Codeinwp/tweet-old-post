@@ -182,10 +182,6 @@ class Rop_Global_Settings {
 		'custom_messages'       => false,
 		'custom_messages_share_order'    => false,
 		'instant_share'         => true,
-		'true_instant_share'    => true,
-		'instant_share_default' => false,
-		'instant_share_choose_accounts_manually' => false,
-		'instant_share_future_scheduled' => false,
 		'start_time'            => false,
 		'minute_interval'      => 5,
 	);
@@ -519,7 +515,7 @@ class Rop_Global_Settings {
 	 * @since   9.1.0
 	 * @access  public
 	 *
-	 * @return  object
+	 * @return  object|int
 	 */
 	public function get_license_data() {
 		if ( ! defined( 'ROP_PRO_VERSION' ) ) {

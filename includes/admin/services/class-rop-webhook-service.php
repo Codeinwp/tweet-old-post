@@ -76,8 +76,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
-
-		$log_account_used = '[' . $this->credentials['user'] . '] ';
+		$log_account_used = '[' . ( isset( $this->credentials['user'] ) ? $this->credentials['user'] : ( isset( $this->credentials['display_name'] ) ? $this->credentials['display_name'] : '' ) ) . '] ';
 		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
 			$this->logger->alert_error( $log_account_used . Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
 			return false;
@@ -164,6 +163,8 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 					$this->service_name
 				)
 			);
+
+			return true;
 		}
 
 		return false;

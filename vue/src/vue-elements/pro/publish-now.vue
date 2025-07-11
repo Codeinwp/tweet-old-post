@@ -112,7 +112,6 @@
 	 * The section is located in the "Publish" metabox of the post/page editor.
 	 */
 	import ButtonCheckbox from '../reusables/button-checkbox.vue'
-
 	export default {
 		name: 'PublishNow',
 		components: {
@@ -123,7 +122,6 @@
 			Object.keys( this.$store.state.publish_now.accounts ).forEach( e => {
 				fields[e] = false;
 			} );
-
 			return {
                 rop_is_edit_post_screen: ropApiSettings.rop_is_edit_post_screen,
 				license: this.$store.state.license,
@@ -147,7 +145,6 @@
 		created() {
 		},
 		methods: {
-
 			/**
 			 * Get the class for the Font Awesome icon of a social media service.
 			 * 
@@ -163,10 +160,8 @@
 				if (service === 'vk') serviceIcon = serviceIcon.concat('vk')
 				if (service === 'gmb') serviceIcon = serviceIcon.concat('google')
 				if (service === 'telegram') serviceIcon = serviceIcon.concat('telegram')
-
 				return serviceIcon;
 			},
-
 			/**
 			 * Toggle the sharing feature for a specific account.
 			 * 
@@ -178,10 +173,8 @@
 				if( event.target.checked ) {
 					return;
 				}
-
 				return self.showField[account_id] = false;
 			},
-
 			/**
 			 * Toggle the custom share message field for a specific account.
 			 * 

@@ -23,6 +23,7 @@ composer.lock
 key.enc
 package-lock.json
 vue
+/src // Only the root src directory to avoid dependency directories being ignored
 .github
 .vscode
 .wordpress-org
