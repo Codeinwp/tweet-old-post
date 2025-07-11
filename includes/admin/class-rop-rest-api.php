@@ -1640,7 +1640,7 @@ class Rop_Rest_Api {
 					   ->set_data( array() );
 
 		return $this->response->to_array();
-  }
+	}
 
 	/**
 	 * Share API method.

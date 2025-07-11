@@ -67,7 +67,7 @@ module.exports = {
 						allowedTextDomain: 'tweet-old-post',
 					},
 				],
-				'@wordpress/no-unsafe-wp-apis': false,
+				'@wordpress/no-unsafe-wp-apis': 0,
 			},
 		},
 	],
