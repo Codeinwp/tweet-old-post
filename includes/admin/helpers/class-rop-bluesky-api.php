@@ -296,13 +296,13 @@ class Rop_Bluesky_Api {
 				'createdAt' => $now,
 			);
 
-			if ( $post_type === 'link' ) {
+			if ( $post_type === 'link' && isset( $post['post_url'] ) && ! empty( $post['post_url'] ) ) {
 				$record['embed'] = array(
 					'$type'   => 'app.bsky.embed.external',
 					'external' => array(
-						'uri'         => isset( $post['url'] ) ? $post['url'] : '',
+						'uri'         => $post['post_url'],
 						'title'       => isset( $post['title'] ) ? $post['title'] : '',
-						'description' => isset( $post['description'] ) ? $post['description'] : '',
+						'description' => isset( $post['content'] ) ? $post['content'] : '',
 					),
 				);
 
@@ -319,7 +319,7 @@ class Rop_Bluesky_Api {
 				}
 			}
 
-			if ( $post_type === 'image' ) {
+			if ( $post_type === 'image' && isset( $post['post_image'], $post['mimetype'] ) && ! empty( $post['post_image'] ) && ! empty( $post['mimetype'] ) ) {
 				$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
 
 				if ( false !== $image_blob ) {
