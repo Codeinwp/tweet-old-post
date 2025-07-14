@@ -1,217 +1,195 @@
 import {
-    Button,
-    Modal,
-    Spinner,
-    __experimentalHStack as HStack,
+	Button,
+	Modal,
+	Spinner,
+	__experimentalHStack as HStack,
 } from '@wordpress/components';
 
 import { dateI18n } from '@wordpress/date';
 
-import {
-    useEffect,
-    useState
-} from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 
 import { capitalize } from 'lodash';
 
-import {
-    getIcon,
-    getPostMeta
-} from '../utils';
+import { getIcon, getPostMeta } from '../utils';
 
-let interval
+let interval;
 
-const getLabels = history => {
-    const length = history.reduce( ( acc, item ) => {
-        if ( 'error' === item.status ) {
-            return 'failed';
-        }
-        if ( 'success' === item.status ) {
-            return 'success';
-        }
+const getLabels = (history) => {
+	const length = history.reduce((acc, item) => {
+		if ('error' === item.status) {
+			return 'failed';
+		}
+		if ('success' === item.status) {
+			return 'success';
+		}
 
-        return 'partially_shared';
-    }, '' );
+		return 'partially_shared';
+	}, '');
 
-    switch ( length ) {
-        case 'failed':
-            return {
-                title: ropApiSettings.labels.publish_now.share_failed_title,
-                description: ropApiSettings.labels.publish_now.share_failed_desc,
-            };
-        case 'partially_shared':
-            return {
-                title: ropApiSettings.labels.publish_now.share_partially_shared_title,
-                description: ropApiSettings.labels.publish_now.share_partially_shared_desc,
-            }
-        default:
-            return {
-                title: ropApiSettings.labels.publish_now.shared_title,
-                description: ropApiSettings.labels.publish_now.shared_desc,
-            };
-    }
+	switch (length) {
+		case 'failed':
+			return {
+				title: ropApiSettings.labels.publish_now.share_failed_title,
+				description:
+					ropApiSettings.labels.publish_now.share_failed_desc,
+			};
+		case 'partially_shared':
+			return {
+				title: ropApiSettings.labels.publish_now
+					.share_partially_shared_title,
+				description:
+					ropApiSettings.labels.publish_now
+						.share_partially_shared_desc,
+			};
+		default:
+			return {
+				title: ropApiSettings.labels.publish_now.shared_title,
+				description: ropApiSettings.labels.publish_now.shared_desc,
+			};
+	}
 };
 
-const formatTimestamp = timestamp => {
-	return dateI18n( 'j F, Y g:i A', timestamp );
+const formatTimestamp = (timestamp) => {
+	return dateI18n('j F, Y g:i A', timestamp);
 };
 
-const TableRow = ({
-    service,
-    account,
-    timestamp,
-    status
-}) => {
-    return (
-        <tr>
-            <td>
-                <HStack
-                    justify="flex-start"
-                >
-                    <>{ getIcon( service ) }</>
-                    <>{ ropApiSettings.publish_now.accounts[account]?.user }</>
-                </HStack>
-            </td>
-            <td>{ formatTimestamp( Number( timestamp + '000' ) ) }</td>
-            <td>{ capitalize( status ) }</td>
-        </tr>
-    );
+const TableRow = ({ service, account, timestamp, status }) => {
+	return (
+		<tr>
+			<td>
+				<HStack justify="flex-start">
+					<>{getIcon(service)}</>
+					<>{ropApiSettings.publish_now.accounts[account]?.user}</>
+				</HStack>
+			</td>
+			<td>{formatTimestamp(Number(timestamp + '000'))}</td>
+			<td>{capitalize(status)}</td>
+		</tr>
+	);
 };
 
 const HistoryTable = ({ data }) => {
-    return (
-        <table>
-            <thead>
-                <tr>
-                    <th
-                        style={{ width: '50%' }}
-                    >
-                        { ropApiSettings.labels.publish_now.account}
-                    </th>
-                    <th
-                        style={{ width: '25%' }}
-                    >
-                        { ropApiSettings.labels.publish_now.time}
-                    </th>
-                    <th
-                        style={{ width: '25%' }}
-                    >
-                        { ropApiSettings.labels.publish_now.status}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                { data.map( ( item, index ) => {
-                    return (
-                        <TableRow
-                            key={ index }
-                            service={ item.service }
-                            account={ item.account }
-                            timestamp={ item.timestamp }
-                            status={ item.status }
-                        />
-                    );
-                } ) }
-            </tbody>
-        </table>
-    );
+	return (
+		<table>
+			<thead>
+				<tr>
+					<th style={{ width: '50%' }}>
+						{ropApiSettings.labels.publish_now.account}
+					</th>
+					<th style={{ width: '25%' }}>
+						{ropApiSettings.labels.publish_now.time}
+					</th>
+					<th style={{ width: '25%' }}>
+						{ropApiSettings.labels.publish_now.status}
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{data.map((item, index) => {
+					return (
+						<TableRow
+							key={index}
+							service={item.service}
+							account={item.account}
+							timestamp={item.timestamp}
+							status={item.status}
+						/>
+					);
+				})}
+			</tbody>
+		</table>
+	);
 };
 
-const HistoryModal = ({
-    history,
-    isOpen,
-    setOpen
-}) => {
-    const onClose = () => {
-        setOpen( ! isOpen );
-    }
+const HistoryModal = ({ history, isOpen, setOpen }) => {
+	const onClose = () => {
+		setOpen(!isOpen);
+	};
 
-    if ( ! isOpen ) {
-        return null;
-    }
+	if (!isOpen) {
+		return null;
+	}
 
-    return (
-        <Modal
-            title={ ropApiSettings.labels.publish_now.sharing_history }
-            onRequestClose={ onClose }
-            size="large"
-            className="revive-social__modal"
-        >
-            <HistoryTable data={ history } />
-        </Modal>
-    );
+	return (
+		<Modal
+			title={ropApiSettings.labels.publish_now.sharing_history}
+			onRequestClose={onClose}
+			size="large"
+			className="revive-social__modal"
+		>
+			<HistoryTable data={history} />
+		</Modal>
+	);
 };
 
 const PostUpdate = ({
-    status,
-    history,
-    isPostPublish,
-    setStatus,
-    setHistory
+	status,
+	history,
+	isPostPublish,
+	setStatus,
+	setHistory,
 }) => {
-    const [ isOpen, setOpen ] = useState( false );
-    const isQueued = history.some( item => 'queued' === item.status );
+	const [ isOpen, setOpen ] = useState(false);
+	const isQueued = history.some((item) => 'queued' === item.status);
 
-    useEffect(() => {
-        interval = setInterval(() => {
-            const currentStatus = getPostMeta();
-            setStatus( currentStatus?.rop_publish_now_status );
-            setHistory( currentStatus?.rop_publish_now_history || [] );
-        }, 5000 );
-        return () => clearInterval( interval );
-    }, []);
+	useEffect(() => {
+		if (status === 'queued' || isQueued) {
+			interval = setInterval(() => {
+				const currentStatus = getPostMeta();
+				setStatus(currentStatus?.rop_publish_now_status);
+				setHistory(currentStatus?.rop_publish_now_history || []);
+			}, 5000);
+		} else {
+			clearInterval(interval);
+		}
+		return () => clearInterval(interval);
+	}, [ status, isQueued ]);
 
-    useEffect( () => {
-        if ( 'done' === status && ! isQueued ) {
-            clearInterval( interval );
-        }
-    }, [ status ] );
+	useEffect(() => {
+		if ('done' === status && !isQueued) {
+			clearInterval(interval);
+		}
+	}, [ status ]);
 
-    if ( 'queued' === status || isQueued ) {
-        return (
-            <HStack
-                justify="flex-start"
-                className="revive-social__spinner"
-            >
-                <Spinner />
-                <p>{ ropApiSettings.labels.publish_now.queued }</p>
-            </HStack>
-        );
-    }
+	if ('queued' === status || isQueued) {
+		return (
+			<HStack justify="flex-start" className="revive-social__spinner">
+				<Spinner />
+				<p>{ropApiSettings.labels.publish_now.queued}</p>
+			</HStack>
+		);
+	}
 
-    if ( 'done' === status && history.length === 0 ) {
-        return null;
-    }
+	if ('done' === status && history.length === 0) {
+		return null;
+	}
 
-    const labels = getLabels( history );
+	const labels = getLabels(history);
 
-    return (
-        <>
-            { isPostPublish && (
-                <>
-                    <h4>{ labels.title}</h4>
-                    <p>{ labels.description }</p>
-                </>
-            ) }
+	return (
+		<>
+			{isPostPublish && (
+				<>
+					<h4>{labels.title}</h4>
+					<p>{labels.description}</p>
+				</>
+			)}
 
-            <HistoryModal
-                history={ history }
-                isOpen={ isOpen }
-                setOpen={ setOpen }
-            />
+			<HistoryModal history={history} isOpen={isOpen} setOpen={setOpen} />
 
-            <Button
-                variant="secondary"
-                style={{
-                    width: '100%',
-                    justifyContent: 'center',
-                }}
-                onClick={ () => setOpen( ! isOpen ) }
-            >
-                { ropApiSettings.labels.publish_now.view_history }
-            </Button>
-        </>
-    );
+			<Button
+				variant="secondary"
+				style={{
+					width: '100%',
+					justifyContent: 'center',
+				}}
+				onClick={() => setOpen(!isOpen)}
+			>
+				{ropApiSettings.labels.publish_now.view_history}
+			</Button>
+		</>
+	);
 };
 
 export default PostUpdate;

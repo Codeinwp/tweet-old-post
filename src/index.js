@@ -11,7 +11,7 @@ import {
 	PluginPostPublishPanel,
 	PluginSidebar,
 	PluginSidebarMoreMenuItem,
-	store as editorStore
+	store as editorStore,
 } from '@wordpress/editor';
 
 import { useEffect } from '@wordpress/element';
@@ -36,121 +36,137 @@ const icon = (
 	/>
 );
 
-const isPro = Number( ropApiSettings.license_type ) > 0;
+const isPro = Number(ropApiSettings.license_type) > 0;
 
 const render = () => {
-	const postType = useSelect( select => select( editorStore ).getCurrentPostType(), [] );
-	const postStatus = useSelect( select => select( editorStore ).getCurrentPostAttribute( 'status' ), [] );
+	const postType = useSelect(
+		(select) => select(editorStore).getCurrentPostType(),
+		[]
+	);
+	const postStatus = useSelect(
+		(select) => select(editorStore).getCurrentPostAttribute('status'),
+		[]
+	);
 
-	const [ meta, setMeta ] = useEntityProp( 'postType', postType, 'meta' );
+	const [ meta, setMeta ] = useEntityProp('postType', postType, 'meta');
 
-	const updateMetaValue = ( keyOrObject, newValue ) => {
-		if ( typeof keyOrObject === 'object' && keyOrObject !== null ) {
-			setMeta( { ...meta, ...keyOrObject } );
+	const updateMetaValue = (keyOrObject, newValue) => {
+		if (typeof keyOrObject === 'object' && keyOrObject !== null) {
+			setMeta({ ...meta, ...keyOrObject });
 		} else {
-			setMeta( { ...meta, [keyOrObject]: newValue } );
+			setMeta({ ...meta, [keyOrObject]: newValue });
 		}
 	};
 
-	useEffect( () => {
-		if ( meta.rop_publish_now ) {
-			updateMetaValue( 'rop_publish_now', 'yes' );
+	useEffect(() => {
+		if (meta.rop_publish_now) {
+			updateMetaValue('rop_publish_now', 'yes');
 		}
-	}, [] );
+	}, []);
 
 	return (
 		<>
-			<PluginSidebarMoreMenuItem
-                target="rop-sidebar"
-                icon={ icon }
-            >
-				{ ropApiSettings.labels.general.plugin_name }
+			<PluginSidebarMoreMenuItem target="rop-sidebar" icon={icon}>
+				{ropApiSettings.labels.general.plugin_name}
 			</PluginSidebarMoreMenuItem>
 
 			<PluginSidebar
 				name="rop-sidebar"
-				icon={ icon }
-				title={ ropApiSettings.labels.general.plugin_name }
+				icon={icon}
+				title={ropApiSettings.labels.general.plugin_name}
 				className="revive-social-sidebar"
 			>
-				{ Boolean( ropApiSettings.publish_now.instant_share_enabled ) && (
+				{Boolean(ropApiSettings.publish_now.instant_share_enabled) && (
 					<>
-						<PanelBody title={ ropApiSettings.labels.publish_now.instant_sharing }>
+						<PanelBody
+							title={
+								ropApiSettings.labels.publish_now
+									.instant_sharing
+							}
+						>
 							<InstantSharing
 								screen="pre-publish"
-								meta={ meta }
-								updateMetaValue={ updateMetaValue }
-								postStatus={ postStatus }
-								publishStatus={ meta.rop_publish_now_status }
+								meta={meta}
+								updateMetaValue={updateMetaValue}
+								postStatus={postStatus}
+								publishStatus={meta.rop_publish_now_status}
 							/>
 						</PanelBody>
 
-						{ postStatus === 'publish' && (
-							<PanelBody title={ ropApiSettings.labels.publish_now.manual_sharing }>
+						{postStatus === 'publish' && (
+							<PanelBody
+								title={
+									ropApiSettings.labels.publish_now
+										.manual_sharing
+								}
+							>
 								<ManualSharing />
 							</PanelBody>
-						) }
+						)}
 					</>
-				) }
+				)}
 
-				{ ( isPro && Boolean( ropApiSettings.custom_messages ) ) && (
-					<Variations
-						meta={ meta }
-						updateMetaValue={ updateMetaValue }
-					/>
-				) }
+				{isPro && Boolean(ropApiSettings.custom_messages) && (
+					<Variations meta={meta} updateMetaValue={updateMetaValue} />
+				)}
 
-				{ ! isPro && (
-					<Upsell />
-				) }
+				{!isPro && <Upsell />}
 			</PluginSidebar>
 
-			{ Boolean( ropApiSettings.publish_now.instant_share_enabled ) && (
+			{Boolean(ropApiSettings.publish_now.instant_share_enabled) && (
 				<>
 					<PluginPrePublishPanel
-						title={ ropApiSettings.labels.publish_now.instant_sharing }
-						isInitialOpen={ true }
-						icon={ icon }
+						title={
+							ropApiSettings.labels.publish_now.instant_sharing
+						}
+						isInitialOpen={true}
+						icon={icon}
 					>
 						<InstantSharing
 							screen="pre-publish"
-							meta={ meta }
-							updateMetaValue={ updateMetaValue }
-							postStatus={ postStatus }
-							publishStatus={ meta.rop_publish_now_status }
+							meta={meta}
+							updateMetaValue={updateMetaValue}
+							postStatus={postStatus}
+							publishStatus={meta.rop_publish_now_status}
 						/>
 					</PluginPrePublishPanel>
 
-					{ postStatus === 'publish' && (
+					{postStatus === 'publish' && (
 						<>
 							<PluginPostPublishPanel
-								icon={ icon }
-								isInitialOpen={ true }
+								icon={icon}
+								isInitialOpen={true}
 							>
 								<InstantSharing
 									screen="post-publish"
-									meta={ meta }
-									updateMetaValue={ updateMetaValue }
-									postStatus={ postStatus }
-									publishStatus={ meta.rop_publish_now_status }
+									meta={meta}
+									updateMetaValue={updateMetaValue}
+									postStatus={postStatus}
+									publishStatus={meta.rop_publish_now_status}
 								/>
 							</PluginPostPublishPanel>
 
 							<PluginPostPublishPanel
-								title={ ropApiSettings.labels.publish_now.manual_sharing }
-								icon={ icon }
-								isInitialOpen={ true }
+								title={
+									ropApiSettings.labels.publish_now
+										.manual_sharing
+								}
+								icon={icon}
+								isInitialOpen={true}
 							>
 								<ManualSharing />
 							</PluginPostPublishPanel>
 						</>
-					) }
+					)}
 				</>
-			) }
+			)}
 		</>
 	);
 };
 
-if ( Boolean( ropApiSettings.publish_now.instant_share_enabled ) || ( isPro && Boolean( ropApiSettings.custom_messages ) ) ) {
-	registerPlugin( 'revive-social', { render } );
+if (
+	Boolean(ropApiSettings.publish_now.instant_share_enabled) ||
+	(isPro && Boolean(ropApiSettings.custom_messages))
+) {
+	registerPlugin('revive-social', { render });
 }
