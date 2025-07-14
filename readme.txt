@@ -338,6 +338,15 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+#### [Version 9.3.0](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.5...v9.3.0) (2025-07-14)
+
+- Bluesky Network Integration [PRO]
+- Post Sharing Controls in the Block Editor
+- Fixed Issue with X (Twitter) Not Sharing Posts with Images
+
+
+
+
 ##### [Version 9.2.5](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.4...v9.2.5) (2025-05-20)
 
 - Fixed posting issue with LinkedIn network
