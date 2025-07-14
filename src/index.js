@@ -59,7 +59,7 @@ const render = () => {
 	};
 
 	useEffect(() => {
-		if (meta.rop_publish_now) {
+		if ('initial' === meta.rop_publish_now && postStatus !== 'publish') {
 			updateMetaValue('rop_publish_now', 'yes');
 		}
 	}, []);
