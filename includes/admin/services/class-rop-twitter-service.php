@@ -495,9 +495,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		$upload_args = array(
-			'media' => $media_path,
-			'media_type' => $post_details['mimetype']['type'],
+			'media'          => $media_path,
+			'media_type'     => $post_details['mimetype']['type'],
+			'media_category' => 'tweet_image',
 		);
+
+		$options['chunkedUpload'] = false;
 
 		if ( ! empty( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
 			// Re-enable Jetpack Photon filter.
@@ -511,6 +514,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$upload_args['media_type']     = $post_details['mimetype']['type'];
 			$upload_args['media_category'] = 'tweet_video';
 			$status_check                  = true;
+			$options['chunkedUpload']      = true;
 		}
 
 		// Overwrite media_type and category if is Gif Post
@@ -518,12 +522,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$upload_args['media_type']     = $post_details['mimetype']['type'];
 			$upload_args['media_category'] = 'tweet_gif';
 			$status_check                  = true;
+			$options['chunkedUpload']      = true;
 		}
 
 		$this->logger->info( 'Before upload to twitter . ' . json_encode( $upload_args ) );
 		$api->setTimeouts( 10, 60 );
 		$api->setApiVersion( '2' );
-		$options['chunkedUpload'] = true;
 		$media_response = $api->upload( 'media/upload', $upload_args, $options );
 
 		if ( isset( $media_response->data->id ) ) {

@@ -23,6 +23,7 @@ composer.lock
 key.enc
 package-lock.json
 vue
+/src
 .github
 .vscode
 .wordpress-org

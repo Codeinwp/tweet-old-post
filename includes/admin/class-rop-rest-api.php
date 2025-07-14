@@ -62,6 +62,23 @@ class Rop_Rest_Api {
 				);
 			}
 		);
+
+		add_action(
+			'rest_api_init',
+			function () {
+				register_rest_route(
+					'tweet-old-post/v8',
+					'/share/(?P<id>[a-zA-Z0-9_-]+)',
+					array(
+						'methods'             => array( 'POST' ),
+						'callback'            => array( $this, 'share' ),
+						'permission_callback' => function () {
+							return current_user_can( 'edit_posts' );
+						},
+					)
+				);
+			}
+		);
 	}
 
 	/**
@@ -1578,5 +1595,93 @@ class Rop_Rest_Api {
 		->set_data( array() );
 
 		return $this->response->to_array();
+	}
+
+	/**
+	 * API method called to add Bluesky via app.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   9.3.0
+	 * @access  private
+	 *
+	 * @param   array $data Bluesky accounts data.
+	 *
+	 * @return  array
+	 */
+	private function add_account_bluesky( $data ) {
+		$services        = array();
+		$active_accounts = array();
+		$bs_service      = new Rop_Bluesky_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		$bs_service->add_account_with_app( $data );
+
+		$services[ $bs_service->get_service_id() ] = $bs_service->get_service();
+		$active_accounts                           = array_merge( $active_accounts, $bs_service->get_service_active_accounts() );
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+			->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		return $this->response->to_array();
+	}
+
+	/**
+	 * Share API method.
+	 *
+	 * @access  public
+	 *
+	 * @param   WP_REST_Request $request The request object.
+	 *
+	 * @return array|mixed|null|string
+	 */
+	public function share( WP_REST_Request $request ) {
+		$post_id = $request->get_param( 'id' );
+		$body    = json_decode( $request->get_body(), true );
+
+		if ( ! isset( $body['rop_publish_now_accounts'] ) || ! is_array( $body['rop_publish_now_accounts'] ) || empty( $body['rop_publish_now_accounts'] ) ) {
+			return rest_ensure_response(
+				new WP_Error(
+					'invalid_request',
+					__( 'Invalid request. Missing accounts.', 'tweet-old-post' ),
+					array(
+						'status' => 400,
+					)
+				)
+			);
+		}
+
+		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', $body['rop_publish_now_accounts'] );
+
+		do_action(
+			'rop_publish_now_instant_share',
+			$post_id,
+			true,
+		);
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'history' => get_post_meta( $post_id, 'rop_publish_now_history', true ),
+				'message' => __( 'Post shared successfully.', 'tweet-old-post' ),
+			)
+		);
 	}
 }

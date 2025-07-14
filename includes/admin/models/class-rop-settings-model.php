@@ -578,56 +578,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Getter for instant sharing enabled by default option.
-	 *
-	 * @since   8.1.3
-	 * @access  public
-	 * @return bool
-	 */
-	public function get_instant_sharing_by_default() {
-		return isset( $this->settings['instant_share_default'] ) ? $this->settings['instant_share_default'] : false;
-	}
-
-	/**
-	 * Getter for choose account manually option.
-	 *
-	 * @since   9.0.0
-	 * @access  public
-	 * @return bool
-	 */
-	public function get_instant_share_choose_accounts_manually() {
-		return isset( $this->settings['instant_share_choose_accounts_manually'] ) ? $this->settings['instant_share_choose_accounts_manually'] : false;
-	}
-
-	/**
-	 * Getter for instant sharing on scheduled post publish.
-	 *
-	 * Getting for checking if the option to share scheduled posts after their post status has changed from future to publish.
-	 *
-	 * @see Rop::define_admin_hooks For the function being called on 'future_to_publish' hook.
-	 *
-	 * @since   8.5.2
-	 * @access  public
-	 * @return bool
-	 */
-	public function get_instant_share_future_scheduled() {
-		return isset( $this->settings['instant_share_future_scheduled'] ) ? $this->settings['instant_share_future_scheduled'] : false;
-	}
-
-	/**
-	 * Getter for true instant sharing.
-	 *
-	 * Getting for checking if the option to enable True instant sharing is checked. True instant sharing means share happens on save_post hook.
-	 *
-	 * @since   8.5.7
-	 * @access  public
-	 * @return bool
-	 */
-	public function get_true_instant_share() {
-		return isset( $this->settings['true_instant_share'] ) ? $this->settings['true_instant_share'] : false;
-	}
-
-	/**
 	 * Getter for Update Post Published Date After Share feature.
 	 *
 	 * @since 9.0.6

@@ -151,6 +151,12 @@ class Rop_Global_Settings {
 			'two_step_sign_in' => true,
 			'allowed_comment'  => false,
 		),
+		'bluesky'  => array(
+			'active' => false,
+			'name' => 'Bluesky',
+			'two_step_sign_in' => true,
+			'allowed_comment'  => false,
+		),
 	);
 
 	/**
@@ -182,10 +188,6 @@ class Rop_Global_Settings {
 		'custom_messages'       => false,
 		'custom_messages_share_order'    => false,
 		'instant_share'         => true,
-		'true_instant_share'    => true,
-		'instant_share_default' => false,
-		'instant_share_choose_accounts_manually' => false,
-		'instant_share_future_scheduled' => false,
 		'start_time'            => false,
 		'minute_interval'      => 5,
 	);
@@ -419,6 +421,28 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
+		'bluesky'  => array(
+			'wpml_language'        => '',
+			'post_content'         => 'post_title',
+			'custom_meta_field'    => '',
+			'maximum_length'       => '300',
+			'custom_text'          => '',
+			'custom_text_pos'      => 'beginning',
+			'include_link'         => true,
+			'url_from_meta'        => false,
+			'url_meta_key'         => '',
+			'short_url'            => false,
+			'short_url_service'    => 'rviv.ly',
+			'hashtags'             => 'no-hashtags',
+			'hashtags_length'      => '200',
+			'hashtags_common'      => '',
+			'hashtags_custom'      => '',
+			'hashtags_randomize'   => false,
+			'shortner_credentials' => array(),
+			'image'                => false,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
+		),
 	);
 
 	/**
@@ -519,7 +543,7 @@ class Rop_Global_Settings {
 	 * @since   9.1.0
 	 * @access  public
 	 *
-	 * @return  object
+	 * @return  object|int
 	 */
 	public function get_license_data() {
 		if ( ! defined( 'ROP_PRO_VERSION' ) ) {

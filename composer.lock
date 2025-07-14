@@ -53,12 +53,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeinwp/twitteroauth.git",
-                "reference": "5fa87042325015e26581461a5200972657049dc8"
+                "reference": "9f8c5b8478e0845c137c91b86a98ba367f5e7695"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeinwp/twitteroauth/zipball/5fa87042325015e26581461a5200972657049dc8",
-                "reference": "5fa87042325015e26581461a5200972657049dc8",
+                "url": "https://api.github.com/repos/Codeinwp/twitteroauth/zipball/9f8c5b8478e0845c137c91b86a98ba367f5e7695",
+                "reference": "9f8c5b8478e0845c137c91b86a98ba367f5e7695",
                 "shasum": ""
             },
             "require": {
@@ -106,7 +106,7 @@
                 "source": "https://github.com/abraham/twitteroauth",
                 "issues": "https://github.com/abraham/twitteroauth/issues"
             },
-            "time": "2025-05-08T09:36:01+00:00"
+            "time": "2025-07-14T13:47:00+00:00"
         },
         {
             "name": "composer/ca-bundle",
