@@ -280,7 +280,7 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 				'available_accounts' => array(
 					$this->service_name . '_' . $id => array(
 						'id'      => $id,
-						'user'    => $user->displayName,
+						'user'    => ! empty( $user-> displayName) ? $user->displayName : $user->handle,
 						'account' => $user->handle,
 						'service' => $this->service_name,
 						'img'     => $user->avatar ? $user->avatar : '',
