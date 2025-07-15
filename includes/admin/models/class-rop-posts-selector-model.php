@@ -734,7 +734,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 						'key'   => 'rop_publish_now',
 						'value' => 'yes',
 					),
-					array( // we didn't want to add this check, it's redundant but it seems in previous version delete_post_meta was not working properly.
+					array( // NOTE: Extra check since the previous versions were not deleting the status correctly.
 						'key'   => 'rop_publish_now_status',
 						'value' => 'queued',
 					),
