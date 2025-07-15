@@ -1,3 +1,8 @@
+##### [Version 9.3.1](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.0...v9.3.1) (2025-07-15)
+
+- Fixes issue with previously shared posts being published
+- Fixes issue with previously shared posts being published
+
 #### [Version 9.3.0](https://github.com/Codeinwp/tweet-old-post/compare/v9.2.5...v9.3.0) (2025-07-14)
 
 - Bluesky Network Integration [PRO]
