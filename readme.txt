@@ -114,6 +114,7 @@ Revive Social isn't like every other social media marketing tool. We've tailored
 - WordPress to Vkontakte(VK) Communities [Pro]
 - WordPress to Telegram [Pro]
 - WordPress to Mastodon [Pro]
+- WordPress to Bluesky [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 

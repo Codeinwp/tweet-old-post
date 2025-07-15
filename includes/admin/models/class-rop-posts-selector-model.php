@@ -734,6 +734,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 						'key'   => 'rop_publish_now',
 						'value' => 'yes',
 					),
+					array( // NOTE: Extra check since the previous versions were not deleting the status correctly.
+						'key'   => 'rop_publish_now_status',
+						'value' => 'queued',
+					),
 				),
 				'numberposts' => 300,
 				'orderby'     => 'modified',
@@ -748,7 +752,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			while ( $query->have_posts() ) {
 				$query->the_post();
 				$posts[] = $query->post;
-				// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
+				// update the meta so that when the post loads again after publishing, the checkboxes are cleared.
 				update_post_meta( $query->post, 'rop_publish_now', 'no' );
 			}
 		}
