@@ -342,7 +342,6 @@ http://revive.social/plugins/revive-old-post
 ##### [Version 9.3.1](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.0...v9.3.1) (2025-07-15)
 
 - Fixes issue with previously shared posts being published
-- Fixes issue with previously shared posts being published
 
 
 
