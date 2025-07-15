@@ -578,6 +578,19 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Getter for Instant Sharing Default option.
+	 *
+	 * @since 9.0.6
+	 * @access public
+	 * @return bool
+	 */
+	public function get_instant_sharing_default() {
+		// This option is only kept for backward compatibility.
+		$value = isset( $this->settings['instant_share_default'] ) ? $this->settings['instant_share_default'] : true;
+		return apply_filters( 'rop_instant_sharing_default', $value );
+	}
+
+	/**
 	 * Getter for Update Post Published Date After Share feature.
 	 *
 	 * @since 9.0.6

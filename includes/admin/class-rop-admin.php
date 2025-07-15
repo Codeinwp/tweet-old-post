@@ -371,6 +371,7 @@ class Rop_Admin {
 		$rop_api_settings['exclude_apply_limit']             = $this->limit_exclude_list();
 		$rop_api_settings['publish_now']                     = array(
 			'instant_share_enabled' => $settings->get_instant_sharing(),
+			'instant_share_by_default' => $settings->get_instant_sharing_default(),
 			'accounts' => $active_accounts,
 		);
 		$rop_api_settings['custom_messages']                 = $settings->get_custom_messages();
