@@ -89,9 +89,9 @@
           </p>
           <textarea
             v-show="showField[key]"
+            v-model="page_active_accounts[key]"
             :name="key"
             :disabled="!isPro"
-            :value="page_active_accounts[key] || ''"
             class="rop-custom-instant-share-message-area"
           />
           <p
