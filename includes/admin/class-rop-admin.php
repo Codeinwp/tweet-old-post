@@ -870,9 +870,7 @@ class Rop_Admin {
 	public function publish_now_attributes( $default ) {
 		global $post;
 
-		if ( in_array( $post->post_status, array( 'future', 'publish' ), true ) ) {
-			$default['action'] = 'yes' === get_post_meta( $post->ID, 'rop_publish_now', true );
-		}
+		$default['action'] = 'no' !== get_post_meta( $post->ID, 'rop_publish_now', true );
 		$default['page_active_accounts'] = get_post_meta( $post->ID, 'rop_publish_now_accounts', true );
 
 		return $default;
@@ -905,6 +903,29 @@ class Rop_Admin {
 	 */
 	public function maybe_publish_now( $post_id, $force = false ) {
 		$post_status = get_post_status( $post_id );
+
+		// Check if the status is set to future, for Classic Editor, we will save the publish now meta.
+		if ( in_array( $post_status, array( 'future', 'draft' ), true ) ) {
+			if ( isset( $_POST['rop_publish_now_nonce'] ) && wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
+				$publish = isset( $_POST['publish_now'] ) ? sanitize_text_field( $_POST['publish_now'] ) === 'no' ? 'no' : 'yes' : 'no';
+				update_post_meta( $post_id, 'rop_publish_now', $publish );
+
+				$enabled_accounts = array();
+
+				if ( isset( $_POST['publish_now_accounts'] ) && ! empty( $_POST['publish_now_accounts'] ) ) {
+					$publish_now_active_accounts_settings = $_POST['publish_now_accounts'];
+
+					foreach ( $publish_now_active_accounts_settings as $account_id ) {
+						$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
+						$enabled_accounts[ $account_id ] = $custom_message;
+					}
+				}
+
+				update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled_accounts );
+			}
+
+			return;
+		}
 
 		if ( ! in_array( $post_status, array( 'publish' ), true ) ) {
 			return;
@@ -1906,20 +1927,6 @@ class Rop_Admin {
 		$configs[ ROP_PRODUCT_SLUG ] = $config;
 
 		return $configs;
-	}
-
-	/**
-	 * Check if the current screen is the classic editor screen.
-	 *
-	 * @return bool True if it's the classic editor screen, false otherwise.
-	 */
-	public function is_classic_editor_screen() {
-		if ( ! class_exists( 'Classic_Editor' ) ) {
-			return false;
-		}
-
-		$current_screen = get_current_screen();
-		return method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor();
 	}
 
 	/**
