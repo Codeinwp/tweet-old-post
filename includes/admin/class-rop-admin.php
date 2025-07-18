@@ -879,6 +879,22 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Handles the transition of post status from 'future' to 'publish'.
+	 * Triggers the "publish now" functionality when a scheduled post is published.
+	 *
+	 * @param string  $new_status The new status of the post.
+	 * @param string  $old_status The previous status of the post.
+	 * @param WP_Post $post       The post object.
+	 */
+	public function transition_post_status( $new_status, $old_status, $post ) {
+		if ( $old_status !== 'future' || $new_status !== 'publish' ) {
+			return;
+		}
+
+		$this->maybe_publish_now( $post->ID, true );
+	}
+
+	/**
 	 * Publish now, if enabled.
 	 *
 	 * This is hooked to the `save_post` action.
@@ -905,7 +921,7 @@ class Rop_Admin {
 			return;
 		}
 
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		if ( ! wp_doing_cron() && ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 

@@ -165,6 +165,7 @@ class Rop {
 
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'rop_publish_now_metabox' );
 		$this->loader->add_action( 'wp_after_insert_post', $plugin_admin, 'maybe_publish_now' );
+		$this->loader->add_action( 'transition_post_status', $plugin_admin, 'transition_post_status', 10, 3 );
 		$this->loader->add_action( 'rop_publish_now_instant_share', $plugin_admin, 'maybe_publish_now', 10, 2 );
 		$this->loader->add_filter( 'rop_publish_now_attributes', $plugin_admin, 'publish_now_attributes' );
 
