@@ -762,6 +762,11 @@ class Rop_Admin {
 	 * @since 8.0.0
 	 */
 	public static function is_classic_editor() {
+		if ( isset( $_GET['wpb-backend-editor'] ) ) {
+			// If the wpb-backend-editor is set, we are using the classic editor via WPBakery.
+			return true;
+		}
+
 		if ( ! class_exists( 'Classic_Editor' ) ) {
 			return false;
 		}
