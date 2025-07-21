@@ -1,3 +1,8 @@
+##### [Version 9.3.2](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.1...v9.3.2) (2025-07-21)
+
+- Fixes Instant Sharing options not appearing with WPBakery
+- Fixes issue with Instant Sharing not working with Scheduled posts
+
 ##### [Version 9.3.1](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.0...v9.3.1) (2025-07-15)
 
 - Fixes issue with previously shared posts being published
