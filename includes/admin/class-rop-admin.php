@@ -767,8 +767,14 @@ class Rop_Admin {
 			return true;
 		}
 
-		if ( ! class_exists( 'Classic_Editor' ) ) {
+		$post_type = get_post_type();
+
+		if ( ! $post_type ) {
 			return false;
+		}
+
+		if ( function_exists(( 'use_block_editor_for_post_type') ) && ! use_block_editor_for_post_type( $post_type ) ) {
+			return true;
 		}
 
 		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
@@ -801,9 +807,57 @@ class Rop_Admin {
 			return true;
 		}
 
-		// if post_id is zero, we are on the new post screen.
-		if ( $post_id === 0 && $use_classic_editor && $user_classic_editor !== 'block' ) {
-			return true;
+		// Handle new posts
+		if ( $post_id === 0 ) {
+			// Check for explicit classic editor URL parameters first
+			if ( isset( $_GET['classic-editor'] ) || isset( $_GET['classic-editor__forget'] ) ) {
+				return true;
+			}
+
+			// Check for Block Editor specific indicators
+			if ( isset( $_GET['action'] ) && $_GET['action'] === 'edit' && ! isset( $_GET['classic-editor'] ) ) {
+				// This suggests we're in the Block Editor for new posts
+				return false;
+			}
+
+			// Check current screen and post type context when available
+			if ( function_exists( 'get_current_screen' ) ) {
+				$current_screen = get_current_screen();
+				if ( $current_screen && property_exists( $current_screen, 'id' ) ) {
+					
+					// Check if Classic Editor plugin is active and has specific settings
+					if ( function_exists( 'classic_editor_init_actions' ) ) {
+						$classic_editor_replace = get_option( 'classic-editor-replace', 'block' );
+						
+						// If classic editor is set to replace block editor globally
+						if ( $classic_editor_replace === 'classic' ) {
+							return true;
+						}
+					}
+				}
+			}
+
+			// For new posts, prioritize user preferences when editors can be switched
+			if ( $allow_users_to_switch_editors ) {
+				// User explicitly chose classic editor
+				if ( ! empty( $user_classic_editor ) && $user_classic_editor === 'classic' ) {
+					return true;
+				}
+				// User explicitly chose block editor
+				if ( ! empty( $user_classic_editor ) && $user_classic_editor === 'block' ) {
+					return false;
+				}
+				// No user preference set, fall back to global setting
+				return $use_classic_editor;
+			}
+
+			// If users cannot switch editors, use global setting
+			if ( $use_classic_editor ) {
+				return true;
+			}
+
+			// Default to block editor for new posts when no clear indicators
+			return false;
 		}
 
 		return false;
