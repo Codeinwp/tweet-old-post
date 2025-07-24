@@ -767,11 +767,17 @@ class Rop_Admin {
 			return true;
 		}
 
+		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+
 		if ( ! class_exists( 'Classic_Editor' ) ) {
+			$post      = get_post( $post_id );
+			$post_type = $post ? $post->post_type : '';
+
+			if ( $post_type && ! use_block_editor_for_post_type( $post_type ) ) {
+				return true;
+			}
 			return false;
 		}
-
-		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
 
 		$allow_users_to_switch_editors = ( 'allow' === get_option( 'classic-editor-allow-users' ) );
 
