@@ -751,6 +751,7 @@ class Rop_Admin {
 	 *
 	 * This is quite complex as it needs to check various conditions:
 	 * - If the Classic Editor plugin is active.
+	 * - If the Disabled Gutenberg plugin is active.
 	 * - If the post is saved with the Classic Editor.
 	 * - If the user has selected the Classic Editor in their profile.
 	 * - If the post is a new post (post_id is 0).
@@ -764,6 +765,11 @@ class Rop_Admin {
 	public static function is_classic_editor() {
 		if ( isset( $_GET['wpb-backend-editor'] ) ) {
 			// If the wpb-backend-editor is set, we are using the classic editor via WPBakery.
+			return true;
+		}
+
+		// disable-gutenberg plugin is active.
+		if ( class_exists( 'DisableGutenberg' ) ) {
 			return true;
 		}
 
