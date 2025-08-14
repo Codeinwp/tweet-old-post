@@ -21,15 +21,24 @@
               v-if="accountsCount === 0 && is_preloading > 0"
               class="empty mb-2"
             >
-              <div class="empty-icon">
-                <i class="fa fa-3x fa-user-circle-o" />
+              <div
+                v-if="!searchAccount"
+              >
+                <div class="empty-icon">
+                  <i class="fa fa-3x fa-user-circle-o" />
+                </div>
+                <p class="empty-title h5">
+                  {{ labels.no_accounts }}
+                </p>
+                <p class="empty-subtitle">
+                  {{ labels.no_accounts_desc }}
+                </p>
               </div>
-              <p class="empty-title h5">
-                {{ labels.no_accounts }}
-              </p>
-              <p class="empty-subtitle">
-                {{ labels.no_accounts_desc }}
-              </p>
+              <div
+                v-else
+              >
+                {{ labels.no_account_found }}: "{{ searchAccount }}"
+              </div>
             </div>
             <template v-if="is_preloading > 0">
               <div
@@ -109,6 +118,14 @@
 
     export default {
         name: 'AccountView',
+        props: {
+          searchAccount: {
+            default: function () {
+              return '';
+            },
+            type: String
+          }
+        },
         components: {
             SignInBtn,
             ServiceUserTile,
@@ -124,7 +141,8 @@
                 twitter_warning: false,
                 labels: this.$store.state.labels.accounts,
                 upsell_link: ropApiSettings.upsell_link,
-                pro_installed: ropApiSettings.pro_installed
+                pro_installed: ropApiSettings.pro_installed,
+                postTimeout: ''
             }
         },
         computed: {
@@ -132,7 +150,7 @@
              * Get all the available/active accounts.
              */
             accounts: function () {
-                const all_accounts = {};
+                let all_accounts = {};
                 let twitter = 0;
                 const services = this.$store.state.authenticatedServices;
                 for (const key in services) {
@@ -149,6 +167,9 @@
                             twitter += Object.keys(service.available_accounts).length;
                         }
                     }
+                }
+                if (this.searchAccount){
+                  all_accounts = this.filteredAccounts(all_accounts);
                 }
                 this.twitter_warning = twitter > 1;
                 this.$log.info('All accounts: ', all_accounts);
@@ -206,6 +227,21 @@
                     this.is_loading = false;
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
                 })
+            },
+            filteredAccounts: function(accounts) {
+              const result = {};
+              const query = this.searchAccount?.toLowerCase() || '';
+              
+              for (const account_id in accounts) {
+                const account = accounts[account_id];
+                if (
+                  account?.user &&
+                  account.user.toLowerCase().includes(query)
+                ) {
+                  result[account_id] = account;
+                }
+              }
+              return result;
             }
         }
     }
