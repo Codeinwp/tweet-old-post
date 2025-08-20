@@ -247,6 +247,7 @@ General Settings data structure:
   "custom_messages": false,
   "custom_messages_share_order": false,
   "instant_share": true,
+  "instant_share_default": true,
   "start_time": 1706886799,
   "minute_interval": 5,
   "available_shorteners": {
