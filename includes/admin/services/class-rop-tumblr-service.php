@@ -150,7 +150,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return false;
 		}
 		$this->api = new \Tumblr\API\Client( $this->strip_whitespace( $consumer_key ), $this->strip_whitespace( $consumer_secret ), $this->strip_whitespace( $token ), $this->strip_whitespace( $token_secret ) );
-
 	}
 
 	/**
@@ -597,7 +596,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 			return false;
 		}
-
 	}
 
 	/**
@@ -715,5 +713,4 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$account['link'] = sprintf( 'https://tumblr.com/blog/%s', $account['id'] );
 		return $account;
 	}
-
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="Themeisle">
 	<description>Themeisle rules for PHP_CodeSnifferr</description>
-	<ini name="error_reporting" value="E_ALL &#38; ~E_DEPRECATED" />
 	<file>.</file>
 
 	<exclude-pattern>node_modules/*</exclude-pattern>
@@ -12,7 +11,11 @@
 	<exclude-pattern>vue/*</exclude-pattern>
 	<exclude-pattern>dist/*</exclude-pattern>
 
+	<arg value="sp" />
+	<arg name="basepath" value="./" /><!-- Strip the file paths down to the relevant bit -->
+	<arg name="colors" />
 	<arg name="extensions" value="php" />
+	<arg name="parallel" value="8" />
 
 	<rule ref="WordPress-Core">
 		<exclude name="Squiz.Commenting.FileComment.SpacingAfterComment" />
@@ -52,6 +55,22 @@
 		<exclude name="WordPressVIPMinimum.JS.StringConcat" />
 		<exclude name="WordPressVIPMinimum.JS.HTMLExecutingFunctions" />
 		<exclude name="WordPressVIPMinimum.Security.Mustache.OutputNotation" />
+	</rule>
+
+	<rule ref="WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout">
+		<type>warning</type>
+	</rule>
+
+	<rule ref="WordPressVIPMinimum.Variables.RestrictedVariables.session___SESSION">
+		<type>warning</type>
+	</rule>
+
+	<rule ref="WordPressVIPMinimum.Functions.RestrictedFunctions.session_session_id">
+		<type>warning</type>
+	</rule>
+
+	<rule ref="WordPressVIPMinimum.Functions.RestrictedFunctions.session_session_start">
+		<type>warning</type>
 	</rule>
 
 	<rule ref="WordPress.WP.I18n">

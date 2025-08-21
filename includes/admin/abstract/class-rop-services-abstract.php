@@ -42,7 +42,7 @@ abstract class Rop_Services_Abstract {
 		'is_company' => false,
 		'img'        => '',
 		'service'    => '',
-		'link'    => '',
+		'link'       => '',
 	);
 	/**
 	 * Stores the service details.
@@ -122,7 +122,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function init();
+	abstract public function init();
 
 	/**
 	 * Method to expose desired endpoints.
@@ -133,7 +133,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function expose_endpoints();
+	abstract public function expose_endpoints();
 
 	/**
 	 * Method to retrieve the api object.
@@ -142,7 +142,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function get_api();
+	abstract public function get_api();
 
 	/**
 	 * Method to define the api.
@@ -151,7 +151,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function set_api();
+	abstract public function set_api();
 
 
 	/**
@@ -162,7 +162,7 @@ abstract class Rop_Services_Abstract {
 	 * @return mixed
 	 * @param array $account The account details. See $user_default in Services Abstract.
 	 */
-	public abstract function populate_additional_data( $account );
+	abstract public function populate_additional_data( $account );
 
 	/**
 	 * Method for authorizing the service.
@@ -211,7 +211,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function maybe_authenticate();
+	abstract public function maybe_authenticate();
 
 	/**
 	 * Returns information for the current service.
@@ -220,7 +220,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function get_service();
+	abstract public function get_service();
 
 	/**
 	 * Method for authenticate the service.
@@ -229,7 +229,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function authenticate( $args );
+	abstract public function authenticate( $args );
 
 	/**
 	 * Method to register credentials for the service.
@@ -239,7 +239,7 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @param   array $args The credentials array.
 	 */
-	public abstract function set_credentials( $args );
+	abstract public function set_credentials( $args );
 
 	/**
 	 * Method for publishing with the service.
@@ -251,7 +251,7 @@ abstract class Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 */
-	public abstract function share( $post_details, $args = array() );
+	abstract public function share( $post_details, $args = array() );
 
 	/**
 	 * Method to retrieve an endpoint URL.
@@ -325,7 +325,6 @@ abstract class Rop_Services_Abstract {
 		} else {
 			return $this->service_name . '_' . $service_details['id'];
 		}
-
 	}
 
 	/**
@@ -345,7 +344,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  protected
 	 * @return mixed
 	 */
-	protected abstract function request_api_token();
+	abstract protected function request_api_token();
 
 	/**
 	 * Method to generate url for service post share.
@@ -435,8 +434,8 @@ abstract class Rop_Services_Abstract {
 					'tweet-old-post/v8',
 					'/' . $this->service_name . '/' . $path,
 					array(
-						'methods'  => $method,
-						'callback' => array( $this, $callback ),
+						'methods'             => $method,
+						'callback'            => array( $this, $callback ),
 						'permission_callback' => function () {
 							return current_user_can( 'manage_options' );
 						},
@@ -537,11 +536,11 @@ abstract class Rop_Services_Abstract {
 
 		$errors_docs = array(
 			// Facebook errors
-			'Only owners of the URL have the ability'                    => array(
+			'Only owners of the URL have the ability'    => array(
 				'message' => __( 'You need to verify your website with Facebook before sharing posts as article posts.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_owners_url',
 			),
-			'manage_pages and publish_pages as an admin'                 => array(
+			'manage_pages and publish_pages as an admin' => array(
 				'message' => __( 'You need to put your Facebook app through review.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_manage_pages_error',
 			),
@@ -549,7 +548,7 @@ abstract class Rop_Services_Abstract {
 				'message' => __( 'You need to reconnect your Facebook account.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_fb_invalid_session',
 			),
-			'Invalid parameter'                                          => array(
+			'Invalid parameter'                          => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
@@ -567,11 +566,11 @@ abstract class Rop_Services_Abstract {
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
 				'link'    => 'https://is.gd/fix_oauth_callback_value',
 			),
-			'User is over daily status update limit'                     => array(
+			'User is over daily status update limit'     => array(
 				'message' => 'You might be over your daily limit for sending tweets or our app has hit a limit.',
 				'link'    => 'https://is.gd/fix_over_daily_limit',
 			),
-			'Invalid media_id: Some'                                     => array(
+			'Invalid media_id: Some'                     => array(
 				'message' => 'Our plugin might be having an issue posting tweets with an image to your account.',
 				'link'    => 'https://is.gd/fix_invalid_media',
 			),
@@ -581,7 +580,7 @@ abstract class Rop_Services_Abstract {
 			),
 
 			// LinkedIn errors
-			'&#39;submitted-url&#39; can not be empty'                   => array(
+			'&#39;submitted-url&#39; can not be empty'   => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
@@ -589,7 +588,7 @@ abstract class Rop_Services_Abstract {
 				'message' => 'You might need to reconnect your LinkedIn account.',
 				'link'    => 'https://is.gd/linkedin_scope_error',
 			),
-			'The token used in the request has expired' => array(
+			'The token used in the request has expired'  => array(
 				'message' => 'You need to reconnect your LinkedIn account.',
 				'link'    => 'https://is.gd/refresh_linkedin_token',
 			),
@@ -626,7 +625,6 @@ abstract class Rop_Services_Abstract {
 		$instructions = __( ' Please copy and paste the following link in your browser to see the solution: ', 'tweet-old-post' );
 
 		return $this->logger->alert_error( $known_error . $message . $instructions . $link );
-
 	}
 
 	/**
@@ -670,7 +668,6 @@ abstract class Rop_Services_Abstract {
 		file_put_contents( $tmp_image_path, $image_contents );
 
 		return $tmp_image_path;
-
 	}
 
 	/**
@@ -900,7 +897,7 @@ abstract class Rop_Services_Abstract {
 		$valid = true;
 		if ( is_array( $data ) ) {
 			$data = array_map(
-				function( $d ) {
+				function ( $d ) {
 					$d = base64_decode( $d, true );
 					$d = maybe_unserialize( $d, array( 'allowed_classes' => false ) );
 					if ( $d instanceof \__PHP_Incomplete_Class ) {
@@ -966,5 +963,4 @@ abstract class Rop_Services_Abstract {
 		$response_code = wp_remote_retrieve_response_code( $response );
 		return 200 === $response_code ? $body->status : false;
 	}
-
 }

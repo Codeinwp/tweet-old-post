@@ -93,9 +93,9 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 
 		if ( ! empty( $this->credentials['headers'] ) && is_array( $this->credentials['headers'] ) ) {
 			$headers = array_map(
-				function( $header ) {
+				function ( $header ) {
 					if ( ! is_string( $header ) || false === strpos( $header, ':' ) ) {
-						  return false;
+							return false;
 					}
 
 					list( $key, $value ) = explode( ':', $header );
@@ -109,7 +109,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 
 			$headers = array_filter(
 				$headers,
-				function( $header ) {
+				function ( $header ) {
 					return $header !== false && is_array( $header );
 				}
 			);
@@ -127,7 +127,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 		);
 
 		if ( ! class_exists( 'ROP_Pro_Webhook_Helper' ) ) {
-			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 			if ( is_plugin_active( 'tweet-old-post-pro/tweet-old-post-pro.php' ) ) {
 				require_once ROP_PRO_PATH . 'includes/helpers/class-rop-pro-webhook-helper.php';
@@ -190,9 +190,9 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 		$account_id   = hash( 'md5', $data['url'] );
 
 		$this->service = array(
-			'id'          => $id,
-			'service'     => $this->service_name,
-			'credentials' => array(
+			'id'                 => $id,
+			'service'            => $this->service_name,
+			'credentials'        => array(
 				'url'          => $data['url'],
 				'headers'      => ! empty( $data['headers'] ) && is_array( $data['headers'] ) ? $data['headers'] : array(),
 				'display_name' => $display_name,

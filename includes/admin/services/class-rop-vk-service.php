@@ -15,7 +15,7 @@
  * @subpackage Rop/includes/admin/services
  */
 
-use \VK\Client\VKApiClient;
+use VK\Client\VKApiClient;
 /**
  * Class Rop_Vk_Service
  *
@@ -196,7 +196,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			'id'                 => $the_id,
 			'service'            => $this->service_name,
 			'credentials'        => array(
-				'access_token'   => $account_data['access_token'],
+				'access_token' => $account_data['access_token'],
 			),
 			'available_accounts' => $accounts,
 		);
@@ -288,9 +288,9 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		}
 
 		$params = array(
-			'photo' => stripslashes( $response['photo'] ),
+			'photo'  => stripslashes( $response['photo'] ),
 			'server' => (int) $response['server'],
-			'hash' => (string) $response['hash'],
+			'hash'   => (string) $response['hash'],
 		);
 
 		if ( $args['is_company'] ) {
@@ -307,12 +307,11 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$attachment = 'photo' . $response[0]['owner_id'] . '_' . $response[0]['id'];
 
 		$new_post = array(
-			'owner_id' => $owner_id,
-			'message' => $post_details['content'] . $hashtags,
+			'owner_id'    => $owner_id,
+			'message'     => $post_details['content'] . $hashtags,
 			'attachments' => empty( $this->share_link_text ) ? $attachment . ',' . $this->get_url( $post_details ) : $attachment,
 		);
 		return $new_post;
-
 	}
 
 	/**
@@ -334,7 +333,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	private function vk_video_post( $post_details, $hashtags, $attachment_path, $args, $owner_id, $client, $access_token ) {
 
 		$params = array(
-			'name' => $post_details['title'],
+			'name'        => $post_details['title'],
 			'description' => $post_details['content'],
 		);
 
@@ -369,13 +368,12 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$attachment = 'video' . $response['owner_id'] . '_' . $response['video_id'];
 
 		$new_post = array(
-			'owner_id' => $response['owner_id'],
-			'message' => $post_details['content'] . $hashtags,
+			'owner_id'    => $response['owner_id'],
+			'message'     => $post_details['content'] . $hashtags,
 			'attachments' => empty( $this->share_link_text ) ? $attachment . ',' . $this->get_url( $post_details ) : $attachment,
 		);
 
 		return $new_post;
-
 	}
 
 
@@ -395,13 +393,12 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	private function vk_text_post( $post_details, $hashtags, $args, $owner_id ) {
 
 		$new_post = array(
-			'owner_id' => $owner_id,
+			'owner_id'     => $owner_id,
 			'friends_only' => 0,
-			'message' => $post_details['content'] . $hashtags,
+			'message'      => $post_details['content'] . $hashtags,
 		);
 
 		return $new_post;
-
 	}
 
 	/**
@@ -419,17 +416,16 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	private function vk_article_post( $post_details, $hashtags, $args, $owner_id ) {
 
 		$new_post = array(
-			'owner_id' => $owner_id,
+			'owner_id'     => $owner_id,
 			'friends_only' => 0,
-			'message' => $post_details['content'] . $hashtags,
-			'attachments' => $this->get_url( $post_details ),
+			'message'      => $post_details['content'] . $hashtags,
+			'attachments'  => $this->get_url( $post_details ),
 		);
 
 		if ( ! empty( $this->share_link_text ) ) {
 			unset( $new_post['attachments'] );
 		}
 		return $new_post;
-
 	}
 
 	/**
@@ -459,7 +455,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
 
-		$model       = new Rop_Post_Format_Model;
+		$model       = new Rop_Post_Format_Model();
 		$post_format = $model->get_post_format( $post_details['account_id'] );
 
 		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
@@ -546,7 +542,6 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( 'Error sharing to Vkontakte' . print_r( $response, true ) );
 			return false;
 		}
-
 	}
 
 	/**
@@ -560,5 +555,4 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$account['link'] = sprintf( 'https://vk.com/id%s', $account['id'] );
 		return $account;
 	}
-
 }

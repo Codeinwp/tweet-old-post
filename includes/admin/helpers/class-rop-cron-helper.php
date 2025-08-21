@@ -296,7 +296,6 @@ class Rop_Cron_Helper {
 		} else {
 			return is_int( $this->is_scheduled( self::CRON_NAMESPACE ) );
 		}
-
 	}
 
 	/**

@@ -115,7 +115,6 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 		$data                             = wp_parse_args( $data, $this->defaults );
 		$this->post_format[ $account_id ] = $data;
 		$this->set( 'post_format', $this->post_format );
-
 	}
 
 	/**
@@ -133,5 +132,4 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 
 		$this->set( 'post_format', $this->post_format );
 	}
-
 }

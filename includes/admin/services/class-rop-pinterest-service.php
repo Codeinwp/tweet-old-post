@@ -213,7 +213,6 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		unset( $_SESSION['rop_pinterest_token'] );
 
 		return $this->authenticate( $credentials );
-
 	}
 
 	/**
@@ -276,7 +275,6 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
-
 	}
 
 	/**
@@ -559,5 +557,4 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		$account['link'] = 'https://pinterest.com';
 		return $account;
 	}
-
 }

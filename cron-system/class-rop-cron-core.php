@@ -53,7 +53,6 @@ class Rop_Cron_Core {
 		 * Register local end-points used by ROP Cron Service.
 		 */
 		add_action( 'init', array( &$this, 'init_endpoint_items' ) );
-
 	}
 
 	/**
@@ -153,7 +152,5 @@ class Rop_Cron_Core {
 			'request_path' => ':register_account:',
 		);
 		$call_response = $request_call->create_call_process( $arguments );
-
 	}
-
 }

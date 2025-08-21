@@ -232,8 +232,8 @@ class Rop_Bluesky_Api {
 				"{$this->api_url}/app.bsky.actor.getProfile?" . http_build_query( array( 'actor' => $did ) ),
 				array(
 					'headers' => array(
-						'Content-Type' => 'application/json',
-						'timeout'      => 120,
+						'Content-Type'  => 'application/json',
+						'timeout'       => 120,
 						'Authorization' => 'Bearer ' . $access_token,
 					),
 				)
@@ -298,7 +298,7 @@ class Rop_Bluesky_Api {
 
 			if ( $post_type === 'link' && isset( $post['post_url'] ) && ! empty( $post['post_url'] ) ) {
 				$record['embed'] = array(
-					'$type'   => 'app.bsky.embed.external',
+					'$type'    => 'app.bsky.embed.external',
 					'external' => array(
 						'uri'         => $post['post_url'],
 						'title'       => isset( $post['title'] ) ? $post['title'] : '',
@@ -324,7 +324,7 @@ class Rop_Bluesky_Api {
 
 				if ( false !== $image_blob ) {
 					$record['embed'] = array(
-						'$type'   => 'app.bsky.embed.images',
+						'$type'  => 'app.bsky.embed.images',
 						'images' => array(
 							array(
 								'alt'   => isset( $post['title'] ) ? $post['title'] : '',

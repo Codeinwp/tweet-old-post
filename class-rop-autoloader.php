@@ -119,7 +119,7 @@ class Rop_Autoloader {
 		$filename = 'class-' . str_replace( '_', '-', strtolower( $class_name ) ) . static::$file_ext;
 		foreach ( static::$file_iterator as $file ) {
 			if ( strtolower( $file->getFileName() ) === strtolower( $filename ) && is_readable( $file->getPathName() ) ) {
-				require( $file->getPathName() );
+				require $file->getPathName();
 				return true;
 			}
 		}

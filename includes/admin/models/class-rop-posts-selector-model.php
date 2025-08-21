@@ -102,7 +102,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && empty( $language_code ) ) {
 			// check the first active account and it's post format and see if it has a language code.
 			$first_account_id = array_keys( $this->data['active_accounts'] )[0];
-			$post_format_model = new Rop_Post_Format_Model;
+			$post_format_model = new Rop_Post_Format_Model();
 			$post_format = $post_format_model->get_post_format( $first_account_id );
 			$first_account_lang = ! empty( $post_format['wpml_language'] ) ? $post_format['wpml_language'] : '';
 
@@ -220,7 +220,12 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$args['post__in'] = $excluded;
 		} else {
 			$post_types        = $this->build_post_types( $selected_post_types );
-			$tax_queries       = $this->build_tax_query( array( 'taxonomies' => $taxonomies, 'exclude' => $exclude ) );
+			$tax_queries       = $this->build_tax_query(
+				array(
+					'taxonomies' => $taxonomies,
+					'exclude'    => $exclude,
+				) 
+			);
 			$args['post_type'] = $post_types;
 			$args['tax_query'] = $tax_queries;
 		}
@@ -388,7 +393,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		} elseif ( empty( $results ) && $this->has_buffer_items( $account_id ) && ! $this->settings->get_more_than_once() ) {
 
-			$service  = new Rop_Services_Model;
+			$service  = new Rop_Services_Model();
 			$log      = new Rop_Logger();
 			$accounts = get_option( 'rop_one_time_share_accounts' );
 
@@ -469,7 +474,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 */
 		$posts = array_diff( $posts, $exclude );
 
-		$number_of_posts_to_share = ( new Rop_Settings_Model )->get_number_of_posts();
+		$number_of_posts_to_share = ( new Rop_Settings_Model() )->get_number_of_posts();
 		$events_per_account = Rop_Scheduler_Model::EVENTS_PER_ACCOUNT;
 
 		/**
@@ -640,7 +645,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		return false;
-
 	}
 
 	/**
@@ -820,7 +824,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			// Return original passed in post id if none of the conditions are met.
 			return $post_id;
 		}
-
 	}
 
 	/**

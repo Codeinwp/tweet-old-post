@@ -198,6 +198,4 @@ class Rop_Api_Response {
 			'data'         => $this->data,
 		);
 	}
-
-
 }

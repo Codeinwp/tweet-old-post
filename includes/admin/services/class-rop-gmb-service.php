@@ -194,10 +194,10 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			'id'                 => $the_id,
 			'service'            => $this->service_name,
 			'credentials'        => array(
-				'created'                => $account_data['created'],
-				'expires_in'         => $account_data['expires_in'],
-				'access_token'   => $account_data['access_token'],
-				'refresh_token'  => $account_data['refresh_token'],
+				'created'       => $account_data['created'],
+				'expires_in'    => $account_data['expires_in'],
+				'access_token'  => $account_data['access_token'],
+				'refresh_token' => $account_data['refresh_token'],
 			),
 			'available_accounts' => $accounts,
 		);
@@ -237,14 +237,17 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		 // $created = '1593273390';
+		// $created = '1593273390';
 		// Check if access token will expire in next 30 seconds.
 		$expired = ( $created + ( $expires_in - 30 ) ) < time();
 
 		// If it's not expired then return current access token in DB
 		if ( ! $expired ) {
 			// Add an expires_in value to prevent Google Client PHP notice for undefined expires_in index
-			$access_token = array('access_token' => $access_token, 'expires_in' => $expires_in);
+			$access_token = array(
+				'access_token' => $access_token,
+				'expires_in'   => $expires_in,
+			);
 			return $access_token;
 		}
 
@@ -270,11 +273,11 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$update_token = array(
 			'services' => array(
 				$gmb_service_id => array(
-					'id' => $id,
-					'service' => 'gmb',
+					'id'          => $id,
+					'service'     => 'gmb',
 					'credentials' => array(
-						'created' => $response['token_data']['created'],
-						'expires_in' => $response['token_data']['expires_in'],
+						'created'      => $response['token_data']['created'],
+						'expires_in'   => $response['token_data']['expires_in'],
 						'access_token' => $response['token_data']['access_token'],
 					),
 				),
@@ -287,7 +290,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		update_option( 'rop_data', $rop_updated_data );
 
 		return $response['token_data'];
-
 	}
 
 	/**
@@ -340,7 +342,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$new_post->setMedia( $media );
 
 		return $new_post;
-
 	}
 
 
@@ -365,7 +366,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$new_post->setSummary( $post_details['content'] );
 
 		return $new_post;
-
 	}
 
 	/**
@@ -414,7 +414,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$new_post->setMedia( $media );
 
 		return $new_post;
-
 	}
 
 
@@ -449,7 +448,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$new_post->setCallToAction( $call_to_action );
 
 				return $new_post;
-
 	}
 	/**
 	 * Method for publishing with Google My Business service.
@@ -478,7 +476,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		if ( ! class_exists( 'Google_Service_MyBusiness' ) ) {
 
-			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 			if ( is_plugin_active( 'tweet-old-post-pro/tweet-old-post-pro.php' ) ) {
 				require_once ROP_PRO_PATH . 'lib/gmb/gmb-service-helper.php';
@@ -544,7 +542,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.gmb_failed_share' ) . print_r( $response, true ) );
 			return false;
 		}
-
 	}
 
 	/**
@@ -558,5 +555,4 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$account['link'] = 'https://business.google.com/';
 		return $account;
 	}
-
 }

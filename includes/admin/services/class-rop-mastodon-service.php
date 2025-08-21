@@ -238,7 +238,7 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 			'service'            => $this->service_name,
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
-				'mastodon'    => array(
+				'mastodon' => array(
 					'name'    => 'Mastodon',
 					'value'   => $this->domain,
 					'private' => false,
@@ -417,7 +417,7 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 			$response = wp_remote_post(
 				$api_url,
 				array(
-					'body' => array(
+					'body'    => array(
 						'client_name'   => 'Revive Social',
 						'redirect_uris' => $this->get_legacy_url(),
 						'scopes'        => $this->scopes,
@@ -917,7 +917,7 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 			'service'            => $this->service_name,
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
-				'mastodon'    => array(
+				'mastodon' => array(
 					'name'    => 'Mastodon',
 					'value'   => $this->domain,
 					'private' => false,

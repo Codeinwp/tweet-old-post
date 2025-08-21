@@ -163,7 +163,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		$this->api = new \Abraham\TwitterOAuth\TwitterOAuth( $this->strip_whitespace( $consumer_key ), $this->strip_whitespace( $consumer_secret ), $this->strip_whitespace( $oauth_token ), $this->strip_whitespace( $oauth_token_secret ) );
-
 	}
 
 	/**
@@ -258,7 +257,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
-
 	}
 
 	/**
@@ -547,7 +545,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				$media_id = $media_response->data->id;
 				$this->logger->info( 'State : ' . json_encode( $upload_status ) );
 				sleep( 3 );
-				$limit ++;
+				++$limit;
 			} while ( $upload_status->processing_info->state !== 'succeeded' && $limit <= 10 );
 
 			if ( ! empty( $media_id ) ) {
@@ -609,7 +607,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$api = $this->get_api();
 		}
 
-		$model       = new Rop_Post_Format_Model;
+		$model       = new Rop_Post_Format_Model();
 		$post_format = $model->get_post_format( $post_details['account_id'] );
 
 		$post_id = $post_details['post_id'];
@@ -962,11 +960,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					'timeout' => 100,
 					'body'    => array_merge(
 						array(
-							'sharing_type' => $sharing_type,
-							'license'      => $license_key,
-							'plan_id'      => $plan_id,
-							'site_url'     => get_site_url(),
-							'post_data'    => $post_data,
+							'sharing_type'   => $sharing_type,
+							'license'        => $license_key,
+							'plan_id'        => $plan_id,
+							'site_url'       => get_site_url(),
+							'post_data'      => $post_data,
 							'rop_auth_token' => $rop_auth_token,
 						)
 					),
