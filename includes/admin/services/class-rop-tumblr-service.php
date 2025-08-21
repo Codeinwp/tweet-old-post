@@ -79,8 +79,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$credentials = $_SESSION['rop_tumblr_credentials'];
-		$tmp_token   = $_SESSION['rop_tumblr_request_token'];
+		$credentials = isset( $_SESSION['rop_tumblr_credentials'] ) ? $_SESSION['rop_tumblr_credentials'] : array();
+		$tmp_token   = isset( $_SESSION['rop_tumblr_request_token'] ) ? $_SESSION['rop_tumblr_request_token'] : array();
 
 		$api            = $this->get_api( $credentials['consumer_key'], $credentials['consumer_secret'], $tmp_token['oauth_token'], $tmp_token['oauth_token_secret'] );
 		$requestHandler = $api->getRequestHandler();
@@ -177,7 +177,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return false;
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION['rop_tumblr_token'],
+			isset( $_SESSION['rop_tumblr_token'] ) ? $_SESSION['rop_tumblr_token'] : array(),
 			array(
 				'oauth_token',
 				'oauth_token_secret',
@@ -186,9 +186,9 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		) {
 			return false;
 		}
-		$credentials                       = $_SESSION['rop_tumblr_credentials'];
-		$credentials['oauth_token']        = $_SESSION['rop_tumblr_token']['oauth_token'];
-		$credentials['oauth_token_secret'] = $_SESSION['rop_tumblr_token']['oauth_token_secret'];
+		$credentials                       = isset( $_SESSION['rop_tumblr_credentials'] ) ? $_SESSION['rop_tumblr_credentials'] : array();
+		$credentials['oauth_token']        = isset( $_SESSION['rop_tumblr_token']['oauth_token'] ) ? $_SESSION['rop_tumblr_token']['oauth_token'] : '';
+		$credentials['oauth_token_secret'] = isset( $_SESSION['rop_tumblr_token']['oauth_token_secret'] ) ? $_SESSION['rop_tumblr_token']['oauth_token_secret'] : '';
 		unset( $_SESSION['rop_tumblr_credentials'] );
 		unset( $_SESSION['rop_tumblr_token'] );
 

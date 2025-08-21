@@ -110,7 +110,7 @@ abstract class Rop_Services_Abstract {
 	public function __construct() {
 		$this->error                   = new Rop_Exception_Handler();
 		$this->logger                  = new Rop_Logger();
-		$this->user_default['created'] = date( 'd/m/Y H:i' );
+		$this->user_default['created'] = gmdate( 'd/m/Y H:i' );
 		$this->user_default['service'] = $this->service_name;
 		$this->init();
 	}
@@ -201,7 +201,8 @@ abstract class Rop_Services_Abstract {
 			$this->error->throw_exception( 'Error', sprintf( 'The service "' . $this->display_name . '" can not be authorized %s', $exception->getMessage() ) );
 		}
 
-		exit( wp_redirect( admin_url( 'admin.php?page=TweetOldPost' ) ) );
+		wp_redirect( admin_url( 'admin.php?page=TweetOldPost' ) );
+		exit;
 	}
 
 	/**

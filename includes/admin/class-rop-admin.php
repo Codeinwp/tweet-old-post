@@ -88,7 +88,7 @@ class Rop_Admin {
 			<div id="rop-status-error" class="notice notice-error is-dismissible">
 				<p>
 					<strong><?php echo esc_html( Rop_I18n::get_labels( 'general.plugin_name' ) ); ?></strong>:
-					<?php echo Rop_I18n::get_labels( 'general.status_error_global' ); ?>
+					<?php echo wp_kses_post( Rop_I18n::get_labels( 'general.status_error_global' ) ); ?>
 				</p>
 			</div>
 			<?php
@@ -168,7 +168,20 @@ class Rop_Admin {
 		}
 		?>
 		<div class="notice notice-error is-dismissible">
-			<?php printf( __( '%1$s%2$sRevive Social:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
+			<?php
+			echo wp_kses_post(
+				sprintf(
+					// translators: 1: <p> tag, 2: <b> tag, 3: </b> tag, 4: <a> tag with URL to docs, 5: </a> tag, 6: </p> tag.
+					__( '%1$s%2$sRevive Social:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ),
+					'<p>',
+					'<b>',
+					'</b>',
+					'<a href="' . esc_url( 'https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts' ) . '" target="_blank">',
+					'</a>',
+					'</p>'
+				)
+			);
+			?>
 		</div>
 		<?php
 	}
@@ -702,14 +715,17 @@ class Rop_Admin {
 				}
 			);
 
-			global $submenu;
-			if ( isset( $submenu['TweetOldPost'] ) ) {
-				$submenu['TweetOldPost'][2] = array(
-					$rss_to_social,
-					'manage_options',
-					tsdk_utmify( self::RN_LINK, 'admin', 'admin_menu' ),
-				);
-			}
+			add_submenu_page(
+				'TweetOldPost',
+				__( 'RSS to Social', 'tweet-old-post' ),
+				$rss_to_social,
+				'manage_options',
+				'rop_rss_to_social',
+				function () {
+					wp_redirect( esc_url_raw( tsdk_utmify( self::RN_LINK, 'admin', 'admin_menu' ) ) );
+					exit;
+				}
+			);
 		}
 	}
 
@@ -731,12 +747,10 @@ class Rop_Admin {
 		$active_accounts = $services->get_active_accounts();
 
 		if ( $settings->get_instant_sharing() && count( $active_accounts ) >= 2 && ! defined( 'ROP_PRO_VERSION' ) ) {
-			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
-				__(
-					'Share to more accounts by upgrading to the extended version for ',
-					'tweet-old-post'
-				) . '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'editor', 'publish_now' ) . '" target="_blank">Revive Social </a>
-						</div>';
+			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>'
+				. esc_html__( 'Share to more accounts by upgrading to the extended version for ', 'tweet-old-post' )
+				. '<a href="' . esc_url( tsdk_utmify( Rop_I18n::UPSELL_LINK, 'editor', 'publish_now' ) ) . '" target="_blank">' . esc_html( 'Revive Social' ) . '</a>'
+				. '</div>';
 		}
 	}
 
@@ -1331,8 +1345,21 @@ class Rop_Admin {
 
 		?>
 		<div class="notice notice-error">
-			<?php printf( __( '%1$s%2$sRevive Social:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
-
+			<?php
+			echo wp_kses_post(
+				sprintf(
+					// translators: 1: <p> tag, 2: <b> tag, 3: </b> tag, 4: <a> tag with URL to docs, 5: </a> tag, 6: Dismiss link, 7: </p> tag.
+					__( '%1$s%2$sRevive Social:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ),
+					'<p>',
+					'<b>',
+					'</b>',
+					'<a href="' . esc_url( 'https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2' ) . '" target="_blank">',
+					'</a>',
+					'<a style="float: right;" href="' . esc_url( add_query_arg( 'rop-linkedin-api-notice-dismissed', '1' ) ) . '">Dismiss</a>',
+					'</p>'
+				)
+			);
+			?>
 		</div>
 		<?php
 	}
@@ -1393,25 +1420,24 @@ class Rop_Admin {
 
 			?>
 			<div class="notice notice-error">
-				<?php printf( __( '%1$s%2$sRevive Social:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Social. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
-
+				<?php
+				echo wp_kses_post(
+					sprintf(
+						// translators: 1: <p> tag, 2: <b> tag, 3: </b> tag, 4: <a> tag with URL to docs, 5: </a> tag, 6: Dismiss link, 7: </p> tag.
+						__( '%1$s%2$sRevive Social:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Social. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ),
+						'<p>',
+						'<b>',
+						'</b>',
+						'<a href="' . esc_url( 'https://docs.revive.social/article/686-fix-revive-old-post-not-posting' ) . '" target="_blank">',
+						'</a>',
+						'<a style="float: right;" href="' . esc_url( add_query_arg( 'rop-wp-cron-notice-dismissed', '1' ) ) . '">Dismiss</a>',
+						'</p>'
+					)
+				);
+				?>
 			</div>
 			<?php
 
-		}
-	}
-
-	/**
-	 * Dismiss WordPress Cron disabled notice.
-	 *
-	 * @since   8.2.5
-	 * @access  public
-	 */
-	public function rop_dismiss_cron_disabled_notice() {
-
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-wp-cron-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-wp-cron-notice-dismissed', 'true', true );
 		}
 	}
 
@@ -1493,7 +1519,7 @@ class Rop_Admin {
 
 				if ( true === $update_took_place ) {
 					// Create the option so that the migrate code will not run again.
-					add_option( 'rop_data_migrated_tax', 'yes', null, 'no' );
+					add_option( 'rop_data_migrated_tax', 'yes', '', 'no' );
 					// Update the plugin data containing the changes.
 					update_option( 'rop_data', $option );
 				}
@@ -1537,8 +1563,21 @@ class Rop_Admin {
 
 			?>
 			<div class="notice notice-error">
-				<?php printf( __( '%1$s%2$sRevive Social:%3$s There might be an issue preventing Revive Social from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-cron-event-status-notice-dismissed">Dismiss</a>', '</p>' ); ?>
-
+				<?php
+				echo wp_kses_post(
+					sprintf(
+						// translators: 1: <p> tag, 2: <b> tag, 3: </b> tag, 4: <a> tag with URL to docs, 5: </a> tag, 6: Dismiss link, 7: </p> tag.
+						__( '%1$s%2$sRevive Social:%3$s There might be an issue preventing Revive Social from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ),
+						'<p>',
+						'<b>',
+						'</b>',
+						'<a href="' . esc_url( 'https://docs.revive.social/article/686-fix-revive-old-post-not-posting' ) . '" target="_blank">',
+						'</a>',
+						'<a style="float: right;" href="' . esc_url( add_query_arg( 'rop-cron-event-status-notice-dismissed', '1' ) ) . '">Dismiss</a>',
+						'</p>'
+					)
+				);
+				?>
 			</div>
 			<?php
 

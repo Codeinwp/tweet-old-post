@@ -31,7 +31,7 @@ class Rop_Cron_Core {
 	/**
 	 * Rop_Cron_Core constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 
 		/**
 		 * Register to ROP Cron the share start.

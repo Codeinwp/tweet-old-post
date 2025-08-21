@@ -62,7 +62,7 @@ class Rop_Activator {
 
 		$url = get_site_url();
 
-		$token = hash( 'ripemd160', $url . date( 'Y-m-d H:i:s' ) );
+		$token = hash( 'ripemd160', $url . gmdate( 'Y-m-d H:i:s' ) );
 
 		update_option( ROP_INSTALL_TOKEN_OPTION, $token, false );
 	}

@@ -52,7 +52,7 @@ class Rop_Admin_Notices {
 				
 				</div>
 UPSELLHTML;
-			echo $markup;
+			echo wp_kses_post( $markup );
 		}
 	}
 }

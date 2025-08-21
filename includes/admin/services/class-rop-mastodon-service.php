@@ -114,11 +114,16 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$request_token = $_SESSION['rop_mastodon_credentials'];
-		// phpcs:ignore
-		$code          = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
+		// Safely read session data and GET param.
+		$request_token = isset( $_SESSION['rop_mastodon_credentials'] ) && is_array( $_SESSION['rop_mastodon_credentials'] ) ? $_SESSION['rop_mastodon_credentials'] : array();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$code          = isset( $_GET['code'] ) ? sanitize_text_field( wp_unslash( $_GET['code'] ) ) : '';
 
-		$access_token = $this->request_api_access_token( $code, $request_token['md_domain'], $request_token['consumer_key'], $request_token['consumer_secret'] );
+		$md_domain       = isset( $request_token['md_domain'] ) ? $request_token['md_domain'] : '';
+		$consumer_key    = isset( $request_token['consumer_key'] ) ? $request_token['consumer_key'] : '';
+		$consumer_secret = isset( $request_token['consumer_secret'] ) ? $request_token['consumer_secret'] : '';
+
+		$access_token = $this->request_api_access_token( $code, $md_domain, $consumer_key, $consumer_secret );
 		if ( ! empty( $access_token ) ) {
 			$_SESSION['rop_mastodon_oauth_token'] = $access_token;
 		}
@@ -174,10 +179,14 @@ class Rop_Mastodon_Service extends Rop_Services_Abstract {
 		) ) {
 			return false;
 		}
-		$token           = $_SESSION['rop_mastodon_oauth_token'];
-		$consumer_key    = $_SESSION['rop_mastodon_credentials']['consumer_key'];
-		$consumer_secret = $_SESSION['rop_mastodon_credentials']['consumer_secret'];
-		$domain          = $_SESSION['rop_mastodon_credentials']['md_domain'];
+		// Safely read session data.
+		$token = isset( $_SESSION['rop_mastodon_oauth_token'] ) ? $_SESSION['rop_mastodon_oauth_token'] : '';
+		$creds = isset( $_SESSION['rop_mastodon_credentials'] ) && is_array( $_SESSION['rop_mastodon_credentials'] ) ? $_SESSION['rop_mastodon_credentials'] : array();
+
+		$consumer_key    = isset( $creds['consumer_key'] ) ? $creds['consumer_key'] : '';
+		$consumer_secret = isset( $creds['consumer_secret'] ) ? $creds['consumer_secret'] : '';
+		$domain          = isset( $creds['md_domain'] ) ? $creds['md_domain'] : '';
+
 		unset( $_SESSION['rop_mastodon_oauth_token'] );
 		unset( $_SESSION['rop_mastodon_request_token'] );
 		unset( $_SESSION['rop_mastodon_credentials'] );

@@ -124,9 +124,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					$this->logger->alert_error( $message );
 					$this->rop_get_error_docs( $message );
 				}
-				exit( wp_redirect( $this->get_legacy_url() ) );
+				wp_safe_redirect( esc_url_raw( $this->get_legacy_url() ) );
+				exit;
 			} else {
-				$credentials                    = $_SESSION['rop_linkedin_credentials'];
+				$credentials                    = isset( $_SESSION['rop_linkedin_credentials'] ) ? $_SESSION['rop_linkedin_credentials'] : array();
 				$api                            = $this->get_api( $credentials['client_id'], $credentials['secret'] );
 				$accessToken                    = $api->getAccessToken( $_GET['code'] );
 				$_SESSION['rop_linkedin_token'] = $accessToken->getToken();
@@ -138,10 +139,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$message = 'Linkedin Error: Code[ ' . $e->getCode() . ' ] ' . $e->getDescription();
 			$this->logger->alert_error( $message );
 			$this->rop_get_error_docs( $message );
-			$referrer = $_SERVER['HTTP_REFERER'];
+			$referrer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
 			// If the user is trying to authenticate.
 			if ( ! empty( substr_count( $referrer, 'linkedin.com' ) ) ) {
-				exit( wp_redirect( $this->get_legacy_url() ) );
+				wp_redirect( esc_url_raw( $this->get_legacy_url() ) );
+				exit;
 			} else {
 				// If the function is used by the Cron and this error occurs.
 				$this->error->throw_exception( 'Error ' . $e->getCode(), $message );
@@ -213,7 +215,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION['rop_linkedin_credentials'],
+			isset( $_SESSION['rop_linkedin_credentials'] ) ? $_SESSION['rop_linkedin_credentials'] : array(),
 			array(
 				'client_id',
 				'secret',
@@ -222,8 +224,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$credentials          = $_SESSION['rop_linkedin_credentials'];
-		$token                = $_SESSION['rop_linkedin_token'];
+		$credentials          = isset( $_SESSION['rop_linkedin_credentials'] ) ? $_SESSION['rop_linkedin_credentials'] : array();
+		$token                = isset( $_SESSION['rop_linkedin_token'] ) ? $_SESSION['rop_linkedin_token'] : '';
+
 		$credentials['token'] = $token;
 
 		unset( $_SESSION['rop_linkedin_credentials'] );
@@ -854,7 +857,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$accounts = array();
 
-		for ( $i = 0; $i < sizeof( $accounts_array ); $i++ ) {
+		$accounts_count = count( $accounts_array );
+
+		for ( $i = 0; $i < $accounts_count; $i++ ) {
 
 			$account = $this->user_default;
 

@@ -284,7 +284,7 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 						'account' => $user->handle,
 						'service' => $this->service_name,
 						'img'     => $user->avatar ? $user->avatar : '',
-						'created' => date( 'd/m/Y H:i' ),
+						'created' => gmdate( 'd/m/Y H:i' ),
 						'active'  => $active,
 					),
 				),

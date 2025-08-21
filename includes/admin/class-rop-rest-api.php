@@ -1102,7 +1102,7 @@ class Rop_Rest_Api {
 
 		$rop_facebook_via_rs_app_option = 'rop_facebook_via_rs_app';
 		if ( ! get_option( $rop_facebook_via_rs_app_option ) ) {
-			add_option( $rop_facebook_via_rs_app_option, 'true', ' ', 'no' );
+			add_option( $rop_facebook_via_rs_app_option, 'true', '', 'no' );
 		} else {
 			update_option( $rop_facebook_via_rs_app_option, 'true' );
 		}
@@ -1159,7 +1159,7 @@ class Rop_Rest_Api {
 
 		$rop_twitter_via_rs_app_option = 'rop_twitter_via_rs_app';
 		if ( ! get_option( $rop_twitter_via_rs_app_option ) ) {
-			add_option( $rop_twitter_via_rs_app_option, 'true', ' ', 'no' );
+			add_option( $rop_twitter_via_rs_app_option, 'true', '', 'no' );
 		} else {
 			update_option( $rop_twitter_via_rs_app_option, 'true' );
 		}
@@ -1212,7 +1212,7 @@ class Rop_Rest_Api {
 
 		$rop_linkedin_via_rs_app_option = 'rop_linkedin_via_rs_app';
 		if ( ! get_option( $rop_linkedin_via_rs_app_option ) ) {
-			add_option( $rop_linkedin_via_rs_app_option, 'true', ' ', 'no' );
+			add_option( $rop_linkedin_via_rs_app_option, 'true', '', 'no' );
 		} else {
 			update_option( $rop_linkedin_via_rs_app_option, 'true' );
 		}
@@ -1264,7 +1264,7 @@ class Rop_Rest_Api {
 
 		$rop_tumblr_via_rs_app_option = 'rop_tumblr_via_rs_app';
 		if ( ! get_option( $rop_tumblr_via_rs_app_option ) ) {
-			add_option( $rop_tumblr_via_rs_app_option, 'true', ' ', 'no' );
+			add_option( $rop_tumblr_via_rs_app_option, 'true', '', 'no' );
 		} else {
 			update_option( $rop_tumblr_via_rs_app_option, 'true' );
 		}

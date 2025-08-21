@@ -597,7 +597,7 @@ class Rop_Global_Settings {
 		}
 
 		if ( isset( $license_data->expires ) ) {
-			$view_license_data['expires'] = date( 'F j, Y', strtotime( $license_data->expires ) );
+			$view_license_data['expires'] = gmdate( 'F j, Y', strtotime( $license_data->expires ) );
 			if ( 'valid' === $view_license_data['license'] ) {
 				$view_license_data['expires'] = sprintf( Rop_I18n::get_labels( 'general.expires' ), $view_license_data['expires'] );
 			} else {
@@ -832,7 +832,7 @@ class Rop_Global_Settings {
 		}
 
 		// Is after 9.1?
-		$created_at = strtotime( date( 'Y-m-d', strtotime( $license_data->created_at ) ) );
+		$created_at = strtotime( gmdate( 'Y-m-d', strtotime( $license_data->created_at ) ) );
 		$compare_to = strtotime( '2024-07-21' );
 
 		return $created_at > $compare_to;

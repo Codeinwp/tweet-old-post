@@ -93,7 +93,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$credentials = $_SESSION['rop_facebook_credentials'];
+		$credentials = isset( $_SESSION['rop_facebook_credentials'] ) ? $_SESSION['rop_facebook_credentials'] : array();
 
 		try {
 			$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
@@ -195,7 +195,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		if ( ! $this->is_set_not_empty(
+		if ( ! isset( $_SESSION['rop_facebook_credentials'] ) || ! $this->is_set_not_empty(
 			$_SESSION['rop_facebook_credentials'],
 			array(
 				'app_id',
@@ -204,8 +204,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		) ) {
 			return false;
 		}
-		$credentials = $_SESSION['rop_facebook_credentials'];
-		$token       = $_SESSION['rop_facebook_token'];
+		$credentials = isset( $_SESSION['rop_facebook_credentials'] ) ? $_SESSION['rop_facebook_credentials'] : array();
+		$token       = isset( $_SESSION['rop_facebook_token'] ) ? $_SESSION['rop_facebook_token'] : '';
 
 		$credentials['token'] = $token;
 		unset( $_SESSION['rop_facebook_credentials'] );
@@ -1054,8 +1054,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$accounts = array();
 
 		$pages_arr = $account_data['pages'];
+		$pages_count = count( $pages_arr );
 
-		for ( $i = 0; $i < sizeof( $pages_arr ); $i++ ) {
+		for ( $i = 0; $i < $pages_count; $i++ ) {
 
 			$page_data = unserialize( base64_decode( $pages_arr[ $i ] ) );
 			// assign default values to variable
