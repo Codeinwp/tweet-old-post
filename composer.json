@@ -23,7 +23,9 @@
     "build": "sh bin/dist.sh",
     "test": "vendor/bin/phpunit",
     "lint": "vendor/bin/phpcs --standard=phpcs.xml --extensions=php -s",
-    "format": "vendor/bin/phpcbf --standard=phpcs.xml --report-summary --report-source"
+    "format": "vendor/bin/phpcbf --standard=phpcs.xml --report-summary --report-source",
+    "phpstan": "phpstan",
+    "phpstan:generate:baseline": "phpstan --generate-baseline"
   },
   "autoload": {
     "files": [
@@ -54,7 +56,9 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
     "phpunit/phpunit": "9.*",
     "yoast/phpunit-polyfills": "^2.0",
-    "codeinwp/phpcs-ruleset": "dev-main"
+    "codeinwp/phpcs-ruleset": "dev-main",
+    "phpstan/phpstan": "^2.1",
+    "szepeviktor/phpstan-wordpress": "^2.0"
   },
   "config": {
     "allow-plugins": {

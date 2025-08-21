@@ -31,3 +31,5 @@ vue
 .stylelintrc
 webpack.config.js
 docker-compose.yml
+phpstan.neon
+phpstan-baseline.neon
