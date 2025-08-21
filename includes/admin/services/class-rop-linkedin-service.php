@@ -301,7 +301,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
-
 	}
 
 	/**
@@ -530,7 +529,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$share_as_image_post = $post_details['post_with_image'];
 		$post_id = $post_details['post_id'];
 
-		$model       = new Rop_Post_Format_Model;
+		$model       = new Rop_Post_Format_Model();
 		$post_format = $model->get_post_format( $post_details['account_id'] );
 
 		if ( ! empty( $post_format['share_link_in_comment'] ) && ! empty( $post_format['share_link_text'] ) ) {
@@ -650,7 +649,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$this->rop_refresh_linkedin_token_notice();
 			return false;
 		}
-
 	}
 
 
@@ -709,7 +707,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		return $new_post;
-
 	}
 
 	/**
@@ -758,7 +755,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		);
 
 		return $new_post;
-
 	}
 
 	/**
@@ -850,7 +846,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		// save timestamp for when to notify user to refresh their linkedin token
 		// set notified count to 0
 		$notify_data = array(
-			'notify_at' => $notify_user_at['notify_user_at'],
+			'notify_at'      => $notify_user_at['notify_user_at'],
 			'notified_count' => 0,
 		);
 
@@ -858,7 +854,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$accounts = array();
 
-		for ( $i = 0; $i < sizeof( $accounts_array ); $i ++ ) {
+		for ( $i = 0; $i < sizeof( $accounts_array ); $i++ ) {
 
 			$account = $this->user_default;
 
@@ -927,7 +923,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		// Backwards compatibility pre v8.6.4
 		if ( ! is_array( $notify ) ) {
 			$notify = array(
-				'notify_at' => $notify,
+				'notify_at'      => $notify,
 				'notified_count' => 0,
 			);
 		}
@@ -954,9 +950,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$sent = wp_mail( $admin_email, $subject, $message, $headers );
 
 			if ( $sent ) {
-				$notified_count++;
+				++$notified_count;
 				$notify_data = array(
-					'notify_at' => $notify_at,
+					'notify_at'      => $notify_at,
 					'notified_count' => $notified_count,
 				);
 				update_option( 'rop_linkedin_refresh_token_notice', $notify_data, false );
@@ -965,7 +961,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'general.rop_linkedin_refresh_token' ) );
 
 		}
-
 	}
 
 	/**
@@ -1092,5 +1087,4 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		return false;
 	}
-
 }

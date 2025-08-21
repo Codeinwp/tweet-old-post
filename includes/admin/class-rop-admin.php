@@ -65,7 +65,7 @@ class Rop_Admin {
 		$global_settings = new Rop_Global_Settings();
 		add_filter(
 			'rop_pro_plan',
-			function() use ( $global_settings ) {
+			function () use ( $global_settings ) {
 				return $global_settings->license_type();
 			}
 		);
@@ -118,7 +118,6 @@ class Rop_Admin {
 
 		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', $deps, $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . '_fa', ROP_LITE_URL . 'assets/css/font-awesome.min.css', array(), $this->version );
-
 	}
 
 	/**
@@ -131,7 +130,7 @@ class Rop_Admin {
 	 */
 	public function check_shortener_service( $shortener ) {
 
-		$model       = new Rop_Post_Format_Model;
+		$model       = new Rop_Post_Format_Model();
 		$post_format = $model->get_post_format();
 
 		$shorteners = array();
@@ -169,7 +168,7 @@ class Rop_Admin {
 		}
 		?>
 		<div class="notice notice-error is-dismissible">
-			<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
+			<?php printf( __( '%1$s%2$sRevive Social:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
 		</div>
 		<?php
 	}
@@ -181,7 +180,7 @@ class Rop_Admin {
 	 */
 	private function set_allowed_screens() {
 
-		$general_settings = new Rop_Settings_Model;
+		$general_settings = new Rop_Settings_Model();
 
 		$post_types           = wp_list_pluck( $general_settings->get_selected_post_types(), 'value' );
 		$attachment_post_type = array_search( 'attachment', $post_types );
@@ -195,7 +194,6 @@ class Rop_Admin {
 			'exclude'     => 'rop_content_filters',
 			'publish_now' => $post_types,
 		);
-
 	}
 
 	/**
@@ -218,11 +216,9 @@ class Rop_Admin {
 						break;
 					}
 				}
-			} else {
-				if ( strpos( $screen->id, $id ) !== false ) {
+			} elseif ( strpos( $screen->id, $id ) !== false ) {
 					$page = $script;
 					continue;
-				}
 			}
 		}
 
@@ -312,7 +308,7 @@ class Rop_Admin {
 		}
 
 		wp_enqueue_media();
-		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array('wp-url'), ( ROP_DEBUG ) ? time() : $this->version, false );
+		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard.js', array( 'wp-url' ), ( ROP_DEBUG ) ? time() : $this->version, false );
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 
 		$rop_api_settings = array(
@@ -321,8 +317,8 @@ class Rop_Admin {
 		);
 		if ( current_user_can( 'manage_options' ) ) {
 			$rop_api_settings = array(
-				'root'       => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
-				'nonce'      => wp_create_nonce( 'wp_rest' ),
+				'root'      => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
+				'nonce'     => wp_create_nonce( 'wp_rest' ),
 				'dashboard' => admin_url( 'admin.php?page=TweetOldPost' ),
 			);
 		}
@@ -370,9 +366,9 @@ class Rop_Admin {
 		$rop_api_settings['remote_cron_type_limit']          = $this->limit_remote_cron_system();
 		$rop_api_settings['exclude_apply_limit']             = $this->limit_exclude_list();
 		$rop_api_settings['publish_now']                     = array(
-			'instant_share_enabled' => $settings->get_instant_sharing(),
+			'instant_share_enabled'    => $settings->get_instant_sharing(),
 			'instant_share_by_default' => $settings->get_instant_sharing_by_default(),
-			'accounts' => $active_accounts,
+			'accounts'                 => $active_accounts,
 		);
 		$rop_api_settings['custom_messages']                 = $settings->get_custom_messages();
 		$rop_api_settings['added_networks']                  = $added_networks;
@@ -442,7 +438,7 @@ class Rop_Admin {
 		if ( ! defined( 'TI_E2E_TESTING' ) || ! TI_E2E_TESTING ) {
 			add_filter(
 				'themeisle-sdk/survey/' . ROP_PRODUCT_SLUG,
-				function( $data, $page_slug ) use ( $accounts_count, $is_post_sharing_active ) {
+				function ( $data, $page_slug ) use ( $accounts_count, $is_post_sharing_active ) {
 					$data = $this->get_survey_metadata();
 
 					$extra_attributes = array(
@@ -500,7 +496,6 @@ class Rop_Admin {
 		$accepted_mime_types['all'] = array_merge( $image_mime_types, $video_mime_types, array( '' ) );
 
 		return $accepted_mime_types;
-
 	}
 
 	/**
@@ -549,7 +544,6 @@ class Rop_Admin {
 		}
 
 		return false;
-
 	}
 
 	/**
@@ -730,8 +724,8 @@ class Rop_Admin {
 		if ( empty( $page ) ) {
 			return;
 		}
-		$global_settings = new Rop_Global_Settings;
-		$settings        = new Rop_Settings_Model;
+		$global_settings = new Rop_Global_Settings();
+		$settings        = new Rop_Settings_Model();
 
 		$services        = new Rop_Services_Model();
 		$active_accounts = $services->get_active_accounts();
@@ -871,7 +865,6 @@ class Rop_Admin {
 		include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
 
 		$this->publish_now_upsell();
-
 	}
 
 	/**
@@ -1083,7 +1076,7 @@ class Rop_Admin {
 		$pro_format_helper = false;
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
-			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper();
 			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
 				$pro_format_helper->set_content_helper( new Rop_Content_Helper() );
 			}
@@ -1338,11 +1331,10 @@ class Rop_Admin {
 
 		?>
 		<div class="notice notice-error">
-			<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+			<?php printf( __( '%1$s%2$sRevive Social:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 		</div>
 		<?php
-
 	}
 
 	/**
@@ -1356,7 +1348,6 @@ class Rop_Admin {
 		if ( isset( $_GET['rop-linkedin-api-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed', 'true', true );
 		}
-
 	}
 
 	/**
@@ -1402,13 +1393,12 @@ class Rop_Admin {
 
 			?>
 			<div class="notice notice-error">
-				<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Social. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+				<?php printf( __( '%1$s%2$sRevive Social:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Social. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 			</div>
 			<?php
 
 		}
-
 	}
 
 	/**
@@ -1423,7 +1413,6 @@ class Rop_Admin {
 		if ( isset( $_GET['rop-wp-cron-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-wp-cron-notice-dismissed', 'true', true );
 		}
-
 	}
 
 	/**
@@ -1548,13 +1537,12 @@ class Rop_Admin {
 
 			?>
 			<div class="notice notice-error">
-				<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s There might be an issue preventing Revive Social from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-cron-event-status-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+				<?php printf( __( '%1$s%2$sRevive Social:%3$s There might be an issue preventing Revive Social from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-cron-event-status-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 			</div>
 			<?php
 
 		}
-
 	}
 
 	/**
@@ -1569,7 +1557,6 @@ class Rop_Admin {
 		if ( isset( $_GET['rop-cron-event-status-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-cron-event-status-notice-dismissed', 'true', true );
 		}
-
 	}
 
 	/**
@@ -1588,7 +1575,6 @@ class Rop_Admin {
 		if ( ! $settings->get_more_than_once() ) {
 			delete_option( 'rop_one_time_share_accounts' );
 		}
-
 	}
 
 	/**
@@ -1611,7 +1597,6 @@ class Rop_Admin {
 		}
 
 		return false;
-
 	}
 
 	/**
@@ -1628,7 +1613,6 @@ class Rop_Admin {
 		} else {
 			return false;
 		}
-
 	}
 
 	/**
@@ -1645,7 +1629,6 @@ class Rop_Admin {
 		} else {
 			return false;
 		}
-
 	}
 
 	/**
@@ -1665,7 +1648,10 @@ class Rop_Admin {
 		$languages_array = array();
 
 		foreach ( $languages as $key => $value ) {
-			$languages_array[] = array( 'code' => $key, 'label' => $value['native_name'] );
+			$languages_array[] = array(
+				'code'  => $key,
+				'label' => $value['native_name'],
+			);
 		}
 		return $languages_array;
 	}
@@ -1700,7 +1686,7 @@ class Rop_Admin {
 
 			if ( empty( $rop_account_post_format['wpml_language'] ) ) {
 				continue;
-			};
+			}
 
 			$rop_account_lang_code = $rop_account_post_format['wpml_language'];
 			if ( class_exists( 'TRP_Translate_Press' ) ) {
@@ -1711,7 +1697,6 @@ class Rop_Admin {
 		}
 
 		return empty( $filtered_share_to_accounts ) ? $share_to_accounts : $filtered_share_to_accounts;
-
 	}
 
 	/**
@@ -1740,7 +1725,6 @@ class Rop_Admin {
 		}
 
 		return false;
-
 	}
 
 	/**
@@ -1760,7 +1744,6 @@ class Rop_Admin {
 		}
 
 		return false;
-
 	}
 
 
@@ -1966,8 +1949,8 @@ class Rop_Admin {
 				'auth_callback'     => $auth_can_edit_posts,
 				'show_in_rest'      => array(
 					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(), // Leave blank to allow dynamic keys, or define expected keys
+						'type'                 => 'object',
+						'properties'           => array(), // Leave blank to allow dynamic keys, or define expected keys
 						'additionalProperties' => array(
 							'type'       => 'object',
 							'properties' => array(
@@ -2051,7 +2034,7 @@ class Rop_Admin {
 				'default'           => array(),
 				'sanitize_callback' => $sanitize_passthrough,
 				'auth_callback'     => $auth_can_edit_posts,
-				'show_in_rest' => array(
+				'show_in_rest'      => array(
 					'schema' => array(
 						'type'  => 'array',
 						'items' => array(
@@ -2062,7 +2045,7 @@ class Rop_Admin {
 								'timestamp' => array( 'type' => 'integer' ),
 								'status'    => array( 'type' => 'string' ),
 							),
-							'required' => array( 'account', 'service', 'timestamp', 'status' ),
+							'required'   => array( 'account', 'service', 'timestamp', 'status' ),
 						),
 					),
 				),

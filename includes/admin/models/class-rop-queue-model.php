@@ -180,7 +180,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		$this->update_queue( $queue );
 
 		return true;
-
 	}
 
 	/**
@@ -259,7 +258,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					unset( $post_pool[ $rand_key ] );
 
 					$post_pool = array_values( $post_pool );
-					$i++;
+					++$i;
 
 				}
 
@@ -382,7 +381,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					'custom_instant_share_message' => $custom_instant_share_message,
 				);
 			}
-			$index ++;
+			++$index;
 		}
 
 		return $normalized_queue;
@@ -480,6 +479,4 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 		return true;
 	}
-
-
 }

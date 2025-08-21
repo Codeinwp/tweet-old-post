@@ -199,7 +199,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$this->set( 'schedules', $this->schedules );
 		// Refresh events when we change the schedule.
 		$this->refresh_events( $account_id );
-
 	}
 
 	/**
@@ -302,14 +301,13 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 				$prev = $value;
 
 				return true;
-
 			}
 		);
 		$current_events[ $account_id ] = $events;
 
 		$this->update_timeline( $current_events );
 
-		$retry ++;
+		++$retry;
 		if ( empty( $events ) && 0 === $retry ) {
 			$events = $this->get_upcoming_events( $account_id, $retry );
 		}
@@ -350,7 +348,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		 */
 		if ( ( time() - $this->start_time ) < 15 ) {
 			array_push( $list, self::get_current_time() + 20 );
-			$limit --;
+			--$limit;
 		}
 
 		if ( $schedule['type'] === 'recurring' ) {
@@ -359,7 +357,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			 */
 			$time       = $this->convert_float_to_time( $schedule['interval_r'] );
 			$event_time = $base;
-			for ( $i = 0; $i < $limit; $i ++ ) {
+			for ( $i = 0; $i < $limit; $i++ ) {
 				$event_time = $this->add_to_time( $event_time, $time['hours'], $time['minutes'] );
 				array_push( $list, $event_time );
 			}
@@ -419,7 +417,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 						if ( $i === $limit ) {
 							break;
 						}
-						$i ++;
+						++$i;
 						array_push( $list, $event_time );
 
 					}
@@ -536,7 +534,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * Update the events timeline.
 	 *
 	 * @param $new_events $new_events New events timeline.
-	 * @param string     $account_id account id.
+	 * @param string $account_id account id.
 	 *
 	 * @return bool Success or not.
 	 */
@@ -595,6 +593,4 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 
 		return $this->set( 'schedules', $this->schedules );
 	}
-
-
 }

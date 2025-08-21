@@ -265,7 +265,6 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 		);
 
 		return $new_post;
-
 	}
 
 	/**
@@ -389,5 +388,4 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 	public function populate_additional_data( $account ) {
 		return $account;
 	}
-
 }

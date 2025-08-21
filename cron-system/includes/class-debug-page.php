@@ -3,7 +3,6 @@
 
 namespace RopCronSystem\Pages;
 
-
 use RopCronSystem\Curl_Helpers\Rop_Curl_Methods;
 use RopCronSystem\ROP_Helpers\Rop_Helpers;
 
@@ -163,12 +162,12 @@ class Debug_Page {
 		}
 
 		?>
-	  <div class="wrap" id="rop-debug-table">
+		<div class="wrap" id="rop-debug-table">
 		<h1><?php _e( 'Debug Info: ', 'tweet-old-post' ); ?></h1>
 		<br/>
 
 		<table>
-		  <tr>
+			<tr>
 			<td valign="top"><?php _e( 'PHP Version: ', 'tweet-old-post' ); ?></td>
 			<td>
 				<?php
@@ -179,10 +178,10 @@ class Debug_Page {
 				}
 
 				?>
-			  <br/>
+				<br/>
 			</td>
-		  </tr>
-		  <tr>
+			</tr>
+			<tr>
 			<td valign="top"><?php _e( 'cURL Info: ', 'tweet-old-post' ); ?></td>
 			<td>
 				<?php
@@ -199,22 +198,22 @@ class Debug_Page {
 					echo '<strong style="color:darkred">' . __( 'No version of CURL detected.', 'tweet-old-post' ) . '</strong>';
 				}
 				?>
-			  <br/>
+				<br/>
 			</td>
-		  </tr>
-		  <tr>
+			</tr>
+			<tr>
 			<td valign="top"><?php _e( 'Check connection with<br/>Revive Social Cron SyStem: ', 'tweet-old-post' ); ?></td>
 			<td>
 				<?php _e( 'WordPress -> Server:', 'tweet-old-post' ); ?>
-			  <span id="server_responded">N/A</span>
-			  <br/>
+				<span id="server_responded">N/A</span>
+				<br/>
 				<?php _e( 'Server -> WordPress:', 'tweet-old-post' ); ?>
-			  <span id="website_responded">N/A</span>
-			  <br/>
-			  <br/>
-			  <input type="button" value="<?php _e( 'Check connection', 'tweet-old-post' ); ?>" id="rop_conection_check"/>
+				<span id="website_responded">N/A</span>
+				<br/>
+				<br/>
+				<input type="button" value="<?php _e( 'Check connection', 'tweet-old-post' ); ?>" id="rop_conection_check"/>
 			</td>
-		  </tr>
+			</tr>
 		</table>
 
 		<br/>
@@ -222,46 +221,46 @@ class Debug_Page {
 		<br/>
 
 		<table>
-		  <tr>
+			<tr>
 			<td>
-			  <input type="button" value="<?php _e( 'Delete Remote Cron Service Data', 'tweet-old-post' ); ?>" id="rop_remove_account"/>
-			  <span id="ajax_rop_remove_account">
+				<input type="button" value="<?php _e( 'Delete Remote Cron Service Data', 'tweet-old-post' ); ?>" id="rop_remove_account"/>
+				<span id="ajax_rop_remove_account">
 
-			  </span>
+				</span>
 
-			  <p>
+				<p>
 				<em>
 					<?php
 					$labels = new \Rop_I18n();
 					echo $labels::get_labels( 'cron_system.delete_cron_service_account_info' );
 					?>
 				</em>
-			  </p>
+				</p>
 			</td>
-		  </tr>
+			</tr>
 		</table>
 
 		<table>
-		  <tr>
+			<tr>
 			<td>
-			  <input type="button" value="<?php _e( 'Clear Local Cron Data', 'tweet-old-post' ); ?>" id="rop_clear_local"/>
-			  <span id="ajax_rop_clear_local">
+				<input type="button" value="<?php _e( 'Clear Local Cron Data', 'tweet-old-post' ); ?>" id="rop_clear_local"/>
+				<span id="ajax_rop_clear_local">
 
-			  </span>
+				</span>
 
-			  <p>
+				<p>
 				<em>
 					<?php
 					echo $labels::get_labels( 'cron_system.clear_local_cron_info' );
 					?>
 				</em>
-			  </p>
+				</p>
 			</td>
-		  </tr>
+			</tr>
 		</table>
 
 
-	  </div>
+		</div>
 		<?php
 	}
 }

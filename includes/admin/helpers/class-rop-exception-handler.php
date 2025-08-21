@@ -94,5 +94,4 @@ class Rop_Exception_Handler {
 		echo $message . ' BackTrace: ' . $backtrace;
 		exit;
 	}
-
 }

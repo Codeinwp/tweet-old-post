@@ -212,7 +212,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		unset( $_SESSION['rop_facebook_token'] );
 
 		return $this->authenticate( $credentials );
-
 	}
 
 	/**
@@ -303,7 +302,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
-
 	}
 
 	/**
@@ -462,7 +460,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$model       = new Rop_Post_Format_Model;
+		$model       = new Rop_Post_Format_Model();
 		$post_format = $model->get_post_format( $post_details['account_id'] );
 
 		$hashtags = $post_details['hashtags'];
@@ -575,7 +573,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		} else {
 			return false;
 		}
-
 	}
 
 	/**
@@ -636,7 +633,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			'post_data' => $new_post,
 			'type'      => 'photo',
 		);
-
 	}
 
 	/**
@@ -686,7 +682,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			'post_data' => $new_post,
 			'type'      => 'post',
 		);
-
 	}
 
 	/**
@@ -1060,7 +1055,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$pages_arr = $account_data['pages'];
 
-		for ( $i = 0; $i < sizeof( $pages_arr ); $i ++ ) {
+		for ( $i = 0; $i < sizeof( $pages_arr ); $i++ ) {
 
 			$page_data = unserialize( base64_decode( $pages_arr[ $i ] ) );
 			// assign default values to variable
@@ -1149,7 +1144,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$this->logger->info( 'Scrape Info: ' . $body );
 
 		}
-
 	}
 
 	/**
@@ -1172,5 +1166,4 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 		return $account;
 	}
-
 }

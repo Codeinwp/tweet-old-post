@@ -46,7 +46,6 @@ class Rop_Activator {
 
 		self::rop_create_install_token();
 		self::rop_set_first_install_date();
-
 	}
 
 	/**
@@ -66,7 +65,6 @@ class Rop_Activator {
 		$token = hash( 'ripemd160', $url . date( 'Y-m-d H:i:s' ) );
 
 		update_option( ROP_INSTALL_TOKEN_OPTION, $token, false );
-
 	}
 
 	/**
@@ -84,5 +82,4 @@ class Rop_Activator {
 			add_option( 'rop_first_install_date', $install_date, '', 'yes' );
 		}
 	}
-
 }

@@ -135,5 +135,4 @@ class Rop_Debug_Ping {
 	public function init_rest_api_route() {
 		add_action( 'rest_api_init', array( &$this, 'register_routes' ) );
 	}
-
 }

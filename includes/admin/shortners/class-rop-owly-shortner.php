@@ -43,8 +43,14 @@ class Rop_Owly_Shortner extends Rop_Url_Shortner_Abstract {
 
 		$response = $this->callAPI(
 			'http://ow.ly/api/1.1/url/shorten',
-			array( 'method' => 'get', 'json' => true ),
-			array( 'longUrl' => $url, 'apiKey' => $this->credentials['key'] ),
+			array(
+				'method' => 'get',
+				'json'   => true,
+			),
+			array(
+				'longUrl' => $url,
+				'apiKey'  => $this->credentials['key'],
+			),
 			null
 		);
 		$shortURL = $url;

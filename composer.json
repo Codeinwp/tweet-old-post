@@ -23,6 +23,7 @@
     "build": "sh bin/dist.sh",
     "test": "vendor/bin/phpunit",
     "lint": "vendor/bin/phpcs --standard=phpcs.xml --extensions=php -s",
+    "lint:errors": "phpcs --standard=phpcs.xml -n",
     "format": "vendor/bin/phpcbf --standard=phpcs.xml --report-summary --report-source",
     "phpstan": "phpstan",
     "phpstan:generate:baseline": "phpstan --generate-baseline"

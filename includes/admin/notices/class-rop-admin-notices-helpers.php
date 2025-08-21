@@ -40,11 +40,11 @@ class Rop_Admin_Notices_Helpers {
 		return (int) $days_since_installed;
 	}
 
-	 /**
-	  * Check whether the user has dismissed an admin notice and add the option to the database if they did.
-	  *
-	  * @since    8.7.0
-	  */
+	/**
+	 * Check whether the user has dismissed an admin notice and add the option to the database if they did.
+	 *
+	 * @since    8.7.0
+	 */
 	public static function rop_notice_dismissed() {
 
 		if ( ! wp_verify_nonce( $_REQUEST['rop_notice_nonce'], 'rop_notice_nonce_value' ) ) {
@@ -67,16 +67,15 @@ class Rop_Admin_Notices_Helpers {
 			return;
 
 		}
-
 	}
 
-	 /**
-	  * Check whether the user has dismissed an admin notice and add the option to the database if they did.
-	  *
-	  * @param int    $user_id The user ID.
-	  * @param string $notice_id  unique notice ID.
-	  * @since    8.7.0
-	  */
+	/**
+	 * Check whether the user has dismissed an admin notice and add the option to the database if they did.
+	 *
+	 * @param int    $user_id The user ID.
+	 * @param string $notice_id  unique notice ID.
+	 * @since    8.7.0
+	 */
 	public static function rop_should_show_notice( $user_id, $notice_id ) {
 
 		$rop_user_dismissed_notice = get_user_meta( $user_id, $notice_id );

@@ -63,14 +63,12 @@ class Rop_Post_Format_Helper {
 	public function get_formated_object( $post_id, $account_id = 0 ) {
 		if ( ! empty( $account_id ) ) {
 			$this->set_post_format( $account_id );
-		} else {
-			if ( empty( $this->post_format ) ) {
+		} elseif ( empty( $this->post_format ) ) {
 				return array();
-			}
 		}
 
 		if ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) {
-			$selector = new Rop_Posts_Selector_Model;
+			$selector = new Rop_Posts_Selector_Model();
 			$post_id  = $selector->rop_wpml_id( $post_id, $this->account_id );
 		}
 
@@ -153,7 +151,7 @@ class Rop_Post_Format_Helper {
 		$max_length      = $this->post_format['maximum_length'];
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
-			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper();
 
 			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
 				$pro_format_helper->set_content_helper( $content_helper );
@@ -274,7 +272,6 @@ class Rop_Post_Format_Helper {
 		);
 
 		return $response;
-
 	}
 
 	/**
@@ -417,7 +414,6 @@ class Rop_Post_Format_Helper {
 		}
 
 		return $this->string_length( $this->post_format['custom_text'] ) + 1; // For the extra space
-
 	}
 
 	/**
@@ -496,7 +492,7 @@ class Rop_Post_Format_Helper {
 		foreach ( $result as $hashtag ) {
 			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false && 'tumblr' !== $service ) { // if the hashtag exists in $content
 				$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
-				$hashtags_length --; // subtract 1 for the # we added to $content
+				--$hashtags_length; // subtract 1 for the # we added to $content
 			} elseif ( $this->string_length( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
 				$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', $hashtag );
 			}
@@ -507,7 +503,6 @@ class Rop_Post_Format_Helper {
 			'hashtags'        => $hashtags,
 			'content'         => $content,
 		);
-
 	}
 
 	/**
@@ -540,7 +535,7 @@ class Rop_Post_Format_Helper {
 	private function get_categories_hashtags( $post_id ) {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
-			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper();
 		}
 
 		if ( ! isset( $pro_format_helper ) ) {
@@ -553,7 +548,6 @@ class Rop_Post_Format_Helper {
 		} else {
 			return $pro_format_helper->pro_get_categories_hashtags( $post_id );
 		}
-
 	}
 
 	/**
@@ -569,7 +563,7 @@ class Rop_Post_Format_Helper {
 	private function get_tags_hashtags( $post_id ) {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
-			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper();
 		}
 
 		if ( ! isset( $pro_format_helper ) ) {
@@ -582,7 +576,6 @@ class Rop_Post_Format_Helper {
 		} else {
 			return $pro_format_helper->pro_get_tags_hashtags( $post_id );
 		}
-
 	}
 
 	/**
@@ -792,7 +785,7 @@ class Rop_Post_Format_Helper {
 	private function append_custom_text( $content, $post_id ) {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
-			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper();
 
 			if ( method_exists( $pro_format_helper, 'set_content_helper' ) ) {
 				$pro_format_helper->set_content_helper( new Rop_Content_Helper() );
@@ -845,7 +838,7 @@ class Rop_Post_Format_Helper {
 
 		// WPML compatibility
 		if ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) {
-			$selector = new Rop_Posts_Selector_Model;
+			$selector = new Rop_Posts_Selector_Model();
 			$post_url = $selector->rop_wpml_link( $post_url, $this->account_id );
 		}
 
@@ -924,7 +917,6 @@ class Rop_Post_Format_Helper {
 		}
 
 		return $post_url;
-
 	}
 
 	/**
@@ -1098,5 +1090,4 @@ class Rop_Post_Format_Helper {
 		$translation_render = $trp->get_component( 'translation_render' );
 		return $translation_render->translate_page( $content );
 	}
-
 }

@@ -27,7 +27,7 @@ class Rop_Firebase_Shortner extends Rop_Url_Shortner_Abstract {
 	public function init() {
 		$this->service_name = 'firebase';
 		$this->credentials  = array(
-			'key' => '',
+			'key'    => '',
 			'domain' => '',
 		);
 	}
@@ -44,7 +44,10 @@ class Rop_Firebase_Shortner extends Rop_Url_Shortner_Abstract {
 
 		$response = $this->callAPI(
 			'https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=' . $this->credentials['key'],
-			array( 'method' => 'json', 'json' => true ),
+			array(
+				'method' => 'json',
+				'json'   => true,
+			),
 			array( 'longDynamicLink' => $this->credentials['domain'] . '?link=' . urlencode( $url ) ),
 			array( 'Content-Type' => 'application/json' )
 		);

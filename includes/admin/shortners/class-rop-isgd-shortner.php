@@ -44,7 +44,7 @@ class Rop_Isgd_Shortner extends Rop_Url_Shortner_Abstract {
 			array( 'method' => 'get' ),
 			array(
 				'format' => 'simple',
-				'url' => $url,
+				'url'    => $url,
 			),
 			null
 		);

@@ -148,8 +148,8 @@ if ( ! empty( $rop_custom_messages_group ) ) {
             </p>   
         </div>
 MULTIPLE_VARIATION_GROUP;
-		$i ++;
-		$img_index ++;
+		++$i;
+		++$img_index;
 	}
 } else {
 	/**

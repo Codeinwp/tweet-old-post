@@ -27,8 +27,8 @@ class Rop_Rebrandly_Shortner extends Rop_Url_Shortner_Abstract {
 	public function init() {
 		$this->service_name = 'rebrand.ly';
 		$this->credentials  = array(
-			'key'  => '',
-			'domain'  => '',
+			'key'    => '',
+			'domain' => '',
 		);
 	}
 
@@ -50,9 +50,19 @@ class Rop_Rebrandly_Shortner extends Rop_Url_Shortner_Abstract {
 
 		$response = $this->callAPI(
 			'https://api.rebrandly.com/v1/links',
-			array( 'method' => 'json', 'json' => true ),
-			array( 'destination' => $url, 'title' => $title, 'domain' => array( 'id' => $this->credentials['domain'] ) ),
-			array( 'apikey' => $this->credentials['key'], 'Content-Type' => 'application/json' )
+			array(
+				'method' => 'json',
+				'json'   => true,
+			),
+			array(
+				'destination' => $url,
+				'title'       => $title,
+				'domain'      => array( 'id' => $this->credentials['domain'] ),
+			),
+			array(
+				'apikey'       => $this->credentials['key'],
+				'Content-Type' => 'application/json',
+			)
 		);
 
 		$shortURL = $url;
