@@ -1,5 +1,58 @@
+<?php
+
+/**
+ * Renders a variation block with textarea, image upload controls, and optional remove button.
+ *
+ * @param string     $variation_title The title to display for this variation block.
+ * @param string     $description_value The initial value for the textarea field.
+ * @param string|int $image_id The attachment ID for the selected image (empty string or 0 if no image).
+ * @param int        $img_id The unique identifier for this variation's image controls.
+ * @param bool       $show_remove_variation Whether to show the "Remove Variation" button.
+ * @return void
+ */
+function render_variation_block( $variation_title, $description_value = '', $image_id = '', $img_id = 0, $show_remove_variation = true ) {
+	$label_button = Rop_I18n::get_labels( 'post_editor.variation_image' );
+	$label_button_change = Rop_I18n::get_labels( 'post_editor.variation_image_change' );
+	$button_remove = Rop_I18n::get_labels( 'post_editor.variation_remove_image' );
+	$label_example = Rop_Pro_I18n::get_labels( 'magic_tags.example' );
+	$label_remove_variation = Rop_I18n::get_labels( 'post_editor.remove_variation' );
+	
+	$image_path = '';
+	$hide_remove = ' style="display:none"';
+	
+	if ( ! empty( $image_id ) ) {
+		$get_image_path = wp_get_attachment_url( absint( $image_id ) );
+		if ( ! empty( $get_image_path ) ) {
+			$image_path = esc_url( $get_image_path );
+			$hide_remove = '';
+		}
+	}
+	
+	$button_label_switch = empty( $image_id ) ? $label_button : $label_button_change;
+	
+	echo '<div class="rop-content-variation">';
+	echo '<p><b>' . esc_html( $variation_title ) . '</b></p>';
+	echo '<div style="width: 70%; display:inline-block; float: left;">';
+	echo '<textarea placeholder="' . esc_attr( $label_example ) . '" name="rop_custom_description[]" cols="55" rows="5" style="width: 100%;">' . esc_textarea( $description_value ) . '</textarea>';
+	echo '</div>';
+	echo '<div style="width: 28%; display:inline-block; text-align: center; float: left;">';
+	echo '<div class="image-preview-wrapper">';
+	echo '<img class="rop-img-attached" src="' . esc_url( $image_path ) . '" style="width: auto; height: 100px;" alt="">';
+	echo '</div>';
+	echo '<input class="rop-image-attach button button-primary" type="button" value="' . esc_attr( $button_label_switch ) . '" data-rop-img-id="' . esc_attr( $img_id ) . '"/>';
+	echo '<input class="rop-image-remove button button-secondary" type="button" value="' . esc_attr( $button_remove ) . '" data-rop-img-id="' . esc_attr( $img_id ) . '" ' . esc_attr( $hide_remove ) . '/>';
+	echo '<input type="hidden" value="' . esc_attr( $image_id ) . '" class="rop-hidden-attachment-id" name="rop_custom_image[]">';
+	echo '</div>';
+	echo '<div style="clear:both"></div>';
+	if ( $show_remove_variation ) {
+		echo '<p><a class="button remove-row" href="#1">' . esc_html( $label_remove_variation ) . '</a></p>';
+	}
+	echo '</div>';
+}
+?>
+
 <script type="text/javascript">
-	jQuery(document).ready(function ($) {
+	jQuery(document).ready(function ($ ) {
 		var file_names = {};
 		var rop_elements = $('.rop-content-variation');
 		var count_elements = parseInt(rop_elements.length);
@@ -88,147 +141,39 @@
 	});
 </script>
 
-<?php echo Rop_I18n::get_labels( 'post_editor.custom_message_info' ); ?>
+<?php echo esc_html( Rop_I18n::get_labels( 'post_editor.custom_message_info' ) ); ?>
 
 
 <?php
-$label_button        = Rop_I18n::get_labels( 'post_editor.variation_image' );
-$label_button_change = Rop_I18n::get_labels( 'post_editor.variation_image_change' );
-$button_remove       = Rop_I18n::get_labels( 'post_editor.variation_remove_image' );
-
 if ( ! empty( $rop_custom_messages_group ) ) {
-	$i                      = 1;
-	$label_remove_variation = Rop_I18n::get_labels( 'post_editor.remove_variation' );
+	$i = 1;
 	$label_variation_number = Rop_I18n::get_labels( 'post_editor.variation_num' );
-	$label_example          = Rop_Pro_I18n::get_labels( 'magic_tags.example' );
-	$img_index              = 0;
+	$img_index = 0;
+	
 	foreach ( $rop_custom_messages_group as $field ) {
-		$description_value = ( ( ! empty( trim( $field['rop_custom_description'] ) ) ) ? esc_attr( $field['rop_custom_description'] ) : '' );
-		$image_value       = ( ! empty( $rop_custom_images_group ) && isset( $rop_custom_images_group[ $img_index ] ) ) ? $rop_custom_images_group[ $img_index ]['rop_custom_image'] : 0;
-
-		$image_id    = '';
-		$image_path  = '';
-		$hide_remove = '';
-		if ( ! empty( $image_value ) ) {
-			$image_id       = $image_value;
-			$get_image_path = wp_get_attachment_url( absint( $image_id ) );
-			if ( ! empty( $get_image_path ) ) {
-				$image_path = $get_image_path;
-			}
-		} else {
-			$hide_remove = ' style="display:none"';
-		}
-
-		$button_label_switch = ( empty( $image_id ) ) ? $label_button : $label_button_change;
-
-		echo <<<MULTIPLE_VARIATION_GROUP
-        <div class="rop-content-variation">
-            <p>
-                <b>{$label_variation_number}{$i}</b>
-            </p>
-                <div style="width: 70%; display:inline-block; float: left;">
-                    <textarea placeholder="{$label_example}" 
-                    name="rop_custom_description[]"
-                    cols="55"
-                    rows="5"
-                    style="width: 100%;"
-                    >{$description_value}</textarea>
-                </div>
-                <div style="width: 28%; display:inline-block; text-align: center; float: left;">
-                    <div class='image-preview-wrapper'>
-                        <img class="rop-img-attached" src='{$image_path}' style="width: auto; height: 100px;" alt="">
-                    </div>
-                    <input class="rop-image-attach button button-primary" type="button" value="{$button_label_switch}" data-rop-img-id="{$i}"/>
-                    <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="{$i}" {$hide_remove}/>
-                    <input type='hidden' value='{$image_id}' class="rop-hidden-attachment-id" name="rop_custom_image[]">
-                </div>
-                <div style="clear:both"></div>
-            <p>
-                <a class="button remove-row" href="#1">{$label_remove_variation}</a>
-            </p>   
-        </div>
-MULTIPLE_VARIATION_GROUP;
+		$description_value = ( ( ! empty( trim( $field['rop_custom_description'] ) ) ) ? esc_textarea( $field['rop_custom_description'] ) : '' );
+		$image_value = ( ! empty( $rop_custom_images_group ) && isset( $rop_custom_images_group[ $img_index ] ) ) ? $rop_custom_images_group[ $img_index ]['rop_custom_image'] : 0;
+		
+		$variation_title = $label_variation_number . $i;
+		render_variation_block( $variation_title, $description_value, $image_value, $i, true );
+		
 		++$i;
 		++$img_index;
 	}
 } else {
-	/**
-	 * If the post has no variations, but variations are active
-	 * This one will show as default and first variation.
-	 */
 	$label_new_variation = Rop_I18n::get_labels( 'post_editor.new_variation' );
-	$label_example       = Rop_Pro_I18n::get_labels( 'magic_tags.example' );
-	$hide_remove         = ' style="display:none"';
-
-	echo <<<MSG_GROUP
-    <div class="rop-content-variation">
-        <p>
-            <b>{$label_new_variation}</b>
-        </p>
-            <div style="width: 70%; display:inline-block; float: left;">
-                <textarea placeholder="{$label_example}" 
-                name="rop_custom_description[]"
-                cols="55"
-                rows="5"
-                style="width: 100%;"
-                ></textarea>
-            </div>
-            <div style="width: 28%; display:inline-block; text-align: center; float: left;">
-                <div class='image-preview-wrapper'>
-                    <img class="rop-img-attached" src='' style="width: auto; height: 100px;" alt="" >
-                </div>
-                <input class="rop-image-attach button button-primary" type="button" value="{$label_button}" data-rop-img-id="0"/>
-                <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="0" {$hide_remove}/>
-                <input type='hidden' value='' class="rop-hidden-attachment-id" name="rop_custom_image[]">
-            </div>
-            <div style="clear:both"></div>
-    </div>
-MSG_GROUP;
-
+	render_variation_block( $label_new_variation, '', '', 0, false );
 }
 
-/**
- * The default variation used for cloning
- */
-$label_new_variation    = Rop_I18n::get_labels( 'post_editor.new_variation' );
-$label_example          = Rop_Pro_I18n::get_labels( 'magic_tags.example' );
-$label_remove_variation = Rop_I18n::get_labels( 'post_editor.remove_variation' );
-$hide_remove            = ' style="display:none"';
-
-echo <<<DEFAULT_GROUP
-    <div class="empty-row rop-content-variation screen-reader-text">
-        <p>
-            <b>{$label_new_variation}</b>
-        </p>
-            <div style="width: 70%; display:inline-block; float: left;">
-                <textarea placeholder="{$label_example}" 
-                name="rop_custom_description[]"
-                cols="55"
-                rows="5"
-                style="width: 100%;"
-                ></textarea>
-            </div>
-            <div style="width: 28%; display:inline-block; text-align: center; float: left;">
-                <div class='image-preview-wrapper'>
-                    <img class="rop-img-attached" src='' style="width: auto; height: 100px;" alt="">
-                </div>
-                <input class="rop-image-attach button button-primary" type="button" value="{$label_button}" data-rop-img-id="0"/>
-                <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="0" {$hide_remove}/>
-                <input type='hidden' value='' class="rop-hidden-attachment-id" name="rop_custom_image[]">
-            </div>
-            <div style="clear:both"></div>
-        <p>
-            <a class="button remove-row" href="#1">{$label_remove_variation}</a>
-        </p>   
-    </div>
-DEFAULT_GROUP;
-
-/**
- * Button to add new variation.
- */
+// Template for cloning - add classes for hidden state
+echo '<div class="empty-row screen-reader-text">';
+$label_new_variation = Rop_I18n::get_labels( 'post_editor.new_variation' );
+render_variation_block( $label_new_variation, '', '', 0, true );
+echo '</div>';
 ?>
+
 <p>
 	<a id="add-row" class="button" href="#">
-		<?php echo Rop_I18n::get_labels( 'post_editor.add_variation' ); ?>
+		<?php echo esc_html( Rop_I18n::get_labels( 'post_editor.add_variation' ) ); ?>
 	</a>
 </p>

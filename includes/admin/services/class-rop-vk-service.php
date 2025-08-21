@@ -169,8 +169,9 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
 
 		$accounts = array();
+		$accounts_count = count( $accounts_array );
 
-		for ( $i = 0; $i < sizeof( $accounts_array ); $i++ ) {
+		for ( $i = 0; $i < $accounts_count; $i++ ) {
 
 			$account = $this->user_default;
 

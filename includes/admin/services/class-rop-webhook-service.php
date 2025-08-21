@@ -203,7 +203,7 @@ class Rop_Webhook_Service extends Rop_Services_Abstract {
 					'user'    => $display_name,
 					'service' => $this->service_name,
 					'account' => $this->normalize_string( $data['url'] ),
-					'created' => date( 'd/m/Y H:i' ),
+					'created' => gmdate( 'd/m/Y H:i' ),
 					'active'  => isset( $data['active'] ) ? $data['active'] : true,
 				),
 			),

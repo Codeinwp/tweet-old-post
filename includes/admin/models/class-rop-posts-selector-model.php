@@ -583,11 +583,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 		$min_age = $this->settings->get_minimum_post_age();
 		if ( ! empty( $min_age ) ) {
-			$args['date_query'][]['before'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
+			$args['date_query'][]['before'] = gmdate( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
 		}
 		$max_age = $this->settings->get_maximum_post_age();
 		if ( ! empty( $max_age ) ) {
-			$args['date_query'][]['after'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) );
+			$args['date_query'][]['after'] = gmdate( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) );
 		}
 		if ( ! empty( $args['date_query'] ) ) {
 			$args['date_query']['relation'] = 'AND';

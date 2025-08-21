@@ -97,9 +97,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			$this->request_api_token();
 			parent::authorize();
 		} catch ( Exception $e ) {
-			$message = 'Pinterest Error: Code[ ' . $e->getCode() . ' ] ' . $e->getMessage();
+			$message = 'Pinterest Error: Code[ ' . esc_html( $e->getCode() ) . ' ] ' . esc_html( $e->getMessage() );
 			$this->logger->alert_error( $message );
-			exit( wp_redirect( $this->get_legacy_url() ) );
+			wp_redirect( esc_url_raw( $this->get_legacy_url() ) );
+			exit;
 		}
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
@@ -117,6 +118,9 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		if ( ! session_id() ) {
 			session_start();
 		}
+		if ( ! isset( $_SESSION['rop_pinterest_credentials'] ) ) {
+			return false;
+		}
 		$credentials = $_SESSION['rop_pinterest_credentials'];
 		$api         = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 
@@ -124,7 +128,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			$token = $api->auth->getOAuthToken( trim( $_GET['code'] ) );
 
 			if ( ! isset( $token->access_token ) ) {
-				throw new Exception( $this->display_name . ' could not get Oauth Token' );
+				throw new Exception( esc_html( $this->display_name ) . ' could not get Oauth Token' );
 			}
 
 			$api->auth->setOAuthToken( $token->access_token );
@@ -197,7 +201,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		if ( ! $this->is_set_not_empty(
+		if ( ! isset( $_SESSION['rop_pinterest_credentials'] ) || ! $this->is_set_not_empty(
 			$_SESSION['rop_pinterest_credentials'],
 			array(
 				'app_id',
@@ -207,6 +211,9 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			return false;
 		}
 		$credentials          = $_SESSION['rop_pinterest_credentials'];
+		if ( ! isset( $_SESSION['rop_pinterest_token'] ) ) {
+			return false;
+		}
 		$token                = $_SESSION['rop_pinterest_token'];
 		$credentials['token'] = $token;
 		unset( $_SESSION['rop_pinterest_credentials'] );
@@ -468,7 +475,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 *
 	 * @return bool|string
 	 */
-	function this_image_realpath_to_uploads( $image_id = 0, $requested_size = 'large' ) {
+	public function this_image_realpath_to_uploads( $image_id = 0, $requested_size = 'large' ) {
 		if ( empty( $image_id ) ) {
 			return false;
 		}

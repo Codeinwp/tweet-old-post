@@ -101,9 +101,16 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		if ( ! isset( $_SESSION['rop_twitter_request_token'] ) ) {
+			return false;
+		}
 		$request_token = $_SESSION['rop_twitter_request_token'];
 
 		$api = $this->get_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
+
+		if ( ! isset( $_GET['oauth_verifier'] ) ) {
+			return false;
+		}
 
 		$access_token = $api->oauth(
 			'oauth/access_token',
@@ -181,6 +188,13 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				'rop_twitter_credentials',
 			)
 		) ) {
+			return false;
+		}
+		if (
+			! isset( $_SESSION['rop_twitter_oauth_token'] ) ||
+			! isset( $_SESSION['rop_twitter_credentials']['consumer_key'] ) ||
+			! isset( $_SESSION['rop_twitter_credentials']['consumer_secret'] )
+		) {
 			return false;
 		}
 		$token                    = $_SESSION['rop_twitter_oauth_token'];
@@ -629,7 +643,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		// Twitter media post
-		if ( isset( $api ) && ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
+		if ( ( isset( $api ) && ! empty( $share_as_image_post ) ) || get_post_type( $post_id ) === 'attachment' ) {
 			$new_post = $this->twitter_media_post( $post_details, $api );
 		} elseif ( ! isset( $api ) && ! empty( $share_as_image_post ) ) {
 			$this->logger->info( __( 'Post with image is available only the local mode (Use my own API Keys). You can find the option when adding your X account to the plugin Dashboard.', 'tweet-old-post' ) . ' ' . __( ' Read more on:', 'tweet-old-post' ) . 'https://docs.revive.social/article/1908-how-to-solve-453-twitter-error-in-rop' );
@@ -711,7 +725,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				$time_diff = max( $time_diff, $reset - time() );
 				$max_reset = max( $max_reset, $reset );
 
-				$reset_time_msg .= '(' . __( '"x-rate-limit-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
+
+				$reset_time_msg .= '(' . __( '"x-rate-limit-remaining" will reset at:', 'tweet-old-post' ) . ' ' . gmdate( 'Y-m-d H:i:s', $reset ) . ' UTC)';
 			}
 		}
 
@@ -722,7 +737,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				$time_diff = max( $time_diff, $reset - time() );
 				$max_reset = max( $max_reset, $reset );
 
-				$reset_time_msg .= '(' . __( '"x-user-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
+				$reset_time_msg .= '(' . __( '"x-user-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . gmdate( 'Y-m-d H:i:s', $reset ) . ' UTC)';
 			}
 		}
 
@@ -733,12 +748,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				$time_diff = max( $time_diff, $reset - time() );
 				$max_reset = max( $max_reset, $reset );
 
-				$reset_time_msg .= '(' . __( '"x-app-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . date( 'Y-m-d H:i:s', $reset ) . ' UTC' . ')';
+				$reset_time_msg .= '(' . __( '"x-app-limit-24hour-remaining" will reset at:', 'tweet-old-post' ) . ' ' . gmdate( 'Y-m-d H:i:s', $reset ) . ' UTC)';
 			}
 		}
 
 		if ( 0 < $time_diff ) {
-			set_transient( $transient_key, $log_limit_msg . __( 'All limits will be fully reset by', 'tweet-old-post' ) . ': ' . date( 'Y-m-d H:i:s', $max_reset ) . ' ' . $reset_time_msg, $time_diff );
+			set_transient( $transient_key, $log_limit_msg . __( 'All limits will be fully reset by', 'tweet-old-post' ) . ': ' . gmdate( 'Y-m-d H:i:s', $max_reset ) . ' ' . $reset_time_msg, $time_diff );
 		}
 
 		if ( isset( $response['data'] ) && ! empty( $response['data']['id'] ) ) {

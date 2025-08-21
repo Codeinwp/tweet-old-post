@@ -91,7 +91,7 @@ class Rop_Exception_Handler {
 		}
 		header( 'HTTP/1.0 ' . $header );
 		$backtrace = wp_debug_backtrace_summary();
-		echo $message . ' BackTrace: ' . $backtrace;
+		echo esc_html( $message ) . ' BackTrace: ' . esc_html( $backtrace );
 		exit;
 	}
 }

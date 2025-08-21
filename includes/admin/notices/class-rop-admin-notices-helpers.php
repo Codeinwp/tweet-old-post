@@ -30,7 +30,7 @@ class Rop_Admin_Notices_Helpers {
 		if ( ! empty( $installed_date ) ) {
 			$installed_date = '@' . $installed_date;
 		} else {
-			$installed_date  = '@' . mktime( 0, 0, 0, date( 'm' ), date( 'd' ) - 2, date( 'Y' ) );
+			$installed_date  = '@' . mktime( 0, 0, 0, gmdate( 'm' ), gmdate( 'd' ) - 2, gmdate( 'Y' ) );
 		}
 
 		$installed_date = new DateTime( $installed_date );
@@ -47,11 +47,11 @@ class Rop_Admin_Notices_Helpers {
 	 */
 	public static function rop_notice_dismissed() {
 
-		if ( ! wp_verify_nonce( $_REQUEST['rop_notice_nonce'], 'rop_notice_nonce_value' ) ) {
+		if ( ! isset( $_REQUEST['rop_notice_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['rop_notice_nonce'] ) ), 'rop_notice_nonce_value' ) ) {
 			exit( 'Failed to verify nonce. Please try going back and refreshing the page to try again.' );
 		}
 
-		$notice_id = ! empty( $_REQUEST['rop_notice_id'] ) ? $_REQUEST['rop_notice_id'] : '';
+		$notice_id = ! empty( $_REQUEST['rop_notice_id'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['rop_notice_id'] ) ) : '';
 
 		if ( ! empty( $notice_id ) ) {
 
@@ -59,13 +59,10 @@ class Rop_Admin_Notices_Helpers {
 
 			add_user_meta( $user_id, $notice_id, 'true', true );
 
-			wp_redirect( $_SERVER['HTTP_REFERER'] );
-			exit;
-
-		} else {
-
-			return;
-
+			if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+				wp_safe_redirect( esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) );
+				exit;
+			}
 		}
 	}
 

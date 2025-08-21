@@ -81,7 +81,7 @@ class Rop_Curl_Methods {
 	 *
 	 * Rop_Curl_Methods constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->error  = new Rop_Exception_Handler();
 		$this->logger = new Rop_Logger();
 	}
@@ -115,9 +115,10 @@ class Rop_Curl_Methods {
 
 		if ( 'post' === strtolower( $args['type'] ) ) {
 
-			if ( ':delete_account:' !== $args['request_path'] ) {
-				// unset( $args['remove_location'] );
-			}
+			// if ( ':delete_account:' !== $args['request_path'] ) {
+				// This condition is intentionally left for future use
+				// when we might need to handle specific request paths differently
+			// }
 
 			$post_fields = array();
 
@@ -484,7 +485,7 @@ class Rop_Curl_Methods {
 	 *
 	 * @since 8.5.5
 	 */
-	function __destruct() {
+	public function __destruct() {
 		unset( $this->connection );
 	}
 }

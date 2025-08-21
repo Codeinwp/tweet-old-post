@@ -149,14 +149,14 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 *
 	 * @param int $timestamp Timestamp to format.
 	 *
-	 * @return int
+	 * @return string
 	 */
 	public static function get_date( $timestamp = 0 ) {
 		if ( empty( $timestamp ) ) {
 			$timestamp = self::get_current_time();
 		}
 
-		return date( self::get_date_format(), $timestamp );
+		return gmdate( self::get_date_format(), $timestamp );
 	}
 
 	/**
@@ -524,7 +524,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		if ( empty( $start ) ) {
 			$start = self::get_current_time();
 		}
-		$strtotime = date( 'o-\WW', $start );
+		$strtotime = gmdate( 'o-\WW', $start );
 		$start     = strtotime( $strtotime );
 
 		return intval( $start );
@@ -533,8 +533,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Update the events timeline.
 	 *
-	 * @param $new_events $new_events New events timeline.
-	 * @param string $account_id account id.
+	 * @param array<string,mixed> $new_events $new_events New events timeline.
+	 * @param string              $account_id account id.
 	 *
 	 * @return bool Success or not.
 	 */
