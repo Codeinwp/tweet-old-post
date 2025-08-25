@@ -188,6 +188,7 @@ class Rop_Global_Settings {
 		'custom_messages'       => false,
 		'custom_messages_share_order'    => false,
 		'instant_share'         => true,
+		'instant_share_default' => true,
 		'start_time'            => false,
 		'minute_interval'      => 5,
 	);

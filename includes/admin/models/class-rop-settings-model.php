@@ -584,10 +584,16 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @access public
 	 * @return bool
 	 */
-	public function get_instant_sharing_default() {
-		// This option is only kept for backward compatibility.
-		$value = isset( $this->settings['instant_share_default'] ) ? $this->settings['instant_share_default'] : true;
-		return apply_filters( 'rop_instant_sharing_default', $value );
+	public function get_instant_sharing_by_default() {
+		$post_id = get_the_ID();
+		if ( $post_id ) {
+			$post = get_post( $post_id );
+			if ( $post && $post->post_status === 'publish' ) {
+				return false;
+			}
+		}
+
+		return isset( $this->settings['instant_share_default'] ) ? $this->settings['instant_share_default'] : false;
 	}
 
 	/**

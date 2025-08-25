@@ -191,6 +191,8 @@ class Rop_I18n {
 				'custom_share_order_desc'     => __( 'By default message variations are shared randomly. Checking this box will cause them to share in the order they were added.', 'tweet-old-post' ),
 				'instant_share_title'         => __( 'Enable Instant Sharing Feature (Post on Publish)', 'tweet-old-post' ),
 				'instant_share_desc'          => __( 'Allows you to share posts immediately on publish/update. <a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'instant_share_default_title' => __( 'Enable Instant Sharing By Default', 'tweet-old-post' ),
+				'instant_share_default_desc'  => __( 'Instant sharing option will be checked by default when creating new posts.', 'tweet-old-post' ),
 				'cron_type_label'                => __( 'Cron Job Type', 'tweet-old-post' ),
 				'cron_type_label_desc'           => sprintf( __( 'Select the between your local built-in WordPress task scheduler, or Revive Social\'s, %1$sLearn More%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1303-rop-local-cron-vs-remote-cron" target="_blank">', '</a>' ),
 				'cron_type_label_desc_terms'           => __( 'I understand that some site data is stored on the Revive Social\'s Remote Cron System to provide this service <a href="https://docs.revive.social/article/1317-info-we-collect-for-remote-cron-service" target="_blank">Read More Here</a>.', 'tweet-old-post' ),
