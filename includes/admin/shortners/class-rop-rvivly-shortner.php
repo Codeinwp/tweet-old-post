@@ -67,7 +67,13 @@ class Rop_Rvivly_Shortner extends Rop_Url_Shortner_Abstract {
 		$response = $this->callAPI(
 			'https://rviv.ly/yourls-api.php',
 			array( 'method' => 'post' ),
-			array( 'action' => 'shorturl', 'format' => 'simple', 'signature' => substr( md5( $this->website . md5( 'themeisle' ) ), 0, 10 ), 'url' => $url, 'website' => base64_encode( $this->website ) ),
+			array(
+				'action'    => 'shorturl',
+				'format'    => 'simple',
+				'signature' => substr( md5( $this->website . md5( 'themeisle' ) ), 0, 10 ),
+				'url'       => $url,
+				'website'   => base64_encode( $this->website ),
+			),
 			null
 		);
 

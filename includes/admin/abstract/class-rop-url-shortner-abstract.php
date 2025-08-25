@@ -75,7 +75,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function init();
+	abstract public function init();
 
 	/**
 	 * Notify a save credentials action.
@@ -139,7 +139,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 *
 	 * @return string
 	 */
-	public abstract function shorten_url( $url );
+	abstract public function shorten_url( $url );
 
 	/**
 	 * Utility method to generate a salt string.
@@ -155,7 +155,7 @@ abstract class Rop_Url_Shortner_Abstract {
 		$randStringLen = 64;
 
 		$randString = '';
-		for ( $i = 0; $i < $randStringLen; $i ++ ) {
+		for ( $i = 0; $i < $randStringLen; $i++ ) {
 			$randString .= $charset[ mt_rand( 0, strlen( $charset ) - 1 ) ];
 		}
 

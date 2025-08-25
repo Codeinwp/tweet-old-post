@@ -57,7 +57,6 @@ class Rop_Db_Upgrade {
 
 			return false;
 		}
-
 	}
 
 	/**
@@ -177,7 +176,6 @@ class Rop_Db_Upgrade {
 				$this->migrate_post_formats( $active_accounts );
 			}
 		}// End if().
-
 	}
 
 	/**
@@ -471,5 +469,4 @@ class Rop_Db_Upgrade {
 			$cron->create_cron( true );
 		}
 	}
-
 }

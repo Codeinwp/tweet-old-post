@@ -19,7 +19,7 @@ class Rop_Log_Handler {
 	 *
 	 * @var array $current_logs List  of logs.
 	 */
-	static private $current_logs;
+	private static $current_logs;
 	/**
 	 * Hold initialization status.
 	 *
