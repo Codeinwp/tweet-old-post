@@ -1,0 +1,12 @@
+parameters:
+	level: 6
+	paths:
+		- %currentWorkingDirectory%/tweet-old-post.php
+		- %currentWorkingDirectory%/class-rop-autoloader.php
+		- %currentWorkingDirectory%/includes
+		- %currentWorkingDirectory%/cron-system
+	bootstrapFiles:
+		- %currentWorkingDirectory%/tests/php/static-analysis-stubs/symbols.php
+includes:
+	- %currentWorkingDirectory%/vendor/szepeviktor/phpstan-wordpress/extension.neon
+	- %currentWorkingDirectory%/phpstan-baseline.neon

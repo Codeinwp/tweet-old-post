@@ -6,38 +6,26 @@ concurrency:
 on:
   push:
     branches-ignore:
-      - 'master'
+      - "master"
 
 jobs:
   code-sniff:
     name: PHP Lint
     runs-on: ubuntu-latest
     steps:
-       - name: Checkout source code
-         uses: actions/checkout@v2
-       - name: Setup PHP
-         uses: shivammathur/setup-php@v2
-         with:
-          php-version: '7.4'
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
           tools: phpcs, phpcbf
-       - name: Get Composer Cache Directory
-         id: composer-cache
-         run: |
-           echo "::set-output name=dir::$(composer config cache-files-dir)"
-       - name: Setup Composer cache
-         uses: actions/cache@v4
-         with:
-           path: ${{ steps.composer-cache.outputs.dir }}
-           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-           restore-keys: |
-             ${{ runner.os }}-composer-
-       - name: Run Composer Install
-         run: composer install --prefer-dist --no-progress --quiet
-         continue-on-error: true
-       - name: Run PHPCS
-         run: composer run lint
-         continue-on-error: false
-
+      - name: Run Composer Install
+        run: composer install --prefer-dist --no-progress --quiet
+        continue-on-error: true
+      - name: Run PHPCS
+        run: composer run lint
+        continue-on-error: false
 
   php-unit:
     name: PHPUnit
@@ -49,30 +37,36 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
-         - 3306/tcp
+          - 3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
-     - name: Checkout source code
-       uses: actions/checkout@v2
-     - name: Setup PHP
-       uses: shivammathur/setup-php@v2
-       with:
-          php-version: '7.4'
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
           tools: phpunit-polyfills
-     - name: Install WordPress Test Suite
-       run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1:${{ job.services.mysql.ports['3306'] }}
-     - name: Get Composer Cache Directory
-       id: composer-cache
-       run: |
-         echo "::set-output name=dir::$(composer config cache-files-dir)"
-     - name: Setup Composer cache
-       uses: actions/cache@v4
-       with:
-         path: ${{ steps.composer-cache.outputs.dir }}
-         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-         restore-keys: |
-           ${{ runner.os }}-composer-
-     - name: Install composer
-       run: composer install --prefer-dist --no-progress
-     - name: Run PHP Unit
-       run: composer run test
+      - name: Install WordPress Test Suite
+        run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1:${{ job.services.mysql.ports['3306'] }}
+      - name: Install composer
+        run: composer install --prefer-dist --no-progress
+      - name: Run PHP Unit
+        run: composer run test
+
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP version
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
+          extensions: simplexml
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Install composer
+        run: |
+          composer install --prefer-dist --no-progress
+      - name: Run phpstan
+        run: composer run phpstan
