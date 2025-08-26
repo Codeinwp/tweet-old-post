@@ -773,11 +773,12 @@ class Rop_Admin {
 			return true;
 		}
 
-		if ( ! class_exists( 'Classic_Editor' ) ) {
-			return false;
-		}
-
 		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+
+		if ( ! class_exists( 'Classic_Editor' ) ) {
+			$post = get_post( $post_id );
+			return $post && ! use_block_editor_for_post_type( $post->post_type );
+		}
 
 		$allow_users_to_switch_editors = ( 'allow' === get_option( 'classic-editor-allow-users' ) );
 
