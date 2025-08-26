@@ -371,7 +371,7 @@ class Rop_Admin {
 		$rop_api_settings['exclude_apply_limit']             = $this->limit_exclude_list();
 		$rop_api_settings['publish_now']                     = array(
 			'instant_share_enabled' => $settings->get_instant_sharing(),
-			'instant_share_by_default' => $settings->get_instant_sharing_default(),
+			'instant_share_by_default' => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
 		$rop_api_settings['custom_messages']                 = $settings->get_custom_messages();
@@ -751,6 +751,7 @@ class Rop_Admin {
 	 *
 	 * This is quite complex as it needs to check various conditions:
 	 * - If the Classic Editor plugin is active.
+	 * - If the Disabled Gutenberg plugin is active.
 	 * - If the post is saved with the Classic Editor.
 	 * - If the user has selected the Classic Editor in their profile.
 	 * - If the post is a new post (post_id is 0).
@@ -764,6 +765,11 @@ class Rop_Admin {
 	public static function is_classic_editor() {
 		if ( isset( $_GET['wpb-backend-editor'] ) ) {
 			// If the wpb-backend-editor is set, we are using the classic editor via WPBakery.
+			return true;
+		}
+
+		// disable-gutenberg plugin is active.
+		if ( class_exists( 'DisableGutenberg' ) ) {
 			return true;
 		}
 
