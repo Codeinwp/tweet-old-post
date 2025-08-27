@@ -59,7 +59,11 @@ const render = () => {
 	};
 
 	useEffect(() => {
-		if ('initial' === meta.rop_publish_now && postStatus !== 'publish') {
+		if (
+			'initial' === meta.rop_publish_now &&
+			postStatus !== 'publish' &&
+			ropApiSettings.publish_now.instant_share_by_default
+		) {
 			updateMetaValue('rop_publish_now', 'yes');
 		}
 	}, []);

@@ -137,6 +137,8 @@ class Rop_I18n {
 				'get_latest_pro_version'     => __( 'Get the latest Pro version to unlock.', 'tweet-old-post' ),
 				'tlg_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/2223-how-to-connect-revive-social-to-telegram" target="_blank">', '</a>' ),
 				'upsell_bz_service_body'     => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the business plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
+				'search_account'             => __( 'Search account', 'tweet-old-post' ),
+				'no_account_found'           => __( 'No account found for search', 'tweet-old-post' ),
 			),
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),
@@ -191,6 +193,8 @@ class Rop_I18n {
 				'custom_share_order_desc'     => __( 'By default message variations are shared randomly. Checking this box will cause them to share in the order they were added.', 'tweet-old-post' ),
 				'instant_share_title'         => __( 'Enable Instant Sharing Feature (Post on Publish)', 'tweet-old-post' ),
 				'instant_share_desc'          => __( 'Allows you to share posts immediately on publish/update. <a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'instant_share_default_title' => __( 'Enable Instant Sharing By Default', 'tweet-old-post' ),
+				'instant_share_default_desc'  => __( 'Instant sharing option will be checked by default when creating new posts.', 'tweet-old-post' ),
 				'cron_type_label'                => __( 'Cron Job Type', 'tweet-old-post' ),
 				'cron_type_label_desc'           => sprintf( __( 'Select the between your local built-in WordPress task scheduler, or Revive Social\'s, %1$sLearn More%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1303-rop-local-cron-vs-remote-cron" target="_blank">', '</a>' ),
 				'cron_type_label_desc_terms'           => __( 'I understand that some site data is stored on the Revive Social\'s Remote Cron System to provide this service <a href="https://docs.revive.social/article/1317-info-we-collect-for-remote-cron-service" target="_blank">Read More Here</a>.', 'tweet-old-post' ),

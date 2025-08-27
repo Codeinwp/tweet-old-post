@@ -70,7 +70,6 @@
         <div
           v-if="is_preloading_over > 0"
           class="panel-nav"
-          style="padding: 8px;"
         >
           <ul class="tab ">
             <li
@@ -87,10 +86,20 @@
               >{{ tab.name }}</a>
             </li>
           </ul>
+          <div class="search-accounts">
+            <input
+              v-model="searchAccount"
+              type="text"
+              name="search-accounts"
+              :placeholder="search_account"
+              class="form-input"
+            />
+          </div>
         </div>
         <component
           :is="page.template"
           :type="page.view"
+          :search-account="searchAccount"
         />
       </div>
 
@@ -258,7 +267,9 @@
                 license_data_view: this.$store.state.licenseDataView,
                 license_field_title: window.wp.i18n.sprintf(this.$store.state.labels.general.license_product, 'Revive Old Posts Pro Add-on'),
                 license_error: false,
-                password_mask: this.$store.state.licenseDataView?.passwordMask
+                password_mask: this.$store.state.licenseDataView?.passwordMask,
+                search_account: this.$store.state.labels.accounts.search_account,
+                searchAccount: ''
             }
         },
         computed: {

@@ -362,6 +362,34 @@
 
         <span class="divider" />
 
+        <!-- Enable Instant Sharing By Default -->
+        <div
+          v-if="isInstantShare"
+          class="columns py-2"
+        >
+          <div class="column col-6 col-sm-12 vertical-align rop-control">
+            <b>{{ labels.instant_share_default_title }}</b>
+            <p class="text-gray">
+              {{ labels.instant_share_default_desc }}
+            </p>
+          </div>
+          <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input
+                  v-model="generalSettings.instant_share_default"
+                  type="checkbox"
+                >
+                <i class="form-icon" />{{ labels.yes_text }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <span
+          v-if="isInstantShare"
+          class="divider"
+        />
+
         <!-- Enable Share Content Variations -->
         <div
           class="columns py-2"
@@ -576,6 +604,9 @@
             isInstantShare: function () {
                 return this.$store.state.generalSettings.instant_share;
             },
+            isInstantShareByDefault: function () {
+                return this.$store.state.generalSettings.instant_share_default;
+            },
             isCustomMsgs: function () {
                 return this.$store.state.generalSettings.custom_messages;
             },
@@ -720,6 +751,7 @@
           custom_messages: this.generalSettings.custom_messages,
           custom_messages_share_order: this.generalSettings.custom_messages_share_order,
           instant_share: this.generalSettings.instant_share,
+          instant_share_default: this.generalSettings.instant_share_default,
           housekeeping: this.generalSettings.housekeeping,
           tracking: this.generalSettings.tracking
         };

@@ -371,7 +371,7 @@ class Rop_Admin {
 		$rop_api_settings['exclude_apply_limit']             = $this->limit_exclude_list();
 		$rop_api_settings['publish_now']                     = array(
 			'instant_share_enabled' => $settings->get_instant_sharing(),
-			'instant_share_by_default' => $settings->get_instant_sharing_default(),
+			'instant_share_by_default' => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
 		$rop_api_settings['custom_messages']                 = $settings->get_custom_messages();
@@ -751,6 +751,7 @@ class Rop_Admin {
 	 *
 	 * This is quite complex as it needs to check various conditions:
 	 * - If the Classic Editor plugin is active.
+	 * - If the Disabled Gutenberg plugin is active.
 	 * - If the post is saved with the Classic Editor.
 	 * - If the user has selected the Classic Editor in their profile.
 	 * - If the post is a new post (post_id is 0).
@@ -767,11 +768,17 @@ class Rop_Admin {
 			return true;
 		}
 
-		if ( ! class_exists( 'Classic_Editor' ) ) {
-			return false;
+		// disable-gutenberg plugin is active.
+		if ( class_exists( 'DisableGutenberg' ) ) {
+			return true;
 		}
 
 		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+
+		if ( ! class_exists( 'Classic_Editor' ) ) {
+			$post = get_post( $post_id );
+			return $post && ! use_block_editor_for_post_type( $post->post_type );
+		}
 
 		$allow_users_to_switch_editors = ( 'allow' === get_option( 'classic-editor-allow-users' ) );
 
