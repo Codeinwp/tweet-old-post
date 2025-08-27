@@ -339,6 +339,16 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.3.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.2...v9.3.3) (2025-08-27)
+
+- Fixed issue when the Disable Gutenberg plugin hides the Revive Social option in the classic editor
+- Reverts the removal of the option to change Instant Sharing's default state
+- Added search option to find specific accounts
+- Fixed instant sharing for classic editor
+
+
+
+
 ##### [Version 9.3.2](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.1...v9.3.2) (2025-07-21)
 
 - Fixes Instant Sharing options not appearing with WPBakery
