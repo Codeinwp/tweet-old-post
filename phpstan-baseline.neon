@@ -5179,12 +5179,6 @@ parameters:
 			path: includes/class-rop-deactivator.php
 
 		-
-			message: '#^Array has 2 duplicate keys with value ''service_popup_title'' \(''service_popup_title'', ''service_popup_title''\)\.$#'
-			identifier: array.duplicateKey
-			count: 1
-			path: includes/class-rop-i18n.php
-
-		-
 			message: '#^Method Rop_I18n\:\:get_labels_frontend\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
