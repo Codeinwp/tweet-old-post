@@ -769,12 +769,6 @@ parameters:
 			path: includes/admin/class-rop-admin.php
 
 		-
-			message: '#^Method Rop_Admin\:\:rop_dismiss_cron_disabled_notice\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: includes/admin/class-rop-admin.php
-
-		-
 			message: '#^Method Rop_Admin\:\:rop_dismiss_linkedin_api_v2_notice\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -915,12 +909,6 @@ parameters:
 		-
 			message: '#^Method Rop_Admin\:\:wrong_pro_version\(\) has no return type specified\.$#'
 			identifier: missingType.return
-			count: 1
-			path: includes/admin/class-rop-admin.php
-
-		-
-			message: '#^Parameter \#3 \$deprecated of function add_option expects string, null given\.$#'
-			identifier: argument.type
 			count: 1
 			path: includes/admin/class-rop-admin.php
 
@@ -2995,6 +2983,12 @@ parameters:
 			path: includes/admin/models/class-rop-queue-model.php
 
 		-
+			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/admin/models/class-rop-scheduler-model.php
+
+		-
 			message: '#^Call to function is_array\(\) with true will always evaluate to false\.$#'
 			identifier: function.impossibleType
 			count: 1
@@ -3049,12 +3043,6 @@ parameters:
 			path: includes/admin/models/class-rop-scheduler-model.php
 
 		-
-			message: '#^Method Rop_Scheduler_Model\:\:get_date\(\) should return int but returns string\.$#'
-			identifier: return.type
-			count: 1
-			path: includes/admin/models/class-rop-scheduler-model.php
-
-		-
 			message: '#^Method Rop_Scheduler_Model\:\:get_schedules\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -3091,14 +3079,14 @@ parameters:
 			path: includes/admin/models/class-rop-scheduler-model.php
 
 		-
-			message: '#^Method Rop_Scheduler_Model\:\:update_timeline\(\) has parameter \$new_events with no type specified\.$#'
-			identifier: missingType.parameter
+			message: '#^PHPDoc tag @SuppressWarnings has invalid value \(\(PHPMD\.UnusedLocalVariable\)\)\: Unexpected token "\.UnusedLocalVariable\)", expected ''\)'' at offset 89 on line 4$#'
+			identifier: phpDoc.parseError
 			count: 1
 			path: includes/admin/models/class-rop-scheduler-model.php
 
 		-
-			message: '#^PHPDoc tag @SuppressWarnings has invalid value \(\(PHPMD\.UnusedLocalVariable\)\)\: Unexpected token "\.UnusedLocalVariable\)", expected ''\)'' at offset 89 on line 4$#'
-			identifier: phpDoc.parseError
+			message: '#^Parameter \#1 \$new_events of method Rop_Scheduler_Model\:\:update_timeline\(\) expects array\<string, mixed\>, list given\.$#'
+			identifier: argument.type
 			count: 1
 			path: includes/admin/models/class-rop-scheduler-model.php
 
@@ -3365,6 +3353,12 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: includes/admin/models/class-rop-shortners-model.php
+
+		-
+			message: '#^Binary operation "\-" between string and 2 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: includes/admin/notices/class-rop-admin-notices-helpers.php
 
 		-
 			message: '#^Method Rop_Admin_Notices_Helpers\:\:rop_notice_dismissed\(\) has no return type specified\.$#'
@@ -3645,6 +3639,12 @@ parameters:
 		-
 			message: '#^Method Rop_Facebook_Service\:\:try_post\(\) has parameter \$new_post with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
+			count: 1
+			path: includes/admin/services/class-rop-facebook-service.php
+
+		-
+			message: '#^Offset ''rop_facebook…'' on non\-empty\-array in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
 			count: 1
 			path: includes/admin/services/class-rop-facebook-service.php
 
@@ -5139,7 +5139,13 @@ parameters:
 		-
 			message: '#^Call to static method get_labels\(\) on an unknown class Rop_Pro_I18n\.$#'
 			identifier: class.notFound
-			count: 3
+			count: 1
+			path: includes/admin/views/custom_fields_view.php
+
+		-
+			message: '#^Parameter \#1 \$text of function esc_attr expects string, int given\.$#'
+			identifier: argument.type
+			count: 2
 			path: includes/admin/views/custom_fields_view.php
 
 		-

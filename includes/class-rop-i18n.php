@@ -74,12 +74,11 @@ class Rop_I18n {
 	public static function get_labels( $key = '' ) {
 		$tw_new_name = __( 'X (Twitter)', 'tweet-old-post' );
 		$labels = array(
-			'accounts'                              => array(
+			'accounts'    => array(
 				'menu_item'                  => __( 'Accounts', 'tweet-old-post' ),
 				'service_popup_title'        => __( 'Service Credentials', 'tweet-old-post' ),
 				'show_advance_config'        => __( 'Use your own keys', 'tweet-old-post' ),
 				'show_own_keys_config'       => __( 'Use my own API keys', 'tweet-old-post' ),
-				// translators: %1$s changes in network limits, %2$s is the recommended action
 				'tw_app_signin_tooltip'      => sprintf( __( 'Due to the %1$s changes in network limits, we cannot guarantee stable sharing using this mode. We recommend using your own API keys.', 'tweet-old-post' ), $tw_new_name ),
 				'tw_new_name'                => $tw_new_name,
 				'fb_app_signin_btn'          => __( 'Sign in to Facebook', 'tweet-old-post' ),
@@ -89,6 +88,7 @@ class Rop_I18n {
 				'gmb_app_signin_btn'         => __( 'Sign in to Google My Business', 'tweet-old-post' ),
 				'vk_app_signin_btn'          => __( 'Sign in to Vkontake', 'tweet-old-post' ),
 				'app_option_signin'          => __( 'Or', 'tweet-old-post' ),
+				'service_popup_title'        => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'                => __( 'Sign In', 'tweet-old-post' ),
 				'field_required'             => __( 'This field is required', 'tweet-old-post' ),
 				'at'                         => __( 'at', 'tweet-old-post' ),
@@ -107,18 +107,14 @@ class Rop_I18n {
 				'reset_selector_btn'         => __( 'Reset', 'tweet-old-post' ),
 				'for'                        => __( 'for', 'tweet-old-post' ),
 				'add_account'                => __( '<b>Add Your Accounts:</b>', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'upsell_accounts'            => sprintf( __( 'A maximum of 1 Facebook and Twitter account can be connected to the Lite version of Revive Social. Upgrade to unlock more great features including more social networks! Check out the Lite vs Pro %1$stable here%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/941-revive-old-post-free-vs-pro" target="_blank">', '</a>' ),
 				'upsell_accounts_toggle'     => 'Active accounts limit reached.',
 				'toggle_account'             => __( 'Toggle account', 'tweet-old-post' ),
 				'activate_license'           => __( 'You need to activate your license key to unlock the Pro features of Revive Social. Add your key on the sidebar.', 'tweet-old-post' ),
 				'fb_app_id_title'            => __( 'Please add the APP ID from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_secret_title'        => __( 'Please add the APP SECRET from your Facebook app.', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'fb_app_desc'                => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post" target="_blank">', '</a>' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'twt_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/914-how-to-create-a-twitter-application-for-revive-old-post" target="_blank">', '</a>' ),
-				// translators: %1$s is the service name
 				'service_error'              => __( 'The %1$s service can not be used or was not found', 'tweet-old-post' ),
 				'twitter_warning'            => __(
 					'
@@ -131,28 +127,21 @@ class Rop_I18n {
 				'only_in_pro'                => __( 'Available in Pro', 'tweet-old-post' ),
 				'limit_reached'              => __( 'Limit reached', 'tweet-old-post' ),
 				'upsell_upgrade_now'         => __( 'Upgrade to PRO', 'tweet-old-post' ),
-				// translators: %1$s is the service name
 				'upsell_extra_network'       => __( 'Sharing to %1$s', 'tweet-old-post' ),
-				// translators: %1$s is the service name
 				'upsell_extra_account'       => __( 'Sharing to Additional %1$s Accounts', 'tweet-old-post' ),
-				// translators: %1$s is the service name
 				'upsell_service_title'       => __( '%1$s is a PRO feature', 'tweet-old-post' ),
-				// translators: %1$s is the service name
 				'upsell_service_body'        => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the Pro plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
 				'edit_headers'               => __( 'Edit Headers', 'tweet-old-post' ),
 				'hide'                       => __( 'Hide', 'tweet-old-post' ),
 				'get_latest_pro_version'     => __( 'Get the latest Pro version to unlock.', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'tlg_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/2223-how-to-connect-revive-social-to-telegram" target="_blank">', '</a>' ),
-				// translators: %1$s is the service name
 				'upsell_bz_service_body'     => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the business plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
 				'search_account'             => __( 'Search account', 'tweet-old-post' ),
 				'no_account_found'           => __( 'No account found for search', 'tweet-old-post' ),
 			),
-			'settings'                              => array(
+			'settings'    => array(
 				'yes_text'                         => __( 'Yes', 'tweet-old-post' ),
 				'available_in_pro'                 => __( ' This feature is only available in the Pro version.', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'post_types_exclude_limit'         => sprintf( __( 'Upgrade to Pro version to select more than 30 posts. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="' . tsdk_utmify( self::UPSELL_LINK, 'post_types', 'exclude_post' ) . '" target="_blank">', '</a>' ),
 				'post_types_exclude_limit_tooltip' => __( 'Upgrade to Pro version to select more than 30 posts.', 'tweet-old-post' ),
 				'menu_item'                        => __( 'General Settings', 'tweet-old-post' ),
@@ -170,13 +159,10 @@ class Rop_I18n {
 					'tweet-old-post'
 				),
 				'post_types_title'                 => __( 'Post Types', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'post_types_taxonomy_limit'        => sprintf( __( 'Upgrade to Pro version to select more than 4 taxonomies. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="' . tsdk_utmify( self::UPSELL_LINK, 'taxonomy', 'settings' ) . '" target="_blank">', '</a>' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'post_types_attachament_info'      => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
 				'post_types_desc'                  => __( 'Which post types should Revive Social share? <a href="https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'update_post_published_date_title' => __( 'Update Post Published Date After Share', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'update_post_published_date_desc'  => sprintf( __( 'Update the post published date after it has been shared to your social media account. %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1489-automatically-updating-post-publish-date-after-sharing-a-post" target="_blank">', '</a>' ),
 				'filter_by_post_types_desc'        => __( 'Filter posts list by Post Type', 'tweet-old-post' ),
 				'post_types_upsell'                => __(
@@ -206,13 +192,11 @@ class Rop_I18n {
 				'custom_share_order_desc'          => __( 'By default message variations are shared randomly. Checking this box will cause them to share in the order they were added.', 'tweet-old-post' ),
 				'instant_share_title'              => __( 'Enable Instant Sharing Feature (Post on Publish)', 'tweet-old-post' ),
 				'instant_share_desc'               => __( 'Allows you to share posts immediately on publish/update. <a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
-				'instant_share_default_title' => __( 'Enable Instant Sharing By Default', 'tweet-old-post' ),
-				'instant_share_default_desc'  => __( 'Instant sharing option will be checked by default when creating new posts.', 'tweet-old-post' ),
+				'instant_share_default_title'      => __( 'Enable Instant Sharing By Default', 'tweet-old-post' ),
+				'instant_share_default_desc'       => __( 'Instant sharing option will be checked by default when creating new posts.', 'tweet-old-post' ),
 				'cron_type_label'                  => __( 'Cron Job Type', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'cron_type_label_desc'             => sprintf( __( 'Select the between your local built-in WordPress task scheduler, or Revive Social\'s, %1$sLearn More%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1303-rop-local-cron-vs-remote-cron" target="_blank">', '</a>' ),
 				'cron_type_label_desc_terms'       => __( 'I understand that some site data is stored on the Revive Social\'s Remote Cron System to provide this service <a href="https://docs.revive.social/article/1317-info-we-collect-for-remote-cron-service" target="_blank">Read More Here</a>.', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are bold tags, %3$s and %4$s are opening and closing anchor tags for a link
 				'cron_type_notice'                 => sprintf( __( '%1$sNOTE:%2$s This is a BETA Remote Cron feature to be used mainly if your %1$sposts aren\'t sharing%2$s. If the Remote Cron feature is used, and you notice that your posts are still not sharing, then please %1$sturn the setting back to "Local Cron"%2$s and read the following guide for alternative solutions that are sure to work: %1$s%3$sLearn More%4$s%2$s.', 'tweet-old-post' ), '<strong>', '</strong>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>' ),
 				'housekeeping'                     => __( 'Housekeeping', 'tweet-old-post' ),
 				'housekeeping_desc'                => __( 'Should we delete all saved settings on deletion of the Revive Social plugin?', 'tweet-old-post' ),
@@ -231,138 +215,123 @@ class Rop_I18n {
 				'tracking'                         => __( 'Send anonymous data to help us understand how you use the plugin.', 'tweet-old-post' ),
 				'tracking_info'                    => __( 'What do we track?', 'tweet-old-post' ),
 			),
-			'post_format'                           => array(
-				'yes_text'                            => __( 'Yes', 'tweet-old-post' ),
-				'menu_item'                           => __( 'Post Format', 'tweet-old-post' ),
-				'language_title'                      => __( 'Language', 'tweet-old-post' ),
-				'language_title_desc'                 => __( 'We\'ve detected that this is a multilingual website. Select the post language you want to share to this account.', 'tweet-old-post' ),
-				'post_content_title'                  => __( 'Share Content', 'tweet-old-post' ),
-				'post_content_desc'                   => __( 'Which part of the post should we use as the caption?', 'tweet-old-post' ),
-				'post_content_option_title'           => __( 'Post Title', 'tweet-old-post' ),
-				'post_content_option_content'         => __( 'Post Content', 'tweet-old-post' ),
-				'post_content_option_title_content'   => __( 'Post Title & Content', 'tweet-old-post' ),
-				'post_content_option_excerpt'         => __( 'Post Excerpt', 'tweet-old-post' ),
-				'post_content_option_custom_field'    => __( 'Custom Field', 'tweet-old-post' ),
-				'post_content_option_custom_content'  => __( 'Custom Content', 'tweet-old-post' ),
-				'post_content_option_yoast_seo_title' => __( 'Yoast SEO Title', 'tweet-old-post' ),
+			'post_format' => array(
+				'yes_text'                              => __( 'Yes', 'tweet-old-post' ),
+				'menu_item'                             => __( 'Post Format', 'tweet-old-post' ),
+				'language_title'                        => __( 'Language', 'tweet-old-post' ),
+				'language_title_desc'                   => __( 'We\'ve detected that this is a multilingual website. Select the post language you want to share to this account.', 'tweet-old-post' ),
+				'post_content_title'                    => __( 'Share Content', 'tweet-old-post' ),
+				'post_content_desc'                     => __( 'Which part of the post should we use as the caption?', 'tweet-old-post' ),
+				'post_content_option_title'             => __( 'Post Title', 'tweet-old-post' ),
+				'post_content_option_content'           => __( 'Post Content', 'tweet-old-post' ),
+				'post_content_option_title_content'     => __( 'Post Title & Content', 'tweet-old-post' ),
+				'post_content_option_excerpt'           => __( 'Post Excerpt', 'tweet-old-post' ),
+				'post_content_option_custom_field'      => __( 'Custom Field', 'tweet-old-post' ),
+				'post_content_option_custom_content'    => __( 'Custom Content', 'tweet-old-post' ),
+				'post_content_option_yoast_seo_title'   => __( 'Yoast SEO Title', 'tweet-old-post' ),
 				'post_content_option_yoast_seo_description' => __( 'Yoast SEO Description', 'tweet-old-post' ),
 				'post_content_option_yoast_seo_title_description' => __( 'Yoast SEO Title & Description', 'tweet-old-post' ),
-				'custom_meta_title'                   => __( 'Custom Meta Field', 'tweet-old-post' ),
-				'custom_meta_desc'                    => __( 'Meta field name from which to get the content.', 'tweet-old-post' ),
-				'max_char_title'                      => __( 'Maximum Characters', 'tweet-old-post' ),
-				'max_char_desc'                       => __( 'Maximum length of the message, in characters. Each letter is considered a character.', 'tweet-old-post' ),
-				'add_char_title'                      => __( 'Additional Text', 'tweet-old-post' ),
-				'add_char_title_custom_content'       => __( 'Message Content', 'tweet-old-post' ),
-				'override_share_variations'           => __( 'Override Share Content Variations with the current content', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
-				'add_char_desc'                       => sprintf( __( 'Add custom content to shared posts. It supports magic tags in the Pro version of Revive Social %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
-				'add_char_placeholder'                => __( '...written by {author} on {date}.', 'tweet-old-post' ),
-				'add_char_placeholder_custom_content' => __( '{title} with {content} written by {author} on {date}.', 'tweet-old-post' ),
-				'add_pos_title'                       => __( 'Choose where you want the Additional Text to appear.', 'tweet-old-post' ),
-				'add_pos_option_start'                => __( 'Beginning of Caption', 'tweet-old-post' ),
-				'add_pos_option_end'                  => __( 'End of Caption', 'tweet-old-post' ),
-				'add_link_title'                      => __( 'Include Link', 'tweet-old-post' ),
-				'add_link_desc'                       => __( 'Should Revive Social include the post permalink or not?', 'tweet-old-post' ),
-				'meta_link_title'                     => __( 'Custom Field', 'tweet-old-post' ),
-				'meta_link_desc'                      => __( 'Fetch URL from custom field?', 'tweet-old-post' ),
-				'meta_link_name_title'                => __( 'Custom Field', 'tweet-old-post' ),
-				'meta_link_name_desc'                 => __( 'Custom Field from which to get the URL.', 'tweet-old-post' ),
-				'taxonomy_based_sharing_upsell'       => __( 'Per account Taxonomy filters feature is available in the Pro version (Personal Plan and higher).', 'tweet-old-post' ),
-				'message_custom_content_upsell'       => __( 'Per account Custom Content feature is available in the Pro version (Personal Plan and higher).', 'tweet-old-post' ),
-				'use_shortner_title'                  => __( 'Use URL Shortener', 'tweet-old-post' ),
-				'use_shortner_desc'                   => __( 'Should we use a shortener when adding the links to the content?', 'tweet-old-post' ),
-				'shortner_title'                      => __( 'URL Shortener Service', 'tweet-old-post' ),
-				'shortner_desc'                       => __( 'Which service to use for URL shortening?', 'tweet-old-post' ),
-				'shortner_api_field'                  => __( 'Service API', 'tweet-old-post' ),
-				'shortner_field_desc_start'           => __( 'Add the', 'tweet-old-post' ),
-				'shortner_field_desc_end'             => __( 'required by the', 'tweet-old-post' ),
-				'hashtags_title'                      => __( 'Hashtags', 'tweet-old-post' ),
-				'hashtags_desc'                       => __( 'Hashtags for published content.', 'tweet-old-post' ),
-				'hashtags_option_no'                  => __( 'Don\'t add any hashtags', 'tweet-old-post' ),
-				'hashtags_option_common'              => __( 'Common hashtags for all shares', 'tweet-old-post' ),
-				'hashtags_option_cats'                => __( 'Create hashtags from categories', 'tweet-old-post' ),
-				'hashtags_option_tags'                => __( 'Create hashtags from tags', 'tweet-old-post' ),
-				'hashtags_option_field'               => __( 'Create hashtags from a custom field', 'tweet-old-post' ),
-				'hastags_common_title'                => __( 'Common Hashtags', 'tweet-old-post' ),
-				'hastags_common_desc'                 => __( 'List of hastags to use separated by comma', 'tweet-old-post' ),
-				'hastags_field_title'                 => __( 'Custom Hashtags', 'tweet-old-post' ),
-				'hastags_field_desc'                  => __( 'The name of the meta field that contains the hashtags.', 'tweet-old-post' ),
-				'hashtags_length_title'               => __( 'Maximum Hashtags length', 'tweet-old-post' ),
-				'hashtags_length_desc'                => __( 'The maximum hashtags length to be used when publishing.', 'tweet-old-post' ),
-				'hashtags_randomize'                  => __( 'Randomize hashtags', 'tweet-old-post' ),
-				'hashtags_randomize_desc'             => __( 'Randomize the list of hashtags on every successful share. You won\'t see this change in the Sharing Queue, the randomization happens at share time.', 'tweet-old-post' ),
-				'image_title'                         => __( 'Share As Image Post', 'tweet-old-post' ),
-				'image_desc'                          => __( 'Should Revive Social share your posts as an image post? <a href="https://docs.revive.social/article/958-how-to-share-posts-as-image-posts-to-social-accounts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
-				'image_aspect_ratio_title'            => __( 'Automatically correct aspect ratio', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
-				'image_aspect_ratio_title_desc'       => __( 'Should Revive Social automatically crop images with the wrong aspect ratio? %1$sLearn more%2$s.', 'tweet-old-post' ),
-				'<a href="https://docs.revive.social/article/1661-how-to-fix-invalid-aspect-ratio-when-posting-to-instagram" target="_blank">',
-				'</a>',
-			),
-			'utm_campaign_medium'                   => __( 'Campaign Medium', 'tweet-old-post' ),
-			'utm_campaign_medium_desc'              => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
-			'utm_campaign_name'                     => __( 'Campaign Name', 'tweet-old-post' ),
-			'utm_campaign_name_desc'                => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
-			'custom_utm_upsell'                     => __( 'Custom UTMs are only available in the Pro version.', 'tweet-old-post' ),
-			'image_upsell'                          => __( 'Sharing as an Image Post is available in the Pro version.', 'tweet-old-post' ),
-			// translators: %1$s and %2$s are opening and closing anchor tags for a link
-			'full_wpml_support_upsell'              => sprintf( __( 'Language-based sharing only available in the %1$sPro version%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1338-how-to-share-different-wpml-languages-to-different-social-media-accounts" target="_blank">', '</a>' ),
+				'custom_meta_title'                     => __( 'Custom Meta Field', 'tweet-old-post' ),
+				'custom_meta_desc'                      => __( 'Meta field name from which to get the content.', 'tweet-old-post' ),
+				'max_char_title'                        => __( 'Maximum Characters', 'tweet-old-post' ),
+				'max_char_desc'                         => __( 'Maximum length of the message, in characters. Each letter is considered a character.', 'tweet-old-post' ),
+				'add_char_title'                        => __( 'Additional Text', 'tweet-old-post' ),
+				'add_char_title_custom_content'         => __( 'Message Content', 'tweet-old-post' ),
+				'override_share_variations'             => __( 'Override Share Content Variations with the current content', 'tweet-old-post' ),
+				'add_char_desc'                         => sprintf( __( 'Add custom content to shared posts. It supports magic tags in the Pro version of Revive Social %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
+				'add_char_placeholder'                  => __( '...written by {author} on {date}.', 'tweet-old-post' ),
+				'add_char_placeholder_custom_content'   => __( '{title} with {content} written by {author} on {date}.', 'tweet-old-post' ),
+				'add_pos_title'                         => __( 'Choose where you want the Additional Text to appear.', 'tweet-old-post' ),
+				'add_pos_option_start'                  => __( 'Beginning of Caption', 'tweet-old-post' ),
+				'add_pos_option_end'                    => __( 'End of Caption', 'tweet-old-post' ),
+				'add_link_title'                        => __( 'Include Link', 'tweet-old-post' ),
+				'add_link_desc'                         => __( 'Should Revive Social include the post permalink or not?', 'tweet-old-post' ),
+				'meta_link_title'                       => __( 'Custom Field', 'tweet-old-post' ),
+				'meta_link_desc'                        => __( 'Fetch URL from custom field?', 'tweet-old-post' ),
+				'meta_link_name_title'                  => __( 'Custom Field', 'tweet-old-post' ),
+				'meta_link_name_desc'                   => __( 'Custom Field from which to get the URL.', 'tweet-old-post' ),
+				'taxonomy_based_sharing_upsell'         => __( 'Per account Taxonomy filters feature is available in the Pro version (Personal Plan and higher).', 'tweet-old-post' ),
+				'message_custom_content_upsell'         => __( 'Per account Custom Content feature is available in the Pro version (Personal Plan and higher).', 'tweet-old-post' ),
+				'use_shortner_title'                    => __( 'Use URL Shortener', 'tweet-old-post' ),
+				'use_shortner_desc'                     => __( 'Should we use a shortener when adding the links to the content?', 'tweet-old-post' ),
+				'shortner_title'                        => __( 'URL Shortener Service', 'tweet-old-post' ),
+				'shortner_desc'                         => __( 'Which service to use for URL shortening?', 'tweet-old-post' ),
+				'shortner_api_field'                    => __( 'Service API', 'tweet-old-post' ),
+				'shortner_field_desc_start'             => __( 'Add the', 'tweet-old-post' ),
+				'shortner_field_desc_end'               => __( 'required by the', 'tweet-old-post' ),
+				'hashtags_title'                        => __( 'Hashtags', 'tweet-old-post' ),
+				'hashtags_desc'                         => __( 'Hashtags for published content.', 'tweet-old-post' ),
+				'hashtags_option_no'                    => __( 'Don\'t add any hashtags', 'tweet-old-post' ),
+				'hashtags_option_common'                => __( 'Common hashtags for all shares', 'tweet-old-post' ),
+				'hashtags_option_cats'                  => __( 'Create hashtags from categories', 'tweet-old-post' ),
+				'hashtags_option_tags'                  => __( 'Create hashtags from tags', 'tweet-old-post' ),
+				'hashtags_option_field'                 => __( 'Create hashtags from a custom field', 'tweet-old-post' ),
+				'hastags_common_title'                  => __( 'Common Hashtags', 'tweet-old-post' ),
+				'hastags_common_desc'                   => __( 'List of hastags to use separated by comma', 'tweet-old-post' ),
+				'hastags_field_title'                   => __( 'Custom Hashtags', 'tweet-old-post' ),
+				'hastags_field_desc'                    => __( 'The name of the meta field that contains the hashtags.', 'tweet-old-post' ),
+				'hashtags_length_title'                 => __( 'Maximum Hashtags length', 'tweet-old-post' ),
+				'hashtags_length_desc'                  => __( 'The maximum hashtags length to be used when publishing.', 'tweet-old-post' ),
+				'hashtags_randomize'                    => __( 'Randomize hashtags', 'tweet-old-post' ),
+				'hashtags_randomize_desc'               => __( 'Randomize the list of hashtags on every successful share. You won\'t see this change in the Sharing Queue, the randomization happens at share time.', 'tweet-old-post' ),
+				'image_title'                           => __( 'Share As Image Post', 'tweet-old-post' ),
+				'image_desc'                            => __( 'Should Revive Social share your posts as an image post? <a href="https://docs.revive.social/article/958-how-to-share-posts-as-image-posts-to-social-accounts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'image_aspect_ratio_title'              => __( 'Automatically correct aspect ratio', 'tweet-old-post' ),
+				'image_aspect_ratio_title_desc'         => __( 'Should Revive Social automatically crop images with the wrong aspect ratio? <a href="https://docs.revive.social/article/1661-how-to-fix-invalid-aspect-ratio-when-posting-to-instagram" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'utm_campaign_medium'                   => __( 'Campaign Medium', 'tweet-old-post' ),
+				'utm_campaign_medium_desc'              => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
+				'utm_campaign_name'                     => __( 'Campaign Name', 'tweet-old-post' ),
+				'utm_campaign_name_desc'                => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
+				'custom_utm_upsell'                     => __( 'Custom UTMs are only available in the Pro version.', 'tweet-old-post' ),
+				'image_upsell'                          => __( 'Sharing as an Image Post is available in the Pro version.', 'tweet-old-post' ),
+				'full_wpml_support_upsell'              => sprintf( __( 'Language-based sharing only available in the %1$sPro version%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1338-how-to-share-different-wpml-languages-to-different-social-media-accounts" target="_blank">', '</a>' ),
 
-			'wpml_select_language'                  => __( 'Choose language', 'tweet-old-post' ),
-			'media_post_title'                      => __( 'Media Posts Content', 'tweet-old-post' ),
-			'media_post_desc'                       => __( 'Which content should we share for media posts?', 'tweet-old-post' ),
-			'media_post_option_title'               => __( 'Title', 'tweet-old-post' ),
-			'media_post_option_caption'             => __( 'Caption', 'tweet-old-post' ),
-			'media_post_option_alt_text'            => __( 'Alt Text', 'tweet-old-post' ),
-			'media_post_option_description'         => __( 'Description', 'tweet-old-post' ),
-			'media_post_upsell'                     => __( 'Media posting is available in the Business version.', 'tweet-old-post' ),
-			'no_post_format_error'                  => __( 'Post Format option empty, "Share scheduled posts to social media on publish" cannot work. Please go to the Post Format tab and click "Save" for this feature to work', 'tweet-old-post' ),
-			'active_account_no_post_format_error'   => __( 'No post format found for the following network, please go to "Post Format" tab and save your changes for: ', 'tweet-old-post' ),
-			// translators: %1$s and %2$s are opening and closing bold tags
-			'twitter_max_characters_notice'         => sprintf( __( '%1$sNote:%2$s Maximum characters supported by Twitter is 280.', 'tweet-old-post' ), '<strong>', '</strong>' ),
-			// translators: %1$s and %2$s are opening and closing bold tags
-			'instagram_disable_link_recommendation' => sprintf( __( '%1$sNote:%2$s We recommend that you disable links for Instagram posts. If you do leave this option checked, then we recommend that you enable a shortener.', 'tweet-old-post' ), '<strong>', '</strong>' ),
-			// translators: %1$s and %2$s are opening and closing bold tags
-			'instagram_image_post_default'          => sprintf( __( '%1$sNote:%2$s Instagram posts need to be an image.', 'tweet-old-post' ), '<strong>', '</strong>' ),
-			// translators: %1$s and %2$s are opening and closing bold tags
-			'vk_unsupported_shorteners'             => sprintf( __( '%1$sNote:%2$s is.gd shortener is not currently supported by VK.com.', 'tweet-old-post' ), '<strong>', '</strong>' ),
-			'not_available_with_rop_server'         => __( 'This feature is not available for X accounts authorized via Revival Social.', 'tweet-old-post' ),
-			'custom_meta_field_upsell'              => __( 'Custom meta fields are only available in the Pro version.', 'tweet-old-post' ),
-			'custom_meta_upsell'                    => __( 'Custom fields are only available in the Pro version.', 'tweet-old-post' ),
-			'hashtag_field_upsell'                  => __( 'The selected option is only available in the Pro version.', 'tweet-old-post' ),
-			'first_comment_title'                   => __( 'Comment Text', 'tweet-old-post' ),
-			'first_comment_desc'                    => __( 'Should Revive Social add the post link in the first comment when sharing a post?', 'tweet-old-post' ),
-			'first_comment_placeholder'             => __( 'Read more on {link}', 'tweet-old-post' ),
-			'share_link_title'                      => __( 'Share link in comment', 'tweet-old-post' ),
-			'share_link_desc'                       => __( 'Share the post link in the first comment?', 'tweet-old-post' ),
-			'share_link_upsell'                     => __( 'Share first comment is only available in the Pro version.', 'tweet-old-post' ),
-		),
-		'schedule'    => array(
-			'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
-			'time_now'                  => __( 'Time now', 'tweet-old-post' ),
-			'schedule_type_title'       => __( 'Schedule Type', 'tweet-old-post' ),
-			'schedule_type_desc'        => __( 'What type of schedule to use.', 'tweet-old-post' ),
-			'schedule_type_option_fix'  => __( 'Fixed', 'tweet-old-post' ),
-			'schedule_type_option_rec'  => __( 'Recurring', 'tweet-old-post' ),
-			'schedule_fixed_days_title' => __( 'Fixed Schedule Days', 'tweet-old-post' ),
-			'schedule_fixed_days_desc'  => __( 'The days when to share for this account.', 'tweet-old-post' ),
-			'schedule_fixed_time_title' => __( 'Fixed Schedule Time.', 'tweet-old-post' ),
-			'schedule_fixed_time_desc'  => __( 'The time at witch to share for this account.', 'tweet-old-post' ),
-			'schedule_rec_title'        => __( 'Recurring Schedule Interval', 'tweet-old-post' ),
-			'schedule_rec_desc'         => __( 'A recurring interval to use for sharing. Once every \'X\' hours.', 'tweet-old-post' ),
-			'schedule_upsell'           => __( 'The Custom Schedule is available only in the Business and Marketer versions of the plugin.', 'tweet-old-post' ),
-		),
+				'wpml_select_language'                  => __( 'Choose language', 'tweet-old-post' ),
+				'media_post_title'                      => __( 'Media Posts Content', 'tweet-old-post' ),
+				'media_post_desc'                       => __( 'Which content should we share for media posts?', 'tweet-old-post' ),
+				'media_post_option_title'               => __( 'Title', 'tweet-old-post' ),
+				'media_post_option_caption'             => __( 'Caption', 'tweet-old-post' ),
+				'media_post_option_alt_text'            => __( 'Alt Text', 'tweet-old-post' ),
+				'media_post_option_description'         => __( 'Description', 'tweet-old-post' ),
+				'media_post_upsell'                     => __( 'Media posting is available in the Business version.', 'tweet-old-post' ),
+				'no_post_format_error'                  => __( 'Post Format option empty, "Share scheduled posts to social media on publish" cannot work. Please go to the Post Format tab and click "Save" for this feature to work', 'tweet-old-post' ),
+				'active_account_no_post_format_error'   => __( 'No post format found for the following network, please go to "Post Format" tab and save your changes for: ', 'tweet-old-post' ),
+				'twitter_max_characters_notice'         => sprintf( __( '%1$sNote:%2$s Maximum characters supported by Twitter is 280.', 'tweet-old-post' ), '<strong>', '</strong>' ),
+				'instagram_disable_link_recommendation' => sprintf( __( '%1$sNote:%2$s We recommend that you disable links for Instagram posts. If you do leave this option checked, then we recommend that you enable a shortener.', 'tweet-old-post' ), '<strong>', '</strong>' ),
+				'instagram_image_post_default'          => sprintf( __( '%1$sNote:%2$s Instagram posts need to be an image.', 'tweet-old-post' ), '<strong>', '</strong>' ),
+				'vk_unsupported_shorteners'             => sprintf( __( '%1$sNote:%2$s is.gd shortener is not currently supported by VK.com.', 'tweet-old-post' ), '<strong>', '</strong>' ),
+				'not_available_with_rop_server'         => __( 'This feature is not available for X accounts authorized via Revival Social.', 'tweet-old-post' ),
+				'custom_meta_field_upsell'              => __( 'Custom meta fields are only available in the Pro version.', 'tweet-old-post' ),
+				'custom_meta_upsell'                    => __( 'Custom fields are only available in the Pro version.', 'tweet-old-post' ),
+				'hashtag_field_upsell'                  => __( 'The selected option is only available in the Pro version.', 'tweet-old-post' ),
+				'first_comment_title'                   => __( 'Comment Text', 'tweet-old-post' ),
+				'first_comment_desc'                    => __( 'Should Revive Social add the post link in the first comment when sharing a post?', 'tweet-old-post' ),
+				'first_comment_placeholder'             => __( 'Read more on {link}', 'tweet-old-post' ),
+				'share_link_title'                      => __( 'Share link in comment', 'tweet-old-post' ),
+				'share_link_desc'                       => __( 'Share the post link in the first comment?', 'tweet-old-post' ),
+				'share_link_upsell'                     => __( 'Share first comment is only available in the Pro version.', 'tweet-old-post' ),
+			),
+			'schedule'    => array(
+				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
+				'time_now'                  => __( 'Time now', 'tweet-old-post' ),
+				'schedule_type_title'       => __( 'Schedule Type', 'tweet-old-post' ),
+				'schedule_type_desc'        => __( 'What type of schedule to use.', 'tweet-old-post' ),
+				'schedule_type_option_fix'  => __( 'Fixed', 'tweet-old-post' ),
+				'schedule_type_option_rec'  => __( 'Recurring', 'tweet-old-post' ),
+				'schedule_fixed_days_title' => __( 'Fixed Schedule Days', 'tweet-old-post' ),
+				'schedule_fixed_days_desc'  => __( 'The days when to share for this account.', 'tweet-old-post' ),
+				'schedule_fixed_time_title' => __( 'Fixed Schedule Time.', 'tweet-old-post' ),
+				'schedule_fixed_time_desc'  => __( 'The time at witch to share for this account.', 'tweet-old-post' ),
+				'schedule_rec_title'        => __( 'Recurring Schedule Interval', 'tweet-old-post' ),
+				'schedule_rec_desc'         => __( 'A recurring interval to use for sharing. Once every \'X\' hours.', 'tweet-old-post' ),
+				'schedule_upsell'           => __( 'The Custom Schedule is available only in the Business and Marketer versions of the plugin.', 'tweet-old-post' ),
+			),
 			'queue'       => array(
 				'menu_item'                => __( 'Sharing Queue', 'tweet-old-post' ),
 				'sharing_not_started'      => __( 'Sharing is not started!', 'tweet-old-post' ),
 				'sharing_not_started_desc' => __( 'You need to start sharing in order to see any posts in the queue.', 'tweet-old-post' ),
 				'queue_desc'               => __( 'You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.', 'tweet-old-post' ),
-				'business_or_higher_only'  => sprintf(
-					// translators: %1$s and %2$s are opening and closing anchor tags for a link
-					__( 'You can edit the posts from the queue with the Business or Marketer versions of the plugin. View more details %1$shere%2$s.', 'tweet-old-post' ),
-					'<a href="' . self::UPSELL_LINK . '" target="_blank">',
-					'</a>' 
-				),
+				'business_or_higher_only'  => sprintf( __( 'You can edit the posts from the queue with the Business or Marketer versions of the plugin. View more details %1$shere%2$s.', 'tweet-old-post' ), '<a href="' . self::UPSELL_LINK . '" target="_blank">', '</a>' ),
 				'no_posts'                 => __( 'No queued posts!', 'tweet-old-post' ),
 				'no_posts_desc'            => __( 'Check if you have at least an <b>"Active account"</b>, what posts and pages are selected in <b>"General Settings"</b> and if a <b>"Schedule"</b> is defined.', 'tweet-old-post' ),
 				'refresh_btn'              => __( 'Refresh Queue', 'tweet-old-post' ),
@@ -392,7 +361,6 @@ class Rop_I18n {
 			),
 			'general'     => array(
 				'plugin_name'                => __( 'Revive Social', 'tweet-old-post' ),
-				// translators: %s is the URL of the admin page
 				'status_error_global'        => sprintf( __( 'Issues encountered when trying to share content on social media, check the <a href="%s">Logs menu</a> for more information. ', 'tweet-old-post' ), esc_url( get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' ) ) ),
 				'sharing_not_started'        => __( 'Sharing Not Started', 'tweet-old-post' ),
 				'sharing_to_account'         => __( 'Sharing to Accounts', 'tweet-old-post' ),
@@ -413,7 +381,6 @@ class Rop_I18n {
 				'next_share'                 => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'                => __( 'Sharing...', 'tweet-old-post' ),
 				'cron_interval'              => __( 'Once every 5 min', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'staging_status'             => sprintf( __( 'This seems to be a staging or development website. Some post types will not share to your accounts. %1$sLearn How to Turn Off%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1321-allow-revive-old-posts-to-work-on-staging-or-development-websites" target="_blank">', '</a>' ),
 				'api_not_available'          => __(
 					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Social relies on this functionality in order to work.<br/>
@@ -430,16 +397,13 @@ You can try to disable any of the security plugins that you use in order to see 
 				'rop_docs'                   => __( 'Documentation', 'tweet-old-post' ),
 				'rop_roadmap'                => __( 'Roadmap & Voting', 'tweet-old-post' ),
 				'rop_linkedin_refresh_token' => __( 'Your Linkedin access token is about to expire. You need to refresh your LinkedIn token to continue sharing without issue. Paste this link in your browser to find out why and how: https://is.gd/refresh_linkedin_token', 'tweet-old-post' ),
-				// translators: %1$s is the product name
 				'license_product'            => __( '%1$s license', 'tweet-old-post' ),
 				'license_help'               => __( 'Enter your revive.social license from purchase history in order to get plugin updates.', 'tweet-old-post' ),
 				'purchase_history'           => __( 'Go to Purchase History.', 'tweet-old-post' ),
 				'activate'                   => __( 'Activate', 'tweet-old-post' ),
 				'deactivate'                 => __( 'Deactivate', 'tweet-old-post' ),
 				'valid'                      => __( 'Valid', 'tweet-old-post' ),
-				// translators: %1$s is the expiration date
 				'expires'                    => __( 'Expires on %1$s.', 'tweet-old-post' ),
-				// translators: %1$s is the expiration date
 				'expired'                    => __( 'Expired on %1$s.', 'tweet-old-post' ),
 				'could_not_change_license'   => __( 'Could not change the license.', 'tweet-old-post' ),
 				'validation_failed'          => __( 'Validation failed.', 'tweet-old-post' ),
@@ -450,7 +414,6 @@ You can try to disable any of the security plugins that you use in order to see 
 				'remove_variation'       => __( 'Delete', 'tweet-old-post' ),
 				'add_variation'          => __( 'Add New', 'tweet-old-post' ),
 				'new_variation'          => __( 'New Content Variation', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are opening and closing anchor tags for a link
 				'custom_message_info'    => sprintf( __( 'Add share message variations to this post %1$sLearn More%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>' ),
 				'variation_num'          => __( 'Content Variation #', 'tweet-old-post' ),
 				'variation_image'        => __( 'Upload image', 'tweet-old-post' ),
@@ -470,23 +433,16 @@ You can try to disable any of the security plugins that you use in order to see 
 				'refresh_linkedin_token_subject'       => __( 'Revive Social - Refresh Your LinkedIn Token', 'tweet-old-post' ),
 				'refresh_linkedin_token_subject_final' => __( 'Final - Refresh Your LinkedIn Token', 'tweet-old-post' ),
 				'share_once_sharing_done_message'      => __( 'All posts have been shared to your connected social media accounts. No previously shared posts will be re-shared until you click the button to "Stop Sharing" and "Start Sharing" on the Revive Social plugin dashboard.', 'tweet-old-post' ),
-				// translators: %1$s and %2$s are line breaks, %3$s is an anchor tag with link
 				'refresh_linkedin_token_message'       => sprintf( __( 'Hi! This email was sent by Revive Social on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>' ),
-				// translators: %1$s and %3$s are line breaks, %2$s is an anchor tag with link
 				'refresh_linkedin_token_message_final' => sprintf( __( 'Hi! This email was sent by Revive Social on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s. %3$sThis is the final notice email you will receieve from Revive Social.', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>', '<br><br>' ),
 			),
 			'cron_system' => array(
-				// translators: %1$s is a line break.
 				'delete_cron_service_account_info' => sprintf( __( 'This option will delete your website information from our Remote Cron Service. %1$s Revive Social will then fallback to using the Local Cron System built into WordPress. %1$s You can re-enable the Remote Cron System at anytime from General Settings > Cron Type, switch from Local Cron to Remote.', 'tweet-old-post' ), '<br>' ),
-				// translators: %1$s is a line break.
 				'clear_local_cron_info'            => sprintf( __( 'This will remove the Cron server authentication key from your local database. %1$s A new authentication key will be created when you register to the remote Cron server.', 'tweet-old-post' ), '<br>' ),
 			),
 			'notices'     => array(
-				// translators: %1$s and %2$s are opening and closing bold tags.
 				'revive_network_upsell_notice_title'       => sprintf( __( '%1$sRSS Sharing In Revive Social%2$s', 'tweet-old-post' ), '<b>', '</b>' ),
-				// translators: %1$s, %2$s and %3$s are opening and closing bold tags.
 				'revive_network_upsell_notice_body'        => sprintf( __( 'Expose your followers to other relevant content sources, and keep their interest by sharing posts from your favorite blogs to your social media accounts.%1$s %2$sRevive Network%3$s is an Addon plugin for Revive Social that lets you share content from any RSS or Atom feed to your connected accounts.', 'tweet-old-post' ), '<br><br>', '<b>', '</b>' ),
-				// translators: %1$s, %2$s and %3$s are opening and closing bold tags.
 				'revive_network_upsell_notice_product_pag' => sprintf( __( 'Expose your followers to other relevant content sources, and keep their interest by sharing posts from your favorite blogs to your social media accounts.%1$s %2$sRevive Network%3$s is an Addon plugin for Revive Social that lets you share content from any RSS or Atom feed to your connected accounts.', 'tweet-old-post' ), '<br><br>', '<b>', '</b>' ),
 				'dismiss_permanently'                      => __( 'Dismiss Permanently', 'tweet-old-post' ),
 
@@ -496,7 +452,6 @@ You can try to disable any of the security plugins that you use in order to see 
 				'add_account_to_use_instant_share'     => __( 'Connect or switch on an account in the Revive Social dashboard to use the Instant Share (Post on Publish) feature.', 'tweet-old-post' ),
 				'share_on_update'                      => __( 'Share via <small>Revive Social</small>  ', 'tweet-old-post' ),
 				'clear_on_share'                       => __( 'These checkboxes will be cleared once the post is shared.', 'tweet-old-post' ),
-				// translators: %1$s, %2$s, %3$s, %4$s are opening and closing formatting tags
 				'custom_instant_share_messages_upsell' => sprintf( __( '%1$sCustom instant share messages are available in the %2$sPro version%3$s of the plugin.%4$s', 'tweet-old-post' ), '<small>', '<a href="' . tsdk_utmify( self::UPSELL_LINK, 'custom_instant', 'settings' ) . '" target="_blank">', '</a>', '</small>' ),
 				'edit_message'                         => __( 'Edit Message', 'tweet-old-post' ),
 				'custom_share_message'                 => __( 'Custom Share Message', 'tweet-old-post' ),
@@ -527,7 +482,6 @@ You can try to disable any of the security plugins that you use in order to see 
 			'sharing'     => array(
 				'post_already_shared'         => __( 'This post went out on the last share event and might be a duplicate. Skipping...', 'tweet-old-post' ),
 				'share_attempted_on_staging'  => __( 'Revive Social has detected that this is a development website. Share process skipped.', 'tweet-old-post' ),
-				// translators: %1$d is the daily post sharing limit number
 				'reached_sharing_limit'       => __( 'You\'ve reached your daily post sharing limit of %1$d posts. Want to share more? Consider upgrading to enjoy a higher limit.', 'tweet-old-post' ),
 				'invalid_license'             => __( 'Sorry, your license is invalid.', 'tweet-old-post' ),
 				'webhook_extension_not_found' => __( 'Webhook extension not found. Please install the Pro add-on.', 'tweet-old-post' ),
@@ -542,9 +496,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_missing_lib_class'           => __( 'Unable to find Google_Service_MyBusiness Class. Please ensure you have the Revive Social Pro Addon activated.', 'tweet-old-post' ),
 				'linkedin_missing_exif_imagetype' => __( 'Cannot share image to LinkedIn. exif_imagetype() function is missing from your system. Please contact your web host and ask that this function be enabled on your hosting.', 'tweet-old-post' ),
 				'linkedin_issue_fetching_token'   => __( 'There was an issue fetching the LinkedIn Token. Please contact Revive Social support for assistance.', 'tweet-old-post' ),
-				// translators: %1$s is the post ID, %2$s is the service name
 				'no_image_found'                  => __( 'No image was found for post %1$s cannot share as an image post to: %2$s. Please double check that you have a featured image set.', 'tweet-old-post' ),
-				// translators: %1$s is the service name
 				'license_not_active'              => __( 'An active Pro license is needed to share to %1$s', 'tweet-old-post' ),
 				'could_not_send_webhook'          => __( 'Could not send webhook.', 'tweet-old-post' ),
 				'webhook_error'                   => __( 'An error occurred for Webhook post sharing.', 'tweet-old-post' ),
@@ -559,34 +511,32 @@ You can try to disable any of the security plugins that you use in order to see 
 				'revive_network_learn_more_btn'   => __( 'Learn More', 'tweet-old-post' ),
 				'learn_more'                      => __( 'Learn More!', 'tweet-old-post' ),
 				'min_interval_6_mins'             => __( 'Minimum interval between consecutive shares is 6 minutes.', 'tweet-old-post' ),
-				// translators: %s is the minimum number of hours
 				'min_interval_between_shares'     => __( 'Lowest allowed value for "Minimum Interval Between Shares" is %s hours. Choosing a lower interval is available in the Pro version.', 'tweet-old-post' ),
-				// translators: %d is the minimum number of minutes
 				'min_recurring_schedule_interval' => __( 'Lowest allowed value for "Recurring Schedule Interval" is %d minutes.', 'tweet-old-post' ),
 				'no_post_types_selected'          => __( 'You need to have at least one post type to share.', 'tweet-old-post' ),
 				'min_number_of_concurrent_posts'  => __( 'At least one posts need to be shared.', 'tweet-old-post' ),
 				'max_number_of_concurrent_posts'  => __( 'Maximum concurrent post shares is 4.', 'tweet-old-post' ),
 			),
-			);
-			if ( empty( $key ) ) {
-				return $labels;
+		);
+		if ( empty( $key ) ) {
+			return $labels;
+		}
+		/**
+		 * Allow accessing labels by key.
+		 */
+		$keys = explode( '.', $key );
+		if ( count( $keys ) === 1 ) {
+			if ( isset( $labels[ $keys[0] ] ) ) {
+				return $labels[ $keys[0] ];
 			}
-			/**
-			 * Allow accessing labels by key.
-			 */
-			$keys = explode( '.', $key );
-			if ( count( $keys ) === 1 ) {
-				if ( isset( $labels[ $keys[0] ] ) ) {
-					return $labels[ $keys[0] ];
-				}
+		}
+		if ( count( $keys ) === 2 ) {
+			if ( isset( $labels[ $keys[0] ][ $keys[1] ] ) ) {
+				return $labels[ $keys[0] ][ $keys[1] ];
 			}
-			if ( count( $keys ) === 2 ) {
-				if ( isset( $labels[ $keys[0] ][ $keys[1] ] ) ) {
-					return $labels[ $keys[0] ][ $keys[1] ];
-				}
-			}
+		}
 
-			return '';
+		return '';
 	}
 
 	/**
