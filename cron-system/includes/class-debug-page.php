@@ -43,6 +43,11 @@ class Debug_Page {
 	 * Used to delete the remote user account.
 	 */
 	public function cron_system_delete_account() {
+
+		if ( ! isset( $_GET['nonce'] ) || empty( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'rop_debug' ) ) {
+			wp_send_json_error( array('message' => __( 'Nonce is invalid', 'tweet-old-post' ) ) );
+		}
+
 		$response = array();
 
 		$token = get_option( 'rop_access_token', '' );
@@ -83,6 +88,11 @@ class Debug_Page {
 	 * @since 0.0.1
 	 */
 	public function reset_local_client() {
+
+		if ( ! isset( $_GET['nonce'] ) || empty( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'rop_debug' ) ) {
+			wp_send_json_error( array('message' => __( 'Nonce is invalid', 'tweet-old-post' ) ) );
+		}
+
 		$response = array();
 
 		// Delete local key.
@@ -110,16 +120,10 @@ class Debug_Page {
 		// Load the JS library ony on this page
 		if ( 'revive-old-posts_page_rop_service_debug' === $hook ) {
 			wp_enqueue_script( 'rop-debug', ROP_LITE_URL . 'cron-system/assets/js/debug-test.js', array( 'jquery' ), '1.0.0', true );
-			// Generate a pseudo-random string of bytes.
-			$random_key = Rop_Helpers::openssl_random_pseudo_bytes();
-			// Auth token creation.
-			$created_token = hash( 'sha256', SECURE_AUTH_SALT . $random_key, false );
-
-			update_option( 'rop_temp_debug', $created_token, 'no' );
 
 			$data_tables = array(
 				'local_url'      => get_site_url() . '/wp-json/tweet-old-post-cron/v1/debug-test/',
-				'nonce'          => $created_token,
+				'nonce'          => wp_create_nonce( 'rop_debug' ),
 				'remote_url'     => ROP_CRON_DOMAIN . '/wp-json/account-status/v1/debug-test/',
 				'action_success' => __( 'Request completed', 'tweet-old-post' ),
 				'action_fail'    => __( 'Requested failed to complete.', 'tweet-old-post' ),
