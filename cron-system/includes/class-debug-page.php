@@ -45,7 +45,11 @@ class Debug_Page {
 	public function cron_system_delete_account() {
 
 		if ( ! isset( $_GET['nonce'] ) || empty( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'rop_debug' ) ) {
-			wp_send_json_error( array('message' => __( 'Nonce is invalid', 'tweet-old-post' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Nonce is invalid', 'tweet-old-post' ) ) );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'tweet-old-post' ) ) );
 		}
 
 		$response = array();
@@ -90,7 +94,11 @@ class Debug_Page {
 	public function reset_local_client() {
 
 		if ( ! isset( $_GET['nonce'] ) || empty( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'rop_debug' ) ) {
-			wp_send_json_error( array('message' => __( 'Nonce is invalid', 'tweet-old-post' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Nonce is invalid', 'tweet-old-post' ) ) );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'tweet-old-post' ) ) );
 		}
 
 		$response = array();
