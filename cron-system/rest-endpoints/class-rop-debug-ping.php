@@ -96,20 +96,13 @@ class Rop_Debug_Ping {
 	 * @access public
 	 */
 	public function process_the_request( WP_REST_Request $request ) {
-		$key       = $request->get_param( 'secret_temp_key' );
-		$local_key = trim( get_option( 'rop_temp_debug', '' ) );
+		$key = $request->get_param( 'secret_temp_key' );
 
-		$return_data = array(
-			'success' => false,
-		);
-
-		if ( ! empty( $local_key ) ) {
-			if ( $key === $local_key ) {
-				$return_data['success'] = true;
-			}
+		if ( ! empty( $key ) || ! wp_verify_nonce( $key, 'rop_debug' ) ) {
+			return array( 'success' => false );
 		}
 
-		wp_send_json( $return_data );
+		return array( 'success' => true );
 	}
 
 	/**

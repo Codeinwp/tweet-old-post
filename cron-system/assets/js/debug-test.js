@@ -84,7 +84,7 @@
 						{
 							type: "GET",
 							url: ajaxurl,
-							data: { 'action': 'reset_local_auth_key' },
+							data: { 'action': 'reset_local_auth_key', 'nonce': rop_debug.nonce },
 							dataType: 'json', // xml, html, script, json, jsonp, text
 							success: function ( data ) {
 								if ( true === data.success ) {
@@ -143,7 +143,7 @@
 						{
 							type: "GET",
 							url: ajaxurl,
-							data: { 'action': 'remove_remote_account' },
+							data: { 'action': 'remove_remote_account', 'nonce': rop_debug.nonce },
 							dataType: 'json', // xml, html, script, json, jsonp, text
 							success: function ( data ) {
 								if ( true === data.success ) {
