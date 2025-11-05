@@ -1,3 +1,7 @@
+##### [Version 9.3.4](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.3...v9.3.4) (2025-11-05)
+
+- Enhanced security
+
 ##### [Version 9.3.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.2...v9.3.3) (2025-08-27)
 
 - Fixed issue when the Disable Gutenberg plugin hides the Revive Social option in the classic editor
