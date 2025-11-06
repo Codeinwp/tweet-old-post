@@ -141,5 +141,4 @@ class Rop_Registration_Check {
 	public function init_rest_api_route() {
 		add_action( 'rest_api_init', array( &$this, 'register_routes' ) );
 	}
-
 }

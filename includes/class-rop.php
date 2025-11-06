@@ -73,7 +73,6 @@ class Rop {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
-
 	}
 
 	/**
@@ -94,7 +93,6 @@ class Rop {
 	 */
 	private function load_dependencies() {
 		$this->loader = new Rop_Loader();
-
 	}
 
 	/**
@@ -111,7 +109,6 @@ class Rop {
 		$plugin_i18n = new Rop_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 	/**
@@ -295,7 +292,6 @@ class Rop {
 				$log->alert_error( 'The service "' . $service . '" can NOT be built or was not found', $exception->getMessage() );
 			}
 		}
-
 	}
 
 	/**
@@ -329,5 +325,4 @@ class Rop {
 	public function get_loader() {
 		return $this->loader;
 	}
-
 }

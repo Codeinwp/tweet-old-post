@@ -87,7 +87,7 @@ abstract class Rop_Model_Abstract {
 		}
 
 		if ( $refresh ) {
-				  $this->data = get_option( 'rop_data' );
+					$this->data = get_option( 'rop_data' );
 		}
 
 		$this->data[ $key ] = apply_filters( 'rop_set_key_' . $key, $value );
@@ -132,5 +132,4 @@ abstract class Rop_Model_Abstract {
 
 		return $return_correct_format;
 	}
-
 }

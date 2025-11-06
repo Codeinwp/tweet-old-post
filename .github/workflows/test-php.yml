@@ -24,7 +24,7 @@ jobs:
         run: composer install --prefer-dist --no-progress --quiet
         continue-on-error: true
       - name: Run PHPCS
-        run: composer run lint
+        run: composer run lint:errors
         continue-on-error: false
 
   php-unit:

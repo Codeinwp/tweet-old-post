@@ -39,7 +39,6 @@ class Rop_Logger {
 	public function __construct() {
 
 		$this->stream = new Rop_Log_Handler( 'rop_logs' );
-
 	}
 
 	/**
@@ -58,8 +57,8 @@ class Rop_Logger {
 		}
 
 		$record = array(
-			'channel' => 'rop_logs',
-			'context'  => array(
+			'channel'   => 'rop_logs',
+			'context'   => array(
 				'type' => 'success',
 			),
 			'formatted' => $message,
@@ -84,8 +83,8 @@ class Rop_Logger {
 		}
 
 		$record = array(
-			'channel' => 'rop_logs',
-			'context'  => array(
+			'channel'   => 'rop_logs',
+			'context'   => array(
 				'type' => 'error',
 			),
 			'formatted' => $message,
@@ -111,8 +110,8 @@ class Rop_Logger {
 		}
 
 		$record = array(
-			'channel' => 'rop_logs',
-			'context'  => array(
+			'channel'   => 'rop_logs',
+			'context'   => array(
 				'type' => 'info',
 			),
 			'formatted' => $message,
@@ -141,7 +140,6 @@ class Rop_Logger {
 	 */
 	public function clear_user_logs() {
 		$this->stream->clear_logs();
-
 	}
 
 	/**
@@ -210,11 +208,11 @@ class Rop_Logger {
 
 			foreach ( $data_logs as $log_entry ) {
 				if ( 'error' === $log_entry['type'] ) {
-					$consecutive_errors ++;
+					++$consecutive_errors;
 				} else {
 					break;
 				}
-				$it ++;
+				++$it;
 
 				if ( $it >= ROP_STATUS_ALERT ) {
 					break;
@@ -227,7 +225,5 @@ class Rop_Logger {
 		}
 
 		return false;
-
 	}
-
 }

@@ -125,7 +125,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 					if ( ! empty( $service_data['available_accounts'] ) ) {
 						foreach ( $service_data['available_accounts'] as $account_key => $value ) {
 							if ( true === filter_var( $value['active'], FILTER_VALIDATE_BOOLEAN ) ) {
-								$fb_valid_accounts ++;
+								++$fb_valid_accounts;
 							}
 						}
 					}
@@ -472,14 +472,12 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		$this->update_authenticated_services( $services );
 
 		return true;
-
 	}
 
 	/**
 	 * Utility method to find a service.
 	 */
 	public function find_service() {
-
 	}
 
 	/**
@@ -519,5 +517,4 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 
 		return false;
 	}
-
 }

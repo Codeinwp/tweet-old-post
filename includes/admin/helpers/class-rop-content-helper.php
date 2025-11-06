@@ -115,7 +115,7 @@ class Rop_Content_Helper {
 		$parts_count = count( $parts );
 
 		$length = 0;
-		for ( $last_part = 0; $last_part < $parts_count; ++ $last_part ) {
+		for ( $last_part = 0; $last_part < $parts_count; ++$last_part ) {
 			$length += strlen( $parts[ $last_part ] );
 			if ( $length > $this->length ) {
 				break;
@@ -155,7 +155,7 @@ class Rop_Content_Helper {
 	public function mark_hashtags( $string, $hashtag ) {
 		$location = stripos( $string, ' ' . $hashtag . ' ' );
 		if ( $location !== false ) {
-			$location ++; // the actual # location will be past the space
+			++$location; // the actual # location will be past the space
 		} elseif ( stripos( $string, $hashtag . ' ' ) === 0 ) {
 			// see if the hashtag is at the beginning
 			$location = 0;
@@ -169,5 +169,4 @@ class Rop_Content_Helper {
 
 		return false;
 	}
-
 }

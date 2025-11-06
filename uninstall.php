@@ -32,7 +32,7 @@ if ( ! empty( $housekeeping ) ) {
 		if ( is_readable( $vendor_file ) ) {
 			require_once $vendor_file;
 
-			require( plugin_dir_path( __FILE__ ) . '/class-rop-autoloader.php' );
+			require plugin_dir_path( __FILE__ ) . '/class-rop-autoloader.php';
 			Rop_Autoloader::define_namespaces( array( 'Rop' ) );
 			/**
 			 * Invocation of the Autoloader::loader method.

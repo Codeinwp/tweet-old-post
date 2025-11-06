@@ -195,7 +195,7 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 						'account' => $account,
 						'service' => $this->service_name,
 						'img'     => apply_filters( 'rop_custom_telegram_avatar', $telegram->get_profile_photo( $id ) ),
-						'created' => date( 'd/m/Y H:i' ),
+						'created' => gmdate( 'd/m/Y H:i' ),
 						'active'  => isset( $data['active'] ) ? $data['active'] : true,
 					),
 				),
@@ -265,7 +265,6 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 		);
 
 		return $new_post;
-
 	}
 
 	/**
@@ -389,5 +388,4 @@ class Rop_Telegram_Service extends Rop_Services_Abstract {
 	public function populate_additional_data( $account ) {
 		return $account;
 	}
-
 }

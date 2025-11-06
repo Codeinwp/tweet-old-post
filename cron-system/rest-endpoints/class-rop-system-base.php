@@ -41,7 +41,7 @@ class Rop_System_Base extends WP_REST_Controller {
 	 *
 	 * Rop_System_Base constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->error  = new Rop_Exception_Handler();
 		$this->logger = new Rop_Logger();
 	}

@@ -2,7 +2,6 @@
 
 namespace RopCronSystem\ROP_Helpers;
 
-
 use Rop_Exception_Handler;
 use Rop_Logger;
 use Rop_Scheduler_Model;
@@ -31,7 +30,7 @@ class Rop_Helpers {
 	 * @static
 	 * @since 8.5.5
 	 */
-	static public function extract_time_to_share() {
+	public static function extract_time_to_share() {
 		// dates are stored into variable "rop_schedules_data".
 		$scheduler         = new Rop_Scheduler_Model();
 
@@ -82,7 +81,7 @@ class Rop_Helpers {
 	 * @static
 	 * @since 8.5.5
 	 */
-	static public function local_timezone() {
+	public static function local_timezone() {
 
 		// WordPress saves timezone in 2 different variables.
 		// If it's UTC the option name is "".
@@ -107,7 +106,7 @@ class Rop_Helpers {
 	 * @access public
 	 * @static
 	 */
-	static public function apache_request_headers() {
+	public static function apache_request_headers() {
 		$headers_output        = array();
 		$headers_output_return = array();
 		if ( ! function_exists( 'apache_request_headers' ) ) {
@@ -140,7 +139,7 @@ class Rop_Helpers {
 	 *
 	 * @return false|string
 	 */
-	static public function openssl_random_pseudo_bytes( $count = 40 ) {
+	public static function openssl_random_pseudo_bytes( $count = 40 ) {
 		if ( function_exists( 'openssl_random_pseudo_bytes' ) ) {
 			return openssl_random_pseudo_bytes( $count );
 		} else {
@@ -169,7 +168,7 @@ class Rop_Helpers {
 	 *
 	 * @return bool|string
 	 */
-	static public function custom_curl_post_request( $url = '', $post_arguments = array() ) {
+	public static function custom_curl_post_request( $url = '', $post_arguments = array() ) {
 
 		$logger = new Rop_Logger();
 
@@ -284,5 +283,3 @@ class Rop_Helpers {
 		return $server_response_body;
 	}
 }
-
-
