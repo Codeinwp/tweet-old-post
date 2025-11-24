@@ -1933,7 +1933,7 @@ class Rop_Admin {
 		$config['message']  = sprintf( $message_template, '<strong>', $discount, '</strong>', $product_label );
 		$config['sale_url'] = add_query_arg(
 			$url_params,
-			tsdk_translate_link( tsdk_utmify( 'https://themeisle.com/rs-bf', 'bfcm', 'revive' ) )
+			tsdk_translate_link( tsdk_utmify( 'https://themeisle.link/rs-bf', 'bfcm', 'revive' ) )
 		);
 
 		$configs[ ROP_PRODUCT_SLUG ] = $config;
