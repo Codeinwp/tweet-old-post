@@ -290,11 +290,18 @@ class Rop_Bluesky_Api {
 
 			$now  = gmdate( 'Y-m-d\TH:i:s\Z' );
 
+			$text = $post['content'] . $hashtags;
+
 			$record = array(
 				'$type'     => 'app.bsky.feed.post',
-				'text'      => $post['content'] . $hashtags,
+				'text'      => $text,
 				'createdAt' => $now,
 			);
+
+			$facets = $this->generate_facets( $text );
+			if ( ! empty( $facets ) ) {
+				$record['facets'] = $facets;
+			}
 
 			if ( $post_type === 'link' && isset( $post['post_url'] ) && ! empty( $post['post_url'] ) ) {
 				$record['embed'] = array(
@@ -367,6 +374,41 @@ class Rop_Bluesky_Api {
 			$this->logger->alert_error( 'Bluesky API Error: ' . $e->getMessage() );
 			return false;
 		}
+	}
+
+	/**
+	 * Generate facets for hashtags.
+	 *
+	 * @param string $text The text to parse.
+	 *
+	 * @return mixed|array
+	 */
+	private function generate_facets( $text ) {
+		$facets = array();
+		preg_match_all( '/#\S+/', $text, $matches, PREG_OFFSET_CAPTURE );
+
+		if ( ! empty( $matches[0] ) ) {
+			foreach ( $matches[0] as $match ) {
+				$hashtag = $match[0];
+				$start   = $match[1];
+				$end     = $start + strlen( $hashtag );
+
+				$facets[] = array(
+					'index'    => array(
+						'byteStart' => $start,
+						'byteEnd'   => $end,
+					),
+					'features' => array(
+						array(
+							'$type' => 'app.bsky.richtext.facet#tag',
+							'tag'   => ltrim( $hashtag, '#' ),
+						),
+					),
+				);
+			}
+		}
+
+		return $facets;
 	}
 
 	/**
