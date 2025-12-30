@@ -92,7 +92,7 @@ abstract class Rop_Model_Abstract {
 
 		$this->data[ $key ] = apply_filters( 'rop_set_key_' . $key, $value );
 
-		return update_option( $this->namespace, $this->data );
+		return update_option( $this->namespace, $this->data, false );
 	}
 
 

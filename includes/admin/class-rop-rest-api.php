@@ -1643,6 +1643,20 @@ class Rop_Rest_Api {
 	}
 
 	/**
+	 * API method called to cleanup services.
+	 *
+	 * @access  private
+	 * @return array<string, mixed>
+	 */
+	public function cleanup_accounts() {
+		$model = new Rop_Services_Model();
+		$this->response->set_code( '200' )
+					   ->set_data( $model->cleanup_accounts() );
+
+		return $this->response->to_array();
+	}
+
+	/**
 	 * Share API method.
 	 *
 	 * @access  public
