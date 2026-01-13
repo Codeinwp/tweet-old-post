@@ -364,8 +364,7 @@ class Rop_I18n {
 					'title'       => __( 'Cleanup logs', 'tweet-old-post' ),
 					'description' => __( 'This will remove older logs and keep only the most recent 1,000 logs. This helps improve performance and reduce stored data.', 'tweet-old-post' ),
 					'btn'         => __( 'Cleanup now', 'tweet-old-post' ),
-				)
-
+				),
 			),
 			'general'     => array(
 				'plugin_name'                => __( 'Revive Social', 'tweet-old-post' ),
