@@ -90,20 +90,6 @@
         </div>
         <div class="column col-12 text-right">
           <button
-            class="btn btn-secondary me-2"
-            @click="openCleanupModal()"
-          >
-            <i
-              v-if="!is_loading"
-              class="fa fa-trash"
-            />
-            <i
-              v-else
-              class="fa fa-spinner fa-spin"
-            />
-            {{ labels.cleanup_cta }}
-          </button>
-          <button
             class="btn btn-secondary"
             @click="resetAccountData()"
           >
@@ -117,32 +103,6 @@
             />
             {{ labels.remove_all_cta }}
           </button>
-        </div>
-      </div>
-    </div>
-     <div
-      class="modal rop-cleanup-modal"
-      :class="cleanupModalClass"
-    >
-      <div class="modal-overlay" />
-      <div class="modal-container">
-        <div class="modal-header">
-          <button
-            class="btn btn-clear float-right"
-            @click="closeCleanupModal()"
-          />
-          <div class="modal-title h5">
-            {{ labels.cleanup_title }}
-          </div>
-        </div>
-        <div class="modal-body">
-          {{ labels.cleanup_description }}
-        </div>
-        <div class="modal-footer">
-          <button
-            class="btn  btn-success"
-            @click="cleanupAccount()"
-          >{{ labels.cleanup_now }}</button>
         </div>
       </div>
     </div>
@@ -183,7 +143,6 @@
                 upsell_link: ropApiSettings.upsell_link,
                 pro_installed: ropApiSettings.pro_installed,
                 postTimeout: '',
-                cleanupModal: false,
             }
         },
         computed: {
@@ -231,11 +190,6 @@
             hasActiveAccountsLimitation: function () {
               return !this.pro_installed && this.accountsCount >= 2 && this.checkLicense ;
             },
-            cleanupModalClass: function () {
-              return {
-                'active': this.cleanupModal === true
-              }
-            },
         },
         mounted: function () {
             if (0 === this.is_preloading) {
@@ -269,33 +223,6 @@
                     }).then(response => {
                         this.is_loading = false;
                     })
-                }, error => {
-                    this.is_loading = false;
-                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-                })
-            },
-            openCleanupModal: function() {
-              this.cleanupModal = true;
-            },
-            closeCleanupModal: function() {
-              this.cleanupModal = false;
-            },
-            cleanupAccount: function() {
-              if (this.is_loading) {
-                    this.$log.warn('Request in progress...Bail');
-                    return;
-                }
-                this.is_loading = true;
-                this.$store.dispatch('fetchAJAXPromise', {
-                    req: 'cleanup_accounts',
-                    data: {}
-                }).then(response => {
-                    this.is_loading = false;
-                    this.cleanupModal = false;
-                    if (this.$parent.start_status === true) {
-                        // Stop sharing process if enabled.
-                        this.$parent.togglePosting();
-                    }
                 }, error => {
                     this.is_loading = false;
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -344,31 +271,6 @@
 
     #rop_core .rop-available-accounts h5 {
         margin-bottom: 15px;
-    }
-
-    #rop_core .rop-cleanup-modal .modal-container{
-      max-width: 500px;
-      padding: 25px;
-
-      .modal-title, .modal-footer{
-        text-align: center;
-      }
-      .btn-success{
-        border:none;
-        background-color:#00a32a;
-        color: #fff;
-        padding: 0.5rem 1rem;
-        height: auto;
-        display: inline;
-      }
-      .btn-success:hover{
-        background-color:#009528;
-      }
-      .modal-body{
-        font-size: 0.7rem;
-        margin: 10px 30px;
-        padding: 0px;
-      }
     }
 
     @media ( max-width: 600px ) {

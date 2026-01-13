@@ -270,8 +270,9 @@ export default new Vuex.Store({
                 case 'toggle_tracking':    
 
                     break
-                case 'cleanup_accounts':
-                    state.authenticatedServices = stateData;
+                case 'cleanup_logs':
+                    state.page.logs = stateData;
+                    state.cron_status.logs_number = stateData.length || 0;
                     break;
                 default:
                     Vue.$log.error('No state request for ', requestName);

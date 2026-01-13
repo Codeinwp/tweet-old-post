@@ -38,14 +38,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	private $accounts_namespace = 'active_accounts';
 
 	/**
-	 * Cleanup account count.
-	 *
-	 * @access private
-	 * @var    int $cleanup_account_count
-	 */
-	private $cleanup_account_count = 1000;
-
-	/**
 	 * Utility method to clear authenticated services.
 	 *
 	 * @since   8.0.0
@@ -525,22 +517,5 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Utility method to cleanup authenticated services.
-	 *
-	 * @access  public
-	 * @return array<string, mixed>
-	 */
-	public function cleanup_accounts() {
-		$services = $this->get( $this->services_namespace );
-
-		if ( count( $services ) > $this->cleanup_account_count ) {
-			$services = array_slice( $services, -( $this->cleanup_account_count ), null, true );
-			$this->set( $this->services_namespace, $services );
-		}
-
-		return $services;
 	}
 }

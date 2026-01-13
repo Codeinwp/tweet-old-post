@@ -139,10 +139,6 @@ class Rop_I18n {
 				'upsell_bz_service_body'     => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the business plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
 				'search_account'             => __( 'Search account', 'tweet-old-post' ),
 				'no_account_found'           => __( 'No account found for search', 'tweet-old-post' ),
-				'cleanup_cta'                => __( 'Cleanup accounts', 'tweet-old-post' ),
-				'cleanup_title'              => __( 'Clean Up Accounts', 'tweet-old-post' ),
-				'cleanup_description'        => __( 'This will remove older account records and keep only the most recent 1,000 accounts. This helps improve performance and reduce stored data.', 'tweet-old-post' ),
-				'cleanup_now'                => __( 'Cleanup now', 'tweet-old-post' ),
 			),
 			'settings'    => array(
 				'yes_text' => __( 'Yes', 'tweet-old-post' ),
@@ -363,6 +359,13 @@ class Rop_I18n {
 				'clear_btn'  => __( 'Clear logs', 'tweet-old-post' ),
 				'no_logs'    => __( 'No recent logs!', 'tweet-old-post' ),
 				'export_btn' => __( 'Export logs', 'tweet-old-post' ),
+				'cleanup'    => array(
+					'cta'         => __( 'Cleanup logs', 'tweet-old-post' ),
+					'title'       => __( 'Cleanup logs', 'tweet-old-post' ),
+					'description' => __( 'This will remove older logs and keep only the most recent 1,000 logs. This helps improve performance and reduce stored data.', 'tweet-old-post' ),
+					'btn'         => __( 'Cleanup now', 'tweet-old-post' ),
+				)
+
 			),
 			'general'     => array(
 				'plugin_name'                => __( 'Revive Social', 'tweet-old-post' ),
