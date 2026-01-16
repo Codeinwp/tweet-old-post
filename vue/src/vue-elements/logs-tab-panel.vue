@@ -105,9 +105,11 @@
         </div>
         <div class="modal-footer">
           <button
-          class="btn  btn-success"
-          @click="cleanupLogs()"
-          >{{ labels.cleanup.btn }}</button>
+            class="btn  btn-success"
+            @click="cleanupLogs()"
+          >
+            {{ labels.cleanup.btn }}
+          </button>
         </div>
         </div>
       </div>
@@ -127,7 +129,7 @@
 				is_loading: false,
 				labels: this.$store.state.labels.logs,
 				upsell_link: ropApiSettings.upsell_link,
-        cleanupModal: false,
+				cleanupModal: false,
 			}
 		},
 		computed: {
@@ -137,11 +139,11 @@
 			logs_no: function () {
 				return this.$store.state.cron_status.logs_number;
 			},
-      cleanupModalClass: function() {
-        return {
-          'active': true === this.cleanupModal
-        }
-      }
+			cleanupModalClass: function() {
+				return {
+					'active': true === this.cleanupModal
+				}
+			}
 		},
 		watch: {
 			logs_no: function () {
@@ -201,33 +203,33 @@
 				element.click();
 				document.body.removeChild(element);
 			},
-      openCleanupModal() {
-        this.cleanupModal = true;
-      },
-      closeCleanupModal() {
-        this.cleanupModal = false;
-      },
-      cleanupLogs: function() {
-        if (this.is_loading) {
-              this.$log.warn('Request in progress...Bail');
-              return;
-          }
-          this.is_loading = true;
-          this.$store.dispatch('fetchAJAXPromise', {
-              req: 'cleanup_logs',
-              data: {}
-          }).then(response => {
-              this.is_loading = false;
-              this.cleanupModal = false;
-              if (this.$parent.start_status === true) {
-                  // Stop sharing process if enabled.
-                  this.$parent.togglePosting();
-              }
-          }, error => {
-              this.is_loading = false;
-              Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-          })
-      },
+			openCleanupModal() {
+				this.cleanupModal = true;
+			},
+			closeCleanupModal() {
+				this.cleanupModal = false;
+			},
+			cleanupLogs: function() {
+				if (this.is_loading) {
+						this.$log.warn('Request in progress...Bail');
+							return;
+						}
+					this.is_loading = true;
+					this.$store.dispatch('fetchAJAXPromise', {
+						req: 'cleanup_logs',
+						data: {}
+					}).then(response => {
+						this.is_loading = false;
+						this.cleanupModal = false;
+						if (this.$parent.start_status === true) {
+							// Stop sharing process if enabled.
+							this.$parent.togglePosting();
+						}
+					}, error => {
+						this.is_loading = false;
+						Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+					})
+			},
 		},
 	}
 </script>
@@ -281,27 +283,27 @@
 			background-color: #FBE8E8;
 		}
 	}
-   #rop_core .rop-cleanup-modal .modal-container{
-    max-width: 500px;
-    padding: 25px;
-    .modal-title, .modal-footer{
-      text-align: center;
-    }
-    .btn-success{
-      border:none;
-      background-color:#00a32a;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      height: auto;
-      display: inline;
-    }
-    .btn-success:hover{
-      background-color:#009528;
-    }
-    .modal-body{
-      font-size: 0.7rem;
-      margin: 10px 30px;
-      padding: 0px;
-    }
-  }
+	#rop_core .rop-cleanup-modal .modal-container{
+		max-width: 500px;
+		padding: 25px;
+		.modal-title, .modal-footer{
+			text-align: center;
+		}
+		.btn-success{
+			border:none;
+			background-color:#00a32a;
+			color: #fff;
+			padding: 0.5rem 1rem;
+			height: auto;
+			display: inline;
+		}
+		.btn-success:hover{
+			background-color:#009528;
+		}
+		.modal-body{
+			font-size: 0.7rem;
+			margin: 10px 30px;
+			padding: 0px;
+		}
+	}
 </style>
