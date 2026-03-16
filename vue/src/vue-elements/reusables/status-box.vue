@@ -56,11 +56,12 @@ export default {
       required: true
     }
   },
-  data() {
-    const [ title, description ] = this.label.split( ':' )
-    return {
-      title,
-      description
+  computed: {
+    title() {
+      return this.label.split(':')[0]
+    },
+    description() {
+      return this.label.split(':')[1]
     }
   }
 }
