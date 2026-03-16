@@ -320,6 +320,12 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - Yes, Revive Social can share to LinkedIn business pages as well as personal profiles.
 
+**How to report a security issue?**
+ 
+Plugin security is a core priority for us. If you identify a potential vulnerability, we ask that you disclose it responsibly.
+
+Please follow the reporting protocols outlined on our [Security Page](https://themeisle.com/security/).
+
 == Screenshots ==
 
 1. Revive Social dashboard (no accounts connected).
