@@ -277,7 +277,7 @@ class Rop_Cron_Helper {
 	 *
 	 * @since 8.5.0
 	 */
-	function cron_status_global_change( $action = false ) {
+	public function cron_status_global_change( $action = false ) {
 		$key         = 'rop_is_sharing_cron_active';
 		$cron_status = ( true === $action ) ? 'yes' : 'no';
 
@@ -296,7 +296,6 @@ class Rop_Cron_Helper {
 		} else {
 			return is_int( $this->is_scheduled( self::CRON_NAMESPACE ) );
 		}
-
 	}
 
 	/**

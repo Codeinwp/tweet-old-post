@@ -109,51 +109,51 @@ class Rop_Global_Settings {
 			'allowed_comment'  => false,
 		),
 		'linkedin'  => array(
-			'active' => false,
-			'name'   => 'LinkedIn',
-			'allowed_comment'  => false,
+			'active'          => false,
+			'name'            => 'LinkedIn',
+			'allowed_comment' => false,
 		),
 		'tumblr'    => array(
-			'active' => false,
-			'name'   => 'Tumblr',
-			'allowed_comment'  => false,
+			'active'          => false,
+			'name'            => 'Tumblr',
+			'allowed_comment' => false,
 		),
 		'pinterest' => array(
-			'active' => false,
-			'name'   => 'Pinterest',
-			'allowed_comment'  => false,
+			'active'          => false,
+			'name'            => 'Pinterest',
+			'allowed_comment' => false,
 		),
-		'gmb'    => array(
-			'active' => false,
-			'name'   => 'Gmb',
-			'fullname' => 'Google My Business',
-			'allowed_comment'  => false,
+		'gmb'       => array(
+			'active'          => false,
+			'name'            => 'Gmb',
+			'fullname'        => 'Google My Business',
+			'allowed_comment' => false,
 		),
-		'vk'    => array(
-			'active' => false,
-			'name'   => 'Vk',
-			'allowed_comment'  => false,
+		'vk'        => array(
+			'active'          => false,
+			'name'            => 'Vk',
+			'allowed_comment' => false,
 		),
-		'webhook' => array(
-			'active' => false,
-			'name'   => 'Webhook',
+		'webhook'   => array(
+			'active'           => false,
+			'name'             => 'Webhook',
 			'two_step_sign_in' => true,
 			'allowed_comment'  => false,
 		),
-		'telegram'    => array(
-			'active' => false,
-			'name'   => 'Telegram',
-			'allowed_comment'  => false,
+		'telegram'  => array(
+			'active'          => false,
+			'name'            => 'Telegram',
+			'allowed_comment' => false,
 		),
-		'mastodon' => array(
-			'active' => false,
-			'name'   => 'Mastodon',
+		'mastodon'  => array(
+			'active'           => false,
+			'name'             => 'Mastodon',
 			'two_step_sign_in' => true,
 			'allowed_comment'  => false,
 		),
-		'bluesky'  => array(
-			'active' => false,
-			'name' => 'Bluesky',
+		'bluesky'   => array(
+			'active'           => false,
+			'name'             => 'Bluesky',
 			'two_step_sign_in' => true,
 			'allowed_comment'  => false,
 		),
@@ -167,30 +167,36 @@ class Rop_Global_Settings {
 	 * @var     array $settings_defaults The class defaults for settings.
 	 */
 	private $settings_defaults = array(
-		'default_interval'      => 12,
-		'min_interval'          => 12,
-		'step_interval'         => 0.5,
-		'minimum_post_age'      => 30,
-		'maximum_post_age'      => 365,
-		'number_of_posts'       => 1,
-		'more_than_once'        => true,
-		'available_post_types'  => array(),
-		'selected_post_types'   => array( array( 'name' => 'Posts', 'value' => 'post', 'selected' => true ) ),
-		'available_taxonomies'  => array(),
-		'selected_taxonomies'   => array(),
-		'exclude_taxonomies'    => false,
-		'available_posts'       => array(), // get_posts(),
-		'selected_posts'        => array(),
-		'exclude_posts'         => true,
-		'ga_tracking'           => true,
-		'beta_user'             => false,
-		'remote_check'          => false,
-		'custom_messages'       => false,
-		'custom_messages_share_order'    => false,
-		'instant_share'         => true,
-		'instant_share_default' => true,
-		'start_time'            => false,
-		'minute_interval'      => 5,
+		'default_interval'            => 12,
+		'min_interval'                => 12,
+		'step_interval'               => 0.5,
+		'minimum_post_age'            => 30,
+		'maximum_post_age'            => 365,
+		'number_of_posts'             => 1,
+		'more_than_once'              => true,
+		'available_post_types'        => array(),
+		'selected_post_types'         => array(
+			array(
+				'name'     => 'Posts',
+				'value'    => 'post',
+				'selected' => true,
+			),
+		),
+		'available_taxonomies'        => array(),
+		'selected_taxonomies'         => array(),
+		'exclude_taxonomies'          => false,
+		'available_posts'             => array(), // get_posts(),
+		'selected_posts'              => array(),
+		'exclude_posts'               => true,
+		'ga_tracking'                 => true,
+		'beta_user'                   => false,
+		'remote_check'                => false,
+		'custom_messages'             => false,
+		'custom_messages_share_order' => false,
+		'instant_share'               => true,
+		'instant_share_default'       => true,
+		'start_time'                  => false,
+		'minute_interval'             => 5,
 	);
 
 	/**
@@ -226,7 +232,7 @@ class Rop_Global_Settings {
 			'share_link_text'       => '',
 		),
 		'twitter'   => array(
-			'wpml_language' => '',
+			'wpml_language'        => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '240',
@@ -247,8 +253,8 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'linkedin'    => array(
-			'wpml_language' => '',
+		'linkedin'  => array(
+			'wpml_language'        => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -269,8 +275,8 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'tumblr'  => array(
-			'wpml_language' => '',
+		'tumblr'    => array(
+			'wpml_language'        => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -291,8 +297,8 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'pinterest'    => array(
-			'wpml_language' => '',
+		'pinterest' => array(
+			'wpml_language'        => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -313,7 +319,7 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'gmb' => array(
+		'gmb'       => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -334,8 +340,8 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'vk' => array(
-			'wpml_language' => '',
+		'vk'        => array(
+			'wpml_language'        => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -356,8 +362,8 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'webhook' => array(
-			'wpml_language' => '',
+		'webhook'   => array(
+			'wpml_language'        => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -422,7 +428,7 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'bluesky'  => array(
+		'bluesky'   => array(
 			'wpml_language'        => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
@@ -498,7 +504,7 @@ class Rop_Global_Settings {
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Rop_Global_Settings ) ) {
-			self::$instance           = new Rop_Global_Settings;
+			self::$instance           = new Rop_Global_Settings();
 			self::$instance->services = apply_filters(
 				'rop_available_services',
 				self::$instance->services_defaults
@@ -591,7 +597,7 @@ class Rop_Global_Settings {
 		}
 
 		if ( isset( $license_data->expires ) ) {
-			$view_license_data['expires'] = date( 'F j, Y', strtotime( $license_data->expires ) );
+			$view_license_data['expires'] = gmdate( 'F j, Y', strtotime( $license_data->expires ) );
 			if ( 'valid' === $view_license_data['license'] ) {
 				$view_license_data['expires'] = sprintf( Rop_I18n::get_labels( 'general.expires' ), $view_license_data['expires'] );
 			} else {
@@ -767,7 +773,6 @@ class Rop_Global_Settings {
 		$settings               = $settings_model->get_settings();
 		$settings['start_time'] = time();
 		$settings_model->save_settings( $settings );
-
 	}
 
 	/**
@@ -779,7 +784,6 @@ class Rop_Global_Settings {
 		$settings_model = new Rop_Settings_Model();
 
 		return $settings_model->get_start_time();
-
 	}
 
 	/**
@@ -828,7 +832,7 @@ class Rop_Global_Settings {
 		}
 
 		// Is after 9.1?
-		$created_at = strtotime( date( 'Y-m-d', strtotime( $license_data->created_at ) ) );
+		$created_at = strtotime( gmdate( 'Y-m-d', strtotime( $license_data->created_at ) ) );
 		$compare_to = strtotime( '2024-07-21' );
 
 		return $created_at > $compare_to;

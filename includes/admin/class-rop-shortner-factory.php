@@ -31,7 +31,7 @@ class Rop_Shortner_Factory {
 	public static function build( $shortner_name ) {
 		$shortner = 'Rop_' . ucwords( str_replace( '.', '', $shortner_name ) ) . '_Shortner';
 		if ( class_exists( $shortner ) ) {
-			return new $shortner;
+			return new $shortner();
 		}
 		// @codeCoverageIgnoreStart
 		throw new Exception( 'Invalid shortener name given.' );

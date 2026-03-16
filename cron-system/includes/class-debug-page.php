@@ -3,7 +3,6 @@
 
 namespace RopCronSystem\Pages;
 
-
 use RopCronSystem\Curl_Helpers\Rop_Curl_Methods;
 use RopCronSystem\ROP_Helpers\Rop_Helpers;
 
@@ -27,7 +26,7 @@ class Debug_Page {
 	 *
 	 * Debug_Page constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		add_action( 'admin_menu', array( &$this, 'debug_page_menu' ) );
 
 		add_action( 'admin_enqueue_scripts', array( &$this, 'load_custom_wp_admin_style' ) );
@@ -175,58 +174,58 @@ class Debug_Page {
 		}
 
 		?>
-	  <div class="wrap" id="rop-debug-table">
-		<h1><?php _e( 'Debug Info: ', 'tweet-old-post' ); ?></h1>
+		<div class="wrap" id="rop-debug-table">
+		<h1><?php esc_html_e( 'Debug Info: ', 'tweet-old-post' ); ?></h1>
 		<br/>
 
 		<table>
-		  <tr>
-			<td valign="top"><?php _e( 'PHP Version: ', 'tweet-old-post' ); ?></td>
+			<tr>
+			<td valign="top"><?php esc_html_e( 'PHP Version: ', 'tweet-old-post' ); ?></td>
 			<td>
 				<?php
-				echo $version;
+				echo esc_html( $version );
 
 				if ( version_compare( $version, '7.0.0', '<' ) ) {
-					echo ' <strong style="color:darkred">' . __( 'PHP 7 is recommended', 'tweet-old-post' ) . '</strong>';
+					echo ' <strong style="color:darkred">' . esc_html__( 'PHP 7 is recommended', 'tweet-old-post' ) . '</strong>';
 				}
 
 				?>
-			  <br/>
+				<br/>
 			</td>
-		  </tr>
-		  <tr>
-			<td valign="top"><?php _e( 'cURL Info: ', 'tweet-old-post' ); ?></td>
+			</tr>
+			<tr>
+			<td valign="top"><?php esc_html_e( 'cURL Info: ', 'tweet-old-post' ); ?></td>
 			<td>
 				<?php
 				if ( ! empty( $curl_version ) ) {
-					echo 'version: ' . $curl_version['version'] . ' (' . $curl_version['version_number'] . ') ' . '<br/>';
-					echo 'libz version: ' . $curl_version['libz_version'] . '<br/>';
-					echo 'OpenSSL: ' . $curl_version['ssl_version'] . '<br/>';
+					echo 'version: ' . esc_html( $curl_version['version'] ) . ' (' . esc_html( $curl_version['version_number'] ) . ')<br/>';
+					echo 'libz version: ' . esc_html( $curl_version['libz_version'] ) . '<br/>';
+					echo 'OpenSSL: ' . esc_html( $curl_version['ssl_version'] ) . '<br/>';
 					echo '<strong>Protocols</strong>: <br/>'; // . implode( ',', $curl_version['protocols'] ) . '<br/>';
 
 					echo 'HTTP: ' . ( ( in_array( 'http', $curl_version['protocols'] ) ) ? '<span style="color:darkgreen">&#10004;</span>' : '<span style="color:darkred">&#10006;</span>' ) . '<br/>';
 					echo 'HTTPS: ' . ( ( in_array( 'https', $curl_version['protocols'] ) ) ? '<span style="color:darkgreen">&#10004;</span>' : '<span style="color:darkred">&#10006;</span>' ) . '<br/>';
 
 				} else {
-					echo '<strong style="color:darkred">' . __( 'No version of CURL detected.', 'tweet-old-post' ) . '</strong>';
+					echo '<strong style="color:darkred">' . esc_html__( 'No version of CURL detected.', 'tweet-old-post' ) . '</strong>';
 				}
 				?>
-			  <br/>
+				<br/>
 			</td>
-		  </tr>
-		  <tr>
-			<td valign="top"><?php _e( 'Check connection with<br/>Revive Social Cron SyStem: ', 'tweet-old-post' ); ?></td>
+			</tr>
+			<tr>
+			<td valign="top"><?php esc_html_e( 'Check connection with<br/>Revive Social Cron SyStem: ', 'tweet-old-post' ); ?></td>
 			<td>
-				<?php _e( 'WordPress -> Server:', 'tweet-old-post' ); ?>
-			  <span id="server_responded">N/A</span>
-			  <br/>
-				<?php _e( 'Server -> WordPress:', 'tweet-old-post' ); ?>
-			  <span id="website_responded">N/A</span>
-			  <br/>
-			  <br/>
-			  <input type="button" value="<?php _e( 'Check connection', 'tweet-old-post' ); ?>" id="rop_conection_check"/>
+				<?php esc_html_e( 'WordPress -> Server:', 'tweet-old-post' ); ?>
+				<span id="server_responded">N/A</span>
+				<br/>
+				<?php esc_html_e( 'Server -> WordPress:', 'tweet-old-post' ); ?>
+				<span id="website_responded">N/A</span>
+				<br/>
+				<br/>
+				<input type="button" value="<?php esc_attr_e( 'Check connection', 'tweet-old-post' ); ?>" id="rop_conection_check"/>
 			</td>
-		  </tr>
+			</tr>
 		</table>
 
 		<br/>
@@ -234,46 +233,46 @@ class Debug_Page {
 		<br/>
 
 		<table>
-		  <tr>
+			<tr>
 			<td>
-			  <input type="button" value="<?php _e( 'Delete Remote Cron Service Data', 'tweet-old-post' ); ?>" id="rop_remove_account"/>
-			  <span id="ajax_rop_remove_account">
+				<input type="button" value="<?php esc_attr_e( 'Delete Remote Cron Service Data', 'tweet-old-post' ); ?>" id="rop_remove_account"/>
+				<span id="ajax_rop_remove_account">
 
-			  </span>
+				</span>
 
-			  <p>
+				<p>
 				<em>
 					<?php
 					$labels = new \Rop_I18n();
-					echo $labels::get_labels( 'cron_system.delete_cron_service_account_info' );
+					echo esc_html( $labels::get_labels( 'cron_system.delete_cron_service_account_info' ) );
 					?>
 				</em>
-			  </p>
+				</p>
 			</td>
-		  </tr>
+			</tr>
 		</table>
 
 		<table>
-		  <tr>
+			<tr>
 			<td>
-			  <input type="button" value="<?php _e( 'Clear Local Cron Data', 'tweet-old-post' ); ?>" id="rop_clear_local"/>
-			  <span id="ajax_rop_clear_local">
+				<input type="button" value="<?php esc_attr_e( 'Clear Local Cron Data', 'tweet-old-post' ); ?>" id="rop_clear_local"/>
+				<span id="ajax_rop_clear_local">
 
-			  </span>
+				</span>
 
-			  <p>
+				<p>
 				<em>
 					<?php
-					echo $labels::get_labels( 'cron_system.clear_local_cron_info' );
+					echo esc_html( $labels::get_labels( 'cron_system.clear_local_cron_info' ) );
 					?>
 				</em>
-			  </p>
+				</p>
 			</td>
-		  </tr>
+			</tr>
 		</table>
 
 
-	  </div>
+		</div>
 		<?php
 	}
 }

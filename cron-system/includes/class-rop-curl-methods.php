@@ -81,7 +81,7 @@ class Rop_Curl_Methods {
 	 *
 	 * Rop_Curl_Methods constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->error  = new Rop_Exception_Handler();
 		$this->logger = new Rop_Logger();
 	}
@@ -115,9 +115,10 @@ class Rop_Curl_Methods {
 
 		if ( 'post' === strtolower( $args['type'] ) ) {
 
-			if ( ':delete_account:' !== $args['request_path'] ) {
-				// unset( $args['remove_location'] );
-			}
+			// if ( ':delete_account:' !== $args['request_path'] ) {
+				// This condition is intentionally left for future use
+				// when we might need to handle specific request paths differently
+			// }
 
 			$post_fields = array();
 
@@ -126,35 +127,32 @@ class Rop_Curl_Methods {
 				$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
 				$this->connection = curl_init( $this->server_url );
 				$this->register_to_top_server();
-			} else {
+			} elseif ( empty( $token ) && ':delete_account:' !== $args['request_path'] ) {
 
-				if ( empty( $token ) && ':delete_account:' !== $args['request_path'] ) {
 					$this->server_url = self::SERVER_URL . $this->server_paths[':register_account:'];
 					$this->connection = curl_init( $this->server_url );
 
 					// If the request comes with "Stop cron" action, there's no need for it in account registration.
-					if ( ':disable_account:' === $args['request_path'] ) {
-						$args = array();
-					}
+				if ( ':disable_account:' === $args['request_path'] ) {
+					$args = array();
+				}
 
 					$this->register_to_top_server( $args );
-				} else {
+			} else {
 
-					$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
-					$this->connection = curl_init( $this->server_url );
+				$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
+				$this->connection = curl_init( $this->server_url );
 
-					if ( isset( $args['time_to_share'] ) && ! empty( $args['time_to_share'] ) ) {
-						$post_fields = array( 'next_ping' => $args['time_to_share'] );
+				if ( isset( $args['time_to_share'] ) && ! empty( $args['time_to_share'] ) ) {
+					$post_fields = array( 'next_ping' => $args['time_to_share'] );
 
-					}
-
-					return $this->request_type_post( $post_fields, $args['request_path'] );
 				}
+
+				return $this->request_type_post( $post_fields, $args['request_path'] );
 			}
 		}
 
 		return true;
-
 	}
 
 
@@ -404,7 +402,6 @@ class Rop_Curl_Methods {
 
 			return false;
 		}
-
 	}
 
 	/**
@@ -447,7 +444,6 @@ class Rop_Curl_Methods {
 
 			return false;
 		}
-
 	}
 
 
@@ -482,7 +478,6 @@ class Rop_Curl_Methods {
 		$url_encode_data = http_build_query( $account_data );
 
 		return base64_encode( $url_encode_data );
-
 	}
 
 	/**
@@ -490,7 +485,7 @@ class Rop_Curl_Methods {
 	 *
 	 * @since 8.5.5
 	 */
-	function __destruct() {
+	public function __destruct() {
 		unset( $this->connection );
 	}
 }
