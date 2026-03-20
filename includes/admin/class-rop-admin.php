@@ -1852,6 +1852,12 @@ class Rop_Admin {
 	 * @return array
 	 */
 	public function rop_upgrade_to_pro_plugin_action( $actions, $plugin_file ) {
+
+		$is_black_friday = apply_filters( 'themeisle_sdk_is_black_friday_sale', false );
+		if ( $is_black_friday ) {
+			return $actions;
+		}
+
 		$global_settings     = new \Rop_Global_Settings();
 		$actions['settings'] = '<a href="' . admin_url( 'admin.php?page=TweetOldPost' ) . '">' . __( 'Settings', 'tweet-old-post' ) . '</a>';
 		if ( $global_settings->license_type() < 1 ) {
@@ -1916,6 +1922,14 @@ class Rop_Admin {
 		$status  = apply_filters( 'product_rop_license_status', false );
 		$is_pro  = 'valid' === $status;
 		$is_expired = 'expired' === $status || 'active-expired' === $status;
+
+		$pro_product_slug = defined( 'ROP_PRO_BASEFILE' ) ? basename( dirname( ROP_PRO_BASEFILE ) ) : '';
+		if ( $is_pro || $is_expired ) {
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - up to %s off', 'tweet-old-post' ), '30%' );
+			$config['plugin_meta_targets'] = array( $pro_product_slug );
+		} else {
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '60%' );
+		}
 
 		if ( $is_pro ) {
 			// translators: %1$s - discount, %2$s - discount.
