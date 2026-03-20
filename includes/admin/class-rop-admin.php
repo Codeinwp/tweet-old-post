@@ -1925,9 +1925,11 @@ class Rop_Admin {
 
 		$pro_product_slug = defined( 'ROP_PRO_BASEFILE' ) ? basename( dirname( ROP_PRO_BASEFILE ) ) : '';
 		if ( $is_pro || $is_expired ) {
+			// translators: %s is the discount percentage.
 			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - up to %s off', 'tweet-old-post' ), '30%' );
 			$config['plugin_meta_targets'] = array( $pro_product_slug );
 		} else {
+			// translators: %s is the discount percentage.
 			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '60%' );
 		}
 
