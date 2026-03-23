@@ -1943,6 +1943,8 @@ class Rop_Admin {
 		} else {
 			// translators: %s - discount.
 			$config['title'] = sprintf( __( 'Revive Social Pro: %s off this week', 'tweet-old-post' ), '60%' );
+			// translators: %s - discount.
+			$config['upgrade_menu_text'] = sprintf( __( 'BF Sale - %s off', 'tweet-old-post' ), '60%' );
 		}
 
 		$url_params    = array(
