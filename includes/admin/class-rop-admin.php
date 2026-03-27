@@ -1924,23 +1924,27 @@ class Rop_Admin {
 		$is_expired = 'expired' === $status || 'active-expired' === $status;
 
 		$pro_product_slug = defined( 'ROP_PRO_BASEFILE' ) ? basename( dirname( ROP_PRO_BASEFILE ) ) : '';
+
 		if ( $is_pro || $is_expired ) {
-			// translators: %s is the discount percentage.
-			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - up to %s off', 'tweet-old-post' ), '30%' );
 			$config['plugin_meta_targets'] = array( $pro_product_slug );
-		} else {
-			// translators: %s is the discount percentage.
-			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '60%' );
 		}
 
 		if ( $is_pro ) {
+			// translators: %s is the discount percentage.
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - up to %s off', 'tweet-old-post' ), '30%' );
 			// translators: %1$s - discount, %2$s - discount.
 			$message = sprintf( __( 'Upgrade your Revive Social Pro plan: %1$s off this week. Already on the plan you need? Renew early and save up to %2$s.', 'tweet-old-post' ), '30%', '20%' );
 			$cta_label = __( 'See your options', 'tweet-old-post' );
 		} elseif ( $is_expired ) {
+			// translators: %s is the discount percentage.
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '50%' );
+			// translators: %s - discount.
+			$config['upgrade_menu_text'] = sprintf( __( 'BF Sale - %s off', 'tweet-old-post' ), '50%' );
 			$message = __( 'Your Revive Social Pro features are still here, just locked. Renew at a reduced rate this week.', 'tweet-old-post' );
 			$cta_label = __( 'Reactivate now', 'tweet-old-post' );
 		} else {
+			// translators: %s is the discount percentage.
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '50%' );
 			// translators: %s - discount.
 			$config['title'] = sprintf( __( 'Revive Social Pro: %s off this week', 'tweet-old-post' ), '60%' );
 			// translators: %s - discount.
