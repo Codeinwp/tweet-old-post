@@ -142,7 +142,7 @@
                 labels: this.$store.state.labels.accounts,
                 upsell_link: ropApiSettings.upsell_link,
                 pro_installed: ropApiSettings.pro_installed,
-                postTimeout: ''
+                postTimeout: '',
             }
         },
         computed: {
@@ -189,7 +189,7 @@
             },
             hasActiveAccountsLimitation: function () {
               return !this.pro_installed && this.accountsCount >= 2 && this.checkLicense ;
-            }
+            },
         },
         mounted: function () {
             if (0 === this.is_preloading) {

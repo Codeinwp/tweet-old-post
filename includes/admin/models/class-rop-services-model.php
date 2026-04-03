@@ -37,7 +37,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	private $accounts_namespace = 'active_accounts';
 
-
 	/**
 	 * Utility method to clear authenticated services.
 	 *
@@ -519,5 +518,4 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 
 		return false;
 	}
-
 }
