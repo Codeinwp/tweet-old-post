@@ -1852,6 +1852,12 @@ class Rop_Admin {
 	 * @return array
 	 */
 	public function rop_upgrade_to_pro_plugin_action( $actions, $plugin_file ) {
+
+		$is_black_friday = apply_filters( 'themeisle_sdk_is_black_friday_sale', false );
+		if ( $is_black_friday ) {
+			return $actions;
+		}
+
 		$global_settings     = new \Rop_Global_Settings();
 		$actions['settings'] = '<a href="' . admin_url( 'admin.php?page=TweetOldPost' ) . '">' . __( 'Settings', 'tweet-old-post' ) . '</a>';
 		if ( $global_settings->license_type() < 1 ) {
@@ -1908,32 +1914,54 @@ class Rop_Admin {
 	public static function add_black_friday_data( $configs ) {
 		$config = $configs['default'];
 
-		// translators: %1$s - HTML tag, %2$s - discount, %3$s - HTML tag, %4$s - product name.
-		$message_template = __( 'Our biggest sale of the year: %1$sup to %2$s OFF%3$s on %4$s. Don\'t miss this limited-time offer.', 'tweet-old-post' );
-		$product_label    = __( 'Revive Social', 'tweet-old-post' );
-		$discount         = '50%';
+		$message = __( 'Custom schedules, multiple accounts, analytics. Automate your social sharing properly. Exclusively for existing Revive Social users.', 'tweet-old-post' );
+		$cta_label = __( 'Get Revive Social Pro', 'tweet-old-post' );
 
 		$plan    = apply_filters( 'product_rop_license_plan', 0 );
 		$license = apply_filters( 'product_rop_license_key', false );
-		$is_pro  = 0 < $plan;
+		$status  = apply_filters( 'product_rop_license_status', false );
+		$is_pro  = 'valid' === $status;
+		$is_expired = 'expired' === $status || 'active-expired' === $status;
 
-		if ( $is_pro ) {
-			// translators: %1$s - HTML tag, %2$s - discount, %3$s - HTML tag, %4$s - product name.
-			$message_template = __( 'Get %1$sup to %2$s off%3$s when you upgrade your %4$s plan or renew early.', 'tweet-old-post' );
-			$product_label    = __( 'Revive Social Pro', 'tweet-old-post' );
-			$discount         = '20%';
+		$pro_product_slug = defined( 'ROP_PRO_BASEFILE' ) ? basename( dirname( ROP_PRO_BASEFILE ) ) : '';
+
+		if ( $is_pro || $is_expired ) {
+			$config['plugin_meta_targets'] = array( $pro_product_slug );
 		}
 
-		$product_label = sprintf( '<strong>%s</strong>', $product_label );
+		if ( $is_pro ) {
+			// translators: %s is the discount percentage.
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - up to %s off', 'tweet-old-post' ), '30%' );
+			// translators: %1$s - discount, %2$s - discount.
+			$message = sprintf( __( 'Upgrade your Revive Social Pro plan: %1$s off this week. Already on the plan you need? Renew early and save up to %2$s.', 'tweet-old-post' ), '30%', '20%' );
+			$cta_label = __( 'See your options', 'tweet-old-post' );
+		} elseif ( $is_expired ) {
+			// translators: %s is the discount percentage.
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '50%' );
+			// translators: %s - discount.
+			$config['upgrade_menu_text'] = sprintf( __( 'BF Sale - %s off', 'tweet-old-post' ), '50%' );
+			$message = __( 'Your Revive Social Pro features are still here, just locked. Renew at a reduced rate this week.', 'tweet-old-post' );
+			$cta_label = __( 'Reactivate now', 'tweet-old-post' );
+		} else {
+			// translators: %s is the discount percentage.
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '50%' );
+			// translators: %s - discount.
+			$config['title'] = sprintf( __( 'Revive Social Pro: %s off this week', 'tweet-old-post' ), '60%' );
+			// translators: %s - discount.
+			$config['upgrade_menu_text'] = sprintf( __( 'BF Sale - %s off', 'tweet-old-post' ), '60%' );
+		}
+
 		$url_params    = array(
 			'utm_term' => $is_pro ? 'plan-' . $plan : 'free',
 			'lkey'     => ! empty( $license ) ? $license : false,
+			'expired'  => $is_expired ? '1' : false,
 		);
 
-		$config['message']  = sprintf( $message_template, '<strong>', $discount, '</strong>', $product_label );
+		$config['message']  = $message;
+		$config['cta_label'] = $cta_label;
 		$config['sale_url'] = add_query_arg(
 			$url_params,
-			tsdk_translate_link( tsdk_utmify( 'https://themeisle.com/rs-bf', 'bfcm', 'revive' ) )
+			tsdk_translate_link( tsdk_utmify( 'https://themeisle.link/rs-bf', 'bfcm', 'revive' ) )
 		);
 
 		$configs[ ROP_PRODUCT_SLUG ] = $config;

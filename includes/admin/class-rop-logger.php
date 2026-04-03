@@ -30,6 +30,14 @@ class Rop_Logger {
 	private $stream;
 
 	/**
+	 * Holds the log namespace.
+	 *
+	 * @access private
+	 * @var    string $log_namespace Defaults 'rop_logs'.
+	 */
+	private $log_namespace = 'rop_logs';
+
+	/**
 	 * Rop_Logger constructor.
 	 * Instantiate the Logger with specified formatter and stream.
 	 *
@@ -38,7 +46,7 @@ class Rop_Logger {
 	 */
 	public function __construct() {
 
-		$this->stream = new Rop_Log_Handler( 'rop_logs' );
+		$this->stream = new Rop_Log_Handler( $this->log_namespace );
 
 	}
 
@@ -230,4 +238,23 @@ class Rop_Logger {
 
 	}
 
+	/**
+	 * Utility method to cleanup authenticated services.
+	 *
+	 * @access  public
+	 *
+	 * @param  int $cleanup_log_count Cleanup the log count.
+	 * @return array<string, mixed>
+	 */
+	public function cleanup_logs( $cleanup_log_count = 1000 ) {
+		$logs = $this->stream->get_logs();
+
+		if ( count( $logs ) > $cleanup_log_count ) {
+			$logs = array_slice( $logs, 0, $cleanup_log_count );
+
+			update_option( $this->log_namespace, array_reverse( $logs ), false );
+		}
+
+		return $logs;
+	}
 }

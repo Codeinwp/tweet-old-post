@@ -210,13 +210,11 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	 *
 	 * @since  8.5.9
 	 * @access private
+	 * @param array<string, mixed> $arguments Arguments needed by the method.
 	 *
 	 * @return array
 	 */
-	private function gmb_refresh_access_token() {
-
-		$rop_data = get_option( 'rop_data' );
-		$rop_services_data  = $rop_data['services'];
+	private function gmb_refresh_access_token( $arguments ) {
 
 		$id = '';
 		$access_token = '';
@@ -225,26 +223,51 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$gmb_service_id = '';
 		$refresh_token = '';
 
-		foreach ( $rop_services_data as $service => $service_data ) {
-			if ( $service_data['service'] === 'gmb' ) {
-				$id = $service_data['id'];
-				$access_token = $service_data['credentials']['access_token'];
-				$created = $service_data['credentials']['created'];
-				$expires_in = $service_data['credentials']['expires_in'];
-				$gmb_service_id = $service;
-				$refresh_token = $service_data['credentials']['refresh_token'];
-				break;
+		$credentials = isset( $arguments['credentials'] ) ? $arguments['credentials'] : array();
+
+		if ( ! empty( $credentials ) ) {
+			$created      = isset( $credentials['created'] ) ? $credentials['created'] : '';
+			$expires_in   = isset( $credentials['expires_in'] ) ? $credentials['expires_in'] : '';
+			$access_token = isset( $credentials['access_token'] ) ? $credentials['access_token'] : '';
+
+			// Check if access token will expire in next 30 seconds.
+			$expired = ( $created + ( $expires_in - 30 ) ) < time();
+
+			// If it's not expired then return current access token in DB
+			if ( ! $expired ) {
+				// Add an expires_in value to prevent Google Client PHP notice for undefined expires_in index
+				$access_token = array( 'access_token' => $access_token, 'expires_in' => $expires_in );
+				return $access_token;
 			}
 		}
 
-		 // $created = '1593273390';
+		$rop_data          = get_option( 'rop_data' );
+		$rop_services_data = isset( $rop_data['services'] ) ? $rop_data['services'] : array();
+		$account_id        = isset( $arguments['id'] ) ? $arguments['id'] : '';
+
+		foreach ( $rop_services_data as $service => $service_data ) {
+			if ( $service_data['service'] === 'gmb' ) {
+				foreach ( $service_data['available_accounts'] as $account ) {
+					if ( $account_id === $account['id'] ) {
+						$id             = $service_data['id'];
+						$access_token   = $service_data['credentials']['access_token'];
+						$created        = $service_data['credentials']['created'];
+						$expires_in     = $service_data['credentials']['expires_in'];
+						$gmb_service_id = $service;
+						$refresh_token  = $service_data['credentials']['refresh_token'];
+						break;
+					}
+				}
+			}
+		}
+
 		// Check if access token will expire in next 30 seconds.
 		$expired = ( $created + ( $expires_in - 30 ) ) < time();
 
 		// If it's not expired then return current access token in DB
 		if ( ! $expired ) {
 			// Add an expires_in value to prevent Google Client PHP notice for undefined expires_in index
-			$access_token = array('access_token' => $access_token, 'expires_in' => $expires_in);
+			$access_token = array( 'access_token' => $access_token, 'expires_in' => $expires_in );
 			return $access_token;
 		}
 
@@ -488,7 +511,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		$access_token = $this->gmb_refresh_access_token();
+		$access_token = $this->gmb_refresh_access_token( $args );
 		$client->setAccessToken( $access_token );
 		$client->setApiFormatV2( true );
 

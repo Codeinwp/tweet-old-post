@@ -29,6 +29,21 @@
             />
             {{ labels.clear_btn }}
           </button>
+          <button
+            class="btn btn-secondary"
+            :class="logs_no <= 1000 ? 'd-none' : ''"
+            @click="openCleanupModal()"
+          >
+            <i
+              v-if="!is_loading"
+              class="fa fa-trash"
+            />
+            <i
+              v-else
+              class="fa fa-spinner fa-spin"
+            />
+            {{ labels.cleanup.cta }}
+          </button>
         </div>
       </div>
       <div class="columns">
@@ -70,6 +85,34 @@
           </div>
         </template>
       </div>
+      <div
+        class="modal rop-cleanup-modal"
+        :class="cleanupModalClass"
+      >
+        <div class="modal-overlay" />
+        <div class="modal-container">
+        <div class="modal-header">
+          <button
+          class="btn btn-clear float-right"
+          @click="closeCleanupModal()"
+          />
+          <div class="modal-title h5">
+          {{ labels.cleanup.title }}
+          </div>
+        </div>
+        <div class="modal-body">
+          {{ labels.cleanup.description }}
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn  btn-success"
+            @click="cleanupLogs()"
+          >
+            {{ labels.cleanup.btn }}
+          </button>
+        </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -86,6 +129,7 @@
 				is_loading: false,
 				labels: this.$store.state.labels.logs,
 				upsell_link: ropApiSettings.upsell_link,
+				cleanupModal: false,
 			}
 		},
 		computed: {
@@ -95,6 +139,11 @@
 			logs_no: function () {
 				return this.$store.state.cron_status.logs_number;
 			},
+			cleanupModalClass: function() {
+				return {
+					'active': true === this.cleanupModal
+				}
+			}
 		},
 		watch: {
 			logs_no: function () {
@@ -153,8 +202,34 @@
 				document.body.appendChild(element);
 				element.click();
 				document.body.removeChild(element);
-			}
-
+			},
+			openCleanupModal() {
+				this.cleanupModal = true;
+			},
+			closeCleanupModal() {
+				this.cleanupModal = false;
+			},
+			cleanupLogs: function() {
+				if (this.is_loading) {
+						this.$log.warn('Request in progress...Bail');
+							return;
+						}
+					this.is_loading = true;
+					this.$store.dispatch('fetchAJAXPromise', {
+						req: 'cleanup_logs',
+						data: {}
+					}).then(response => {
+						this.is_loading = false;
+						this.cleanupModal = false;
+						if (this.$parent.start_status === true) {
+							// Stop sharing process if enabled.
+							this.$parent.togglePosting();
+						}
+					}, error => {
+						this.is_loading = false;
+						Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+					})
+			},
 		},
 	}
 </script>
@@ -206,6 +281,29 @@
 
 		&:has( .log-error ) {
 			background-color: #FBE8E8;
+		}
+	}
+	#rop_core .rop-cleanup-modal .modal-container{
+		max-width: 500px;
+		padding: 25px;
+		.modal-title, .modal-footer{
+			text-align: center;
+		}
+		.btn-success{
+			border:none;
+			background-color:#00a32a;
+			color: #fff;
+			padding: 0.5rem 1rem;
+			height: auto;
+			display: inline;
+		}
+		.btn-success:hover{
+			background-color:#009528;
+		}
+		.modal-body{
+			font-size: 0.7rem;
+			margin: 10px 30px;
+			padding: 0px;
 		}
 	}
 </style>
