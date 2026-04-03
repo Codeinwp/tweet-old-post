@@ -1,3 +1,11 @@
+##### [Version 9.3.5](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.4...v9.3.5) (2026-04-03)
+
+- Fixed creation hashtags on Bluesky network
+- Fixed issue with Google Business Profile posting failure when locations are connected from multiple Google account
+- Added automatic cleanup for sharing logs to prevent database slowdowns
+- Improved status showing up correctly in dashboard when using Start/Stop sharing buttons
+- Updated dependencies
+
 ##### [Version 9.3.4](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.3...v9.3.4) (2025-11-05)
 
 - Enhanced security
