@@ -312,33 +312,33 @@ class Rop_Bluesky_Api {
 						'description' => isset( $post['content'] ) ? $post['content'] : '',
 					),
 				);
-
-				if (
-					isset( $post['post_image'], $post['mimetype'] ) &&
-					! empty( $post['post_image'] ) &&
-					! empty( $post['mimetype'] )
-				) {
-					$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
-
-					if ( false !== $image_blob ) {
-						$record['embed']['external']['thumb'] = $image_blob;
-					}
-				}
 			}
 
 			if ( $post_type === 'image' && isset( $post['post_image'], $post['mimetype'] ) && ! empty( $post['post_image'] ) && ! empty( $post['mimetype'] ) ) {
 				$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
 
 				if ( false !== $image_blob ) {
-					$record['embed'] = array(
-						'$type'   => 'app.bsky.embed.images',
-						'images' => array(
-							array(
-								'alt'   => isset( $post['title'] ) ? $post['title'] : '',
-								'image' => $image_blob,
+					if ( isset( $post['post_url'] ) && ! empty( $post['post_url'] ) ) {
+						$record['embed'] = array(
+							'$type'   => 'app.bsky.embed.external',
+							'external' => array(
+								'uri'         => $post['post_url'],
+								'title'       => isset( $post['title'] ) ? $post['title'] : '',
+								'description' => isset( $post['content'] ) ? $post['content'] : '',
+								'thumb'       => $image_blob,
 							),
-						),
-					);
+						);
+					} else {
+						$record['embed'] = array(
+							'$type'   => 'app.bsky.embed.images',
+							'images' => array(
+								array(
+									'alt'   => isset( $post['title'] ) ? $post['title'] : '',
+									'image' => $image_blob,
+								),
+							),
+						);
+					}
 				}
 			}
 
