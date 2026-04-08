@@ -304,14 +304,7 @@ class Rop_Bluesky_Api {
 			}
 
 			if ( $post_type === 'link' && isset( $post['post_url'] ) && ! empty( $post['post_url'] ) ) {
-				$record['embed'] = array(
-					'$type'   => 'app.bsky.embed.external',
-					'external' => array(
-						'uri'         => $post['post_url'],
-						'title'       => isset( $post['title'] ) ? $post['title'] : '',
-						'description' => isset( $post['content'] ) ? $post['content'] : '',
-					),
-				);
+				$record['embed'] = $this->get_external_post_url( $post );
 			}
 
 			if ( $post_type === 'image' && isset( $post['post_image'], $post['mimetype'] ) && ! empty( $post['post_image'] ) && ! empty( $post['mimetype'] ) ) {
@@ -319,15 +312,9 @@ class Rop_Bluesky_Api {
 
 				if ( false !== $image_blob ) {
 					if ( isset( $post['post_url'] ) && ! empty( $post['post_url'] ) ) {
-						$record['embed'] = array(
-							'$type'   => 'app.bsky.embed.external',
-							'external' => array(
-								'uri'         => $post['post_url'],
-								'title'       => isset( $post['title'] ) ? $post['title'] : '',
-								'description' => isset( $post['content'] ) ? $post['content'] : '',
-								'thumb'       => $image_blob,
-							),
-						);
+						$record['embed'] = $this->get_external_post_url( $post );
+
+						$record['embed']['external']['thumb'] = $image_blob;
 					} else {
 						$record['embed'] = array(
 							'$type'   => 'app.bsky.embed.images',
@@ -498,5 +485,26 @@ class Rop_Bluesky_Api {
 		}
 
 		return $body;
+	}
+
+	/**
+	 * Construct the embed object for an external post URL.
+	 *
+	 * @param array<string, string> $post The post data.
+	 * @return array<string, mixed> The embed object for the external post URL.
+	 */
+	private function get_external_post_url( $post ) {
+		if ( empty( $post ) || ! isset( $post['post_url'] ) || empty( $post['post_url'] ) ) {
+			return array();
+		}
+
+		return array(
+			'$type'   => 'app.bsky.embed.external',
+			'external' => array(
+				'uri'         => $post['post_url'],
+				'title'       => isset( $post['title'] ) ? $post['title'] : '',
+				'description' => isset( $post['content'] ) ? $post['content'] : '',
+			),
+		);
 	}
 }
