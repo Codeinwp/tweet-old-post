@@ -23,9 +23,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * The version of the Linkedin API.
 	 *
-	 * @see https://learn.microsoft.com/en-us/linkedin/marketing/versioning?view=li-lms-2024-05
+	 * @see https://learn.microsoft.com/en-us/linkedin/marketing/versioning?view=li-lms-2026-04
 	 */
-	public const LINKEDIN_VERSION = 202505;
+	public const LINKEDIN_VERSION = 202604;
 
 	/**
 	 * An instance of authenticated LinkedIn user.
