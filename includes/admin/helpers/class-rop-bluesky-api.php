@@ -304,41 +304,29 @@ class Rop_Bluesky_Api {
 			}
 
 			if ( $post_type === 'link' && isset( $post['post_url'] ) && ! empty( $post['post_url'] ) ) {
-				$record['embed'] = array(
-					'$type'   => 'app.bsky.embed.external',
-					'external' => array(
-						'uri'         => $post['post_url'],
-						'title'       => isset( $post['title'] ) ? $post['title'] : '',
-						'description' => isset( $post['content'] ) ? $post['content'] : '',
-					),
-				);
-
-				if (
-					isset( $post['post_image'], $post['mimetype'] ) &&
-					! empty( $post['post_image'] ) &&
-					! empty( $post['mimetype'] )
-				) {
-					$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
-
-					if ( false !== $image_blob ) {
-						$record['embed']['external']['thumb'] = $image_blob;
-					}
-				}
+				$record['embed'] = $this->get_external_post_url( $post );
 			}
 
-			if ( $post_type === 'image' && isset( $post['post_image'], $post['mimetype'] ) && ! empty( $post['post_image'] ) && ! empty( $post['mimetype'] ) ) {
-				$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
-
-				if ( false !== $image_blob ) {
-					$record['embed'] = array(
-						'$type'   => 'app.bsky.embed.images',
-						'images' => array(
-							array(
-								'alt'   => isset( $post['title'] ) ? $post['title'] : '',
-								'image' => $image_blob,
+			if ( $post_type === 'image' ) {
+				$external_embed = $this->get_external_post_url( $post );
+				if ( isset( $post['post_image'], $post['mimetype'] ) && ! empty( $post['post_image'] ) && ! empty( $post['mimetype'] ) ) {
+					$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
+					if ( ! empty( $external_embed ) ) {
+						$external_embed['external']['thumb'] = $image_blob;
+						$record['embed'] = $external_embed;
+					} else {
+						$record['embed'] = array(
+							'$type'   => 'app.bsky.embed.images',
+							'images' => array(
+								array(
+									'alt'   => isset( $post['title'] ) ? $post['title'] : '',
+									'image' => $image_blob,
+								),
 							),
-						),
-					);
+						);
+					}
+				} elseif ( ! empty( $external_embed ) ) {
+					$record['embed'] = $external_embed;
 				}
 			}
 
@@ -498,5 +486,26 @@ class Rop_Bluesky_Api {
 		}
 
 		return $body;
+	}
+
+	/**
+	 * Construct the embed object for an external post URL.
+	 *
+	 * @param array<string, string> $post The post data.
+	 * @return array<string, mixed> The embed object for the external post URL.
+	 */
+	private function get_external_post_url( $post ) {
+		if ( empty( $post ) || ! isset( $post['post_url'] ) || empty( $post['post_url'] ) ) {
+			return array();
+		}
+
+		return array(
+			'$type'   => 'app.bsky.embed.external',
+			'external' => array(
+				'uri'         => $post['post_url'],
+				'title'       => isset( $post['title'] ) ? $post['title'] : '',
+				'description' => isset( $post['content'] ) ? $post['content'] : '',
+			),
+		);
 	}
 }
