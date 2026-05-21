@@ -1,3 +1,9 @@
+##### [Version 9.3.6](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.5...v9.3.6) (2026-05-21)
+
+- Updated the LinkedIn API version to fix sharing to this network
+- Fixed issue where Post link was not included when sharing as image on Bluesky
+- Updated dependencies
+
 ##### [Version 9.3.5](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.4...v9.3.5) (2026-04-03)
 
 - Fixed creation hashtags on Bluesky network
