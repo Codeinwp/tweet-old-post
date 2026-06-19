@@ -246,6 +246,7 @@ class Rop_Global_Settings {
 			'image'                => false,
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
+			'x_premium'            => false,
 		),
 		'linkedin'    => array(
 			'wpml_language' => '',

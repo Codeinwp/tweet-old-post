@@ -298,6 +298,8 @@ class Rop_I18n {
 				'no_post_format_error'              => __( 'Post Format option empty, "Share scheduled posts to social media on publish" cannot work. Please go to the Post Format tab and click "Save" for this feature to work', 'tweet-old-post' ),
 				'active_account_no_post_format_error' => __( 'No post format found for the following network, please go to "Post Format" tab and save your changes for: ', 'tweet-old-post' ),
 				'twitter_max_characters_notice' => sprintf( __( '%1$sNote:%2$s Maximum characters supported by Twitter is 280.', 'tweet-old-post' ), '<strong>', '</strong>' ),
+				'x_premium_title'               => __( 'X Premium account', 'tweet-old-post' ),
+				'x_premium_desc'                => sprintf( __( 'Enable only if this account has an active X Premium subscription. It raises the Maximum Characters limit up to 25,000. %1$sWarning:%2$s if the account is not actually Premium, X will reject posts longer than 280 characters.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'instagram_disable_link_recommendation' => sprintf( __( '%1$sNote:%2$s We recommend that you disable links for Instagram posts. If you do leave this option checked, then we recommend that you enable a shortener.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'instagram_image_post_default' => sprintf( __( '%1$sNote:%2$s Instagram posts need to be an image.', 'tweet-old-post' ), '<strong>', '</strong>' ),
 				'vk_unsupported_shorteners' => sprintf( __( '%1$sNote:%2$s is.gd shortener is not currently supported by VK.com.', 'tweet-old-post' ), '<strong>', '</strong>' ),
