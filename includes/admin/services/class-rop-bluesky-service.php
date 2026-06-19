@@ -203,6 +203,13 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 			$id            = $response->did;
 			$access_token  = $response->accessJwt;
 
+			// Use the highest resolution image that still fits Bluesky's blob size limit.
+			$best_image = $this->get_blob_safe_image_url( $post_details );
+			if ( ! empty( $best_image ) ) {
+				$post_details['post_image'] = $best_image;
+				$post_details['mimetype']   = wp_check_filetype( $best_image );
+			}
+
 			$response = $api->create_post( $id, $post_details, $post_type, $hashtags, $access_token );
 
 			if ( $response && $response->validationStatus === 'valid' ) {
@@ -232,6 +239,95 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Pick the highest-resolution local image that fits Bluesky's blob size limit.
+	 *
+	 * Bluesky rejects image blobs larger than 1,000,000 bytes, which is why the
+	 * shared image defaults to the WordPress "large" size and often looks blurry.
+	 * This walks the available sizes from largest to smallest and returns the URL
+	 * of the first one whose file is within the limit, so the sharpest acceptable
+	 * image is uploaded. For external images, an unresolved attachment, or when no
+	 * larger size fits, the original URL is returned unchanged (never worse than
+	 * the previous behaviour).
+	 *
+	 * @since   9.3.7
+	 * @access  private
+	 *
+	 * @param   array $post_details The post details to be published.
+	 * @return  string The image URL to upload.
+	 */
+	private function get_blob_safe_image_url( $post_details ) {
+		$image_url = isset( $post_details['post_image'] ) ? $post_details['post_image'] : '';
+		if ( empty( $image_url ) ) {
+			return $image_url;
+		}
+
+		// Only handle locally hosted images; external URLs are left untouched.
+		$uploads = wp_get_upload_dir();
+		if ( empty( $uploads['baseurl'] ) || empty( $uploads['basedir'] ) || strpos( $image_url, $uploads['baseurl'] ) !== 0 ) {
+			return $image_url;
+		}
+
+		$post_id = isset( $post_details['post_id'] ) ? $post_details['post_id'] : 0;
+
+		// Resolve the attachment behind the shared image.
+		$attachment_id = 0;
+		if ( $post_id && get_post_type( $post_id ) === 'attachment' ) {
+			$attachment_id = $post_id;
+		} else {
+			$attachment_id = attachment_url_to_postid( $image_url );
+			if ( ! $attachment_id ) {
+				$stripped = preg_replace( '/-\d+x\d+(\.[A-Za-z0-9]+)$/', '$1', $image_url );
+				if ( $stripped !== $image_url ) {
+					$attachment_id = attachment_url_to_postid( $stripped );
+				}
+			}
+			if ( ! $attachment_id && $post_id && has_post_thumbnail( $post_id ) ) {
+				$attachment_id = get_post_thumbnail_id( $post_id );
+			}
+		}
+
+		if ( ! $attachment_id ) {
+			return $image_url;
+		}
+
+		$full_path = get_attached_file( $attachment_id );
+		if ( empty( $full_path ) ) {
+			return $image_url;
+		}
+
+		$limit    = (int) apply_filters( 'rop_bluesky_max_image_bytes', 1000000 );
+		$sizes    = apply_filters( 'rop_bluesky_image_size_priority', array( 'full', '2048x2048', '1536x1536', 'large' ) );
+		$base_dir = trailingslashit( dirname( $full_path ) );
+		$meta     = wp_get_attachment_metadata( $attachment_id );
+
+		foreach ( $sizes as $size ) {
+			if ( 'full' === $size ) {
+				$path = $full_path;
+			} else {
+				if ( empty( $meta['sizes'][ $size ]['file'] ) ) {
+					continue;
+				}
+				$path = $base_dir . $meta['sizes'][ $size ]['file'];
+			}
+
+			if ( ! file_exists( $path ) ) {
+				continue;
+			}
+
+			$bytes = filesize( $path );
+			if ( $bytes && $bytes <= $limit ) {
+				$candidate_url = str_replace( $uploads['basedir'], $uploads['baseurl'], $path );
+				if ( $candidate_url !== $image_url ) {
+					$this->logger->info( sprintf( 'Bluesky: using "%s" image size (%d bytes) for higher resolution.', $size, $bytes ) );
+				}
+				return $candidate_url;
+			}
+		}
+
+		return $image_url;
 	}
 
 	/**
