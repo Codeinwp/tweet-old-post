@@ -557,6 +557,12 @@ class Rop_Admin {
 	 */
 	public function legacy_auth() {
 		// TODO Remove this method if we're only going to allow simple
+		// Connecting a social account is an administrative action. Bail for any
+		// user without the capability so this admin_init callback can't be used
+		// by lower-privilege users to trigger the authorization flow.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
 		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
 		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
 		$network = sanitize_text_field( isset( $_GET['network'] ) ? $_GET['network'] : '' );
