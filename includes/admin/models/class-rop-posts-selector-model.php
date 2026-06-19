@@ -51,6 +51,18 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	private $settings = array();
 
 	/**
+	 * Per-account keyword filter override taken from the account post format.
+	 *
+	 * Null means "no per-account override" — the global keyword filter applies.
+	 * Set per call to select() so it never leaks between accounts.
+	 *
+	 * @since   9.3.7
+	 * @access  private
+	 * @var     array|null
+	 */
+	private $post_format_keyword_override = null;
+
+	/**
 	 * Rop_Posts_Selector_Model constructor.
 	 *
 	 * @since   8.0.0
@@ -344,6 +356,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$post_types      = $this->build_post_types();
 		$global_settings = new Rop_Global_Settings();
 
+		// Reset per-account overrides so they never leak between accounts.
+		$this->post_format_keyword_override = null;
+
 		// Taxonomy: Post Format new option
 		if ( $global_settings->license_type() > 0 && $global_settings->license_type() !== 7 && ! empty( $account_id ) ) {
 			$parts             = explode( '_', $account_id );
@@ -369,6 +384,17 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			}
 
 			$tax_queries = $this->build_tax_query( $custom_data );
+
+			// Per-account keyword filter (overrides the global one when set).
+			if ( isset( $post_format['keyword_filter'] ) && '' !== trim( (string) $post_format['keyword_filter'] ) ) {
+				$keywords = Rop_Settings_Model::parse_keyword_string( $post_format['keyword_filter'] );
+				if ( ! empty( $keywords ) ) {
+					$this->post_format_keyword_override = array(
+						'keywords' => $keywords,
+						'exclude'  => isset( $post_format['exclude_keywords'] ) ? filter_var( $post_format['exclude_keywords'], FILTER_VALIDATE_BOOLEAN ) : true,
+					);
+				}
+			}
 		} else {
 			$tax_queries = $this->build_tax_query();
 		}
@@ -459,8 +485,35 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$exclude = array();
 		}
 
-		$args  = $this->build_query_args( $post_types, $tax_queries, $exclude );
+		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
+
+		/**
+		 * Optional keyword filtering on post title/content. Only active when the
+		 * user has entered keywords; otherwise the query is untouched. A per-account
+		 * (post format) filter takes precedence over the global one. The filter is
+		 * added only around this query and guarded by a custom query var so no other
+		 * query is ever affected.
+		 */
+		if ( is_array( $this->post_format_keyword_override ) ) {
+			$keywords        = $this->post_format_keyword_override['keywords'];
+			$exclude_keyword = ! empty( $this->post_format_keyword_override['exclude'] );
+		} else {
+			$keywords        = $this->settings->get_keyword_filter();
+			$exclude_keyword = $this->settings->get_exclude_keywords();
+		}
+		if ( ! empty( $keywords ) ) {
+			$args['rop_keyword_filter'] = array(
+				'keywords' => $keywords,
+				'exclude'  => $exclude_keyword,
+			);
+			add_filter( 'posts_where', array( $this, 'filter_keyword_where' ), 10, 2 );
+		}
+
 		$query = new WP_Query( $args );
+
+		if ( ! empty( $keywords ) ) {
+			remove_filter( 'posts_where', array( $this, 'filter_keyword_where' ), 10 );
+		}
 		// echo $query->request;
 		$posts = $query->posts;
 
@@ -592,6 +645,46 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Append a keyword condition to the posts query WHERE clause.
+	 *
+	 * Hooked on `posts_where` only while the selector query runs. It acts solely
+	 * on queries carrying the `rop_keyword_filter` query var, matching the
+	 * keywords against the post title or content. In exclude mode posts matching
+	 * any keyword are removed; in include mode only matching posts are kept.
+	 *
+	 * @since   9.3.7
+	 * @access  public
+	 *
+	 * @param string   $where The WHERE clause of the query.
+	 * @param WP_Query $query The current WP_Query instance.
+	 *
+	 * @return string
+	 */
+	public function filter_keyword_where( $where, $query ) {
+		global $wpdb;
+
+		$config = $query->get( 'rop_keyword_filter' );
+		if ( empty( $config ) || empty( $config['keywords'] ) || ! is_array( $config['keywords'] ) ) {
+			return $where;
+		}
+
+		$clauses = array();
+		foreach ( $config['keywords'] as $keyword ) {
+			$like      = '%' . $wpdb->esc_like( $keyword ) . '%';
+			$clauses[] = $wpdb->prepare( "({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_content LIKE %s)", $like, $like );
+		}
+
+		if ( empty( $clauses ) ) {
+			return $where;
+		}
+
+		$group = '( ' . implode( ' OR ', $clauses ) . ' )';
+		$where .= ! empty( $config['exclude'] ) ? " AND NOT {$group}" : " AND {$group}";
+
+		return $where;
 	}
 
 	/**

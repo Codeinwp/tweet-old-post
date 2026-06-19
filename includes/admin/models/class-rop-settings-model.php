@@ -307,6 +307,62 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Getter for the keyword filter list.
+	 *
+	 * Returns the user supplied keywords as a clean, de-duplicated array.
+	 * An empty array means the feature is inactive.
+	 *
+	 * @since   9.3.7
+	 * @access  public
+	 * @return  array
+	 */
+	public function get_keyword_filter() {
+		$raw = isset( $this->settings['keyword_filter'] ) ? $this->settings['keyword_filter'] : '';
+
+		return self::parse_keyword_string( $raw );
+	}
+
+	/**
+	 * Parse a comma separated keyword string into a clean, de-duplicated array.
+	 *
+	 * Shared by the global keyword filter and the per-account (post format) one.
+	 *
+	 * @since   9.3.7
+	 * @access  public
+	 *
+	 * @param  string $raw The raw comma separated keywords.
+	 * @return array
+	 */
+	public static function parse_keyword_string( $raw ) {
+		if ( ! is_string( $raw ) || '' === trim( $raw ) ) {
+			return array();
+		}
+		$keywords = array_map( 'trim', explode( ',', $raw ) );
+		$keywords = array_filter(
+			$keywords,
+			function ( $keyword ) {
+				return '' !== $keyword;
+			}
+		);
+
+		return array_values( array_unique( $keywords ) );
+	}
+
+	/**
+	 * Getter for the keyword filter mode.
+	 *
+	 * When true, posts matching the keywords are excluded from sharing;
+	 * when false, only posts matching the keywords are shared.
+	 *
+	 * @since   9.3.7
+	 * @access  public
+	 * @return  bool
+	 */
+	public function get_exclude_keywords() {
+		return ! empty( $this->settings['exclude_keywords'] );
+	}
+
+	/**
 	 * Add one post or a list of posts to the excluded posts list.
 	 *
 	 * @since   8.0.4
@@ -467,6 +523,14 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 				$this->logger->alert_error( Rop_I18n::get_labels( 'misc.max_number_of_concurrent_posts' ) );
 				$data['number_of_posts'] = 4;
 			}
+		}
+
+		if ( isset( $data['keyword_filter'] ) ) {
+			$data['keyword_filter'] = sanitize_text_field( $data['keyword_filter'] );
+		}
+
+		if ( isset( $data['exclude_keywords'] ) ) {
+			$data['exclude_keywords'] = (bool) $data['exclude_keywords'];
 		}
 
 		return $data;
