@@ -14,6 +14,23 @@
               {{ getAccountName(card_data.account_id) }}
             </p>
           </div>
+          <div
+            v-if="card_data.post_id"
+            class="column col-auto text-right"
+          >
+            <a
+              :href="editPostLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rop-edit-post-link tooltip tooltip-left"
+              :data-tooltip="labels.edit_post_tooltip"
+            >
+              <i
+                class="fa fa-pencil-square-o"
+                aria-hidden="true"
+              /> {{ labels.edit_post }}
+            </a>
+          </div>
         </div>
         <div
           v-if="!edit"
@@ -254,6 +271,10 @@
 					return this.card_data.content
 				}
 				return {}
+			},
+			editPostLink: function () {
+				const base = (ropApiSettings.dashboard || '').split('admin.php')[0];
+				return base + 'post.php?post=' + this.card_data.post_id + '&action=edit';
 			},
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
