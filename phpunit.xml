@@ -31,5 +31,8 @@
         <testsuite name="selector">
             <directory>./tests/test-selector.php</directory>
         </testsuite>
+        <testsuite name="build-url">
+            <directory>./tests/test-build-url.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
