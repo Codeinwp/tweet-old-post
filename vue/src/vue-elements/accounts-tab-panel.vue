@@ -58,6 +58,7 @@
               v-if="is_preloading > 0"
               id="rop-add-account-button"
               class="add-accounts"
+              :class="{ 'is-sticky': accountsCount > 1 }"
             >
               <add-account-tile />
               <span class="divider" />
@@ -271,6 +272,24 @@
 
     #rop_core .rop-available-accounts h5 {
         margin-bottom: 15px;
+    }
+
+    /*
+     * Keep the "Add account" action visible while scrolling a long accounts
+     * list, so it stays easy to discover/reach. See GH issue #1070.
+     */
+    #rop_core .rop-available-accounts .add-accounts.is-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+        bottom: 0;
+        z-index: 2;
+        background: #fff;
+        padding-top: 12px;
+        box-shadow: 0 -6px 10px -8px rgba( 0, 0, 0, 0.25 );
+    }
+
+    #rop_core .rop-available-accounts .add-accounts.is-sticky .divider {
+        margin-bottom: 0;
     }
 
     @media ( max-width: 600px ) {
