@@ -350,6 +350,8 @@ class Rop_I18n {
 				'reschedule_post'          => __( 'Reschedule this post.', 'tweet-old-post' ),
 				'ban_post'                 => __( 'Ban this post from sharing in the future.', 'tweet-old-post' ),
 				'edit_queue'               => __( 'Edit', 'tweet-old-post' ),
+				'edit_post'                => __( 'Edit Post', 'tweet-old-post' ),
+				'edit_post_tooltip'        => __( 'Edit the original post or page in WordPress.', 'tweet-old-post' ),
 				'link_title'               => __( 'Link', 'tweet-old-post' ),
 				'link_shortned_start'      => __( 'Link using', 'tweet-old-post' ),
 				'save_edit'                => __( 'Save', 'tweet-old-post' ),
