@@ -470,6 +470,39 @@
         </div>
       </div>
     </div>
+    <!-- Per-account keyword filtering. Disabled (upsell) outside Pro, like taxonomies above. -->
+    <div
+      class="columns py-2"
+      :class="'rop-control-container-'+(isPro && (license_price_id !== 7))"
+    >
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
+        <b>{{ labels_settings.keyword_filter_title }}</b>
+        <p class="text-gray">
+          <span v-html="labels_settings.keyword_filter_desc" />
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align">
+        <div class="input-group">
+          <input
+            v-model="post_format.keyword_filter"
+            :disabled="!isPro || (license_price_id === 7)"
+            type="text"
+            class="form-input"
+            :placeholder="labels_settings.keyword_filter_placeholder"
+          >
+          <span class="input-group-addon vertical-align">
+            <label class="form-checkbox">
+              <input
+                v-model="post_format.exclude_keywords"
+                :disabled="!isPro || (license_price_id === 7)"
+                type="checkbox"
+              >
+              <i class="form-icon" />{{ labels_settings.keyword_filter_exclude }}
+            </label>
+          </span>
+        </div>
+      </div>
+    </div>
     <div
       v-if="!isPro || (license_price_id === 7)"
       class="columns "

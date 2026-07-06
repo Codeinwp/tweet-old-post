@@ -179,6 +179,13 @@ class Rop_I18n {
 				),
 				'filter_by_taxonomies_desc'     => __( 'Filter posts list by Taxonomy', 'tweet-old-post' ),
 				'taxonomies_exclude'          => __( 'Exclude?', 'tweet-old-post' ),
+				'keyword_filter_title'        => __( 'Keyword Filtering', 'tweet-old-post' ),
+				'keyword_filter_desc'         => __(
+					'Comma-separated words or phrases matched against the post title and content. Use the toggle to either exclude matching posts from sharing, or share only matching posts.',
+					'tweet-old-post'
+				),
+				'keyword_filter_placeholder'  => __( 'e.g. sponsored, internal, draft review', 'tweet-old-post' ),
+				'keyword_filter_exclude'      => __( 'Exclude?', 'tweet-old-post' ),
 				'posts_title'                 => __( 'Posts', 'tweet-old-post' ),
 				'posts_desc'                  => __( 'Posts excluded from sharing, filtered based on previous selections.', 'tweet-old-post' ),
 				'ga_title'                    => __( 'Enable Google Analytics Tracking', 'tweet-old-post' ),
