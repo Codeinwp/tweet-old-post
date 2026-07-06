@@ -43,5 +43,8 @@
         <testsuite name="legacy-auth-cap">
             <directory>./tests/test-legacy-auth-cap.php</directory>
         </testsuite>
+        <testsuite name="bluesky-image">
+            <directory>./tests/test-bluesky-image.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
