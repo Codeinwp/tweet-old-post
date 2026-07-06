@@ -508,7 +508,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$unsupported_formats = apply_filters( 'rop_gmb_unsupported_image_formats', array( 'webp' ) );
 
 		$filetype  = wp_check_filetype( strtok( $image_url, '?' ) );
-		$extension = isset( $filetype['ext'] ) ? strtolower( $filetype['ext'] ) : '';
+		$extension = ! empty( $filetype['ext'] ) ? strtolower( $filetype['ext'] ) : '';
 
 		if ( empty( $extension ) || ! in_array( $extension, $unsupported_formats, true ) ) {
 			return $image_url;
