@@ -31,5 +31,8 @@
         <testsuite name="selector">
             <directory>./tests/test-selector.php</directory>
         </testsuite>
+        <testsuite name="x-premium-limit">
+            <directory>./tests/test-x-premium-limit.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
