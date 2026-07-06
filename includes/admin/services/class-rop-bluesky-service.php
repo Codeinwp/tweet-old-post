@@ -255,7 +255,7 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 	 * @since   9.3.7
 	 * @access  private
 	 *
-	 * @param   array $post_details The post details to be published.
+	 * @param   array<string, mixed> $post_details The post details to be published.
 	 * @return  string The image URL to upload.
 	 */
 	private function get_blob_safe_image_url( $post_details ) {
