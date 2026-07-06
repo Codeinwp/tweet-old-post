@@ -31,6 +31,9 @@
         <testsuite name="selector">
             <directory>./tests/test-selector.php</directory>
         </testsuite>
+        <testsuite name="keyword-filter">
+            <directory>./tests/test-keyword-filter.php</directory>
+        </testsuite>
         <testsuite name="bluesky-image">
             <directory>./tests/test-bluesky-image.php</directory>
         </testsuite>
