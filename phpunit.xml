@@ -37,6 +37,9 @@
         <testsuite name="gmb-image">
             <directory>./tests/test-gmb-image.php</directory>
         </testsuite>
+        <testsuite name="build-url">
+            <directory>./tests/test-build-url.php</directory>
+        </testsuite>
         <testsuite name="legacy-auth-cap">
             <directory>./tests/test-legacy-auth-cap.php</directory>
         </testsuite>
