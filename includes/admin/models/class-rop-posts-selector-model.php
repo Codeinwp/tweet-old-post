@@ -58,7 +58,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   9.3.7
 	 * @access  private
-	 * @var     array|null
+	 * @var     array<string, mixed>|null
 	 */
 	private $post_format_keyword_override = null;
 
@@ -675,10 +675,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		foreach ( $config['keywords'] as $keyword ) {
 			$like      = '%' . $wpdb->esc_like( $keyword ) . '%';
 			$clauses[] = $wpdb->prepare( "({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_content LIKE %s)", $like, $like );
-		}
-
-		if ( empty( $clauses ) ) {
-			return $where;
 		}
 
 		$group = '( ' . implode( ' OR ', $clauses ) . ' )';

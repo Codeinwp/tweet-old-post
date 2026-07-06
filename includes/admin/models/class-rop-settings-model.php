@@ -314,7 +314,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   9.3.7
 	 * @access  public
-	 * @return  array
+	 * @return  array<int, string>
 	 */
 	public function get_keyword_filter() {
 		$raw = isset( $this->settings['keyword_filter'] ) ? $this->settings['keyword_filter'] : '';
@@ -330,8 +330,8 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @since   9.3.7
 	 * @access  public
 	 *
-	 * @param  string $raw The raw comma separated keywords.
-	 * @return array
+	 * @param  mixed $raw The raw comma separated keywords.
+	 * @return array<int, string>
 	 */
 	public static function parse_keyword_string( $raw ) {
 		if ( ! is_string( $raw ) || '' === trim( $raw ) ) {
