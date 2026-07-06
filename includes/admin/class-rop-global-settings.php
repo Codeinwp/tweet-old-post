@@ -179,6 +179,8 @@ class Rop_Global_Settings {
 		'available_taxonomies'  => array(),
 		'selected_taxonomies'   => array(),
 		'exclude_taxonomies'    => false,
+		'keyword_filter'        => '',
+		'exclude_keywords'      => true,
 		'available_posts'       => array(), // get_posts(),
 		'selected_posts'        => array(),
 		'exclude_posts'         => true,
@@ -666,11 +668,24 @@ class Rop_Global_Settings {
 	 * @return array|mixed
 	 */
 	public function get_default_post_format( $service_name = false ) {
+		// Per-account keyword filter defaults, added to every service post format.
+		$keyword_defaults = array(
+			'keyword_filter'   => '',
+			'exclude_keywords' => true,
+		);
+
 		if ( isset( $service_name ) && $service_name != false && isset( self::instance()->post_format[ $service_name ] ) ) {
-			return self::instance()->post_format[ $service_name ];
+			return array_merge( $keyword_defaults, self::instance()->post_format[ $service_name ] );
 		}
 
-		return self::instance()->post_format;
+		$formats = self::instance()->post_format;
+		foreach ( $formats as $service => $format ) {
+			if ( is_array( $format ) ) {
+				$formats[ $service ] = array_merge( $keyword_defaults, $format );
+			}
+		}
+
+		return $formats;
 	}
 
 	/**
