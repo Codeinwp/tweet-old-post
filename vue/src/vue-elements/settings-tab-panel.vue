@@ -275,6 +275,46 @@
 
         <span class="divider" />
 
+        <!-- Keyword Filtering (global). In Pro this moves to per-account settings. -->
+        <div
+          v-if="!isPro || license_price_id === 7"
+          class="columns py-2"
+        >
+          <div class="column col-6 col-sm-12 vertical-align">
+            <b>{{ labels.keyword_filter_title }}</b>
+            <p class="text-gray">
+              <span v-html="labels.keyword_filter_desc" />
+            </p>
+          </div>
+          <div
+            id="rop_keyword_filter"
+            class="column col-6 col-sm-12 vertical-align text-left"
+          >
+            <div class="input-group">
+              <input
+                v-model="generalSettings.keyword_filter"
+                type="text"
+                class="form-input"
+                :placeholder="labels.keyword_filter_placeholder"
+              >
+              <span class="input-group-addon vertical-align">
+                <label class="form-checkbox">
+                  <input
+                    v-model="generalSettings.exclude_keywords"
+                    type="checkbox"
+                  >
+                  <i class="form-icon" />{{ labels.keyword_filter_exclude }}
+                </label>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <span
+          v-if="!isPro || license_price_id === 7"
+          class="divider"
+        />
+
         <!-- Update publish date -->
         <div
           class="columns py-2"
@@ -746,6 +786,8 @@
           selected_post_types: postTypesSelected,
           selected_taxonomies: taxonomiesSelected,
           exclude_taxonomies: excludeTaxonomies,
+          keyword_filter: this.generalSettings.keyword_filter,
+          exclude_keywords: this.generalSettings.exclude_keywords,
           update_post_published_date: this.generalSettings.update_post_published_date,
           ga_tracking: this.generalSettings.ga_tracking,
           custom_messages: this.generalSettings.custom_messages,

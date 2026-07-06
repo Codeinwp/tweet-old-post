@@ -335,6 +335,9 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			return $this->gmb_link_with_no_image_post( $post_details, $args, $new_post );
 		}
 
+		// GMB rejects some formats (e.g. WebP); convert to JPEG when needed.
+		$image_url = $this->maybe_convert_unsupported_image( $image_url );
+
 		$locale = get_locale();
 
 		$new_post->setLanguageCode( $locale );
@@ -413,6 +416,9 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			return $this->gmb_link_with_no_image_post( $post_details, $args, $new_post );
 		}
 
+		// GMB rejects some formats (e.g. WebP); convert to JPEG when needed.
+		$image_url = $this->maybe_convert_unsupported_image( $image_url );
+
 		$locale = get_locale();
 		$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
 		$url = $this->get_url( $post_details );
@@ -474,6 +480,82 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 				return $new_post;
 
 	}
+
+	/**
+	 * Convert a featured image to a GMB-supported format when needed.
+	 *
+	 * Google Business Profile (GMB) does not accept some modern image formats
+	 * (e.g. WebP) for the post media. When the image is one of those formats and
+	 * it lives in the local uploads directory, a JPEG copy is created and its URL
+	 * is returned so Google can fetch it. For every other case (already supported
+	 * format, remote/CDN image, or a conversion failure) the original URL is
+	 * returned unchanged, so behaviour is never worse than before.
+	 *
+	 * @since  9.3.7
+	 * @access private
+	 *
+	 * @param string $image_url The image URL that will be sent to GMB.
+	 *
+	 * @return string The (possibly converted) image URL.
+	 */
+	private function maybe_convert_unsupported_image( $image_url ) {
+
+		if ( empty( $image_url ) ) {
+			return $image_url;
+		}
+
+		// Formats GMB cannot ingest. Filterable so it is easy to extend.
+		$unsupported_formats = apply_filters( 'rop_gmb_unsupported_image_formats', array( 'webp' ) );
+
+		$filetype  = wp_check_filetype( strtok( $image_url, '?' ) );
+		$extension = ! empty( $filetype['ext'] ) ? strtolower( $filetype['ext'] ) : '';
+
+		if ( empty( $extension ) || ! in_array( $extension, $unsupported_formats, true ) ) {
+			return $image_url;
+		}
+
+		$uploads = wp_get_upload_dir();
+		if ( empty( $uploads['baseurl'] ) || empty( $uploads['basedir'] ) || strpos( $image_url, $uploads['baseurl'] ) !== 0 ) {
+			$this->logger->info( 'GMB: featured image is in an unsupported format (' . $extension . ') but is not a local uploads file, so it cannot be converted. Sending original URL: ' . $image_url );
+			return $image_url;
+		}
+
+		$source_path = strtok( str_replace( $uploads['baseurl'], $uploads['basedir'], $image_url ), '?' );
+		if ( ! file_exists( $source_path ) ) {
+			$this->logger->info( 'GMB: unsupported image source file not found locally: ' . $source_path );
+			return $image_url;
+		}
+
+		// Deterministic JPEG sibling so repeated shares reuse the same file
+		// instead of filling the uploads directory with copies.
+		$target_path = preg_replace( '/\.' . preg_quote( $extension, '/' ) . '$/i', '-rop-gmb.jpg', $source_path );
+		if ( empty( $target_path ) || $target_path === $source_path ) {
+			$target_path = $source_path . '-rop-gmb.jpg';
+		}
+
+		if ( file_exists( $target_path ) ) {
+			return str_replace( $uploads['basedir'], $uploads['baseurl'], $target_path );
+		}
+
+		$editor = wp_get_image_editor( $source_path );
+		if ( is_wp_error( $editor ) ) {
+			$this->logger->info( 'GMB: could not load image for conversion (' . $editor->get_error_message() . '). Sending original URL.' );
+			return $image_url;
+		}
+
+		$saved = $editor->save( $target_path, 'image/jpeg' );
+		if ( is_wp_error( $saved ) || empty( $saved['path'] ) ) {
+			$message = is_wp_error( $saved ) ? $saved->get_error_message() : 'unknown error';
+			$this->logger->info( 'GMB: failed converting ' . $extension . ' image to JPEG (' . $message . '). Sending original URL.' );
+			return $image_url;
+		}
+
+		$converted_url = str_replace( $uploads['basedir'], $uploads['baseurl'], $saved['path'] );
+		$this->logger->info( 'GMB: converted ' . $extension . ' featured image to JPEG for compatibility: ' . $converted_url );
+
+		return $converted_url;
+	}
+
 	/**
 	 * Method for publishing with Google My Business service.
 	 *
