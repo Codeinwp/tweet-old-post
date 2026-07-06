@@ -31,5 +31,8 @@
         <testsuite name="selector">
             <directory>./tests/test-selector.php</directory>
         </testsuite>
+        <testsuite name="gmb-image">
+            <directory>./tests/test-gmb-image.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
