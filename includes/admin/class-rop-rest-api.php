@@ -375,10 +375,17 @@ class Rop_Rest_Api {
 
 		if ( $data['service'] === 'twitter' ) {
 
-			$max_char_length = $data['data']['maximum_length'];
+			// X Premium accounts (Pro + explicit opt-in) may post far longer than
+			// the standard 280 characters. Anyone else stays capped at 280.
+			$is_x_premium = ! empty( $data['data']['x_premium'] ) && ( new Rop_Global_Settings() )->license_type() > 0;
+			if ( ! $is_x_premium ) {
+				$data['data']['x_premium'] = false;
+			}
 
-			if ( $max_char_length > 280 ) {
-				$data['data']['maximum_length'] = 280;
+			$max_allowed = $is_x_premium ? (int) apply_filters( 'rop_x_premium_max_chars', 25000 ) : 280;
+
+			if ( (int) $data['data']['maximum_length'] > $max_allowed ) {
+				$data['data']['maximum_length'] = $max_allowed;
 			}
 		}
 

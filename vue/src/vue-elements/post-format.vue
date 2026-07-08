@@ -152,7 +152,7 @@
             class="form-input"
             type="number"
             value=""
-            max="280"
+            :max="(post_format.x_premium && isPro) ? 25000 : 280"
           >
           <input
             v-if="allAccounts[account_id].service !== 'twitter'"
@@ -169,6 +169,31 @@
         />
       </div>
     </div>
+
+    <!-- X Premium: allow longer posts (Pro, opt-in, X/Twitter only) -->
+    <div
+      v-if="allAccounts[account_id].service === 'twitter'"
+      class="columns py-2"
+      :class="'rop-control-container-'+isPro"
+    >
+      <div class="column col-6 col-sm-12 vertical-align rop-control">
+        <b>{{ labels.x_premium_title }}</b>
+        <p class="text-gray">
+          <span v-html="labels.x_premium_desc" />
+        </p>
+      </div>
+      <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+        <label class="form-checkbox">
+          <input
+            v-model="post_format.x_premium"
+            :disabled="!isPro"
+            type="checkbox"
+          >
+          <i class="form-icon" /> {{ labels.yes_text }}
+        </label>
+      </div>
+    </div>
+
     <span class="divider" />
 
     <!-- Additional text | Message Custom Content -->
