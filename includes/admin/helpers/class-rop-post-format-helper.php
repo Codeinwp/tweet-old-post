@@ -837,14 +837,31 @@ class Rop_Post_Format_Helper {
 			return '';
 		}
 
-		if ( $this->post_format['short_url'] && $this->post_format['short_url_service'] === 'wp_short_url' ) {
-			$post_url = wp_get_shortlink( $post_id );
-		} else {
-			$post_url = get_permalink( $post_id );
+		$url_post_id = $post_id;
+
+		/*
+		 * WPML stores every translation as its own post (with its own slug and
+		 * language), so the link must be built from the post id translated to the
+		 * account's language. Rewriting only the URL's language afterwards would
+		 * keep the original slug and produce links like /fr/{wrong-language-slug}.
+		 * See issue #556.
+		 */
+		if ( function_exists( 'icl_object_id' ) ) {
+			$selector    = new Rop_Posts_Selector_Model;
+			$url_post_id = $selector->rop_wpml_id( $post_id, $this->account_id );
 		}
 
-		// WPML compatibility
-		if ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) {
+		if ( $this->post_format['short_url'] && $this->post_format['short_url_service'] === 'wp_short_url' ) {
+			$post_url = wp_get_shortlink( $url_post_id );
+		} else {
+			$post_url = get_permalink( $url_post_id );
+		}
+
+		/*
+		 * TranslatePress keeps a single post id across languages, so here the
+		 * language-specific URL has to be derived from the permalink itself.
+		 */
+		if ( class_exists( 'TRP_Translate_Press' ) ) {
 			$selector = new Rop_Posts_Selector_Model;
 			$post_url = $selector->rop_wpml_link( $post_url, $this->account_id );
 		}
