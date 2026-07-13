@@ -38,6 +38,8 @@ composer run phpstan                 # Static analysis (level 6)
 npm run wp-env start                 # Start WordPress environment
 npm run test:e2e:playwright          # Run Playwright E2E tests
 npm run test:e2e:playwright:ui       # E2E with Playwright UI mode
+# If the bundled Chromium crashes on launch (SIGTRAP on newer macOS), use system Chrome:
+PLAYWRIGHT_CHANNEL=chrome npm run test:e2e:playwright
 
 # Distribution
 npm run dist               # Create distribution ZIP archive
@@ -103,4 +105,27 @@ PHPUnit test suites are defined in `phpunit.xml` with individual files in `tests
 
 E2E tests use Playwright with `@wordpress/e2e-test-utils-playwright`. Specs live in `tests/e2e/specs/`. Config at `tests/e2e/playwright.config.js`.
 
+E2E runs never hit real social APIs. `tests/e2e/mu-plugins/rop-e2e-bootstrap.php` (mapped into wp-env as an mu-plugin via `.wp-env.json`) intercepts `ROP_POST_ON_X_API`/`ROP_POST_LOGS_API` requests through `pre_http_request`, records their payloads, and exposes REST endpoints under `rop-e2e/v1` (`/reset`, `/account`, `/publish-now`, `/requests`). Specs consume these through the `ropUtils` fixture from `tests/e2e/fixtures` — use it for setup (`reset()` + `seedAccount()` in `beforeEach`) and for asserting on captured request payloads (`getRequests()`) instead of driving account setup through the UI. wp-env runs with `DISABLE_WP_CRON` so shares only happen via the explicit `runPublishNow(postId)` trigger.
+
 PHPUnit bootstrap (`tests/bootstrap.php`) requires WordPress test suite via `WP_TESTS_DIR` env var.
+
+## Test-Writing Practices (TDD)
+
+Work in the red → green loop: write one failing test first, then only enough code to make it pass. One seam, one test, one minimal implementation per cycle — don't write a batch of tests up front for imagined behavior, and don't add speculative features to satisfy tests that don't exist yet. Refactoring is a separate review step, not part of the loop.
+
+**Test at public seams, never against internals.** A seam is a boundary where behavior is observable without reaching inside. In this plugin the established seams are:
+
+- The wp-admin UI driven through Playwright (what a user sees and clicks)
+- HTTP payloads sent to external APIs, captured at `pre_http_request` by the E2E mu-plugin (`ropUtils.getRequests()`)
+- The plugin's REST API (`tweet-old-post/v8/...`)
+- Public PHP classes/methods covered by PHPUnit in `tests/`
+
+Adding a test at a new seam is a design decision — agree on it first rather than testing whatever is reachable.
+
+**Anti-patterns to avoid:**
+
+- **Implementation-coupled tests** — asserting on private methods, internal option/DB structure, or CSS class names that a refactor would rename. The tell: the test breaks when code is refactored but behavior hasn't changed. (Reading state through the `rop-e2e/v1` endpoints is fine — they exist to expose the seam.)
+- **Tautological tests** — computing the expected value the same way the code does, so the assertion can never disagree with the code. Expected values must be independent literals: a known handle (`@testaccount`), a known token (`rop-e2e-token`), a worked example.
+- **Horizontal slicing** — writing all tests first, then all implementation. Each new test should respond to what the previous cycle taught you.
+
+A good test reads like a specification: `shares a published post through the mocked X process` says exactly what capability exists.

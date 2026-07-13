@@ -345,6 +345,18 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.4.0](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.6...v9.4.0) (2026-07-09)
+
+- Added keyword-based filtering to include or exclude posts from sharing based on keywords
+- Added an Edit Post button in the sharing queue for quick access to the post editor
+- Added support for the higher character limit on X Premium accounts [PRO]
+- Fixed Google Business Profile sharing by converting unsupported WebP images to JPEG [PRO]
+- Fixed WPML multilingual shares pointing to the wrong translated URL [PRO]
+- Improved Bluesky sharing to use higher resolution images within the upload size limit [PRO]
+- Kept the Add account button visible while scrolling a long accounts list
+- Enhanced security
+- Updated dependencies
+
 ##### [Version 9.3.6](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.5...v9.3.6) (2026-05-21)
 
 - Updated the LinkedIn API version to fix sharing to this network
