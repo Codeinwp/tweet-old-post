@@ -43,8 +43,10 @@ jobs:
           npm run build
           npm run sharing
 
+      # No --with-deps: Playwright 1.40 requests libasound2, which Ubuntu 24.04
+      # renamed to libasound2t64; the runner image already has the needed libs.
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
 
       - name: Setup WP Env
         run: npm run wp-env start
