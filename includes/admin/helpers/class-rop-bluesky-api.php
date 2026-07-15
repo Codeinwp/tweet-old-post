@@ -504,7 +504,7 @@ class Rop_Bluesky_Api {
 			'external' => array(
 				'uri'         => $post['post_url'],
 				'title'       => isset( $post['title'] ) ? $post['title'] : '',
-				'description' => isset( $post['content'] ) ? $post['content'] : '',
+				'description' => '',
 			),
 		);
 	}
