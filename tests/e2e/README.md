@@ -10,6 +10,16 @@ To start creating new tests you need to do the following:
 2. Run `npx install playwright`. This will the install the browser packages for Playwright to use it.
 3. Run `npm run test:e2e:playwright:ui`. This will lunch Playwright in UI mode. _Recommended when developing_. You can use `npm run test:e2e:playwright` to run without UI.
 
+### Port conflicts
+
+If `wp-env start` fails with **port is already allocated**, another wp-env instance (often from a different checkout) is using `8888`/`8889`. Pin free ports in a gitignored `.wp-env.override.json` at the plugin root — same approach as [Otter](https://github.com/Codeinwp/otter-blocks/blob/master/AGENTS.md#wp-env-instance-ports--multi-checkout):
+
+```json
+{ "port": 8892, "testsPort": 8900 }
+```
+
+Then run `npm run wp-env start` again. Playwright reads `testsPort` from that file automatically (`tests/e2e/playwright.config.js`). To override manually: `WP_BASE_URL=http://localhost:8900 npm run test:e2e:playwright`.
+
 If the Playwright-bundled Chromium crashes on launch (SIGTRAP, common on newer macOS with older Playwright versions), run against system Chrome instead: `PLAYWRIGHT_CHANNEL=chrome npm run test:e2e:playwright`.
 
 ## Mocks & Fixtures

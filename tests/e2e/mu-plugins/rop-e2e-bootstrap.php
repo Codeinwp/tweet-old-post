@@ -108,6 +108,14 @@ function rop_e2e_seed_account() {
 }
 
 function rop_e2e_run_publish_now( WP_REST_Request $request ) {
+	$loaded = rop_e2e_activate_plugin();
+	if ( is_wp_error( $loaded ) ) {
+		return $loaded;
+	}
+	if ( ! $loaded ) {
+		return new WP_Error( 'rop_e2e_plugin_missing', 'Revive Old Posts is not loaded.', array( 'status' => 500 ) );
+	}
+
 	$post_id = absint( $request->get_param( 'postId' ) );
 	if ( ! $post_id || ! get_post( $post_id ) ) {
 		return new WP_Error( 'rop_e2e_post_missing', 'A valid postId is required.', array( 'status' => 400 ) );

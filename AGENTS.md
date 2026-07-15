@@ -41,6 +41,11 @@ npm run test:e2e:playwright:ui       # E2E with Playwright UI mode
 # If the bundled Chromium crashes on launch (SIGTRAP on newer macOS), use system Chrome:
 PLAYWRIGHT_CHANNEL=chrome npm run test:e2e:playwright
 
+# If wp-env start fails with "port is already allocated", pin free ports in the
+# gitignored `.wp-env.override.json` (same pattern as Otter), then restart:
+# { "port": 8892, "testsPort": 8900 }
+# Playwright reads testsPort from that file automatically; override with WP_BASE_URL if needed.
+
 # Distribution
 npm run dist               # Create distribution ZIP archive
 ```
@@ -104,6 +109,16 @@ PHPUnit test suites are defined in `phpunit.xml` with individual files in `tests
 - `test-plugin.php`, `test-accounts.php`, `test-content.php`, `test-logger.php`, `test-post-format.php`, `test-queue.php`, `test-scheduler.php`, `test-selector.php`
 
 E2E tests use Playwright with `@wordpress/e2e-test-utils-playwright`. Specs live in `tests/e2e/specs/`. Config at `tests/e2e/playwright.config.js`.
+
+### wp-env ports (multi-checkout)
+
+wp-env namespaces containers per checkout, but host ports are shared. If `8888`/`8889` are taken by another instance, create a gitignored `.wp-env.override.json` (see [Otter](https://github.com/Codeinwp/otter-blocks/blob/master/AGENTS.md#wp-env-instance-ports--multi-checkout)) with free ports, then `npm run wp-env start`:
+
+```json
+{ "port": 8892, "testsPort": 8900 }
+```
+
+Port precedence for Playwright: `WP_BASE_URL` > `WP_ENV_PORT` > `.wp-env.override.json` (`testsPort`, then `port`) > `8889`. E2E targets the tests instance (`testsPort`).
 
 E2E runs never hit real social APIs. `tests/e2e/mu-plugins/rop-e2e-bootstrap.php` (mapped into wp-env as an mu-plugin via `.wp-env.json`) intercepts `ROP_POST_ON_X_API`/`ROP_POST_LOGS_API` requests through `pre_http_request`, records their payloads, and exposes REST endpoints under `rop-e2e/v1` (`/reset`, `/account`, `/publish-now`, `/requests`). Specs consume these through the `ropUtils` fixture from `tests/e2e/fixtures` — use it for setup (`reset()` + `seedAccount()` in `beforeEach`) and for asserting on captured request payloads (`getRequests()`) instead of driving account setup through the UI. wp-env runs with `DISABLE_WP_CRON` so shares only happen via the explicit `runPublishNow(postId)` trigger.
 

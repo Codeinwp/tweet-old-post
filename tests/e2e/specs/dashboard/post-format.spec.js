@@ -28,4 +28,26 @@ test.describe('Post Format', () => {
 		).toBeVisible();
 		await expect(page.getByText('Choose where you want the')).toBeVisible();
 	});
+
+	test('shows the custom content editor when Custom Content is selected', async ({
+		page,
+		admin,
+	}) => {
+		await admin.visitAdminPage('/admin.php?page=TweetOldPost');
+
+		await page.getByText('Post Format').click();
+
+		const shareContent = page.locator(
+			'select:has(option[value="custom_content"])'
+		);
+		await shareContent.selectOption('Custom Content (Pro)');
+		await expect(shareContent).toHaveValue('custom_content');
+
+		await expect(page.getByText('Message Content')).toBeVisible();
+		await expect(
+			page.getByPlaceholder('{title} with {content}')
+		).toBeVisible();
+		await expect(page.getByText('Override Share Content')).toBeVisible();
+		await expect(page.getByText('Choose where you want the')).toBeHidden();
+	});
 });

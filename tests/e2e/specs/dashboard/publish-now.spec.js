@@ -20,7 +20,7 @@ test.describe('Publish Now', () => {
 		});
 		await expect(shareImmediately).toBeChecked();
 		await expect(
-			page.getByRole('checkbox', { name: ' @testaccount' })
+			page.getByRole('checkbox', { name: /@testaccount/ })
 		).toBeChecked();
 
 		await page
