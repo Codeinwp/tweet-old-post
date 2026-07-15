@@ -292,6 +292,13 @@ class Rop_Bluesky_Api {
 
 			$text = $post['content'] . $hashtags;
 
+			// Bluesky rejects records whose text exceeds 300 grapheme clusters.
+			if ( function_exists( 'grapheme_substr' ) ) {
+				$text = grapheme_substr( $text, 0, 300 );
+			} else {
+				$text = mb_substr( $text, 0, 300, 'UTF-8' );
+			}
+
 			$record = array(
 				'$type'     => 'app.bsky.feed.post',
 				'text'      => $text,

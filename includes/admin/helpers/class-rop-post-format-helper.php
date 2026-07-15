@@ -428,7 +428,7 @@ class Rop_Post_Format_Helper {
 	 * @return int String length.
 	 */
 	public function string_length( $string ) {
-		if ( function_exists( 'mb_strlen ' ) ) {
+		if ( function_exists( 'mb_strlen' ) ) {
 			return mb_strlen( $string );
 		}
 

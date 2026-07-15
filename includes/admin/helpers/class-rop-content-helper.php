@@ -116,7 +116,7 @@ class Rop_Content_Helper {
 
 		$length = 0;
 		for ( $last_part = 0; $last_part < $parts_count; ++ $last_part ) {
-			$length += strlen( $parts[ $last_part ] );
+			$length += mb_strlen( $parts[ $last_part ], 'UTF-8' );
 			if ( $length > $this->length ) {
 				break;
 			}
@@ -128,10 +128,10 @@ class Rop_Content_Helper {
 		 * we should get the substring of it.
 		 */
 		if ( empty( $output ) && $parts_count === 1 ) {
-			$output = substr( $string, 0, $new_length );
+			$output = mb_substr( $string, 0, $new_length, 'UTF-8' );
 		}
 		// add ellipse only if set and originating text is longer than set length
-		if ( $this->end_ellipse && strlen( $string ) > $this->length ) {
+		if ( $this->end_ellipse && mb_strlen( $string, 'UTF-8' ) > $this->length ) {
 			$output .= ' ' . $this->ellipse;
 		}
 
