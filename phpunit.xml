@@ -49,6 +49,9 @@
         <testsuite name="bluesky-grapheme">
             <directory>./tests/test-bluesky-grapheme.php</directory>
         </testsuite>
+        <testsuite name="bluesky-card">
+            <directory>./tests/test-bluesky-card.php</directory>
+        </testsuite>
         <testsuite name="x-premium-limit">
             <directory>./tests/test-x-premium-limit.php</directory>
         </testsuite>
