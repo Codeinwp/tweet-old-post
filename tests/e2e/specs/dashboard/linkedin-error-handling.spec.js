@@ -7,6 +7,10 @@ import { test, expect } from '@wordpress/e2e-test-utils-playwright';
 const VALID_ID = 'czoyMToidXJuOmxpOnBlcnNvbjpFMkVURVNUIjs=';
 // base64( serialize( [ account array, [ 'notify_user_at' => 4102444800 ] ] ) )
 const VALID_PAGES = 'YToyOntpOjA7YTo2OntzOjI6ImlkIjtzOjIxOiJ1cm46bGk6cGVyc29uOkUyRVRFU1QiO3M6MzoiaW1nIjtzOjA6IiI7czo3OiJhY2NvdW50IjtzOjEzOiJFMkUgVGVzdCBVc2VyIjtzOjEwOiJpc19jb21wYW55IjtiOjA7czo0OiJ1c2VyIjtzOjEzOiJFMkUgVGVzdCBVc2VyIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO3M6MTQ6ImUyZS10ZXN0LXRva2VuIjt9aToxO2E6MTp7czoxNDoibm90aWZ5X3VzZXJfYXQiO2k6NDEwMjQ0NDgwMDt9fQ==';
+// Same as VALID_PAGES but the last entry is not the notify date.
+const PAGES_WITHOUT_NOTIFY = 'YToyOntpOjA7YTo2OntzOjI6ImlkIjtzOjIxOiJ1cm46bGk6cGVyc29uOkUyRVRFU1QiO3M6MzoiaW1nIjtzOjA6IiI7czo3OiJhY2NvdW50IjtzOjEzOiJFMkUgVGVzdCBVc2VyIjtzOjEwOiJpc19jb21wYW55IjtiOjA7czo0OiJ1c2VyIjtzOjEzOiJFMkUgVGVzdCBVc2VyIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO3M6MTQ6ImUyZS10ZXN0LXRva2VuIjt9aToxO2E6MTp7czoxMDoidW5leHBlY3RlZCI7aToxO319';
+// base64( serialize( [ [ 'notify_user_at' => ... ] ] ) ) — notify entry only, no accounts.
+const PAGES_ONLY_NOTIFY = 'YToxOntpOjA7YToxOntzOjE0OiJub3RpZnlfdXNlcl9hdCI7aTo0MTAyNDQ0ODAwO319';
 
 /**
  * Call a plugin API endpoint from the dashboard page.
@@ -80,6 +84,51 @@ test.describe( 'LinkedIn error handling (issue #1098)', () => {
 		expect( serviceNames ).not.toContain( 'linkedin' );
 	} );
 
+	test( 'empty payload is rejected without a fatal error', async ( { page } ) => {
+		const response = await callRopApi( page, 'add_account_li', {} );
+
+		expect( response.text ).not.toContain( 'critical error' );
+		if ( response.body ) {
+			expect( response.body.code ).toBe( '400' );
+		} else {
+			expect( response.text ).toContain( 'Value not set' );
+		}
+	} );
+
+	test( 'pages without a notify entry are rejected', async ( { page } ) => {
+		const response = await callRopApi( page, 'add_account_li', {
+			id: VALID_ID,
+			pages: PAGES_WITHOUT_NOTIFY,
+		} );
+
+		expect( response.status ).toBe( 200 );
+		expect( response.body.code ).toBe( '400' );
+	} );
+
+	test( 'pages with only a notify entry and no accounts are rejected', async ( { page } ) => {
+		const response = await callRopApi( page, 'add_account_li', {
+			id: VALID_ID,
+			pages: PAGES_ONLY_NOTIFY,
+		} );
+
+		expect( response.status ).toBe( 200 );
+		expect( response.body.code ).toBe( '400' );
+
+		const services = await callRopApi( page, 'get_authenticated_services', {} );
+		const serviceNames = Object.values( services.body.data || {} ).map( ( s ) => s.service );
+		expect( serviceNames ).not.toContain( 'linkedin' );
+	} );
+
+	test( 'rejected payload leaves the LinkedIn error in the plugin log', async ( { page } ) => {
+		await callRopApi( page, 'add_account_li', {
+			id: VALID_ID,
+			pages: btoa( 'linkedin-error-string-not-account-data' ),
+		} );
+
+		const log = await callRopApi( page, 'get_log', {} );
+		expect( JSON.stringify( log.body.data ) ).toContain( 'Linkedin Error' );
+	} );
+
 	test( 'valid payload still adds the account', async ( { page } ) => {
 		const response = await callRopApi( page, 'add_account_li', {
 			id: VALID_ID,
@@ -88,6 +137,14 @@ test.describe( 'LinkedIn error handling (issue #1098)', () => {
 
 		expect( response.status ).toBe( 200 );
 		expect( response.body.code ).toBe( '200' );
+
+		// The service must actually be registered, with the account exposed.
+		const services = await callRopApi( page, 'get_authenticated_services', {} );
+		const linkedin = Object.values( services.body.data || {} ).find(
+			( s ) => s.service === 'linkedin'
+		);
+		expect( linkedin ).toBeTruthy();
+		expect( JSON.stringify( linkedin.available_accounts ) ).toContain( 'E2E Test User' );
 
 		// Clean up so other specs start from a pristine accounts state.
 		const reset = await callRopApi( page, 'reset_accounts', {} );
