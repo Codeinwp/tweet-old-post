@@ -4147,12 +4147,6 @@ parameters:
 			path: includes/admin/services/class-rop-linkedin-service.php
 
 		-
-			message: '#^Variable \$account might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: includes/admin/services/class-rop-linkedin-service.php
-
-		-
 			message: '#^Variable \$data in empty\(\) always exists and is not falsy\.$#'
 			identifier: empty.variable
 			count: 1
