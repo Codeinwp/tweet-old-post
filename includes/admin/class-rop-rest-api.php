@@ -1194,7 +1194,15 @@ class Rop_Rest_Api {
 		$model           = new Rop_Services_Model();
 		$db              = new Rop_Db_Upgrade();
 
-		$linkedin_service->add_account_with_app( $data );
+		$added = $linkedin_service->add_account_with_app( $data );
+
+		if ( ! $added ) {
+			$this->response->set_code( '400' )
+						   ->set_message( 'Could not add the LinkedIn account, the authorization data was invalid. Check the Revive Social log for details.' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
 
 		$services[ $linkedin_service->get_service_id() ] = $linkedin_service->get_service();
 		$active_accounts                                = array_merge( $active_accounts, $linkedin_service->get_service_active_accounts() );

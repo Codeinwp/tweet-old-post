@@ -135,10 +135,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			}
 		} catch ( Exception $e ) {
 
-			$message = 'Linkedin Error: Code[ ' . $e->getCode() . ' ] ' . $e->getDescription();
+			$description = method_exists( $e, 'getDescription' ) ? $e->getDescription() : $e->getMessage();
+			$message     = 'Linkedin Error: Code[ ' . $e->getCode() . ' ] ' . $description;
 			$this->logger->alert_error( $message );
 			$this->rop_get_error_docs( $message );
-			$referrer = $_SERVER['HTTP_REFERER'];
+			$referrer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
 			// If the user is trying to authenticate.
 			if ( ! empty( substr_count( $referrer, 'linkedin.com' ) ) ) {
 				exit( wp_redirect( $this->get_legacy_url() ) );
@@ -838,15 +839,26 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 */
 	public function add_account_with_app( $accounts_data ) {
-		if ( ! $this->is_set_not_empty( $accounts_data, array( 'id' ) ) ) {
+		if ( ! $this->is_set_not_empty( $accounts_data, array( 'id', 'pages' ) ) ) {
 			return false;
 		}
 
 		$the_id         = unserialize( base64_decode( $accounts_data['id'] ) );
 		$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
 
+		if ( empty( $the_id ) || ! is_array( $accounts_array ) ) {
+			$this->logger->alert_error( 'Linkedin Error: received malformed account data, the account was not added.' );
+			return false;
+		}
+
 		// last array item contains notify date
 		$notify_user_at = array_pop( $accounts_array );
+
+		if ( empty( $accounts_array ) || ! is_array( $notify_user_at ) || ! isset( $notify_user_at['notify_user_at'] ) ) {
+			$this->logger->alert_error( 'Linkedin Error: received malformed account data, the account was not added.' );
+			return false;
+		}
+
 		// save timestamp for when to notify user to refresh their linkedin token
 		// set notified count to 0
 		$notify_data = array(

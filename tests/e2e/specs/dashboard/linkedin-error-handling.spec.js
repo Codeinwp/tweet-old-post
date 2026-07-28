@@ -1,0 +1,96 @@
+/**
+ * WordPress dependencies
+ */
+import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+
+// base64( serialize( 'urn:li:person:E2ETEST' ) )
+const VALID_ID = 'czoyMToidXJuOmxpOnBlcnNvbjpFMkVURVNUIjs=';
+// base64( serialize( [ account array, [ 'notify_user_at' => 4102444800 ] ] ) )
+const VALID_PAGES = 'YToyOntpOjA7YTo2OntzOjI6ImlkIjtzOjIxOiJ1cm46bGk6cGVyc29uOkUyRVRFU1QiO3M6MzoiaW1nIjtzOjA6IiI7czo3OiJhY2NvdW50IjtzOjEzOiJFMkUgVGVzdCBVc2VyIjtzOjEwOiJpc19jb21wYW55IjtiOjA7czo0OiJ1c2VyIjtzOjEzOiJFMkUgVGVzdCBVc2VyIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO3M6MTQ6ImUyZS10ZXN0LXRva2VuIjt9aToxO2E6MTp7czoxNDoibm90aWZ5X3VzZXJfYXQiO2k6NDEwMjQ0NDgwMDt9fQ==';
+
+/**
+ * Call a plugin API endpoint from the dashboard page.
+ *
+ * @param {import('@playwright/test').Page} page The page object.
+ * @param {string} req  The API method to call.
+ * @param {Object} body The request payload.
+ */
+async function callRopApi( page, req, body ) {
+	return await page.evaluate( async ( { req, body } ) => {
+		const response = await fetch( `${window.ropApiSettings.root}&req=${req}`, {
+			method: 'POST',
+			body: JSON.stringify( body ),
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': window.ropApiSettings.nonce,
+			},
+		} );
+
+		const text = await response.text();
+		let json = null;
+		try {
+			json = JSON.parse( text );
+		} catch ( e ) {
+			// Non-JSON response, e.g. the plugin's ROP_DEBUG output.
+		}
+
+		return { status: response.status, body: json, text };
+	}, { req, body } );
+}
+
+test.describe( 'LinkedIn error handling (issue #1098)', () => {
+
+	test.beforeEach( async ( { page, admin } ) => {
+		await admin.visitAdminPage( '/admin.php?page=TweetOldPost' );
+		await page.waitForSelector( '.tab-view[type="accounts"]' );
+	} );
+
+	test( 'error payload without pages is rejected without a fatal error', async ( { page } ) => {
+		const response = await callRopApi( page, 'add_account_li', { id: VALID_ID } );
+
+		// Before the fix this fataled (array_pop on bool) and surfaced as a
+		// WordPress critical-error response. After the fix the payload is
+		// rejected by validation: with ROP_DEBUG on the plugin answers with
+		// its debug text, in production with a JSON code 400 response.
+		expect( response.text ).not.toContain( 'critical error' );
+		if ( response.body ) {
+			expect( response.body.code ).toBe( '400' );
+		} else {
+			expect( response.text ).toContain( 'Value not set' );
+		}
+
+		// The dashboard must survive the failed attempt.
+		await page.reload();
+		await page.waitForSelector( '.tab-view[type="accounts"]' );
+		await expect( page.getByRole( 'button', { name: 'LinkedIn' } ) ).toBeVisible();
+	} );
+
+	test( 'garbled pages payload is rejected without a fatal error', async ( { page } ) => {
+		const response = await callRopApi( page, 'add_account_li', {
+			id: VALID_ID,
+			pages: btoa( 'linkedin-error-string-not-account-data' ),
+		} );
+
+		expect( response.status ).toBe( 200 );
+		expect( response.body.code ).toBe( '400' );
+
+		// No LinkedIn service must have been registered from the bad payload.
+		const services = await callRopApi( page, 'get_authenticated_services', {} );
+		const serviceNames = Object.values( services.body.data || {} ).map( ( s ) => s.service );
+		expect( serviceNames ).not.toContain( 'linkedin' );
+	} );
+
+	test( 'valid payload still adds the account', async ( { page } ) => {
+		const response = await callRopApi( page, 'add_account_li', {
+			id: VALID_ID,
+			pages: VALID_PAGES,
+		} );
+
+		expect( response.status ).toBe( 200 );
+		expect( response.body.code ).toBe( '200' );
+
+		// Clean up so other specs start from a pristine accounts state.
+		const reset = await callRopApi( page, 'reset_accounts', {} );
+		expect( reset.body.code ).toBe( '200' );
+	} );
+} );

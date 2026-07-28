@@ -892,7 +892,21 @@ export default {
         return;
       }
 
-      const accountData = JSON.parse(event.data);
+      let accountData;
+      try {
+        accountData = JSON.parse(event.data);
+      } catch (e) {
+        this.is_loading = false;
+        Vue.$log.error('Received a malformed message from the authorization window', e);
+        return;
+      }
+
+      if ( ! accountData || 'object' !== typeof accountData || accountData.error ) {
+        this.is_loading = false;
+        window.removeEventListener("message", this.getChildWindowMessage );
+        Vue.$log.error('Authorization failed', accountData);
+        return;
+      }
 
       if ('Twitter' === this.modal.serviceName) {
         this.addAccountTW( accountData );
