@@ -11,6 +11,10 @@ const VALID_PAGES = 'YToyOntpOjA7YTo2OntzOjI6ImlkIjtzOjIxOiJ1cm46bGk6cGVyc29uOkU
 const PAGES_WITHOUT_NOTIFY = 'YToyOntpOjA7YTo2OntzOjI6ImlkIjtzOjIxOiJ1cm46bGk6cGVyc29uOkUyRVRFU1QiO3M6MzoiaW1nIjtzOjA6IiI7czo3OiJhY2NvdW50IjtzOjEzOiJFMkUgVGVzdCBVc2VyIjtzOjEwOiJpc19jb21wYW55IjtiOjA7czo0OiJ1c2VyIjtzOjEzOiJFMkUgVGVzdCBVc2VyIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO3M6MTQ6ImUyZS10ZXN0LXRva2VuIjt9aToxO2E6MTp7czoxMDoidW5leHBlY3RlZCI7aToxO319';
 // base64( serialize( [ [ 'notify_user_at' => ... ] ] ) ) — notify entry only, no accounts.
 const PAGES_ONLY_NOTIFY = 'YToxOntpOjA7YToxOntzOjE0OiJub3RpZnlfdXNlcl9hdCI7aTo0MTAyNDQ0ODAwO319';
+// base64( serialize( [ 'bad-account', [ 'notify_user_at' => 4102444800 ] ] ) ) — account entry is a string, not an array.
+const PAGES_WITH_STRING_ACCOUNT = 'YToyOntpOjA7czoxMToiYmFkLWFjY291bnQiO2k6MTthOjE6e3M6MTQ6Im5vdGlmeV91c2VyX2F0IjtpOjQxMDI0NDQ4MDA7fX0=';
+// base64( serialize( [ 'urn:li:person:E2ETEST' ] ) ) — id decodes to an array instead of a string.
+const ARRAY_ID = 'YToxOntpOjA7czoyMToidXJuOmxpOnBlcnNvbjpFMkVURVNUIjt9';
 
 /**
  * Call a plugin API endpoint from the dashboard page.
@@ -119,7 +123,31 @@ test.describe( 'LinkedIn error handling (issue #1098)', () => {
 		expect( serviceNames ).not.toContain( 'linkedin' );
 	} );
 
+	test( 'account entry that is not an array is rejected', async ( { page } ) => {
+		const response = await callRopApi( page, 'add_account_li', {
+			id: VALID_ID,
+			pages: PAGES_WITH_STRING_ACCOUNT,
+		} );
+
+		expect( response.status ).toBe( 200 );
+		expect( response.body.code ).toBe( '400' );
+	} );
+
+	test( 'id that does not decode to a string is rejected', async ( { page } ) => {
+		const response = await callRopApi( page, 'add_account_li', {
+			id: ARRAY_ID,
+			pages: VALID_PAGES,
+		} );
+
+		expect( response.status ).toBe( 200 );
+		expect( response.body.code ).toBe( '400' );
+	} );
+
 	test( 'rejected payload leaves the LinkedIn error in the plugin log', async ( { page } ) => {
+		// Earlier tests in this spec log the same entry — clear the log first
+		// so the assertion can only be satisfied by this request.
+		await callRopApi( page, 'get_log', { force: true } );
+
 		await callRopApi( page, 'add_account_li', {
 			id: VALID_ID,
 			pages: btoa( 'linkedin-error-string-not-account-data' ),

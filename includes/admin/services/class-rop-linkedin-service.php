@@ -846,7 +846,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$the_id         = unserialize( base64_decode( $accounts_data['id'] ) );
 		$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
 
-		if ( empty( $the_id ) || ! is_array( $accounts_array ) ) {
+		if ( empty( $the_id ) || ! is_string( $the_id ) || ! is_array( $accounts_array ) ) {
 			$this->logger->alert_error( 'Linkedin Error: received malformed account data, the account was not added.' );
 			return false;
 		}
@@ -854,10 +854,20 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		// last array item contains notify date
 		$notify_user_at = array_pop( $accounts_array );
 
-		if ( empty( $accounts_array ) || ! is_array( $notify_user_at ) || ! isset( $notify_user_at['notify_user_at'] ) ) {
+		if ( empty( $accounts_array ) || ! is_array( $notify_user_at ) || ! isset( $notify_user_at['notify_user_at'] ) || ! is_numeric( $notify_user_at['notify_user_at'] ) ) {
 			$this->logger->alert_error( 'Linkedin Error: received malformed account data, the account was not added.' );
 			return false;
 		}
+
+		// every remaining item must be a complete account entry, otherwise reading its fields below can fatal
+		foreach ( $accounts_array as $account_data ) {
+			if ( ! is_array( $account_data ) || ! isset( $account_data['id'], $account_data['img'], $account_data['account'], $account_data['is_company'], $account_data['user'], $account_data['access_token'] ) || ! is_string( $account_data['id'] ) || '' === $account_data['id'] ) {
+				$this->logger->alert_error( 'Linkedin Error: received malformed account data, the account was not added.' );
+				return false;
+			}
+		}
+
+		$accounts_array = array_values( $accounts_array );
 
 		// save timestamp for when to notify user to refresh their linkedin token
 		// set notified count to 0
