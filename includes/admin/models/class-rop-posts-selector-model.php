@@ -828,7 +828,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 						'value' => 'queued',
 					),
 				),
-				'numberposts' => 300,
+				'posts_per_page' => 300, // NOTE: WP_Query ignores `numberposts`; without this the batch silently fell back to the site's `posts_per_page` option.
 				'orderby'     => 'modified',
 				'order'       => 'ASC',
 				'fields'      => 'ids',
