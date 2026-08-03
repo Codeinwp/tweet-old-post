@@ -2,7 +2,7 @@ name: E2E
 
 on:
   pull_request:
-    types: [synchronize, ready_for_review]
+    types: [opened, reopened, synchronize, ready_for_review]
     branches-ignore:
       - "update_dependencies"
 
@@ -13,7 +13,13 @@ jobs:
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -23,15 +29,6 @@ jobs:
       # run composer install
       - name: Install composer
         run: composer install --prefer-dist --no-progress --quiet
-
-      # setup the node cache (node_modules) with github actions cache
-      - name: Cache Node - npm
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-cache-
 
       - name: npm ci
         run: |
@@ -51,7 +48,7 @@ jobs:
           npm install -g playwright-cli
           npx playwright install
 
-      - name: Playwright Blocks
+      - name: Run Playwright tests
         run: |
           npm run test:e2e:playwright
 
@@ -59,6 +56,10 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: artifact
-          path: ./artifacts
+          name: playwright-artifacts
+          if-no-files-found: ignore
+          path: |
+            playwright-report/
+            test-results/
+            flaky-tests/
           retention-days: 1
