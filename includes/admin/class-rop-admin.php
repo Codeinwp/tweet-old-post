@@ -1240,7 +1240,6 @@ class Rop_Admin {
 
 								if ( ! $posts_selector_model->is_post_eligible( $post ) ) {
 									$logger->info( ucfirst( $account_data['service'] ) . ': ' . Rop_I18n::get_labels( 'sharing.post_not_eligible' ), array( 'extra' => array( 'post_id' => $post ) ) );
-									$posts_selector_model->update_buffer( $account, $post );
 									continue;
 								}
 
