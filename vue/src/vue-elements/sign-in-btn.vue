@@ -897,6 +897,7 @@ export default {
         accountData = JSON.parse(event.data);
       } catch (e) {
         this.is_loading = false;
+        window.removeEventListener("message", this.getChildWindowMessage );
         Vue.$log.error('Received a malformed message from the authorization window', e);
         return;
       }
