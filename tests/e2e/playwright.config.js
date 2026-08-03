@@ -55,6 +55,11 @@ const config = defineConfig( {
 			]
 		: 'list',
 	workers: 1,
+	webServer: {
+		...baseConfig.webServer,
+		port: WP_ENV_PORT,
+		reuseExistingServer: true,
+	},
 	use: {
 		...baseConfig.use,
 		baseURL: WP_BASE_URL,

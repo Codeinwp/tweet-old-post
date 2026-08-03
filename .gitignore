@@ -13,3 +13,6 @@ temp-images
 .wp-env.override.json
 assets/js/build
 assets/js/react
+test-results
+playwright-report
+flaky-tests

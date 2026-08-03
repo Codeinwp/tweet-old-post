@@ -29,7 +29,7 @@ test.describe('Post Format', () => {
 		await expect(page.getByText('Choose where you want the')).toBeVisible();
 	});
 
-	test('shows the custom content editor when Custom Content is selected', async ({
+	test('shows the custom content upsell when Custom Content is selected on the free plan', async ({
 		page,
 		admin,
 	}) => {
@@ -40,14 +40,13 @@ test.describe('Post Format', () => {
 		const shareContent = page.locator(
 			'select:has(option[value="custom_content"])'
 		);
-		await shareContent.selectOption('Custom Content (Pro)');
-		await expect(shareContent).toHaveValue('custom_content');
+		// Wait for Vue to populate the form before interacting.
+		await expect(shareContent).toHaveValue('post_title');
+		await shareContent.selectOption({ value: 'custom_content' });
 
-		await expect(page.getByText('Message Content')).toBeVisible();
+		// Free plan: Custom Content is a Pro feature, so the upsell is shown.
 		await expect(
-			page.getByPlaceholder('{title} with {content}')
+			page.getByText(/Custom Content feature is available in the Pro version/)
 		).toBeVisible();
-		await expect(page.getByText('Override Share Content')).toBeVisible();
-		await expect(page.getByText('Choose where you want the')).toBeHidden();
 	});
 });

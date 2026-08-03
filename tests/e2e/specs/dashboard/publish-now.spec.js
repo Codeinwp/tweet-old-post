@@ -12,6 +12,7 @@ test.describe('Publish Now', () => {
 	test('shares a published post through the mocked X process', async ({
 		page,
 		ropUtils,
+		requestUtils,
 	}, testInfo) => {
 		await page.getByRole('button', { name: 'Revive Social' }).click();
 
@@ -74,6 +75,9 @@ test.describe('Publish Now', () => {
 			handle: '@testaccount',
 			content: 'Test Post',
 		});
-		expect(logRequest.body.link).toContain(String(postId));
+		const permalink = new URL(
+			await requestUtils.rest({ path: `/wp/v2/posts/${postId}` }).then((post) => post.link)
+		);
+		expect(logRequest.body.link).toContain(permalink.pathname);
 	});
 });
