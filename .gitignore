@@ -10,5 +10,9 @@ assets/.DS_Store
 .DS_Store
 temp-images
 .vscode
+.wp-env.override.json
 assets/js/build
 assets/js/react
+test-results
+playwright-report
+flaky-tests

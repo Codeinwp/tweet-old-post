@@ -31,6 +31,10 @@ async function globalSetup( config ) {
 		requestUtils.deleteAllPosts(),
 		requestUtils.deleteAllBlocks(),
 		requestUtils.resetPreferences(),
+		requestUtils.rest( {
+			method: 'POST',
+			path: '/rop-e2e/v1/reset',
+		} ),
 	] );
 
 	await requestContext.dispose();

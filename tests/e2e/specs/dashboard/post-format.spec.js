@@ -1,36 +1,52 @@
-/**
- * WordPress dependencies
- */
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
-import { addFakeTwitterAccount } from '../../utils';
+import { test, expect } from '../../fixtures';
 
-test.describe( 'Accounts', () => {
+test.describe('Post Format', () => {
+	test.beforeEach(async ({ ropUtils }) => {
+		await ropUtils.reset();
+		await ropUtils.seedAccount();
+	});
 
-    test.beforeEach( async ( { page, admin } ) => {
-        await admin.visitAdminPage( '/admin.php?page=TweetOldPost' );
+	test('shows the available post content options', async ({
+		page,
+		admin,
+	}) => {
+		await admin.visitAdminPage('/admin.php?page=TweetOldPost');
 
-        // Wait for the accounts tab to load.
-        await page.waitForSelector( '.tab-view[type="accounts"]' );
+		// Go to Post Format tab.
+		await page.getByText('Post Format').click();
 
-        const accountAdded = await addFakeTwitterAccount( page );
+		const shareContent = page.locator(
+			'select:has(option[value="custom_content"])'
+		);
+		await expect(
+			shareContent.locator('option[value="custom_content"]')
+		).toHaveText('Custom Content (Pro)');
 
-        expect( accountAdded ).toBe( true );
-    } );
+		await expect(shareContent).toHaveValue('post_title');
+		await expect(
+			page.getByText('Additional Text', { exact: true })
+		).toBeVisible();
+		await expect(page.getByText('Choose where you want the')).toBeVisible();
+	});
 
-    test( 'check custom content post message', async ( { page, admin } ) => {
-        await admin.visitAdminPage( '/admin.php?page=TweetOldPost' );
+	test('shows the custom content upsell when Custom Content is selected on the free plan', async ({
+		page,
+		admin,
+	}) => {
+		await admin.visitAdminPage('/admin.php?page=TweetOldPost');
 
-        // Go to Post Format tab.
-        await page.getByText('Post Format').click();
+		await page.getByText('Post Format').click();
 
-        // Activate Custom Content for the post message.
-        await page.getByRole('combobox').first().selectOption( 'Custom Content (Pro)' );
+		const shareContent = page.locator(
+			'select:has(option[value="custom_content"])'
+		);
+		// Wait for Vue to populate the form before interacting.
+		await expect(shareContent).toHaveValue('post_title');
+		await shareContent.selectOption({ value: 'custom_content' });
 
-        // Check UI elements.
-        await expect( page.getByText('Message Content') ).toBeVisible();
-        await expect( page.getByPlaceholder('{title} with {content}') ).toBeVisible();
-        await expect( page.getByText('Override Share Content') ).toBeVisible();
-        await expect( page.getByText('Choose where you want the') ).toBeHidden();
-    } );
-	
-} );
+		// Free plan: Custom Content is a Pro feature, so the upsell is shown.
+		await expect(
+			page.getByText(/Custom Content feature is available in the Pro version/)
+		).toBeVisible();
+	});
+});
