@@ -18,6 +18,12 @@ export const test = base.extend({
 			runPublishNow: (postId) => call('publish-now', { postId }),
 			getRequests: () =>
 				call('requests').then((result) => result.requests),
+			seedQueuedPost: (title, ageSeconds = 0) =>
+				call('queued-post', { title, ageSeconds }).then(
+					(result) => result.postId
+				),
+			getPublishNowState: (postId) =>
+				call('publish-now-state', { postId }),
 		});
 	},
 });

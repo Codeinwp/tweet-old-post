@@ -28,6 +28,9 @@
         <testsuite name="queue">
             <directory>./tests/test-queue.php</directory>
         </testsuite>
+        <testsuite name="publish-now">
+            <directory>./tests/test-publish-now.php</directory>
+        </testsuite>
         <testsuite name="selector">
             <directory>./tests/test-selector.php</directory>
         </testsuite>

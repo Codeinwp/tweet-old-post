@@ -61,6 +61,7 @@ function rop_e2e_reset() {
 	delete_metadata( 'post', 0, 'rop_publish_now', '', true );
 	delete_metadata( 'post', 0, 'rop_publish_now_status', '', true );
 	delete_metadata( 'post', 0, 'rop_publish_now_accounts', '', true );
+	delete_metadata( 'post', 0, 'rop_publish_now_history', '', true );
 
 	return rest_ensure_response( array( 'ok' => true ) );
 }
@@ -128,6 +129,82 @@ function rop_e2e_run_publish_now( WP_REST_Request $request ) {
 	return rest_ensure_response( array( 'ok' => true ) );
 }
 
+/**
+ * Seed a post already sitting in the instant-share queue, optionally aged.
+ *
+ * Reproduces the #1102 backlog: entries queued while cron was dead. Aging it
+ * through the API is the only way to get a months-old entry inside a test.
+ */
+function rop_e2e_seed_queued_post( WP_REST_Request $request ) {
+	$loaded = rop_e2e_activate_plugin();
+	if ( is_wp_error( $loaded ) ) {
+		return $loaded;
+	}
+	if ( ! $loaded ) {
+		return new WP_Error( 'rop_e2e_plugin_missing', 'Revive Old Posts is not loaded.', array( 'status' => 500 ) );
+	}
+
+	$accounts   = ( new Rop_Services_Model() )->get_active_accounts();
+	$account_id = array_key_first( $accounts );
+	if ( ! $account_id ) {
+		return new WP_Error( 'rop_e2e_no_account', 'Seed an account first.', array( 'status' => 400 ) );
+	}
+
+	$age     = absint( $request->get_param( 'ageSeconds' ) );
+	$title   = sanitize_text_field( (string) $request->get_param( 'title' ) );
+	$post_id = wp_insert_post(
+		array(
+			'post_title'  => $title ? $title : 'Backlog Post',
+			'post_status' => 'publish',
+		),
+		true
+	);
+
+	if ( is_wp_error( $post_id ) ) {
+		return $post_id;
+	}
+
+	update_post_meta( $post_id, 'rop_publish_now', 'yes' );
+	update_post_meta( $post_id, 'rop_publish_now_status', 'queued' );
+	update_post_meta( $post_id, 'rop_publish_now_accounts', array( $account_id => '' ) );
+	update_post_meta(
+		$post_id,
+		'rop_publish_now_history',
+		array(
+			array(
+				'account'   => $account_id,
+				'service'   => $accounts[ $account_id ]['service'],
+				'timestamp' => time() - $age,
+				'status'    => 'queued',
+			),
+		)
+	);
+
+	return rest_ensure_response(
+		array(
+			'ok'     => true,
+			'postId' => $post_id,
+		)
+	);
+}
+
+/**
+ * Read back the publish-now meta of a post so tests can assert on queue state.
+ */
+function rop_e2e_get_publish_now_state( WP_REST_Request $request ) {
+	$post_id = absint( $request->get_param( 'postId' ) );
+	if ( ! $post_id || ! get_post( $post_id ) ) {
+		return new WP_Error( 'rop_e2e_post_missing', 'A valid postId is required.', array( 'status' => 400 ) );
+	}
+
+	return rest_ensure_response(
+		array(
+			'status'  => get_post_meta( $post_id, 'rop_publish_now_status', true ),
+			'history' => get_post_meta( $post_id, 'rop_publish_now_history', true ),
+		)
+	);
+}
+
 function rop_e2e_get_requests() {
 	$state = get_option( ROP_E2E_STATE_OPTION, array() );
 
@@ -175,5 +252,7 @@ add_action(
 		register_rest_route( ROP_E2E_NAMESPACE, '/account', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_seed_account' ) );
 		register_rest_route( ROP_E2E_NAMESPACE, '/publish-now', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_run_publish_now' ) );
 		register_rest_route( ROP_E2E_NAMESPACE, '/requests', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_get_requests' ) );
+		register_rest_route( ROP_E2E_NAMESPACE, '/queued-post', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_seed_queued_post' ) );
+		register_rest_route( ROP_E2E_NAMESPACE, '/publish-now-state', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_get_publish_now_state' ) );
 	}
 );
