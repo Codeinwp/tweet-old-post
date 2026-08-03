@@ -805,6 +805,23 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * How many publish now entries a single drain may consume.
+	 */
+	const PUBLISH_NOW_BATCH_SIZE = 300;
+
+	/**
+	 * Get the number of publish now entries a single drain may consume.
+	 *
+	 * @access public
+	 * @return int
+	 */
+	public static function get_publish_now_batch_size() {
+		$batch_size = (int) apply_filters( 'rop_publish_now_batch_size', self::PUBLISH_NOW_BATCH_SIZE );
+
+		return $batch_size > 0 ? $batch_size : self::PUBLISH_NOW_BATCH_SIZE;
+	}
+
+	/**
 	 * Get posts to be published now.
 	 *
 	 * @access public
@@ -828,7 +845,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 						'value' => 'queued',
 					),
 				),
-				'posts_per_page' => 300, // NOTE: WP_Query ignores `numberposts`; without this the batch silently fell back to the site's `posts_per_page` option.
+				'posts_per_page' => self::get_publish_now_batch_size(), // NOTE: WP_Query ignores `numberposts`; without this the batch silently fell back to the site's `posts_per_page` option.
 				'orderby'     => 'modified',
 				'order'       => 'ASC',
 				'fields'      => 'ids',

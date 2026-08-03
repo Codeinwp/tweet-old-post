@@ -372,8 +372,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		foreach ( $posts as $post_id ) {
 			$accounts = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
 			if ( ! $accounts || ! is_array( $accounts ) ) {
-				// NOTE: clear the status, otherwise the entry lingers as "queued" forever.
-				delete_post_meta( $post_id, 'rop_publish_now_status' );
+				// NOTE: retire it through the same path as an expired entry. Clearing only the
+				// status would leave `queued` history rows behind, and the editor treats those as
+				// an active share, so it would spin on "Posting to social media…" forever.
+				$this->expire_publish_now( $post_id, 'has no accounts left to share to' );
 				continue;
 			}
 
@@ -392,6 +394,13 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				);
 			}
 			$index ++;
+		}
+
+		// A full batch means more entries are still waiting. The drain runs on a single event, so
+		// without another pass a freshly published post sitting behind a large backlog would wait
+		// for an unrelated share event. Each pass clears its own batch, so this always terminates.
+		if ( count( $posts ) >= Rop_Posts_Selector_Model::get_publish_now_batch_size() ) {
+			( new Rop_Cron_Helper() )->manage_cron( array( 'action' => 'publish-now' ) );
 		}
 
 		return $normalized_queue;
@@ -431,13 +440,14 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Drop an expired publish now request without sharing it.
+	 * Drop a publish now request without sharing it.
 	 *
-	 * @param int $post_id The post ID.
+	 * @param int    $post_id The post ID.
+	 * @param string $reason  Why the request was dropped, for the log line.
 	 *
 	 * @return void
 	 */
-	private function expire_publish_now( $post_id ) {
+	private function expire_publish_now( $post_id, $reason = 'expired before it could be shared' ) {
 		delete_post_meta( $post_id, 'rop_publish_now_accounts' );
 		delete_post_meta( $post_id, 'rop_publish_now_status' );
 
@@ -451,7 +461,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			update_post_meta( $post_id, 'rop_publish_now_history', $history );
 		}
 
-		$this->logger->info( sprintf( 'Publish now request for post %d expired before it could be shared, skipping.', $post_id ) );
+		$this->logger->info( sprintf( 'Publish now request for post %d %s, skipping.', $post_id, $reason ) );
 	}
 
 	/**

@@ -181,6 +181,60 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 	}
 
 	/**
+	 * An orphaned entry must also retire its history rows. The editor treats a
+	 * `queued` history row as an active share regardless of the top level
+	 * status, so leaving one behind spins the sidebar forever.
+	 */
+	public function test_orphan_entry_retires_history() {
+		$post_id = $this->queue_post();
+		delete_post_meta( $post_id, 'rop_publish_now_accounts' );
+
+		( new Rop_Queue_Model() )->build_queue_publish_now();
+
+		$history = get_post_meta( $post_id, 'rop_publish_now_history', true );
+		$statuses = wp_list_pluck( is_array( $history ) ? $history : array(), 'status' );
+		$this->assertNotContains( 'queued', $statuses );
+	}
+
+	/**
+	 * A full batch schedules another drain, so a fresh post sitting behind a
+	 * backlog bigger than one batch is not stranded.
+	 */
+	public function test_full_batch_schedules_another_pass() {
+		add_filter( 'rop_publish_now_batch_size', function () {
+			return 2;
+		} );
+
+		for ( $i = 0; $i < 3; $i ++ ) {
+			$this->queue_post();
+		}
+
+		wp_clear_scheduled_hook( 'rop_cron_job_publish_now' );
+		( new Rop_Queue_Model() )->build_queue_publish_now();
+
+		$this->assertNotFalse(
+			wp_next_scheduled( 'rop_cron_job_publish_now' ),
+			'A full batch must schedule a follow-up drain.'
+		);
+	}
+
+	/**
+	 * A partial batch means the queue is drained, so nothing is rescheduled.
+	 */
+	public function test_partial_batch_does_not_reschedule() {
+		add_filter( 'rop_publish_now_batch_size', function () {
+			return 10;
+		} );
+
+		$this->queue_post();
+
+		wp_clear_scheduled_hook( 'rop_cron_job_publish_now' );
+		( new Rop_Queue_Model() )->build_queue_publish_now();
+
+		$this->assertFalse( wp_next_scheduled( 'rop_cron_job_publish_now' ) );
+	}
+
+	/**
 	 * The drain batch is not capped by the site posts_per_page option
 	 * (WP_Query ignores the numberposts argument the query used to pass).
 	 */
@@ -284,6 +338,35 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 		);
 
 		$this->assertEquals( 'queued', get_post_meta( $post_id, 'rop_publish_now_status', true ) );
+	}
+
+	/**
+	 * The Classic metabox stays checked while a share is pending, so ordinary
+	 * saves of such a post keep submitting `publish_now`. That must not refresh
+	 * the queue timestamp, or a long-stalled entry would never expire.
+	 */
+	public function test_saving_a_pending_share_does_not_refresh_its_timestamp() {
+		$post_id = $this->queue_post( 5 * DAY_IN_SECONDS );
+		delete_transient( 'rop_maybe_publish_now_' . $post_id );
+
+		$history  = get_post_meta( $post_id, 'rop_publish_now_history', true );
+		$queued_at = $history[0]['timestamp'];
+
+		$_POST['publish_now']          = '1';
+		$_POST['publish_now_accounts'] = array( Rop_InitAccounts::get_account_id() );
+
+		wp_update_post(
+			array(
+				'ID'         => $post_id,
+				'post_title' => 'Routine edit while queued',
+			)
+		);
+
+		$history = get_post_meta( $post_id, 'rop_publish_now_history', true );
+		$this->assertEquals( $queued_at, $history[0]['timestamp'], 'The queue timestamp must not be refreshed.' );
+
+		// And it must therefore still expire rather than be shared.
+		$this->assertEmpty( ( new Rop_Queue_Model() )->build_queue_publish_now() );
 	}
 
 	/**

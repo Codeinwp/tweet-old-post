@@ -928,8 +928,18 @@ class Rop_Admin {
 	 * @return void
 	 */
 	public function maybe_publish_now_after_insert( $post_id, $post, $update, $post_before ) {
-		if ( $post_before instanceof WP_Post && 'publish' === $post_before->post_status && empty( $_POST['publish_now'] ) ) {
-			return;
+		if ( $post_before instanceof WP_Post && 'publish' === $post_before->post_status ) {
+			if ( empty( $_POST['publish_now'] ) ) {
+				return;
+			}
+
+			// The Classic metabox keeps the box checked while a share is still pending, so every
+			// ordinary save of such a post submits `publish_now`. Re-queueing here would refresh
+			// the history timestamp and let a long-stalled entry escape the expiration cutoff,
+			// so leave a request that is already queued exactly as it is.
+			if ( 'queued' === get_post_meta( $post_id, 'rop_publish_now_status', true ) ) {
+				return;
+			}
 		}
 
 		$this->maybe_publish_now( $post_id );
