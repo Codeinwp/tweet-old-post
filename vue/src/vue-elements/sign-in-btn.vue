@@ -883,12 +883,6 @@ export default {
         storing = this.addAccountGmb( accountData );
       } else if ('Vk' === serviceName) {
         storing = this.addAccountVk( accountData );
-      } else if ('Webhook' === serviceName) {
-        storing = this.addAccountWebhook( accountData );
-      } else if ('Telegram' === serviceName) {
-        storing = this.addAccountTelegram( accountData );
-      } else if ('Bluesky' === serviceName) {
-        storing = this.addAccountBluesky( accountData );
       } else {
         return;
       }

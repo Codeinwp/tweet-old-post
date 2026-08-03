@@ -223,6 +223,9 @@
                         req: 'get_available_services'
                     }).then(response => {
                         this.is_loading = false;
+                    }, error => {
+                        this.is_loading = false;
+                        Vue.$log.error('Could not refresh the available services after resetting the accounts.', error)
                     })
                 }, error => {
                     this.is_loading = false;

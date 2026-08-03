@@ -1056,7 +1056,9 @@
                     this.post_format.taxonomy_filter = [];
                 }
                 if(lang !== ''){
-                    this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}});
+                    this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}}).catch(error => {
+                      Vue.$log.error('Could not fetch the taxonomies for the selected language.', error)
+                    });
                 }
                 this.$store.state.dom_updated = true;
             },
