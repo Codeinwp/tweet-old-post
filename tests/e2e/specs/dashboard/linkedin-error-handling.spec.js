@@ -25,7 +25,12 @@ const ARRAY_ID = 'YToxOntpOjA7czoyMToidXJuOmxpOnBlcnNvbjpFMkVURVNUIjt9';
  */
 async function callRopApi( page, req, body ) {
 	return await page.evaluate( async ( { req, body } ) => {
-		const response = await fetch( `${window.ropApiSettings.root}&req=${req}`, {
+		// `root` carries a query string only on plain permalinks; let URL sort
+		// out `?` vs `&` the way the plugin's own `params` option does.
+		const url = new URL( window.ropApiSettings.root, window.location.href );
+		url.searchParams.set( 'req', req );
+
+		const response = await fetch( url.toString(), {
 			method: 'POST',
 			body: JSON.stringify( body ),
 			headers: {
