@@ -62,4 +62,4 @@ jobs:
             playwright-report/
             test-results/
             flaky-tests/
-          retention-days: 7
+          retention-days: 1
