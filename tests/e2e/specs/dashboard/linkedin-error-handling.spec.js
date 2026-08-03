@@ -1,7 +1,4 @@
-/**
- * WordPress dependencies
- */
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect } from '../../fixtures';
 
 // base64( serialize( 'urn:li:person:E2ETEST' ) )
 const VALID_ID = 'czoyMToidXJuOmxpOnBlcnNvbjpFMkVURVNUIjs=';
@@ -53,7 +50,11 @@ async function callRopApi( page, req, body ) {
 
 test.describe( 'LinkedIn error handling (issue #1098)', () => {
 
-	test.beforeEach( async ( { page, admin } ) => {
+	test.beforeEach( async ( { page, admin, ropUtils } ) => {
+		// Start every scenario with no service registered. The happy-path test
+		// adds a LinkedIn account and its own cleanup does not run when it
+		// fails, so a retry would otherwise inherit that account.
+		await ropUtils.reset();
 		await admin.visitAdminPage( '/admin.php?page=TweetOldPost' );
 		await page.waitForSelector( '.tab-view[type="accounts"]' );
 	} );
@@ -76,6 +77,19 @@ test.describe( 'LinkedIn error handling (issue #1098)', () => {
 		await page.reload();
 		await page.waitForSelector( '.tab-view[type="accounts"]' );
 		await expect( page.getByRole( 'button', { name: 'LinkedIn' } ) ).toBeVisible();
+	} );
+
+	test( 'array-valued id and pages are rejected without a fatal error', async ( { page } ) => {
+		// `is_set_not_empty()` accepts arrays, so these reach `base64_decode()`
+		// and used to raise a PHP 8 TypeError before the string guard.
+		const response = await callRopApi( page, 'add_account_li', {
+			id: [ VALID_ID ],
+			pages: [ VALID_PAGES ],
+		} );
+
+		expect( response.text ).not.toContain( 'critical error' );
+		expect( response.status ).toBe( 200 );
+		expect( response.body.code ).toBe( '400' );
 	} );
 
 	test( 'garbled pages payload is rejected without a fatal error', async ( { page } ) => {

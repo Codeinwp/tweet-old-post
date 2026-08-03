@@ -843,6 +843,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		// is_set_not_empty() accepts array values, which base64_decode() would fatal on.
+		if ( ! is_string( $accounts_data['id'] ) || ! is_string( $accounts_data['pages'] ) ) {
+			$this->logger->alert_error( 'Linkedin Error: received malformed account data, the account was not added.' );
+			return false;
+		}
+
 		$the_id         = unserialize( base64_decode( $accounts_data['id'] ) );
 		$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
 
