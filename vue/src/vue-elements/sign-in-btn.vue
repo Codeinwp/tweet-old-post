@@ -731,106 +731,81 @@ export default {
       this.$store.commit( 'setEditPopupShowPermission', false );
     },
     /**
-     * Add Facebook account.
+     * Store an account received from an authorization popup.
      *
-     * @param data Data.
+     * The returned promise must be awaited before reloading the dashboard, otherwise the
+     * reload can abort the request and the account is never stored.
+     *
+     * @param req  Name of the REST request.
+     * @param data Account data.
+     * @returns {Promise} Resolved once the account has been stored, rejected otherwise.
      */
-    addAccountFB(data) {
-      this.$store.dispatch('fetchAJAXPromise', {
-        req: 'add_account_fb',
+    persistAccount( req, data ) {
+      return this.$store.dispatch('fetchAJAXPromise', {
+        req: req,
         updateState: false,
         data: data
       }).then(response => {
-        window.removeEventListener("message", event => this.getChildWindowMessage(event));
-      }, error => {
-        this.is_loading = false;
-        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+        if ( response && false === response.success ) {
+          throw new Error( req + ': the account was not stored.' );
+        }
+
+        return response;
       });
+    },
+    /**
+     * Add Facebook account.
+     *
+     * @param data Data.
+     * @returns {Promise} Resolved once the account has been stored, rejected otherwise.
+     */
+    addAccountFB(data) {
+      return this.persistAccount( 'add_account_fb', data );
     },
     /**
      * Add Twitter account.
      *
      * @param data Data.
+     * @returns {Promise} Resolved once the account has been stored, rejected otherwise.
      */
     addAccountTW(data) {
-      this.$store.dispatch('fetchAJAXPromise', {
-        req: 'add_account_tw',
-        updateState: false,
-        data: data
-      }).then(() => {
-        window.removeEventListener("message", this.getChildWindowMessage );
-      }, error => {
-        this.is_loading = false;
-        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-      });
+      return this.persistAccount( 'add_account_tw', data );
     },
     /**
      * Add LinkedIn account.
      *
      * @param data Data.
+     * @returns {Promise} Resolved once the account has been stored, rejected otherwise.
      */
     addAccountLI(data) {
-      this.$store.dispatch('fetchAJAXPromise', {
-        req: 'add_account_li',
-        updateState: false,
-        data: data
-      }).then(() => {
-        window.removeEventListener("message", this.getChildWindowMessage );
-      }, error => {
-        this.is_loading = false;
-        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-      });
+      return this.persistAccount( 'add_account_li', data );
     },
     /**
      * Add Tumblr account.
      *
      * @param data Data.
+     * @returns {Promise} Resolved once the account has been stored, rejected otherwise.
      */
     addAccountTumblr(data) {
-      this.$store.dispatch('fetchAJAXPromise', {
-        req: 'add_account_tumblr',
-        updateState: false,
-        data: data
-      }).then(() => {
-        window.removeEventListener("message", this.getChildWindowMessage );
-      }, error => {
-        this.is_loading = false;
-        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-      });
+      return this.persistAccount( 'add_account_tumblr', data );
     },
     /**
      * Add Google My Business account.
      *
      * @param data Data.
+     * @returns {Promise} Resolved once the account has been stored, rejected otherwise.
      */
     addAccountGmb(data) {
-      this.$store.dispatch('fetchAJAXPromise', {
-        req: 'add_account_gmb',
-        updateState: false,
-        data: data
-      }).then(() => {
-        window.removeEventListener("message", this.getChildWindowMessage );
-      }, error => {
-        this.is_loading = false;
-        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-      });
+      return this.persistAccount( 'add_account_gmb', data );
     },
     /**
      * Add VK account.
      *
      * @param data Data.
+     * @returns {Promise} Resolved once the account has been stored, rejected otherwise.
      */
     addAccountVk(data) {
-      this.$store.dispatch('fetchAJAXPromise', {
-        req: 'add_account_vk',
-        updateState: false,
-        data: data
-      }).then(() => {
-        window.removeEventListener("message", this.getChildWindowMessage );
-      }, error => {
-        this.is_loading = false;
-        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-      });
+      return this.persistAccount( 'add_account_vk', data );
     },
     /**
      * Add Bluesky account.
@@ -893,27 +868,80 @@ export default {
       }
 
       const accountData = JSON.parse(event.data);
+      const serviceName = this.modal.serviceName;
+      let storing;
 
-      if ('Twitter' === this.modal.serviceName) {
-        this.addAccountTW( accountData );
-      } else if ('Facebook' === this.modal.serviceName || 'Instagram' === this.modal.serviceName) {
-        this.addAccountFB( accountData );
-      } else if ('LinkedIn' === this.modal.serviceName) {
-        this.addAccountLI( accountData );
-      } else if ('Tumblr' === this.modal.serviceName) {
-        this.addAccountTumblr( accountData );
-      } else if ('Gmb' === this.modal.serviceName) {
-        this.addAccountGmb( accountData );
-      } else if ('Vk' === this.modal.serviceName) {
-        this.addAccountVk( accountData );
-      } else if ('Webhook' === this.modal.serviceName) {
-        this.addAccountWebhook( accountData );
-      } else if ('Telegram' === this.modal.serviceName) {
-        this.addAccountTelegram( accountData );
-      } else if ('Bluesky' === this.modal.serviceName) {
-        this.addAccountBluesky( accountData );
+      if ('Twitter' === serviceName) {
+        storing = this.addAccountTW( accountData );
+      } else if ('Facebook' === serviceName || 'Instagram' === serviceName) {
+        storing = this.addAccountFB( accountData );
+      } else if ('LinkedIn' === serviceName) {
+        storing = this.addAccountLI( accountData );
+      } else if ('Tumblr' === serviceName) {
+        storing = this.addAccountTumblr( accountData );
+      } else if ('Gmb' === serviceName) {
+        storing = this.addAccountGmb( accountData );
+      } else if ('Vk' === serviceName) {
+        storing = this.addAccountVk( accountData );
+      } else if ('Webhook' === serviceName) {
+        storing = this.addAccountWebhook( accountData );
+      } else if ('Telegram' === serviceName) {
+        storing = this.addAccountTelegram( accountData );
+      } else if ('Bluesky' === serviceName) {
+        storing = this.addAccountBluesky( accountData );
+      } else {
+        return;
       }
 
+      window.removeEventListener("message", this.getChildWindowMessage );
+
+      // The account has to be stored before the dashboard reloads: reloading while the
+      // request is in flight lets the browser cancel it and the account is lost.
+      try {
+        await storing;
+      } catch ( error ) {
+        this.$log.error( 'Could not store the ' + serviceName + ' account.', error );
+        this.showServiceError( serviceName );
+        this.closeAuthPopup();
+        this.$store.state.auth_in_progress = false;
+        return;
+      }
+
+      await this.trackAddedAccount();
+      this.closeAuthPopup();
+
+      window.location.reload();
+    },
+    /**
+     * Close the authorization popup, if it is still around.
+     */
+    closeAuthPopup() {
+      try {
+        this.authPopupWindow.close();
+      } catch (e) {
+        // nothing to do
+      }
+    },
+    /**
+     * Show an error toast for a service which could not be connected.
+     *
+     * @param serviceName Service name.
+     */
+    showServiceError( serviceName ) {
+      this.$store.commit( 'updateState', {
+        stateData: {
+          type: 'error',
+          show: true,
+          title: this.displayName( serviceName ),
+          message: wp.i18n.sprintf( this.labels.service_error, this.displayName( serviceName ) )
+        },
+        requestName: 'update_toast'
+      } );
+    },
+    /**
+     * Send the add-account tracking event.
+     */
+    trackAddedAccount: async function () {
       try {
         window?.tiTrk?.with('tweet')?.add({
           feature: 'add-account',
@@ -924,8 +952,6 @@ export default {
       } catch (e) {
         console.warn( e );
       }
-
-      window.location.reload();
     },
     addWebhookHeader() {
       if ( ! this.currentWebhookHeader ) {
