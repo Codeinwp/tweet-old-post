@@ -345,6 +345,10 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.4.1](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.0...v9.4.1) (2026-08-04)
+
+- Fixed an issue where Bluesky posts containing emoji, accented, or other multi-byte characters could fail to publish with a grapheme
+
 #### [Version 9.4.0](https://github.com/Codeinwp/tweet-old-post/compare/v9.3.6...v9.4.0) (2026-07-09)
 
 - Added keyword-based filtering to include or exclude posts from sharing based on keywords
