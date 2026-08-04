@@ -19,11 +19,14 @@ test.describe( 'Accounts', () => {
         /**
          * Check Minimum Interval Between Shares input field.
          */
-        await page.waitForSelector( '#default_interval' );
-        await page.fill( '#default_interval', '5' );
+        const interval = page.locator( '#default_interval' );
+        await interval.waitFor();
+        // Wait for Vue to bind the saved value before editing.
+        await expect( interval ).not.toHaveValue( '' );
+        await interval.fill( '20' );
 
         await expect( page.getByText('Minimum Interval Between') ).toBeVisible();
-        await expect( page.$eval('#default_interval', el => el.value) ).resolves.toBe('5');
+        await expect( interval ).toHaveValue( '20' );
 
         /**
          * Check Share More Than Once toggle.
