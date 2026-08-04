@@ -3079,12 +3079,6 @@ parameters:
 			path: includes/admin/models/class-rop-scheduler-model.php
 
 		-
-			message: '#^Method Rop_Scheduler_Model\:\:update_timeline\(\) has parameter \$new_events with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: includes/admin/models/class-rop-scheduler-model.php
-
-		-
 			message: '#^PHPDoc tag @SuppressWarnings has invalid value \(\(PHPMD\.UnusedLocalVariable\)\)\: Unexpected token "\.UnusedLocalVariable\)", expected ''\)'' at offset 89 on line 4$#'
 			identifier: phpDoc.parseError
 			count: 1
