@@ -1027,7 +1027,7 @@
                 }).then(response => {
                     this.post_format.shortner_credentials = response
                 }, error => {
-                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                    this.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
                 })
             }
         },
@@ -1057,7 +1057,7 @@
                 }
                 if(lang !== ''){
                     this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}}).catch(error => {
-                      Vue.$log.error('Could not fetch the taxonomies for the selected language.', error)
+                      this.$log.error('Could not fetch the taxonomies for the selected language.', error)
                     });
                 }
                 this.$store.state.dom_updated = true;
