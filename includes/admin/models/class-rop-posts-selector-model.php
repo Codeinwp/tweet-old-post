@@ -633,9 +633,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( ! empty( $min_age ) ) {
 			$args['date_query'][]['before'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
 		}
-		$max_age = $this->settings->get_maximum_post_age();
-		if ( ! empty( $max_age ) ) {
-			$args['date_query'][]['after'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) );
+		$max_age_date = $this->get_maximum_post_age_date();
+		if ( ! empty( $max_age_date ) ) {
+			$args['date_query'][]['after'] = $max_age_date;
 		}
 		if ( ! empty( $args['date_query'] ) ) {
 			$args['date_query']['relation'] = 'AND';
@@ -645,6 +645,75 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Utility method to get the maximum post age date.
+	 *
+	 * @return string The boundary date in `Y-m-d` format, or an empty string when no maximum age is set.
+	 * @access  private
+	 */
+	private function get_maximum_post_age_date() {
+		$max_age = $this->settings->get_maximum_post_age();
+		if ( empty( $max_age ) ) {
+			return '';
+		}
+
+		return date( 'Y-m-d', strtotime( '-' . $max_age . ' days' ) );
+	}
+
+	/**
+	 * Method to check if a post still satisfies the maximum post age setting.
+	 *
+	 * @param int $post_id The post ID to check.
+	 *
+	 * @return bool True when no maximum age is set or the post is still young enough.
+	 * @access  public
+	 */
+	public function is_post_within_maximum_age( $post_id ) {
+		$max_age_date = $this->get_maximum_post_age_date();
+		if ( empty( $max_age_date ) ) {
+			return true;
+		}
+
+		$post_date = get_post_field( 'post_date', $post_id );
+		if ( empty( $post_date ) ) {
+			return false;
+		}
+
+		return strtotime( $post_date ) > strtotime( $max_age_date );
+	}
+
+	/**
+	 * Method to check whether a post is still eligible for sharing.
+	 *
+	 * @param int $post_id The post ID to check.
+	 *
+	 * @return bool
+	 * @access  public
+	 */
+	public function is_post_eligible( $post_id ) {
+		$post = get_post( $post_id );
+
+		if ( ! $post instanceof WP_Post ) {
+			$eligible = false;
+		} else {
+			// The statuses the selector query allows, `inherit` covers attachments.
+			$allowed_statuses = array( 'publish' );
+			if ( 'attachment' === $post->post_type ) {
+				$allowed_statuses[] = 'inherit';
+			}
+
+			$eligible = in_array( $post->post_status, $allowed_statuses, true ) && $this->is_post_within_maximum_age( $post_id );
+		}
+
+		/**
+		 * Filters whether an already queued post is still eligible for sharing.
+		 *
+		 * @param bool $eligible Whether the post is eligible.
+		 * @param int  $post_id  The post ID being checked.
+		 */
+		return (bool) apply_filters( 'rop_is_post_eligible', $eligible, $post_id );
 	}
 
 	/**
