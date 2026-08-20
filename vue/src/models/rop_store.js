@@ -339,16 +339,18 @@ export default new Vuex.Store({
                         if (data.updateState !== false) {
                             commit('updateState', {stateData, requestName})
                         }
-                    }, function () {
+                    }, function (error) {
                         commit('setAjaxState', false);
                         commit('apiNotAvailable', true);
 
                         Vue.$log.error('Error when trying to do request: ', data.req);
+                        reject(error);
                     }).catch(error => {
                         commit('setAjaxState', false);
                         commit('apiNotAvailable', true);
                         commit('preloading_change', 1);
                         Vue.$log.error('Error when getting response for: ', data.req, error);
+                        reject(error);
                     })
                 })
             }
