@@ -66,6 +66,7 @@
 		"html-loader": "^4.2.0",
 		"replace-in-file": "^6.2.0",
 		"semantic-release": "^17.4.3",
+		"semantic-release-slack-bot": "^3.5.3",
 		"style-loader": "^0.13.2",
 		"stylelint": "^8.2.0",
 		"stylelint-config-recommended": "^1.0.0",
