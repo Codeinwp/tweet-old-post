@@ -888,7 +888,9 @@ class Rop_Admin {
 	public function publish_now_attributes( $default ) {
 		global $post;
 
-		$default['action'] = 'no' !== get_post_meta( $post->ID, 'rop_publish_now', true );
+		$meta_value = get_post_meta( $post->ID, 'rop_publish_now', true );
+		// Already-published posts only pre-check the box for a still-pending share; the instant-share default is for new posts.
+		$default['action'] = 'publish' === get_post_status( $post ) ? 'yes' === $meta_value : 'no' !== $meta_value;
 		$default['page_active_accounts'] = get_post_meta( $post->ID, 'rop_publish_now_accounts', true );
 
 		return $default;
@@ -908,6 +910,39 @@ class Rop_Admin {
 		}
 
 		$this->maybe_publish_now( $post->ID, true );
+	}
+
+	/**
+	 * Publish now on post save, hooked to `wp_after_insert_post`.
+	 *
+	 * Routine edits of an already-published post must not re-queue shares from
+	 * leftover meta; on those saves only an explicit metabox submission counts
+	 * as sharing intent. Re-sharing from the Block Editor goes through the
+	 * REST `share` endpoint instead, which forces the share.
+	 *
+	 * @param int          $post_id     The post ID.
+	 * @param WP_Post      $post        The post object.
+	 * @param bool         $update      Whether this is an update.
+	 * @param WP_Post|null $post_before The post object before the update, null for new posts.
+	 *
+	 * @return void
+	 */
+	public function maybe_publish_now_after_insert( $post_id, $post, $update, $post_before ) {
+		if ( $post_before instanceof WP_Post && 'publish' === $post_before->post_status ) {
+			if ( empty( $_POST['publish_now'] ) ) {
+				return;
+			}
+
+			// The Classic metabox keeps the box checked while a share is still pending, so every
+			// ordinary save of such a post submits `publish_now`. Re-queueing here would refresh
+			// the history timestamp and let a long-stalled entry escape the expiration cutoff,
+			// so leave a request that is already queued exactly as it is.
+			if ( 'queued' === get_post_meta( $post_id, 'rop_publish_now_status', true ) ) {
+				return;
+			}
+		}
+
+		$this->maybe_publish_now( $post_id );
 	}
 
 	/**
@@ -1235,6 +1270,11 @@ class Rop_Admin {
 								if ( get_option( 'rop_last_post_shared' ) === $post_shared && ROP_DEBUG !== true ) {
 									$logger->info( ucfirst( $account_data['service'] ) . ': ' . Rop_I18n::get_labels( 'sharing.post_already_shared' ) );
 									// help prevent duplicate posts on some systems
+									continue;
+								}
+
+								if ( ! $posts_selector_model->is_post_eligible( $post ) ) {
+									$logger->info( ucfirst( $account_data['service'] ) . ': ' . Rop_I18n::get_labels( 'sharing.post_not_eligible' ), array( 'extra' => array( 'post_id' => $post ) ) );
 									continue;
 								}
 

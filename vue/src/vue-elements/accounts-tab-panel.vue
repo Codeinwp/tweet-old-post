@@ -223,10 +223,13 @@
                         req: 'get_available_services'
                     }).then(response => {
                         this.is_loading = false;
+                    }, error => {
+                        this.is_loading = false;
+                        this.$log.error('Could not refresh the available services after resetting the accounts.', error)
                     })
                 }, error => {
                     this.is_loading = false;
-                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                    this.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
                 })
             },
             filteredAccounts: function(accounts) {

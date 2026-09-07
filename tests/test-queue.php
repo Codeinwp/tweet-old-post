@@ -141,4 +141,132 @@ class Test_RopQueue extends WP_UnitTestCase {
 		$this->assertEquals( 0, count( $ordered_queue ), 'Ordered queue should be empty if the start sharing is not active' );
 	}
 
+	/**
+	 * Utility method to move a post publish date back in time.
+	 *
+	 * @param int    $post_id The post to age.
+	 * @param string $shift The relative date shift, eg. `-400 days`.
+	 */
+	private function age_post( $post_id, $shift ) {
+		$date = date( 'Y-m-d H:i:s', strtotime( $shift ) );
+		wp_update_post(
+			array(
+				'ID'            => $post_id,
+				'post_date'     => $date,
+				'post_date_gmt' => get_gmt_from_date( $date ),
+				'edit_date'     => true,
+			)
+		);
+		clean_post_cache( $post_id );
+	}
+
+	/**
+	 * Test the eligibility check used before a queued post is shared.
+	 *
+	 * @covers Rop_Posts_Selector_Model::is_post_eligible
+	 * @covers Rop_Posts_Selector_Model::is_post_within_maximum_age
+	 */
+	public function test_post_eligibility() {
+		$selector = new Rop_Posts_Selector_Model();
+		$settings = new Rop_Settings_Model();
+
+		$max_age = $settings->get_maximum_post_age();
+		$this->assertNotEmpty( $max_age, 'This test needs a maximum post age to be set.' );
+
+		$post_id = self::factory()->post->create(
+			array(
+				'post_status' => 'publish',
+				'post_date'   => date( 'Y-m-d H:i:s', strtotime( '-' . ( $max_age - 5 ) . ' days' ) ),
+			)
+		);
+
+		$this->assertTrue( $selector->is_post_within_maximum_age( $post_id ), 'A post younger than the maximum age should satisfy the age check.' );
+		$this->assertTrue( $selector->is_post_eligible( $post_id ), 'A published post within the maximum age should be eligible.' );
+
+		$this->age_post( $post_id, '-' . ( $max_age + 5 ) . ' days' );
+		$this->assertFalse( $selector->is_post_within_maximum_age( $post_id ), 'A post older than the maximum age should fail the age check.' );
+		$this->assertFalse( $selector->is_post_eligible( $post_id ), 'A post older than the maximum age should not be eligible.' );
+
+		$draft_id = self::factory()->post->create(
+			array(
+				'post_status' => 'draft',
+				'post_date'   => date( 'Y-m-d H:i:s', strtotime( '-2 month' ) ),
+			)
+		);
+		$this->assertFalse( $selector->is_post_eligible( $draft_id ), 'An unpublished post should not be eligible.' );
+
+		$deleted_id = self::factory()->post->create( array( 'post_status' => 'publish' ) );
+		wp_delete_post( $deleted_id, true );
+		$this->assertFalse( $selector->is_post_eligible( $deleted_id ), 'A deleted post should not be eligible.' );
+	}
+
+	/**
+	 * Test that a post which was eligible when queued is not shared once it
+	 * exceeds the maximum post age.
+	 *
+	 * @covers Rop_Admin::rop_cron_job
+	 */
+	public function test_queued_post_exceeding_max_age_is_not_shared() {
+		$account_id = Rop_InitAccounts::get_account_id();
+		$queue      = new Rop_Queue_Model();
+		$scheduler  = new Rop_Scheduler_Model();
+		$settings   = new Rop_Settings_Model();
+
+		$settings_data                    = $settings->get_settings();
+		$original_no_of_posts             = $settings_data['number_of_posts'];
+		$settings_data['number_of_posts'] = 1;
+		$settings->save_settings( $settings_data );
+
+		$built = $queue->build_queue();
+		$this->assertArrayHasKey( $account_id, $built, 'The account should have a queue.' );
+		$this->assertNotEmpty( $built[ $account_id ][0]['posts'], 'The first queue event should hold a post.' );
+
+		$queued_post = $built[ $account_id ][0]['posts'][0];
+
+		$selector = new Rop_Posts_Selector_Model();
+		$this->assertTrue( $selector->is_post_eligible( $queued_post ), 'The queued post should have been eligible when it was queued.' );
+
+		$this->age_post( $queued_post, '-' . ( $settings->get_maximum_post_age() + 10 ) . ' days' );
+
+		$this->assertContains( $queued_post, $queue->build_queue()[ $account_id ][0]['posts'], 'The queue should still hold the aged post.' );
+
+		$events    = $scheduler->get_upcoming_events( $account_id );
+		$events[0] = Rop_Scheduler_Model::get_current_time() - MINUTE_IN_SECONDS;
+		$scheduler->update_timeline( $events, $account_id );
+
+		$prepared = array();
+		$recorder = function ( $post_id ) use ( &$prepared ) {
+			$prepared[] = $post_id;
+		};
+		add_action( 'rop_before_prepare_post', $recorder );
+
+		$checked = array();
+		$spy     = function ( $eligible, $post_id ) use ( &$checked ) {
+			$checked[ $post_id ] = $eligible;
+
+			return $eligible;
+		};
+		add_filter( 'rop_is_post_eligible', $spy, 10, 2 );
+
+		$admin = new Rop_Admin();
+		$admin->rop_cron_job();
+
+		remove_action( 'rop_before_prepare_post', $recorder );
+		remove_filter( 'rop_is_post_eligible', $spy, 10 );
+
+		$this->assertArrayHasKey( $queued_post, $checked, 'The sharing job should re-validate the queued post before sharing it.' );
+		$this->assertFalse( $checked[ $queued_post ], 'The aged post should be reported as not eligible.' );
+		$this->assertNotContains( $queued_post, $prepared, 'A post older than the maximum post age must not be shared.' );
+
+		$refreshed     = ( new Rop_Queue_Model() )->build_queue();
+		$queued_posts  = array();
+		foreach ( $refreshed[ $account_id ] as $event ) {
+			$queued_posts = array_merge( $queued_posts, $event['posts'] );
+		}
+		$this->assertNotContains( $queued_post, $queued_posts, 'The skipped post should be removed from the queue.' );
+
+		$settings_data['number_of_posts'] = $original_no_of_posts;
+		$settings->save_settings( $settings_data );
+	}
+
 }

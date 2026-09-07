@@ -1098,14 +1098,14 @@ class Rop_Rest_Api {
 			$db->migrate_post_formats( $active_accounts );
 		} else {
 			$this->response->set_code( '500' )
-						   ->set_data( array() );
+						   ->set_data( array( 'success' => false ) );
 
 			return $this->response->to_array();
 		}
 
 		$this->response->set_code( '200' )
 					   ->set_message( 'OK' )
-					   ->set_data( array() );
+					   ->set_data( array( 'success' => true ) );
 
 		$rop_facebook_via_rs_app_option = 'rop_facebook_via_rs_app';
 		if ( ! get_option( $rop_facebook_via_rs_app_option ) ) {
@@ -1155,14 +1155,14 @@ class Rop_Rest_Api {
 			$db->migrate_post_formats( $active_accounts );
 		} else {
 			$this->response->set_code( '500' )
-						   ->set_data( array() );
+						   ->set_data( array( 'success' => false ) );
 
 			return $this->response->to_array();
 		}
 
 		$this->response->set_code( '200' )
 					   ->set_message( 'OK' )
-					   ->set_data( array() );
+					   ->set_data( array( 'success' => true ) );
 
 		$rop_twitter_via_rs_app_option = 'rop_twitter_via_rs_app';
 		if ( ! get_option( $rop_twitter_via_rs_app_option ) ) {
@@ -1208,14 +1208,14 @@ class Rop_Rest_Api {
 			$db->migrate_post_formats( $active_accounts );
 		} else {
 			$this->response->set_code( '500' )
-						   ->set_data( array() );
+						   ->set_data( array( 'success' => false ) );
 
 			return $this->response->to_array();
 		}
 
 		$this->response->set_code( '200' )
 					   ->set_message( 'OK' )
-					   ->set_data( array() );
+					   ->set_data( array( 'success' => true ) );
 
 		$rop_linkedin_via_rs_app_option = 'rop_linkedin_via_rs_app';
 		if ( ! get_option( $rop_linkedin_via_rs_app_option ) ) {
@@ -1260,14 +1260,14 @@ class Rop_Rest_Api {
 			$db->migrate_post_formats( $active_accounts );
 		} else {
 			$this->response->set_code( '500' )
-						   ->set_data( array() );
+						   ->set_data( array( 'success' => false ) );
 
 			return $this->response->to_array();
 		}
 
 		$this->response->set_code( '200' )
 					   ->set_message( 'OK' )
-					   ->set_data( array() );
+					   ->set_data( array( 'success' => true ) );
 
 		$rop_tumblr_via_rs_app_option = 'rop_tumblr_via_rs_app';
 		if ( ! get_option( $rop_tumblr_via_rs_app_option ) ) {
@@ -1312,14 +1312,14 @@ class Rop_Rest_Api {
 			$db->migrate_post_formats( $active_accounts );
 		} else {
 			$this->response->set_code( '500' )
-						   ->set_data( array() );
+						   ->set_data( array( 'success' => false ) );
 
 			return $this->response->to_array();
 		}
 
 		$this->response->set_code( '200' )
 					   ->set_message( 'OK' )
-					   ->set_data( array() );
+					   ->set_data( array( 'success' => true ) );
 
 		return $this->response->to_array();
 	}
@@ -1356,14 +1356,14 @@ class Rop_Rest_Api {
 			$db->migrate_post_formats( $active_accounts );
 		} else {
 			$this->response->set_code( '500' )
-						   ->set_data( array() );
+						   ->set_data( array( 'success' => false ) );
 
 			return $this->response->to_array();
 		}
 
 		$this->response->set_code( '200' )
 					   ->set_message( 'OK' )
-					   ->set_data( array() );
+					   ->set_data( array( 'success' => true ) );
 
 		return $this->response->to_array();
 	}

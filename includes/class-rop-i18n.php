@@ -499,6 +499,7 @@ You can try to disable any of the security plugins that you use in order to see 
 
 			'sharing' => array(
 				'post_already_shared' => __( 'This post went out on the last share event and might be a duplicate. Skipping...', 'tweet-old-post' ),
+				'post_not_eligible' => __( 'This post is no longer eligible for sharing. It might have been deleted, unpublished, or become older than the maximum post age. Skipping...', 'tweet-old-post' ),
 				'share_attempted_on_staging' => __( 'Revive Social has detected that this is a development website. Share process skipped.', 'tweet-old-post' ),
 				'reached_sharing_limit' => __( 'You\'ve reached your daily post sharing limit of %1$d posts. Want to share more? Consider upgrading to enjoy a higher limit.', 'tweet-old-post' ),
 				'invalid_license' => __( 'Sorry, your license is invalid.', 'tweet-old-post' ),
