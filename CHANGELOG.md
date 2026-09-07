@@ -1,3 +1,9 @@
+##### [Version 9.4.2](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.1...v9.4.2) (2026-09-07)
+
+- Fixed queued posts being shared even after exceeding the maximum post age limit.
+- Fixed stale Instant Sharing queue entries flooding connected accounts after a cron recovery — entries older than one day now expire instead of being shared.
+- Fixed LinkedIn account reconnection losing data before the dashboard reloads.
+
 ##### [Version 9.4.1](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.0...v9.4.1) (2026-08-04)
 
 - Fixed an issue where Bluesky posts containing emoji, accented, or other multi-byte characters could fail to publish with a "grapheme too big" error.
