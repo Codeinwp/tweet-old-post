@@ -602,7 +602,7 @@ class Rop_Global_Settings {
 			}
 		}
 
-		if ( isset( $license_data->key ) ) {
+		if ( ! empty( $license_data->key ) && is_string( $license_data->key ) && strlen( $license_data->key ) > 4 ) {
 			$view_license_data['passwordMask'] = str_repeat( '*', strlen( $license_data->key ) - 4 ) . substr( $license_data->key, -4 );
 		}
 
