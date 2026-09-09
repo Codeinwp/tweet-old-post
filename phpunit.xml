@@ -58,5 +58,8 @@
         <testsuite name="x-premium-limit">
             <directory>./tests/test-x-premium-limit.php</directory>
         </testsuite>
+        <testsuite name="post-format-max-length">
+            <directory>./tests/test-post-format-max-length.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
