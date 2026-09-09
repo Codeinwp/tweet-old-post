@@ -150,7 +150,7 @@ class Rop_Post_Format_Helper {
 			'hashtags'        => '',
 		);
 		$content_helper  = new Rop_Content_Helper();
-		$max_length      = $this->post_format['maximum_length'];
+		$max_length      = (int) $this->post_format['maximum_length'];
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) && 0 < apply_filters( 'rop_pro_plan', -1 ) ) {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
