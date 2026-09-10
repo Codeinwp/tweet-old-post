@@ -58,5 +58,8 @@
         <testsuite name="x-premium-limit">
             <directory>./tests/test-x-premium-limit.php</directory>
         </testsuite>
+        <testsuite name="license-mask">
+            <directory>./tests/test-license-mask.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
