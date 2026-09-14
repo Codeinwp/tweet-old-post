@@ -61,5 +61,8 @@
         <testsuite name="post-format-max-length">
             <directory>./tests/test-post-format-max-length.php</directory>
         </testsuite>
+        <testsuite name="license-mask">
+            <directory>./tests/test-license-mask.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
