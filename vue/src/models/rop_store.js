@@ -52,6 +52,7 @@ export default new Vuex.Store({
         },
         ajaxLoader: false,
         api_not_available: false,
+        api_available_confirmed: false,
         auth_in_progress: false,
         displayTabs: [
             {
@@ -140,7 +141,16 @@ export default new Vuex.Store({
             state.ajaxLoader = data
         },
         apiNotAvailable(state, data) {
+            // A request already succeeded, so a later failure is request
+            // specific and must not raise the core REST API notice.
+            if (data && state.api_available_confirmed) {
+                return
+            }
             state.api_not_available = data
+        },
+        apiAvailable(state) {
+            state.api_available_confirmed = true
+            state.api_not_available = false
         },
         preloading_change(state, data) {
             state.hide_preloading = data;
@@ -330,6 +340,7 @@ export default new Vuex.Store({
                         responseType: 'json'
                     }).then(function (response) {
                         commit('setAjaxState', false)
+                        commit('apiAvailable')
                         let stateData = response.data
                         if (response.data.data) {
                             stateData = response.data.data
