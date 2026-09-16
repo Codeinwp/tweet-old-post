@@ -1,7 +1,4 @@
-/**
- * WordPress dependencies
- */
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect } from '../../fixtures';
 
 const NOTICE = '.rop-api-not-available';
 
@@ -116,6 +113,24 @@ test.describe( 'REST API notice', () => {
 		await handled;
 
 		await expect( page.locator( NOTICE ) ).toBeHidden();
+	} );
+
+	test( 'is raised when the REST API goes down after the dashboard loaded', async ( { page, admin, ropUtils } ) => {
+		// An active account is what enables the start/stop sharing button.
+		await ropUtils.reset();
+		await ropUtils.seedAccount();
+
+		await admin.visitAdminPage( '/admin.php?page=TweetOldPost' );
+		await page.waitForSelector( '.tab-view[type="accounts"]' );
+		await expect( page.locator( NOTICE ) ).toBeHidden();
+
+		// The API goes down only now, after start-up has already succeeded.
+		await controlRopApi( page, { fail: [ '*' ] } );
+		await page.locator( '#rop_start_stop_btn' ).click();
+
+		await expect( page.locator( NOTICE ) ).toBeVisible();
+
+		await ropUtils.reset();
 	} );
 
 	test( 'is shown when the REST API is unreachable', async ( { page, admin } ) => {
