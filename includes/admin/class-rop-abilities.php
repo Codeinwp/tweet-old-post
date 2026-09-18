@@ -85,7 +85,7 @@ class Rop_Abilities {
 	}
 
 	/**
-	 * Permission check shared by the abilities.
+	 * Permission check shared by the abilities, except `revive/publish-share`.
 	 *
 	 * Mirrors the capability required by the `tweet-old-post/v8/api` REST route
 	 * and by the plugin dashboard pages.
@@ -99,12 +99,16 @@ class Rop_Abilities {
 	/**
 	 * Permission check for sharing a post.
 	 *
+	 * Mirrors the product instant share: the `tweet-old-post/v8/share/<id>` REST route
+	 * requires `edit_posts`, and `Rop_Admin::maybe_publish_now()` requires `edit_post`
+	 * on the post being shared. It is not limited to administrators.
+	 *
 	 * @param mixed $input The ability input.
 	 *
 	 * @return bool
 	 */
 	public function can_publish_share( $input = array() ) {
-		if ( ! $this->can_manage() ) {
+		if ( ! current_user_can( 'edit_posts' ) ) {
 			return false;
 		}
 
