@@ -28,6 +28,9 @@
     "phpstan:generate:baseline": "phpstan --generate-baseline"
   },
   "autoload": {
+    "psr-4": {
+      "Rop_Vendor\\TwitterOAuth\\": "lib/twitteroauth/src/"
+    },
     "files": [
       "vendor/codeinwp/themeisle-sdk/load.php"
     ],
@@ -44,7 +47,7 @@
   },
   "require": {
     "facebook/graph-sdk": "^5.7",
-    "codeinwp/twitteroauth": "dev-main",
+    "composer/ca-bundle": "^1.2",
     "codeinwp/themeisle-sdk": "^3.3",
     "vkcom/vk-php-sdk": "5.101.0"
   },
@@ -67,11 +70,5 @@
     "platform": {
       "php": "7.4"
     }
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/Codeinwp/twitteroauth"
-    }
-  ]
+  }
 }

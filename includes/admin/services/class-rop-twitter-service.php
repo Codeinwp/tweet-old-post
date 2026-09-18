@@ -127,7 +127,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @param   string $oauth_token The OAuth Token. Default empty.
 	 * @param   string $oauth_token_secret The OAuth Token Secret. Default empty.
 	 *
-	 * @return \Abraham\TwitterOAuth\TwitterOAuth
+	 * @return \Rop_Vendor\TwitterOAuth\TwitterOAuth
 	 */
 	public function get_api( $oauth_token = '', $oauth_token_secret = '' ) {
 		if ( $this->api == null ) {
@@ -162,7 +162,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$consumer_secret = $this->consumer_secret;
 		}
 
-		$this->api = new \Abraham\TwitterOAuth\TwitterOAuth( $this->strip_whitespace( $consumer_key ), $this->strip_whitespace( $consumer_secret ), $this->strip_whitespace( $oauth_token ), $this->strip_whitespace( $oauth_token_secret ) );
+		$this->api = new \Rop_Vendor\TwitterOAuth\TwitterOAuth( $this->strip_whitespace( $consumer_key ), $this->strip_whitespace( $consumer_secret ), $this->strip_whitespace( $oauth_token ), $this->strip_whitespace( $oauth_token_secret ) );
 
 	}
 
