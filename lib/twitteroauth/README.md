@@ -8,6 +8,10 @@ Other plugins bundle their own `Abraham\TwitterOAuth` with different method sign
 Because every Composer autoloader registers globally, the copies were mixed at runtime and
 crashed (see issue #1128). Owning the namespace keeps this plugin's copy to itself.
 
-To update: copy `src/` from the fork and run
-`sed -i 's/Abraham\\TwitterOAuth/Rop_Vendor\\TwitterOAuth/g'` over it.
+To update, copy `src/` from the fork and rename the namespace:
+
+```
+find src -name '*.php' -exec sed -i 's/Abraham\\TwitterOAuth/Rop_Vendor\\TwitterOAuth/g' {} +
+```
+
 MIT licensed, see LICENSE.md.
