@@ -55,7 +55,7 @@
     "wp-coding-standards/wpcs": "^2.3",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
     "phpunit/phpunit": "9.*",
-    "yoast/phpunit-polyfills": "^2.0",
+    "yoast/phpunit-polyfills": "^4.0",
     "codeinwp/phpcs-ruleset": "dev-main",
     "phpstan/phpstan": "^2.1",
     "szepeviktor/phpstan-wordpress": "^2.0"
