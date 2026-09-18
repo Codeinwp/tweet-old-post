@@ -47,6 +47,7 @@
   },
   "require": {
     "facebook/graph-sdk": "^5.7",
+    "ext-curl": "*",
     "composer/ca-bundle": "^1.2",
     "codeinwp/themeisle-sdk": "^3.3",
     "vkcom/vk-php-sdk": "5.101.0"

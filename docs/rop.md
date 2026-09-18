@@ -421,7 +421,7 @@ The share function have the same logic for both cases, if `rop_auth_token` is pr
 One limitation for sharing via our app is that we do not allow sharing posts with images. The uploading images workflow is only present in the plugin.
 
 > [!NOTE]
-> Our server endpoint posts to X/Twitter with the upstream `Abraham\TwitterOAuth` library; `\Rop_Vendor\TwitterOAuth\TwitterOAuth` is a namespaced copy of it, so the same handling applies for posting to X/Twitter. The same handling is used in both server and plugin. If you change the flow in the plugin, you should also change the server endpoint if necessary.
+> Our server endpoint posts to X/Twitter with its own `Abraham\TwitterOAuth` library. The plugin uses `\Rop_Vendor\TwitterOAuth\TwitterOAuth`, a Codeinwp fork whose API differs from upstream (see `lib/twitteroauth/README.md`), so check the signatures before you copy code between the two. If you change the flow in the plugin, you should also change the server endpoint if necessary.
 
 ## Debug Logs
 
