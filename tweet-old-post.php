@@ -245,6 +245,33 @@ function run_rop() {
 		}
 	);
 
+	add_filter(
+		'tweet_old_post_ai_connect_metadata',
+		function () {
+			return array(
+				'name'         => 'Revive Social',
+				'notice_cases' => array(
+					__( 'find out why posts are not being shared', 'tweet-old-post' ),
+					__( 'choose which posts get shared', 'tweet-old-post' ),
+					__( 'review your sharing queue', 'tweet-old-post' ),
+				),
+				'prompts'      => array(
+					__( 'Why are so few of my posts being shared? Check my Revive Social accounts, schedule and content filter.', 'tweet-old-post' ),
+					__( 'Only share posts that are at least 30 days old, and leave out any post with "giveaway" in the title.', 'tweet-old-post' ),
+					__( 'Show me what will be shared next on each connected account, and at what times.', 'tweet-old-post' ),
+				),
+				'abilities'    => array(
+					'revive/list-connected-accounts',
+					'revive/get-schedule',
+					'revive/update-schedule',
+					'revive/list-queue',
+					'revive/update-queue-item',
+					'revive/set-content-filter',
+				),
+			);
+		}
+	);
+
 	add_filter( 'themeisle_sdk_enable_telemetry', '__return_true' );
 
 	$plugin = new Rop();

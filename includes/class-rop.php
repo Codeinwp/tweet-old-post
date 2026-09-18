@@ -190,6 +190,10 @@ class Rop {
 		$this->loader->add_filter( "plugin_action_links_$plugin_slug", $plugin_admin, 'rop_upgrade_to_pro_plugin_action', 10, 2 );
 
 		$this->loader->add_filter( 'init', $plugin_admin, 'register_meta' );
+
+		$plugin_abilities = new Rop_Abilities();
+		$this->loader->add_action( 'wp_abilities_api_categories_init', $plugin_abilities, 'register_category' );
+		$this->loader->add_action( 'wp_abilities_api_init', $plugin_abilities, 'register_abilities' );
 	}
 
 	/**
