@@ -251,14 +251,14 @@ function run_rop() {
 			return array(
 				'name'         => 'Revive Social',
 				'notice_cases' => array(
-					__( 'review your sharing queue', 'tweet-old-post' ),
+					__( 'find out why posts are not being shared', 'tweet-old-post' ),
 					__( 'choose which posts get shared', 'tweet-old-post' ),
-					__( 'check your sharing schedule', 'tweet-old-post' ),
+					__( 'review your sharing queue', 'tweet-old-post' ),
 				),
 				'prompts'      => array(
-					__( 'Show me what Revive Social will share next on each connected account, and at what times.', 'tweet-old-post' ),
+					__( 'Why are so few of my posts being shared? Check my Revive Social accounts, schedule and content filter.', 'tweet-old-post' ),
 					__( 'Only share posts that are at least 30 days old, and leave out any post with "giveaway" in the title.', 'tweet-old-post' ),
-					__( 'Go through my connected accounts, sharing schedule and content filter, and tell me why so few posts are being shared.', 'tweet-old-post' ),
+					__( 'Show me what will be shared next on each connected account, and at what times.', 'tweet-old-post' ),
 				),
 				'abilities'    => array(
 					'revive/list-connected-accounts',
