@@ -268,6 +268,10 @@ class Rop_Abilities {
 						'next_event_on'              => array( 'type' => 'integer' ),
 						'default_interval'           => array( 'type' => 'number' ),
 						'custom_schedules_available' => array( 'type' => 'boolean' ),
+						'upgrade_url'                => array(
+							'type'        => 'string',
+							'description' => __( 'Where to upgrade for custom schedules. Only present when they are not available.', 'tweet-old-post' ),
+						),
 						'schedules'                  => array(
 							'type'  => 'array',
 							'items' => $schedule_schema,
@@ -576,14 +580,36 @@ class Rop_Abilities {
 	}
 
 	/**
+	 * Upgrade link for a gated feature, the same one the dashboard uses.
+	 *
+	 * @param string $area Key of the gated feature, used as the campaign.
+	 *
+	 * @return string
+	 */
+	private function upgrade_url( $area ) {
+		return tsdk_utmify( Rop_I18n::UPSELL_LINK, $area, 'mcp' );
+	}
+
+	/**
 	 * Error returned for the features that need a higher plan.
 	 *
 	 * @param string $message The error message.
+	 * @param string $area    Key of the gated feature.
 	 *
 	 * @return WP_Error
 	 */
-	private function upgrade_error( $message ) {
-		return new WP_Error( 'rop_pro_required', $message, array( 'status' => 403 ) );
+	private function upgrade_error( $message, $area ) {
+		$upgrade_url = $this->upgrade_url( $area );
+
+		return new WP_Error(
+			'rop_pro_required',
+			/* translators: 1: error message, 2: upgrade URL. */
+			sprintf( __( '%1$s Upgrade: %2$s', 'tweet-old-post' ), $message, $upgrade_url ),
+			array(
+				'status'      => 403,
+				'upgrade_url' => $upgrade_url,
+			)
+		);
 	}
 
 	/**
@@ -764,7 +790,7 @@ class Rop_Abilities {
 		$cron_helper    = new Rop_Cron_Helper();
 		$settings_model = new Rop_Settings_Model();
 
-		return array(
+		$result = array(
 			'timezone'                   => wp_timezone_string(),
 			'current_time'               => (int) Rop_Scheduler_Model::get_current_time(),
 			'sharing_active'             => (bool) $cron_helper->get_status(),
@@ -774,6 +800,12 @@ class Rop_Abilities {
 			'schedules'                  => $schedules,
 			'content_filter'             => $this->get_content_filter(),
 		);
+
+		if ( ! $result['custom_schedules_available'] ) {
+			$result['upgrade_url'] = $this->upgrade_url( 'custom-schedule' );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -787,7 +819,7 @@ class Rop_Abilities {
 		$input = is_array( $input ) ? $input : array();
 
 		if ( ! $this->has_business_features() ) {
-			return $this->upgrade_error( __( 'Custom schedules require an active Revive Social Pro business plan.', 'tweet-old-post' ) );
+			return $this->upgrade_error( __( 'Custom schedules require an active Revive Social Pro business plan.', 'tweet-old-post' ), 'custom-schedule' );
 		}
 
 		$account_id = isset( $input['account_id'] ) ? sanitize_text_field( $input['account_id'] ) : '';
@@ -987,7 +1019,7 @@ class Rop_Abilities {
 		$input = is_array( $input ) ? $input : array();
 
 		if ( ! $this->has_business_features() ) {
-			return $this->upgrade_error( __( 'Editing the sharing queue requires an active Revive Social Pro business plan.', 'tweet-old-post' ) );
+			return $this->upgrade_error( __( 'Editing the sharing queue requires an active Revive Social Pro business plan.', 'tweet-old-post' ), 'edit-queue' );
 		}
 
 		$account_id = isset( $input['account_id'] ) ? sanitize_text_field( $input['account_id'] ) : '';
@@ -1078,7 +1110,7 @@ class Rop_Abilities {
 		$post_types = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
 		if ( isset( $input['post_types'] ) ) {
 			if ( ! $is_pro ) {
-				return $this->upgrade_error( __( 'Changing the shared post types requires Revive Social Pro.', 'tweet-old-post' ) );
+				return $this->upgrade_error( __( 'Changing the shared post types requires Revive Social Pro.', 'tweet-old-post' ), 'post-types' );
 			}
 			if ( ! is_array( $input['post_types'] ) || empty( $input['post_types'] ) ) {
 				return new WP_Error( 'rop_invalid_post_types', __( 'Provide at least one post type.', 'tweet-old-post' ), array( 'status' => 400 ) );
@@ -1114,7 +1146,8 @@ class Rop_Abilities {
 			if ( ! $is_pro && $this->installed_since( '8.5.3' ) && count( $input['taxonomy_terms'] ) > self::FREE_TAXONOMY_LIMIT ) {
 				return $this->upgrade_error(
 					/* translators: %d: number of terms. */
-					sprintf( __( 'Selecting more than %d taxonomy terms requires Revive Social Pro.', 'tweet-old-post' ), self::FREE_TAXONOMY_LIMIT )
+					sprintf( __( 'Selecting more than %d taxonomy terms requires Revive Social Pro.', 'tweet-old-post' ), self::FREE_TAXONOMY_LIMIT ),
+					'taxonomy-terms'
 				);
 			}
 
@@ -1145,7 +1178,7 @@ class Rop_Abilities {
 
 		if ( isset( $input['maximum_post_age'] ) ) {
 			if ( ! $is_pro ) {
-				return $this->upgrade_error( __( 'Changing the maximum post age requires Revive Social Pro.', 'tweet-old-post' ) );
+				return $this->upgrade_error( __( 'Changing the maximum post age requires Revive Social Pro.', 'tweet-old-post' ), 'maximum-post-age' );
 			}
 			$data['maximum_post_age'] = absint( $input['maximum_post_age'] );
 		}
@@ -1186,7 +1219,8 @@ class Rop_Abilities {
 			if ( count( $future ) > self::FREE_EXCLUDE_LIMIT ) {
 				return $this->upgrade_error(
 					/* translators: %d: number of posts. */
-					sprintf( __( 'Excluding more than %d posts requires Revive Social Pro.', 'tweet-old-post' ), self::FREE_EXCLUDE_LIMIT )
+					sprintf( __( 'Excluding more than %d posts requires Revive Social Pro.', 'tweet-old-post' ), self::FREE_EXCLUDE_LIMIT ),
+					'exclude-posts'
 				);
 			}
 		}
