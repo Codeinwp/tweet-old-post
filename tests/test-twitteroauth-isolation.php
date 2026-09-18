@@ -13,20 +13,19 @@
 class Test_RopTwitterOAuthIsolation extends WP_UnitTestCase {
 
 	/**
-	 * No autoloader registered by the plugin may claim the upstream namespace.
-	 * If one did, another plugin's client could be handed our classes.
+	 * The plugin's own Composer autoloader must not claim the upstream namespace.
+	 * If it did, another plugin's client could be handed our classes.
 	 */
 	public function test_plugin_autoloader_does_not_claim_the_shared_twitteroauth_namespace() {
-		$composer_loaders = 0;
+		$own_loaders = array();
 		foreach ( spl_autoload_functions() as $loader ) {
-			if ( ! is_array( $loader ) || ! ( $loader[0] instanceof \Composer\Autoload\ClassLoader ) ) {
-				continue;
+			if ( is_array( $loader ) && $loader[0] instanceof \Composer\Autoload\ClassLoader && isset( $loader[0]->getPrefixesPsr4()['Rop_Vendor\\TwitterOAuth\\'] ) ) {
+				$own_loaders[] = $loader[0];
 			}
-			$composer_loaders++;
-			$this->assertArrayNotHasKey( 'Abraham\\TwitterOAuth\\', $loader[0]->getPrefixesPsr4() );
-			$this->assertArrayHasKey( 'Rop_Vendor\\TwitterOAuth\\', $loader[0]->getPrefixesPsr4() );
 		}
-		$this->assertGreaterThan( 0, $composer_loaders, 'The plugin Composer autoloader is not registered.' );
+
+		$this->assertCount( 1, $own_loaders, 'Expected exactly one autoloader to map Rop_Vendor\\TwitterOAuth.' );
+		$this->assertArrayNotHasKey( 'Abraham\\TwitterOAuth\\', $own_loaders[0]->getPrefixesPsr4() );
 	}
 
 	/**
