@@ -64,5 +64,8 @@
         <testsuite name="license-mask">
             <directory>./tests/test-license-mask.php</directory>
         </testsuite>
+        <testsuite name="twitteroauth-isolation">
+            <directory>./tests/test-twitteroauth-isolation.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
