@@ -256,9 +256,9 @@ function run_rop() {
 					__( 'review your sharing queue', 'tweet-old-post' ),
 				),
 				'prompts'      => array(
-					__( 'Why are so few of my posts being shared? Check my Revive Social accounts, schedule and content filter.', 'tweet-old-post' ),
-					__( 'Only share posts that are at least 30 days old, and leave out any post with "giveaway" in the title.', 'tweet-old-post' ),
-					__( 'Show me what will be shared next on each connected account, and at what times.', 'tweet-old-post' ),
+					__( 'Only let Revive Social share posts that are at least 30 days old, and skip anything with "giveaway" in the title.', 'tweet-old-post' ),
+					__( 'Share posts from my Reviews category too, and leave out Press releases.', 'tweet-old-post' ),
+					__( 'What is scheduled to go out next on each of my connected accounts?', 'tweet-old-post' ),
 				),
 				'ability_prefix'    => 'revive',
 			);
