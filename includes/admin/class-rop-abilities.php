@@ -501,7 +501,7 @@ class Rop_Abilities {
 				),
 				'execute_callback'    => array( $this, 'publish_share' ),
 				'permission_callback' => array( $this, 'can_publish_share' ),
-				'meta'                => $this->meta( false, true, false ),
+				'meta'                => array_merge( $this->meta( false, true, false ), array( 'ai_connect' => false ) ),
 			),
 		);
 	}

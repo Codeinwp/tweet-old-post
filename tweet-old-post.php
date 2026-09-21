@@ -260,14 +260,7 @@ function run_rop() {
 					__( 'Only share posts that are at least 30 days old, and leave out any post with "giveaway" in the title.', 'tweet-old-post' ),
 					__( 'Show me what will be shared next on each connected account, and at what times.', 'tweet-old-post' ),
 				),
-				'abilities'    => array(
-					'revive/list-connected-accounts',
-					'revive/get-schedule',
-					'revive/update-schedule',
-					'revive/list-queue',
-					'revive/update-queue-item',
-					'revive/set-content-filter',
-				),
+				'ability_prefix'    => 'revive',
 			);
 		}
 	);
