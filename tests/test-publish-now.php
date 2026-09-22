@@ -441,4 +441,21 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 
 		$this->assertArrayHasKey( $account_id, $attributes['page_active_accounts'] );
 	}
+
+	/**
+	 * A selection saved earlier survives a draft save with the share box unticked.
+	 */
+	public function test_draft_saved_without_share_keeps_saved_selection() {
+		$admin   = new Rop_Admin();
+		$post_id = self::factory()->post->create( array( 'post_status' => 'draft' ) );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', array( 'facebook_1_1' => 'Custom message' ) );
+
+		$_POST['rop_publish_now_nonce'] = wp_create_nonce( 'rop_publish_now_nonce' );
+		$admin->maybe_publish_now( $post_id );
+
+		$GLOBALS['post'] = get_post( $post_id );
+		$attributes      = $admin->publish_now_attributes( array() );
+
+		$this->assertSame( array( 'facebook_1_1' => 'Custom message' ), $attributes['page_active_accounts'] );
+	}
 }
