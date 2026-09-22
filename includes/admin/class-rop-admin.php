@@ -963,8 +963,7 @@ class Rop_Admin {
 				$publish = isset( $_POST['publish_now'] ) ? sanitize_text_field( $_POST['publish_now'] ) === 'no' ? 'no' : 'yes' : 'no';
 				update_post_meta( $post_id, 'rop_publish_now', $publish );
 
-				// The account checkboxes are hidden while the share box is unticked, so nothing is
-				// submitted for them. Storing an empty list here would replace the default selection.
+				// Unticked share box submits no accounts; keep the stored selection instead of emptying it.
 				if ( 'no' === $publish ) {
 					return;
 				}
