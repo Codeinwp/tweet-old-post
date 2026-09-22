@@ -31,7 +31,7 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 	}
 
 	public function tearDown(): void {
-		unset( $_POST['publish_now'], $_POST['publish_now_accounts'] );
+		unset( $_POST['publish_now'], $_POST['publish_now_accounts'], $_POST['rop_publish_now_nonce'] );
 		unset( $GLOBALS['post'] );
 		parent::tearDown();
 	}
@@ -421,5 +421,24 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 		$attributes = ( new Rop_Admin() )->publish_now_attributes( array() );
 
 		$this->assertTrue( $attributes['action'] );
+	}
+
+	/**
+	 * Saving a draft from the Classic metabox with the share box unticked keeps the
+	 * default account selection for when the box is ticked later (#1134).
+	 */
+	public function test_draft_saved_without_share_keeps_default_accounts() {
+		$account_id = Rop_InitAccounts::get_account_id();
+		$admin      = new Rop_Admin();
+		$admin->register_meta();
+		$post_id = self::factory()->post->create( array( 'post_status' => 'draft' ) );
+
+		$_POST['rop_publish_now_nonce'] = wp_create_nonce( 'rop_publish_now_nonce' );
+		$admin->maybe_publish_now( $post_id );
+
+		$GLOBALS['post'] = get_post( $post_id );
+		$attributes      = $admin->publish_now_attributes( array() );
+
+		$this->assertArrayHasKey( $account_id, $attributes['page_active_accounts'] );
 	}
 }
