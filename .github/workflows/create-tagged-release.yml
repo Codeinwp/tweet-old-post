@@ -23,3 +23,5 @@ jobs:
           GIT_AUTHOR_EMAIL: ${{ secrets.BOT_EMAIL }}
           GIT_COMMITTER_NAME: themeisle[bot]
           GIT_COMMITTER_EMAIL: ${{ secrets.BOT_EMAIL }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_ANNOUNCEMENTS }}
+          SEMANTIC_RELEASE_PACKAGE: Revive Social(free)
