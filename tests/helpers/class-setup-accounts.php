@@ -41,7 +41,7 @@ class Rop_InitAccounts {
 			)
 		),
 		'Twitter'  => array(
-			'class'            => 'Abraham\TwitterOAuth\TwitterOAuth',
+			'class'            => 'Rop_Vendor\TwitterOAuth\TwitterOAuth',
 			'credentials'      => array(
 				'',
 				''
