@@ -52,6 +52,8 @@ export default new Vuex.Store({
         },
         ajaxLoader: false,
         api_not_available: false,
+        // Number of requests that came back, used to date a failure.
+        api_success_count: 0,
         auth_in_progress: false,
         displayTabs: [
             {
@@ -141,6 +143,18 @@ export default new Vuex.Store({
         },
         apiNotAvailable(state, data) {
             state.api_not_available = data
+        },
+        apiRequestSucceeded(state) {
+            state.api_success_count++
+            state.api_not_available = false
+        },
+        apiRequestFailed(state, successesAtStart) {
+            // Another request succeeded while this one was in flight, so the
+            // REST API works and the failure is request specific.
+            if (state.api_success_count !== successesAtStart) {
+                return
+            }
+            state.api_not_available = true
         },
         preloading_change(state, data) {
             state.hide_preloading = data;
@@ -317,9 +331,10 @@ export default new Vuex.Store({
             }
             return false
         },
-        fetchAJAXPromise({commit}, data) {
+        fetchAJAXPromise({commit, state}, data) {
             if (data.req !== '') {
                 commit('setAjaxState', true)
+                const successesAtStart = state.api_success_count
                 return new Promise((resolve, reject) => {
                     Vue.http({
                         url: ropApiSettings.root,
@@ -330,6 +345,7 @@ export default new Vuex.Store({
                         responseType: 'json'
                     }).then(function (response) {
                         commit('setAjaxState', false)
+                        commit('apiRequestSucceeded')
                         let stateData = response.data
                         if (response.data.data) {
                             stateData = response.data.data
@@ -341,13 +357,13 @@ export default new Vuex.Store({
                         }
                     }, function (error) {
                         commit('setAjaxState', false);
-                        commit('apiNotAvailable', true);
+                        commit('apiRequestFailed', successesAtStart);
 
                         Vue.$log.error('Error when trying to do request: ', data.req);
                         reject(error);
                     }).catch(error => {
                         commit('setAjaxState', false);
-                        commit('apiNotAvailable', true);
+                        commit('apiRequestFailed', successesAtStart);
                         commit('preloading_change', 1);
                         Vue.$log.error('Error when getting response for: ', data.req, error);
                         reject(error);

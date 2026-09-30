@@ -82,7 +82,9 @@ q2 -17 -1.5 -33t-13.5 -30q-16 -22 -41 -32q-17 -7 -35.5 -6.5t-35.5 7.5q-28 12 -43
         </i>
         {{ displayName( service.name, false, true ) }}
         <span
-          v-if="checkDisabled( service, network ) || ('webhook' === network && canShowProPluginUpgradeWebhookNotice)"
+          v-if="isServiceUnavailable( service, network ) || ('webhook' === network && canShowProPluginUpgradeWebhookNotice)"
+          role="img"
+          :aria-label="getTooltip( service, network ) || labels.get_latest_pro_version"
           style="font-size:13px;line-height: 20px"
           class="dashicons dashicons-lock"
         />
@@ -545,6 +547,9 @@ export default {
      * @returns {boolean}
      */
     checkDisabled(service, network) {
+      return this.isServiceUnavailable(service, network) || this.$store.state.auth_in_progress
+    },
+    isServiceUnavailable(service, network) {
       if (service !== undefined && service.active === false) {
         return true
       }
@@ -567,7 +572,7 @@ export default {
         return true
       }
 
-      return this.$store.state.auth_in_progress
+      return false
     },
     openUpsellModal(){
       this.upsellModal.isOpen = true;
@@ -867,7 +872,23 @@ export default {
         return;
       }
 
-      const accountData = JSON.parse(event.data);
+      let accountData;
+      try {
+        accountData = JSON.parse(event.data);
+      } catch (e) {
+        this.is_loading = false;
+        window.removeEventListener("message", this.getChildWindowMessage );
+        Vue.$log.error('Received a malformed message from the authorization window', e);
+        return;
+      }
+
+      if ( ! accountData || 'object' !== typeof accountData || accountData.error ) {
+        this.is_loading = false;
+        window.removeEventListener("message", this.getChildWindowMessage );
+        Vue.$log.error('Authorization failed', accountData);
+        return;
+      }
+
       const serviceName = this.modal.serviceName;
       let storing;
 

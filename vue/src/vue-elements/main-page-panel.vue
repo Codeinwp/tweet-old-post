@@ -60,10 +60,14 @@
       </div>
     </div>
 
-    <div
-      id="tsdk_banner"
-      class="rop-banner"
-    />
+    <!-- SDK notices (sale, AI Connect) ride the main column so they line up
+         with the panel below and leave the status sidebar alone. -->
+    <div class="columns">
+      <div
+        id="tsdk_banner"
+        class="rop-banner column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"
+      />
+    </div>
 
     <div class="columns">
       <div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -595,5 +599,13 @@
 
     #tsdk_banner :is(.themeisle-sale, p) {
       margin: 0;
+    }
+
+    .rop-banner:has(.ti-ai-notice) {
+      margin-bottom: 8px;
+    }
+
+    #tsdk_banner .ti-ai-notice {
+      margin: 0 !important;
     }
 </style>

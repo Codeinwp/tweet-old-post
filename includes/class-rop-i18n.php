@@ -401,9 +401,8 @@ class Rop_I18n {
 				'cron_interval'              => __( 'Once every 5 min', 'tweet-old-post' ),
 				'staging_status'             => sprintf( __( 'This seems to be a staging or development website. Some post types will not share to your accounts. %1$sLearn How to Turn Off%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1321-allow-revive-old-posts-to-work-on-staging-or-development-websites" target="_blank">', '</a>' ),
 				'api_not_available'          => __(
-					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Social relies on this functionality in order to work.<br/>
-The root cause might be either a security plugin which blocks this feature or some faulty server configuration which constrain this WordPress feature. <br/>
-You can try to disable any of the security plugins that you use in order to see if the issue persists or ask the hosting company to further investigate.',
+					'Revive Social could not complete a request to its WordPress REST endpoint. Some dashboard information or actions may be unavailable.<br/>
+Reload the page and try again. If the problem continues, contact support with the action you were performing and any error shown.',
 					'tweet-old-post'
 				),
 				'rop_support'                => __( 'Get Support', 'tweet-old-post' ),

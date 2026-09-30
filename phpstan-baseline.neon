@@ -3925,12 +3925,6 @@ parameters:
 			path: includes/admin/services/class-rop-gmb-service.php
 
 		-
-			message: '#^Call to an undefined method Exception\:\:getDescription\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: includes/admin/services/class-rop-linkedin-service.php
-
-		-
 			message: '#^Call to function is_object\(\) with LinkedIn\\Client will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -4142,12 +4136,6 @@ parameters:
 
 		-
 			message: '#^Undefined variable\: \$author_urn$#'
-			identifier: variable.undefined
-			count: 1
-			path: includes/admin/services/class-rop-linkedin-service.php
-
-		-
-			message: '#^Variable \$account might not be defined\.$#'
 			identifier: variable.undefined
 			count: 1
 			path: includes/admin/services/class-rop-linkedin-service.php
