@@ -245,6 +245,26 @@ function run_rop() {
 		}
 	);
 
+	add_filter(
+		'tweet_old_post_ai_connect_metadata',
+		function () {
+			return array(
+				'name'         => 'Revive Social',
+				'notice_cases' => array(
+					__( 'find out why posts are not being shared', 'tweet-old-post' ),
+					__( 'choose which posts get shared', 'tweet-old-post' ),
+					__( 'review your sharing queue', 'tweet-old-post' ),
+				),
+				'prompts'      => array(
+					__( 'Only let Revive Social share posts that are at least 30 days old, and skip anything with "giveaway" in the title.', 'tweet-old-post' ),
+					__( 'Share posts from my Reviews category too, and leave out Press releases.', 'tweet-old-post' ),
+					__( 'What is scheduled to go out next on each of my connected accounts?', 'tweet-old-post' ),
+				),
+				'ability_prefix'    => 'revive',
+			);
+		}
+	);
+
 	add_filter( 'themeisle_sdk_enable_telemetry', '__return_true' );
 
 	$plugin = new Rop();
