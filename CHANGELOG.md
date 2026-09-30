@@ -1,3 +1,15 @@
+##### [Version 9.4.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.2...v9.4.3) (2026-09-30)
+
+- Fixed editor crashes when stored license keys are shorter than four characters.
+- Fixed lock icons appearing on available networks during account connection.
+- Fixed social account connections that could disappear after authorization.
+- Fixed LinkedIn authorization failures that displayed a critical error screen.
+- Fixed scheduled sharing when Maximum Characters contains invalid values.
+- Fixed misleading dashboard messages when a Revive Social request fails.
+- Fixed the REST API warning after a dashboard request recovers.
+- Fixed X requests crashing when another plugin is active.
+- Updated dependencies
+
 ##### [Version 9.4.2](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.1...v9.4.2) (2026-09-07)
 
 - Fixed queued posts being shared even after exceeding the maximum post age limit.
