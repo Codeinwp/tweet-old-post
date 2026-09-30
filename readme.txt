@@ -355,6 +355,7 @@ http://revive.social/plugins/revive-old-post
 - Fixed misleading dashboard messages when a Revive Social request fails.
 - Fixed the REST API warning after a dashboard request recovers.
 - Fixed X requests crashing when another plugin is active.
+- Added AI agent support: let AI assistants read and change your Revive Social settings and sharing queu
 - Updated dependencies
 
 
