@@ -141,6 +141,6 @@ test.describe( 'REST API notice', () => {
 		await admin.visitAdminPage( '/admin.php?page=TweetOldPost' );
 
 		await expect( page.locator( NOTICE ) ).toBeVisible();
-		await expect( page.locator( NOTICE ) ).toContainText( 'core REST API functionality is not available' );
+		await expect( page.locator( NOTICE ) ).toContainText( 'could not complete a request to its WordPress REST endpoint' );
 	} );
 } );
