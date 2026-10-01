@@ -21,6 +21,13 @@
 class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 	/**
+	 * The Facebook Graph API version used for every request.
+	 *
+	 * @see https://developers.facebook.com/docs/graph-api/changelog
+	 */
+	const GRAPH_API_VERSION = 'v26.0';
+
+	/**
 	 * An instance of authenticated Facebook user.
 	 *
 	 * @since   8.0.0
@@ -163,7 +170,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				array(
 					'app_id'                => $this->strip_whitespace( $app_id ),
 					'app_secret'            => $this->strip_whitespace( $secret ),
-					'default_graph_version' => 'v20.0',
+					'default_graph_version' => self::GRAPH_API_VERSION,
 				)
 			);
 		} catch ( Exception $exception ) {
@@ -813,9 +820,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$post_data['access_token'] = $token;
 
 			if ( 'video' === $posting_type ) {
-				$url = 'https://graph-video.facebook.com/v20.0' . $path;
+				$url = 'https://graph-video.facebook.com/' . self::GRAPH_API_VERSION . $path;
 			} else {
-				$url = 'https://graph.facebook.com/v20.0' . $path;
+				$url = 'https://graph.facebook.com/' . self::GRAPH_API_VERSION . $path;
 			}
 
 			// Scrape post URL before sharing
@@ -1126,7 +1133,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$scrape['access_token'] = $token;
 
 			$scrape_response = wp_remote_post(
-				'https://graph.facebook.com',
+				'https://graph.facebook.com/' . self::GRAPH_API_VERSION . '/',
 				array(
 
 					'body'    => $scrape,
