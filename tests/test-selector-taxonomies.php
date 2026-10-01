@@ -8,7 +8,7 @@
  */
 
 /**
- * Test Rop_Posts_Selector_Model::get_taxonomies() with WPML loaded. class.
+ * Tests Rop_Posts_Selector_Model::get_taxonomies() with WPML loaded.
  */
 class Test_RopSelectorTaxonomies extends WP_UnitTestCase {
 
