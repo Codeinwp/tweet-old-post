@@ -34,7 +34,7 @@ class Test_RopFacebookGraphVersion extends WP_UnitTestCase {
 	 * @param false|array|WP_Error $preempt Whether to preempt the request.
 	 * @param array                $args    Request arguments.
 	 * @param string               $url     Request URL.
-	 * @return array
+	 * @return array{headers: array{}, body: string|false, response: array{code: 200, message: 'OK'}, cookies: array{}, filename: null}
 	 */
 	public function intercept_request( $preempt, array $args, string $url ): array {
 		$this->captured_urls[] = $url;
