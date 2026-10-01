@@ -87,14 +87,14 @@ class Test_RopSelectorTaxonomies extends WP_UnitTestCase {
 	/**
 	 * Collect the languages passed to wpml_switch_language.
 	 *
-	 * @return stdClass Object whose `switched` list fills as the action fires.
+	 * @return stdClass&object{switched: list<string|null>} Object whose `switched` list fills as the action fires.
 	 */
 	private function record_language_switches(): stdClass {
 		$recorder           = new stdClass();
 		$recorder->switched = array();
 		add_action(
 			'wpml_switch_language',
-			function ( $language ) use ( $recorder ): void {
+			function ( ?string $language ) use ( $recorder ): void {
 				$recorder->switched[] = $language;
 			}
 		);
