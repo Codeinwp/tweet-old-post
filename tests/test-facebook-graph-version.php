@@ -124,6 +124,22 @@ class Test_RopFacebookGraphVersion extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A link share scrapes the URL and posts the feed on the supported version.
+	 *
+	 * @covers Rop_Facebook_Service::share
+	 * @covers Rop_Facebook_Service::rop_fb_scrape_url
+	 */
+	public function test_hosted_app_link_share_scrapes_on_supported_graph_version(): void {
+		$post_id = self::factory()->post->create();
+
+		$urls = $this->share( $post_id, array( 'post_url' => get_permalink( $post_id ) ) );
+
+		$this->assertContains( 'https://graph.facebook.com/' . self::GRAPH_API_VERSION . '/', $urls );
+		$this->assertContains( 'https://graph.facebook.com/' . self::GRAPH_API_VERSION . '/123/feed', $urls );
+		$this->assertNotContains( 'https://graph.facebook.com', $urls );
+	}
+
+	/**
 	 * A video share through the hosted app uploads to the supported version.
 	 *
 	 * @covers Rop_Facebook_Service::share

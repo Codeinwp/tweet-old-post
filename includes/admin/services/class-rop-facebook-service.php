@@ -1133,7 +1133,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$scrape['access_token'] = $token;
 
 			$scrape_response = wp_remote_post(
-				'https://graph.facebook.com',
+				'https://graph.facebook.com/' . self::GRAPH_API_VERSION . '/',
 				array(
 
 					'body'    => $scrape,
