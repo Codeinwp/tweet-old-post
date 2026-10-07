@@ -16,6 +16,9 @@
         <testsuite name="accounts">
             <directory>./tests/test-accounts.php</directory>
         </testsuite>
+        <testsuite name="linkedin-account-payload">
+            <directory>./tests/test-linkedin-account-payload.php</directory>
+        </testsuite>
         <testsuite name="post-format">
             <directory>./tests/test-post-format.php</directory>
         </testsuite>
