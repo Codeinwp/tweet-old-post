@@ -50,6 +50,25 @@ class Test_RopLinkedinAccountPayload extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Entries as the auth service sends them: a member without a photo and a Page with an integer id and no logo.
+	 *
+	 * @return list<array<string, mixed>>
+	 */
+	private function auth_service_entries(): array {
+		return array(
+			$this->member_entry( array( 'img' => null ) ),
+			array(
+				'id'           => 5552231,
+				'account'      => 'member@example.com',
+				'img'          => null,
+				'is_company'   => true,
+				'user'         => 'LinkedIn Page: Test Page',
+				'access_token' => 'test-token',
+			),
+		);
+	}
+
+	/**
 	 * Clear the option written by a successful add.
 	 */
 	public function tearDown(): void {
@@ -62,21 +81,7 @@ class Test_RopLinkedinAccountPayload extends WP_UnitTestCase {
 	 */
 	public function test_accepts_null_img_and_integer_page_id(): void {
 		$service = new Rop_Linkedin_Service();
-		$payload = $this->build_payload(
-			array(
-				$this->member_entry( array( 'img' => null ) ),
-				array(
-					'id'           => 5552231,
-					'account'      => 'member@example.com',
-					'img'          => null,
-					'is_company'   => true,
-					'user'         => 'LinkedIn Page: Test Page',
-					'access_token' => 'test-token',
-				),
-			)
-		);
-
-		$this->assertTrue( $service->add_account_with_app( $payload ) );
+		$this->assertTrue( $service->add_account_with_app( $this->build_payload( $this->auth_service_entries() ) ) );
 
 		$accounts = $service->get_service()['available_accounts'];
 		$this->assertCount( 2, $accounts );
@@ -104,7 +109,7 @@ class Test_RopLinkedinAccountPayload extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Loosening the checks keeps rejecting incomplete entries.
+	 * Integer Page ids and null images are accepted while incomplete entries are rejected.
 	 *
 	 * @dataProvider provide_incomplete_entries
 	 *
@@ -113,6 +118,7 @@ class Test_RopLinkedinAccountPayload extends WP_UnitTestCase {
 	public function test_rejects_incomplete_entry( array $entry ): void {
 		$service = new Rop_Linkedin_Service();
 
+		$this->assertTrue( $service->add_account_with_app( $this->build_payload( $this->auth_service_entries() ) ) );
 		$this->assertFalse( $service->add_account_with_app( $this->build_payload( array( $entry ) ) ) );
 	}
 }
