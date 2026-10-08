@@ -16,6 +16,9 @@
         <testsuite name="accounts">
             <directory>./tests/test-accounts.php</directory>
         </testsuite>
+        <testsuite name="linkedin-account-payload">
+            <directory>./tests/test-linkedin-account-payload.php</directory>
+        </testsuite>
         <testsuite name="post-format">
             <directory>./tests/test-post-format.php</directory>
         </testsuite>
@@ -33,6 +36,9 @@
         </testsuite>
         <testsuite name="selector">
             <directory>./tests/test-selector.php</directory>
+        </testsuite>
+        <testsuite name="selector-taxonomies">
+            <directory>./tests/test-selector-taxonomies.php</directory>
         </testsuite>
         <testsuite name="keyword-filter">
             <directory>./tests/test-keyword-filter.php</directory>
@@ -66,6 +72,9 @@
         </testsuite>
         <testsuite name="twitteroauth-isolation">
             <directory>./tests/test-twitteroauth-isolation.php</directory>
+        </testsuite>
+        <testsuite name="facebook-graph-version">
+            <directory>./tests/test-facebook-graph-version.php</directory>
         </testsuite>
     </testsuites>
 </phpunit>
