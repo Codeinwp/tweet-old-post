@@ -963,6 +963,11 @@ class Rop_Admin {
 				$publish = isset( $_POST['publish_now'] ) ? sanitize_text_field( $_POST['publish_now'] ) === 'no' ? 'no' : 'yes' : 'no';
 				update_post_meta( $post_id, 'rop_publish_now', $publish );
 
+				// Unticked share box submits no accounts; keep the stored selection instead of emptying it.
+				if ( 'no' === $publish ) {
+					return;
+				}
+
 				$enabled_accounts = array();
 
 				if ( isset( $_POST['publish_now_accounts'] ) && ! empty( $_POST['publish_now_accounts'] ) ) {

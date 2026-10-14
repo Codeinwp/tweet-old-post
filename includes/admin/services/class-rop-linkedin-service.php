@@ -867,7 +867,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		// every remaining item must be a complete account entry, otherwise reading its fields below can fatal
 		foreach ( $accounts_array as $account_data ) {
-			if ( ! is_array( $account_data ) || ! isset( $account_data['id'], $account_data['img'], $account_data['account'], $account_data['is_company'], $account_data['user'], $account_data['access_token'] ) || ! is_string( $account_data['id'] ) || '' === $account_data['id'] ) {
+			if ( ! $this->is_valid_account_entry( $account_data ) ) {
 				$this->logger->alert_error( 'Linkedin Error: received malformed account data, the account was not added.' );
 				return false;
 			}
@@ -893,7 +893,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$account_data = $accounts_array[ $i ];
 
 			$account['id']           = $this->treat_underscore_exception( $account_data['id'] );
-			$account['img']          = apply_filters( 'rop_custom_li_avatar', $account_data['img'] );
+			$account['img']          = apply_filters( 'rop_custom_li_avatar', $account_data['img'] ?? '' );
 			$account['account']      = $account_data['account'];
 			$account['is_company']   = $account_data['is_company'];
 			$account['user']         = $account_data['user'];
@@ -917,6 +917,27 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
+	}
+
+	/**
+	 * Whether a decoded pages entry carries every field the account builder reads.
+	 *
+	 * @param mixed $account_data Decoded pages entry.
+	 *
+	 * @return bool
+	 */
+	private function is_valid_account_entry( $account_data ): bool {
+		if ( ! is_array( $account_data ) || ! isset( $account_data['id'], $account_data['account'], $account_data['is_company'], $account_data['user'], $account_data['access_token'] ) ) {
+			return false;
+		}
+
+		// Img is null when the member has no photo or the Page has no logo.
+		if ( ! array_key_exists( 'img', $account_data ) || ! ( null === $account_data['img'] || is_string( $account_data['img'] ) ) ) {
+			return false;
+		}
+
+		// LinkedIn returns Page ids as integers.
+		return is_int( $account_data['id'] ) || ( is_string( $account_data['id'] ) && '' !== $account_data['id'] );
 	}
 
 	/**

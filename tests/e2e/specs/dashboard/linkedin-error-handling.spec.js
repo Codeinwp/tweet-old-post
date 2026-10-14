@@ -10,6 +10,8 @@ const PAGES_WITHOUT_NOTIFY = 'YToyOntpOjA7YTo2OntzOjI6ImlkIjtzOjIxOiJ1cm46bGk6cG
 const PAGES_ONLY_NOTIFY = 'YToxOntpOjA7YToxOntzOjE0OiJub3RpZnlfdXNlcl9hdCI7aTo0MTAyNDQ0ODAwO319';
 // base64( serialize( [ 'bad-account', [ 'notify_user_at' => 4102444800 ] ] ) ) — account entry is a string, not an array.
 const PAGES_WITH_STRING_ACCOUNT = 'YToyOntpOjA7czoxMToiYmFkLWFjY291bnQiO2k6MTthOjE6e3M6MTQ6Im5vdGlmeV91c2VyX2F0IjtpOjQxMDI0NDQ4MDA7fX0=';
+// Auth service shape: member without a photo, plus a Page with an integer id and no logo (`img` null).
+const PAGES_FROM_AUTH_SERVICE = 'YTozOntpOjA7YTo2OntzOjI6ImlkIjtzOjIxOiJ1cm46bGk6cGVyc29uOkUyRVRFU1QiO3M6NzoiYWNjb3VudCI7czoxNToiZTJlQGV4YW1wbGUuY29tIjtzOjEwOiJpc19jb21wYW55IjtiOjA7czo0OiJ1c2VyIjtzOjEzOiJFMkUgVGVzdCBVc2VyIjtzOjM6ImltZyI7TjtzOjEyOiJhY2Nlc3NfdG9rZW4iO3M6MTQ6ImUyZS10ZXN0LXRva2VuIjt9aToxO2E6Njp7czoyOiJpZCI7aTo1NTUyMjMxO3M6NzoiYWNjb3VudCI7czoxNToiZTJlQGV4YW1wbGUuY29tIjtzOjM6ImltZyI7TjtzOjEwOiJpc19jb21wYW55IjtiOjE7czo0OiJ1c2VyIjtzOjI4OiJMaW5rZWRJbiBQYWdlOiBFMkUgVGVzdCBQYWdlIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO3M6MTQ6ImUyZS10ZXN0LXRva2VuIjt9aToyO2E6MTp7czoxNDoibm90aWZ5X3VzZXJfYXQiO2k6NDEwMjQ0NDgwMDt9fQ==';
 // base64( serialize( [ 'urn:li:person:E2ETEST' ] ) ) — id decodes to an array instead of a string.
 const ARRAY_ID = 'YToxOntpOjA7czoyMToidXJuOmxpOnBlcnNvbjpFMkVURVNUIjt9';
 
@@ -194,6 +196,28 @@ test.describe( 'LinkedIn error handling (issue #1098)', () => {
 		expect( JSON.stringify( linkedin.available_accounts ) ).toContain( 'E2E Test User' );
 
 		// Clean up so other specs start from a pristine accounts state.
+		const reset = await callRopApi( page, 'reset_accounts', {} );
+		expect( reset.body.code ).toBe( '200' );
+	} );
+
+	test( 'page with integer id and accounts without an image are added', async ( { page } ) => {
+		const response = await callRopApi( page, 'add_account_li', {
+			id: VALID_ID,
+			pages: PAGES_FROM_AUTH_SERVICE,
+		} );
+
+		expect( response.status ).toBe( 200 );
+		expect( response.body.code ).toBe( '200' );
+
+		const services = await callRopApi( page, 'get_authenticated_services', {} );
+		const linkedin = Object.values( services.body.data || {} ).find(
+			( s ) => s.service === 'linkedin'
+		);
+		expect( linkedin ).toBeTruthy();
+		const accounts = Object.values( linkedin.available_accounts );
+		expect( accounts.map( ( a ) => a.id ) ).toEqual( [ 'urn:li:person:E2ETEST', '5552231' ] );
+		expect( accounts.map( ( a ) => a.img ) ).toEqual( [ '', '' ] );
+
 		const reset = await callRopApi( page, 'reset_accounts', {} );
 		expect( reset.body.code ).toBe( '200' );
 	} );

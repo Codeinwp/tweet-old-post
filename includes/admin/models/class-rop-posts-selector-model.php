@@ -111,9 +111,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		// Here We are refreshing the taxonomies "on page load"
 		// This method fires whenever the post format page is brought into view.
 		// We're refreshing the taxonomies based on whether that first account has a language assigned or not
-		if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && empty( $language_code ) ) {
+		if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && empty( $language_code ) && ! empty( $this->data['active_accounts'] ) && is_array( $this->data['active_accounts'] ) ) {
 			// check the first active account and it's post format and see if it has a language code.
-			$first_account_id = array_keys( $this->data['active_accounts'] )[0];
+			$first_account_id = array_key_first( $this->data['active_accounts'] );
 			$post_format_model = new Rop_Post_Format_Model;
 			$post_format = $post_format_model->get_post_format( $first_account_id );
 			$first_account_lang = ! empty( $post_format['wpml_language'] ) ? $post_format['wpml_language'] : '';
