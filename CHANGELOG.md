@@ -1,3 +1,12 @@
+##### [Version 9.4.4](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.3...v9.4.4) (2026-10-14)
+
+- Fixed social account selections being cleared when a draft is saved without sharing.
+- Fixed multilingual sites showing an error when no social account is connected.
+- Fixed Facebook sharing to use a supported Graph API version.
+- Fixed Facebook account setup to use a supported Graph API version.
+- Fixed LinkedIn accounts failing to connect for Pages and members without photos
+- Updated dependencies
+
 ##### [Version 9.4.3](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.2...v9.4.3) (2026-09-30)
 
 - Fixed editor crashes when stored license keys are shorter than four characters.
