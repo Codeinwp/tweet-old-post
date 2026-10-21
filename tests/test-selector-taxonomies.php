@@ -62,32 +62,31 @@ class Test_RopSelectorTaxonomies extends WP_UnitTestCase {
 	}
 
 	/**
-	 * WPML before 5.0 is restored by passing the saved language back.
+	 * WPML versions and the language switches each must receive.
 	 *
-	 * @runInSeparateProcess
-	 * @preserveGlobalState disabled
+	 * @return array{'WPML 4.x': array{0: '4.6.13', 1: array{'fr', 'en', 'fr', 'en'}}, 'WPML 5.0': array{0: '5.0.0', 1: array{'fr', null, 'fr', null}}}
 	 */
-	public function test_restores_language_by_code_on_wpml4(): void {
-		define( 'ICL_SITEPRESS_VERSION', '4.6.13' );
-		$this->load_wpml_stub();
-		$this->save_french_account();
-		$languages = $this->record_language_switches();
-
-		$selector = new Rop_Posts_Selector_Model();
-		$selector->get_taxonomies( array( 'post' ) );
-		$selector->select( 'twitter_1_2' );
-
-		$this->assertSame( array( 'fr', 'en', 'fr', 'en' ), $languages->switched );
+	public function provide_wpml_restore_switches(): array {
+		return array(
+			// Before 5.0 the saved language is passed back.
+			'WPML 4.x' => array( '4.6.13', array( 'fr', 'en', 'fr', 'en' ) ),
+			// 5.0 nests switches, so each one is closed with null.
+			'WPML 5.0' => array( '5.0.0', array( 'fr', null, 'fr', null ) ),
+		);
 	}
 
 	/**
-	 * WPML 5.0 nests switches, so each one must be closed with null.
+	 * Each language switch is undone the way the installed WPML expects.
 	 *
+	 * @param string            $wpml_version ICL_SITEPRESS_VERSION to emulate.
+	 * @param list<string|null> $expected     Languages passed to wpml_switch_language, in order.
+	 *
+	 * @dataProvider provide_wpml_restore_switches
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 */
-	public function test_closes_language_scope_on_wpml5(): void {
-		define( 'ICL_SITEPRESS_VERSION', '5.0.0' );
+	public function test_restores_language_for_wpml_version( string $wpml_version, array $expected ): void {
+		define( 'ICL_SITEPRESS_VERSION', $wpml_version );
 		$this->load_wpml_stub();
 		$this->save_french_account();
 		$languages = $this->record_language_switches();
@@ -96,7 +95,7 @@ class Test_RopSelectorTaxonomies extends WP_UnitTestCase {
 		$selector->get_taxonomies( array( 'post' ) );
 		$selector->select( 'twitter_1_2' );
 
-		$this->assertSame( array( 'fr', null, 'fr', null ), $languages->switched );
+		$this->assertSame( $expected, $languages->switched );
 	}
 
 	/**

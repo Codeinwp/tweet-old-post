@@ -11,6 +11,8 @@
 
 /**
  * Class Rop_Posts_Selector_Model
+ *
+ * @phpstan-type TaxQueryClause array{relation: 'AND'|'OR', taxonomy: mixed, terms: mixed, include_children: true, operator: 'IN'|'NOT IN'}
  */
 class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
@@ -412,9 +414,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	/**
 	 * Select the posts to share, resetting the buffer when it runs out.
 	 *
-	 * @param bool|string              $account_id  The account ID, or false for every account.
-	 * @param array<int, string>       $post_types  The post types to query.
-	 * @param array<int|string, mixed> $tax_queries The taxonomies query array.
+	 * @param bool|string                                  $account_id  The account ID, or false for every account.
+	 * @param array<int, string>                           $post_types  The post types to query.
+	 * @param array<int|string, 'AND'|'OR'|TaxQueryClause> $tax_queries The taxonomies query array.
 	 *
 	 * @return array<int, int>|null Post IDs, or null when share-once sharing is already done for the account.
 	 */
