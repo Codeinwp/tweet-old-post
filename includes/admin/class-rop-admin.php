@@ -909,7 +909,7 @@ class Rop_Admin {
 			return;
 		}
 
-		$this->maybe_publish_now( $post->ID, true );
+		$this->maybe_publish_now( $post->ID, true, $new_status );
 	}
 
 	/**
@@ -951,11 +951,13 @@ class Rop_Admin {
 	 * This is hooked to the `save_post` action.
 	 * The values from the Publish Now metabox are saved to the post meta.
 	 *
-	 * @param int  $post_id The post ID.
-	 * @param bool $force Whether to force the action.
+	 * @param int         $post_id     The post ID.
+	 * @param bool        $force       Whether to force the action.
+	 * @param string|null $post_status Status already known to the caller, e.g. from a status transition; read from the post when null.
 	 */
-	public function maybe_publish_now( $post_id, $force = false ) {
-		$post_status = get_post_status( $post_id );
+	public function maybe_publish_now( $post_id, $force = false, ?string $post_status = null ) {
+		// A persistent object cache can lag behind a status transition.
+		$post_status = $post_status ?? get_post_status( $post_id );
 
 		// Check if the status is set to future, for Classic Editor, we will save the publish now meta.
 		if ( in_array( $post_status, array( 'future', 'draft' ), true ) ) {
