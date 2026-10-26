@@ -1974,7 +1974,7 @@ class Rop_Admin {
 		$license = apply_filters( 'product_rop_license_key', false );
 		$status  = apply_filters( 'product_rop_license_status', false );
 		$is_pro  = 'valid' === $status;
-		$is_expired = 'expired' === $status || 'active-expired' === $status;
+		$is_expired = in_array( $status, array( 'expired', 'active_expired', 'active-expired' ), true );
 
 		$pro_product_slug = defined( 'ROP_PRO_BASEFILE' ) ? basename( dirname( ROP_PRO_BASEFILE ) ) : '';
 
