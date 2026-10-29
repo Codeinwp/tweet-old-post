@@ -20,6 +20,11 @@
 class Rop_Bluesky_Api {
 
 	/**
+	 * Lexicon maxSize of a link card thumbnail, in bytes.
+	 */
+	const MAX_THUMB_BYTES = 1000000;
+
+	/**
 	 * Holds response
 	 *
 	 * @var mixed.
@@ -359,7 +364,7 @@ class Rop_Bluesky_Api {
 	 * @return array<string, mixed> The embed, or an empty array when there is nothing to embed.
 	 */
 	private function build_embed( array $post, string $post_type, string $access_token ): array {
-		if ( 'link' !== $post_type && 'image' !== $post_type ) {
+		if ( ! in_array( $post_type, array( 'link', 'image' ), true ) ) {
 			return array();
 		}
 
@@ -377,20 +382,24 @@ class Rop_Bluesky_Api {
 			return $embed;
 		}
 
-		if ( ! empty( $embed ) ) {
-			$embed['external']['thumb'] = $image_blob;
-			return $embed;
+		if ( empty( $embed ) ) {
+			return array(
+				'$type'  => 'app.bsky.embed.images',
+				'images' => array(
+					array(
+						'alt'   => isset( $post['title'] ) ? $post['title'] : '',
+						'image' => $image_blob,
+					),
+				),
+			);
 		}
 
-		return array(
-			'$type'  => 'app.bsky.embed.images',
-			'images' => array(
-				array(
-					'alt'   => isset( $post['title'] ) ? $post['title'] : '',
-					'image' => $image_blob,
-				),
-			),
-		);
+		// An oversized thumb makes createRecord reject the whole post.
+		if ( $image_blob['size'] <= self::MAX_THUMB_BYTES ) {
+			$embed['external']['thumb'] = $image_blob;
+		}
+
+		return $embed;
 	}
 
 	/**

@@ -30,24 +30,24 @@ class Test_RopBlueskyCard extends WP_UnitTestCase {
 	/**
 	 * Call create_post() against mocked Bluesky endpoints and return the record it sent.
 	 *
-	 * @param array<string, mixed> $post             The post passed to create_post().
-	 * @param string               $post_type        Type of the post.
-	 * @param bool                 $upload_succeeds  Whether uploadBlob returns a blob.
+	 * @param array<string, mixed>                                                            $post      The post passed to create_post().
+	 * @param string                                                                          $post_type Type of the post.
+	 * @param array{'$type': string, ref: array{'$link': string}, mimeType: string, size: int}|null $blob      The blob uploadBlob returns, or null when the upload fails.
 	 *
 	 * @return array<string, mixed> The createRecord record.
 	 */
-	private function create_post( array $post, string $post_type, bool $upload_succeeds = true ): array {
+	private function create_post( array $post, string $post_type, ?array $blob = self::BLOB ): array {
 		$captured = null;
 
-		$interceptor = function ( $preempt, $args, $url ) use ( &$captured, $upload_succeeds ) {
+		$interceptor = function ( $preempt, $args, $url ) use ( &$captured, $blob ) {
 			$body = '';
 			$code = 200;
 
 			if ( self::IMAGE_URL === $url ) {
 				$body = 'jpeg-bytes';
 			} elseif ( false !== strpos( $url, 'com.atproto.repo.uploadBlob' ) ) {
-				$code = $upload_succeeds ? 200 : 400;
-				$body = wp_json_encode( $upload_succeeds ? array( 'blob' => self::BLOB ) : array( 'error' => 'BlobTooLarge' ) );
+				$code = null === $blob ? 400 : 200;
+				$body = wp_json_encode( null === $blob ? array( 'error' => 'BlobTooLarge' ) : array( 'blob' => $blob ) );
 			} elseif ( false !== strpos( $url, 'com.atproto.repo.createRecord' ) ) {
 				$captured = json_decode( $args['body'], true );
 				$body     = wp_json_encode(
@@ -149,9 +149,24 @@ class Test_RopBlueskyCard extends WP_UnitTestCase {
 	 * @covers Rop_Bluesky_Api::create_post
 	 */
 	public function test_link_card_has_no_thumbnail_when_upload_fails(): void {
-		$embed = $this->create_post( $this->post_with_image(), 'link', false )['embed'];
+		$embed = $this->create_post( $this->post_with_image(), 'link', null )['embed'];
 
 		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
+		$this->assertArrayNotHasKey( 'thumb', $embed['external'] );
+	}
+
+	/**
+	 * A link card skips a thumbnail over the size Bluesky accepts, rather than failing the share.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_link_card_skips_oversized_thumbnail(): void {
+		$blob = array_merge( self::BLOB, array( 'size' => 1500000 ) );
+
+		$embed = $this->create_post( $this->post_with_image(), 'link', $blob )['embed'];
+
+		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
+		$this->assertSame( self::POST_URL, $embed['external']['uri'] );
 		$this->assertArrayNotHasKey( 'thumb', $embed['external'] );
 	}
 
@@ -173,7 +188,7 @@ class Test_RopBlueskyCard extends WP_UnitTestCase {
 	 * @covers Rop_Bluesky_Api::create_post
 	 */
 	public function test_image_post_with_link_has_no_thumbnail_when_upload_fails(): void {
-		$embed = $this->create_post( $this->post_with_image(), 'image', false )['embed'];
+		$embed = $this->create_post( $this->post_with_image(), 'image', null )['embed'];
 
 		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
 		$this->assertArrayNotHasKey( 'thumb', $embed['external'] );
@@ -198,7 +213,7 @@ class Test_RopBlueskyCard extends WP_UnitTestCase {
 	 * @covers Rop_Bluesky_Api::create_post
 	 */
 	public function test_image_post_without_link_has_no_embed_when_upload_fails(): void {
-		$record = $this->create_post( $this->post_with_image( false ), 'image', false );
+		$record = $this->create_post( $this->post_with_image( false ), 'image', null );
 
 		$this->assertArrayNotHasKey( 'embed', $record );
 	}
