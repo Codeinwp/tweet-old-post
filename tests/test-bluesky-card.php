@@ -16,31 +16,56 @@
  */
 class Test_RopBlueskyCard extends WP_UnitTestCase {
 
+	const POST_URL = 'https://example.org/my-post/';
+
+	const IMAGE_URL = 'https://example.org/wp-content/uploads/featured.jpg';
+
+	const BLOB = array(
+		'$type'    => 'blob',
+		'ref'      => array( '$link' => 'bafkreitestblob' ),
+		'mimeType' => 'image/jpeg',
+		'size'     => 1234,
+	);
+
 	/**
-	 * The link card description must be empty, not a copy of the post body.
+	 * Call create_post() against mocked Bluesky endpoints and return the record it sent.
 	 *
-	 * @covers Rop_Bluesky_Api::create_post
+	 * @param array<string, mixed>                                                            $post      The post passed to create_post().
+	 * @param string                                                                          $post_type Type of the post.
+	 * @param array{'$type': string, ref: array{'$link': string}, mimeType: string, size: int}|null $blob      The blob uploadBlob returns, or null when the upload fails.
+	 *
+	 * @return array<string, mixed> The createRecord record.
 	 */
-	public function test_link_card_description_is_empty() {
+	private function create_post( array $post, string $post_type, ?array $blob = self::BLOB ): array {
 		$captured = null;
 
-		$interceptor = function ( $preempt, $args, $url ) use ( &$captured ) {
-			if ( false === strpos( $url, 'com.atproto.repo.createRecord' ) ) {
-				return $preempt;
-			}
-			$captured = json_decode( $args['body'], true );
+		$interceptor = function ( $preempt, $args, $url ) use ( &$captured, $blob ) {
+			$body = '';
+			$code = 200;
 
-			return array(
-				'headers'  => array(),
-				'body'     => wp_json_encode(
+			if ( self::IMAGE_URL === $url ) {
+				$body = 'jpeg-bytes';
+			} elseif ( false !== strpos( $url, 'com.atproto.repo.uploadBlob' ) ) {
+				$code = null === $blob ? 400 : 200;
+				$body = wp_json_encode( null === $blob ? array( 'error' => 'BlobTooLarge' ) : array( 'blob' => $blob ) );
+			} elseif ( false !== strpos( $url, 'com.atproto.repo.createRecord' ) ) {
+				$captured = json_decode( $args['body'], true );
+				$body     = wp_json_encode(
 					array(
 						'uri' => 'at://did:plc:test/app.bsky.feed.post/test',
 						'cid' => 'test-cid',
 					)
-				),
+				);
+			} else {
+				return $preempt;
+			}
+
+			return array(
+				'headers'  => array(),
+				'body'     => $body,
 				'response' => array(
-					'code'    => 200,
-					'message' => 'OK',
+					'code'    => $code,
+					'message' => 200 === $code ? 'OK' : 'Bad Request',
 				),
 				'cookies'  => array(),
 				'filename' => null,
@@ -49,30 +74,175 @@ class Test_RopBlueskyCard extends WP_UnitTestCase {
 		add_filter( 'pre_http_request', $interceptor, 10, 3 );
 
 		$api = new Rop_Bluesky_Api( 'test.bsky.social', 'test-app-password' );
-		$api->create_post(
-			'did:plc:test',
-			array(
-				'content'  => 'My caption text for this share.',
-				'title'    => 'My Post Title',
-				'post_url' => 'https://example.org/my-post/',
-			),
-			'link',
-			'',
-			'test-access-token'
-		);
+		$api->create_post( 'did:plc:test', $post, $post_type, '', 'test-access-token' );
 
 		remove_filter( 'pre_http_request', $interceptor, 10 );
 
 		$this->assertNotNull( $captured, 'create_post() should have attempted a createRecord request.' );
 
-		$embed = $captured['record']['embed'];
+		return $captured['record'];
+	}
+
+	/**
+	 * Post data with a link and a featured image.
+	 *
+	 * @param bool $with_link Whether the post has a link.
+	 *
+	 * @return array{content: string, title: string, post_url: string, post_image: string, mimetype: array{ext: string, type: string}}
+	 */
+	private function post_with_image( bool $with_link = true ): array {
+		return array(
+			'content'    => 'My caption text for this share.',
+			'title'      => 'My Post Title',
+			'post_url'   => $with_link ? self::POST_URL : '',
+			'post_image' => self::IMAGE_URL,
+			'mimetype'   => array(
+				'ext'  => 'jpg',
+				'type' => 'image/jpeg',
+			),
+		);
+	}
+
+	/**
+	 * The link card description must be empty, not a copy of the post body.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_link_card_description_is_empty() {
+		$record = $this->create_post(
+			array(
+				'content'  => 'My caption text for this share.',
+				'title'    => 'My Post Title',
+				'post_url' => self::POST_URL,
+			),
+			'link'
+		);
+
+		$embed = $record['embed'];
 		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
-		$this->assertSame( 'https://example.org/my-post/', $embed['external']['uri'] );
+		$this->assertSame( self::POST_URL, $embed['external']['uri'] );
 		$this->assertSame( 'My Post Title', $embed['external']['title'] );
 		$this->assertSame(
 			'',
 			$embed['external']['description'],
 			'Link card description must be empty, not a duplicate of the post caption (issue #676).'
 		);
+		$this->assertArrayNotHasKey( 'thumb', $embed['external'] );
+	}
+
+	/**
+	 * A link share uses the post image as the link card thumbnail.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_link_card_uses_post_image_as_thumbnail(): void {
+		$embed = $this->create_post( $this->post_with_image(), 'link' )['embed'];
+
+		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
+		$this->assertSame( self::POST_URL, $embed['external']['uri'] );
+		$this->assertSame( self::BLOB, $embed['external']['thumb'] );
+	}
+
+	/**
+	 * A failed image upload still shares the link card, just without a thumbnail.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_link_card_has_no_thumbnail_when_upload_fails(): void {
+		$embed = $this->create_post( $this->post_with_image(), 'link', null )['embed'];
+
+		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
+		$this->assertArrayNotHasKey( 'thumb', $embed['external'] );
+	}
+
+	/**
+	 * Post types that share a post with a link as a link card.
+	 *
+	 * @return array<string, array{0: string}>
+	 */
+	public function link_card_post_types(): array {
+		return array(
+			'link'  => array( 'link' ),
+			'image' => array( 'image' ),
+		);
+	}
+
+	/**
+	 * A link card skips a thumbnail over the size Bluesky accepts, rather than failing the share.
+	 *
+	 * @dataProvider link_card_post_types
+	 * @covers Rop_Bluesky_Api::create_post
+	 *
+	 * @param string $post_type Type of the post.
+	 */
+	public function test_link_card_skips_oversized_thumbnail( string $post_type ): void {
+		$blob = array_merge( self::BLOB, array( 'size' => Rop_Bluesky_Api::MAX_THUMB_BYTES + 1 ) );
+
+		$embed = $this->create_post( $this->post_with_image(), $post_type, $blob )['embed'];
+
+		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
+		$this->assertSame( self::POST_URL, $embed['external']['uri'] );
+		$this->assertArrayNotHasKey( 'thumb', $embed['external'] );
+	}
+
+	/**
+	 * A link card keeps a thumbnail exactly at the size Bluesky accepts.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_link_card_keeps_thumbnail_at_size_limit(): void {
+		$blob = array_merge( self::BLOB, array( 'size' => Rop_Bluesky_Api::MAX_THUMB_BYTES ) );
+
+		$embed = $this->create_post( $this->post_with_image(), 'link', $blob )['embed'];
+
+		$this->assertSame( $blob, $embed['external']['thumb'] );
+	}
+
+	/**
+	 * An image share with a link uses the image as the link card thumbnail.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_image_post_with_link_uses_image_as_thumbnail(): void {
+		$embed = $this->create_post( $this->post_with_image(), 'image' )['embed'];
+
+		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
+		$this->assertSame( self::BLOB, $embed['external']['thumb'] );
+	}
+
+	/**
+	 * An image share with a link keeps its link card when the image upload fails.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_image_post_with_link_has_no_thumbnail_when_upload_fails(): void {
+		$embed = $this->create_post( $this->post_with_image(), 'image', null )['embed'];
+
+		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
+		$this->assertArrayNotHasKey( 'thumb', $embed['external'] );
+	}
+
+	/**
+	 * An image share without a link embeds the image itself.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_image_post_without_link_embeds_image(): void {
+		$embed = $this->create_post( $this->post_with_image( false ), 'image' )['embed'];
+
+		$this->assertSame( 'app.bsky.embed.images', $embed['$type'] );
+		$this->assertSame( 'My Post Title', $embed['images'][0]['alt'] );
+		$this->assertSame( self::BLOB, $embed['images'][0]['image'] );
+	}
+
+	/**
+	 * An image share without a link is sent as text when the image upload fails.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_image_post_without_link_has_no_embed_when_upload_fails(): void {
+		$record = $this->create_post( $this->post_with_image( false ), 'image', null );
+
+		$this->assertArrayNotHasKey( 'embed', $record );
 	}
 }
