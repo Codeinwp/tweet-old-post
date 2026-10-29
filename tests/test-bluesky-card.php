@@ -156,18 +156,46 @@ class Test_RopBlueskyCard extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Post types that share a post with a link as a link card.
+	 *
+	 * @return array<string, array{0: string}>
+	 */
+	public function link_card_post_types(): array {
+		return array(
+			'link'  => array( 'link' ),
+			'image' => array( 'image' ),
+		);
+	}
+
+	/**
 	 * A link card skips a thumbnail over the size Bluesky accepts, rather than failing the share.
 	 *
+	 * @dataProvider link_card_post_types
 	 * @covers Rop_Bluesky_Api::create_post
+	 *
+	 * @param string $post_type Type of the post.
 	 */
-	public function test_link_card_skips_oversized_thumbnail(): void {
-		$blob = array_merge( self::BLOB, array( 'size' => 1500000 ) );
+	public function test_link_card_skips_oversized_thumbnail( string $post_type ): void {
+		$blob = array_merge( self::BLOB, array( 'size' => Rop_Bluesky_Api::MAX_THUMB_BYTES + 1 ) );
 
-		$embed = $this->create_post( $this->post_with_image(), 'link', $blob )['embed'];
+		$embed = $this->create_post( $this->post_with_image(), $post_type, $blob )['embed'];
 
 		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
 		$this->assertSame( self::POST_URL, $embed['external']['uri'] );
 		$this->assertArrayNotHasKey( 'thumb', $embed['external'] );
+	}
+
+	/**
+	 * A link card keeps a thumbnail exactly at the size Bluesky accepts.
+	 *
+	 * @covers Rop_Bluesky_Api::create_post
+	 */
+	public function test_link_card_keeps_thumbnail_at_size_limit(): void {
+		$blob = array_merge( self::BLOB, array( 'size' => Rop_Bluesky_Api::MAX_THUMB_BYTES ) );
+
+		$embed = $this->create_post( $this->post_with_image(), 'link', $blob )['embed'];
+
+		$this->assertSame( $blob, $embed['external']['thumb'] );
 	}
 
 	/**
