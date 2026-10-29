@@ -310,31 +310,9 @@ class Rop_Bluesky_Api {
 				$record['facets'] = $facets;
 			}
 
-			if ( $post_type === 'link' && isset( $post['post_url'] ) && ! empty( $post['post_url'] ) ) {
-				$record['embed'] = $this->get_external_post_url( $post );
-			}
-
-			if ( $post_type === 'image' ) {
-				$external_embed = $this->get_external_post_url( $post );
-				if ( isset( $post['post_image'], $post['mimetype'] ) && ! empty( $post['post_image'] ) && ! empty( $post['mimetype'] ) ) {
-					$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
-					if ( ! empty( $external_embed ) ) {
-						$external_embed['external']['thumb'] = $image_blob;
-						$record['embed'] = $external_embed;
-					} else {
-						$record['embed'] = array(
-							'$type'   => 'app.bsky.embed.images',
-							'images' => array(
-								array(
-									'alt'   => isset( $post['title'] ) ? $post['title'] : '',
-									'image' => $image_blob,
-								),
-							),
-						);
-					}
-				} elseif ( ! empty( $external_embed ) ) {
-					$record['embed'] = $external_embed;
-				}
+			$embed = $this->build_embed( $post, $post_type, $access_token );
+			if ( ! empty( $embed ) ) {
+				$record['embed'] = $embed;
 			}
 
 			$response = wp_remote_post(
@@ -369,6 +347,50 @@ class Rop_Bluesky_Api {
 			$this->logger->alert_error( 'Bluesky API Error: ' . $e->getMessage() );
 			return false;
 		}
+	}
+
+	/**
+	 * Build the record embed: a link card with the post image as its thumbnail, or an image embed when there is no link.
+	 *
+	 * @param array<string, mixed> $post         The post.
+	 * @param string               $post_type    Type of the post.
+	 * @param string               $access_token The access token for authenticated requests.
+	 *
+	 * @return array<string, mixed> The embed, or an empty array when there is nothing to embed.
+	 */
+	private function build_embed( array $post, string $post_type, string $access_token ): array {
+		if ( 'link' !== $post_type && 'image' !== $post_type ) {
+			return array();
+		}
+
+		$embed = $this->get_external_post_url( $post );
+		if ( 'link' === $post_type && empty( $embed ) ) {
+			return array();
+		}
+
+		if ( empty( $post['post_image'] ) || empty( $post['mimetype']['type'] ) ) {
+			return $embed;
+		}
+
+		$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
+		if ( false === $image_blob ) {
+			return $embed;
+		}
+
+		if ( ! empty( $embed ) ) {
+			$embed['external']['thumb'] = $image_blob;
+			return $embed;
+		}
+
+		return array(
+			'$type'  => 'app.bsky.embed.images',
+			'images' => array(
+				array(
+					'alt'   => isset( $post['title'] ) ? $post['title'] : '',
+					'image' => $image_blob,
+				),
+			),
+		);
 	}
 
 	/**
