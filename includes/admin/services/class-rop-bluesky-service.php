@@ -242,9 +242,28 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Largest image size, in bytes, Bluesky accepts for this share.
+	 *
+	 * A share with a link is posted as a link card, whose thumbnail has a lower
+	 * limit than an image embed, so the filtered limit is capped to it.
+	 *
+	 * @param array<string, mixed> $post_details The post details to be published.
+	 * @return int
+	 */
+	private function get_image_byte_limit( array $post_details ): int {
+		$limit = (int) apply_filters( 'rop_bluesky_max_image_bytes', 1000000 );
+
+		if ( empty( $post_details['post_url'] ) ) {
+			return $limit;
+		}
+
+		return min( $limit, Rop_Bluesky_Api::MAX_THUMB_BYTES );
+	}
+
+	/**
 	 * Pick the highest-resolution local image that fits Bluesky's blob size limit.
 	 *
-	 * Bluesky rejects image blobs larger than 1,000,000 bytes, which is why the
+	 * Bluesky caps image blobs by size (see get_image_byte_limit()), which is why the
 	 * shared image defaults to the WordPress "large" size and often looks blurry.
 	 * This walks the available sizes from largest to smallest and returns the URL
 	 * of the first one whose file is within the limit, so the sharpest acceptable
@@ -298,7 +317,7 @@ class Rop_Bluesky_Service extends Rop_Services_Abstract {
 			return $image_url;
 		}
 
-		$limit    = (int) apply_filters( 'rop_bluesky_max_image_bytes', 1000000 );
+		$limit    = $this->get_image_byte_limit( $post_details );
 		$sizes    = apply_filters( 'rop_bluesky_image_size_priority', array( 'full', '2048x2048', '1536x1536', 'large' ) );
 		$base_dir = trailingslashit( dirname( $full_path ) );
 		$meta     = wp_get_attachment_metadata( $attachment_id );
