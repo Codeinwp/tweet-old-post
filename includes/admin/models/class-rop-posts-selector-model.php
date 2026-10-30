@@ -11,6 +11,8 @@
 
 /**
  * Class Rop_Posts_Selector_Model
+ *
+ * @phpstan-type TaxQueryClause array{relation: 'AND'|'OR', taxonomy: mixed, terms: mixed, include_children: true, operator: 'IN'|'NOT IN'}
  */
 class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
@@ -168,7 +170,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && ! ( empty( $language_code ) && empty( $first_account_lang ) ) ) {
 			// set language back to original
-			$this->switch_language( $wpml_current_lang );
+			$this->restore_language( $wpml_current_lang );
 		}
 
 		if ( empty( $taxonomies ) ) {
@@ -399,6 +401,26 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$tax_queries = $this->build_tax_query();
 		}
 
+		try {
+			return $this->select_posts( $account_id, $post_types, $tax_queries );
+		} finally {
+			if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && ! empty( $post_format['wpml_language'] ) ) {
+				// Sets WP language back to what user set it.
+				$this->restore_language( $wpml_current_lang );
+			}
+		}
+	}
+
+	/**
+	 * Select the posts to share, resetting the buffer when it runs out.
+	 *
+	 * @param bool|string                                  $account_id  The account ID, or false for every account.
+	 * @param array<int, string>                           $post_types  The post types to query.
+	 * @param array<int|string, 'AND'|'OR'|TaxQueryClause> $tax_queries The taxonomies query array.
+	 *
+	 * @return array<int, int>|null Post IDs, or null when share-once sharing is already done for the account.
+	 */
+	private function select_posts( $account_id, array $post_types, array $tax_queries ): ?array {
 		$excluded_by_user = $this->get_excluded_posts();
 		$results          = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
 
@@ -423,7 +445,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			}
 
 			if ( in_array( $account_id, $accounts ) ) {
-				return;
+				return null;
 			}
 
 			$admin_email = get_option( 'admin_email' );
@@ -455,11 +477,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		$this->selection = $results;
-
-		if ( ( function_exists( 'icl_object_id' ) || class_exists( 'TRP_Translate_Press' ) ) && ! empty( $post_format['wpml_language'] ) ) {
-			// Sets WP language back to what user set it.
-			$this->switch_language( $wpml_current_lang );
-		}
 
 		return $results;
 	}
@@ -1082,5 +1099,18 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		} else {
 			do_action( 'wpml_switch_language', $language_code );
 		}
+	}
+
+	/**
+	 * Undo a switch_language() call.
+	 *
+	 * @param string|null $language_code Language code active before the switch.
+	 *
+	 * @return void
+	 */
+	public function restore_language( ?string $language_code ): void {
+		// WPML 5.0+ nests switches and only null closes one; TranslatePress and older WPML need the code back.
+		$wpml_nests_switches = ! class_exists( 'TRP_Translate_Press' ) && defined( 'ICL_SITEPRESS_VERSION' ) && version_compare( ICL_SITEPRESS_VERSION, '5.0', '>=' );
+		$this->switch_language( $wpml_nests_switches ? null : $language_code );
 	}
 }
