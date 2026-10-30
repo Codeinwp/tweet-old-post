@@ -501,7 +501,7 @@ class Rop_Bluesky_Api {
 	 *
 	 * @param string $image_url The image URL.
 	 *
-	 * @return string|false Image binary data or false on failure.
+	 * @return string|false Image binary data, or false when the request fails or the response is not an image.
 	 */
 	public function get_image_blob_from_url( $image_url ) {
 		if ( empty( $image_url ) ) {
@@ -513,6 +513,18 @@ class Rop_Bluesky_Api {
 
 		if ( is_wp_error( $response ) ) {
 			$this->logger->alert_error( 'Bluesky get image blob Error: ' . $response->get_error_message() );
+			return false;
+		}
+
+		$code = wp_remote_retrieve_response_code( $response );
+		if ( 200 !== $code ) {
+			$this->logger->alert_error( 'Bluesky get image blob Error: Unexpected response code ' . $code . '.' );
+			return false;
+		}
+
+		$content_type = wp_remote_retrieve_header( $response, 'content-type' );
+		if ( ! is_string( $content_type ) || 0 !== stripos( $content_type, 'image/' ) ) {
+			$this->logger->alert_error( 'Bluesky get image blob Error: The URL did not return an image.' );
 			return false;
 		}
 
