@@ -27,25 +27,42 @@ class Test_RopBlueskyCard extends WP_UnitTestCase {
 		'size'     => 1234,
 	);
 
+	const IMAGE_RESPONSE = array(
+		'code'         => 200,
+		'content_type' => 'image/jpeg',
+		'body'         => 'jpeg-bytes',
+	);
+
+	/**
+	 * Number of uploadBlob requests made by the last create_post() call.
+	 */
+	private int $blob_uploads = 0;
+
 	/**
 	 * Call create_post() against mocked Bluesky endpoints and return the record it sent.
 	 *
 	 * @param array<string, mixed>                                                            $post      The post passed to create_post().
 	 * @param string                                                                          $post_type Type of the post.
 	 * @param array{'$type': string, ref: array{'$link': string}, mimeType: string, size: int}|null $blob      The blob uploadBlob returns, or null when the upload fails.
+	 * @param array{code: int, content_type: string, body: string}                               $image     The response served for the post image URL.
 	 *
 	 * @return array<string, mixed> The createRecord record.
 	 */
-	private function create_post( array $post, string $post_type, ?array $blob = self::BLOB ): array {
-		$captured = null;
+	private function create_post( array $post, string $post_type, ?array $blob = self::BLOB, array $image = self::IMAGE_RESPONSE ): array {
+		$captured           = null;
+		$this->blob_uploads = 0;
 
-		$interceptor = function ( $preempt, $args, $url ) use ( &$captured, $blob ) {
-			$body = '';
-			$code = 200;
+		$interceptor = function ( $preempt, $args, $url ) use ( &$captured, $blob, $image ) {
+			$body    = '';
+			$code    = 200;
+			$headers = array();
 
 			if ( self::IMAGE_URL === $url ) {
-				$body = 'jpeg-bytes';
+				$code    = $image['code'];
+				$body    = $image['body'];
+				$headers = array( 'content-type' => $image['content_type'] );
 			} elseif ( false !== strpos( $url, 'com.atproto.repo.uploadBlob' ) ) {
+				++$this->blob_uploads;
 				$code = null === $blob ? 400 : 200;
 				$body = wp_json_encode( null === $blob ? array( 'error' => 'BlobTooLarge' ) : array( 'blob' => $blob ) );
 			} elseif ( false !== strpos( $url, 'com.atproto.repo.createRecord' ) ) {
@@ -61,7 +78,7 @@ class Test_RopBlueskyCard extends WP_UnitTestCase {
 			}
 
 			return array(
-				'headers'  => array(),
+				'headers'  => $headers,
 				'body'     => $body,
 				'response' => array(
 					'code'    => $code,
@@ -243,6 +260,77 @@ class Test_RopBlueskyCard extends WP_UnitTestCase {
 	public function test_image_post_without_link_has_no_embed_when_upload_fails(): void {
 		$record = $this->create_post( $this->post_with_image( false ), 'image', null );
 
+		$this->assertArrayNotHasKey( 'embed', $record );
+	}
+
+	/**
+	 * Responses for the post image URL that are not an image.
+	 *
+	 * @return array<string, array{0: array{code: int, content_type: string, body: string}}>
+	 */
+	public function non_image_responses(): array {
+		$page = '<html><body>Not Found</body></html>';
+
+		return array(
+			'404 page'            => array(
+				array(
+					'code'         => 404,
+					'content_type' => 'text/html; charset=UTF-8',
+					'body'         => $page,
+				),
+			),
+			'404 with image type' => array(
+				array(
+					'code'         => 404,
+					'content_type' => 'image/jpeg',
+					'body'         => $page,
+				),
+			),
+			'HTML page with 200'  => array(
+				array(
+					'code'         => 200,
+					'content_type' => 'text/html; charset=UTF-8',
+					'body'         => $page,
+				),
+			),
+			'200 without a type'  => array(
+				array(
+					'code'         => 200,
+					'content_type' => '',
+					'body'         => $page,
+				),
+			),
+		);
+	}
+
+	/**
+	 * A link card goes out without a thumbnail when the post image URL does not return an image.
+	 *
+	 * @dataProvider non_image_responses
+	 * @covers Rop_Bluesky_Api::create_post
+	 *
+	 * @param array{code: int, content_type: string, body: string} $image The response served for the post image URL.
+	 */
+	public function test_link_card_skips_thumbnail_when_image_url_is_not_an_image( array $image ): void {
+		$embed = $this->create_post( $this->post_with_image(), 'link', self::BLOB, $image )['embed'];
+
+		$this->assertSame( 0, $this->blob_uploads );
+		$this->assertSame( 'app.bsky.embed.external', $embed['$type'] );
+		$this->assertArrayNotHasKey( 'thumb', $embed['external'] );
+	}
+
+	/**
+	 * An image share without a link is sent as text when the post image URL does not return an image.
+	 *
+	 * @dataProvider non_image_responses
+	 * @covers Rop_Bluesky_Api::create_post
+	 *
+	 * @param array{code: int, content_type: string, body: string} $image The response served for the post image URL.
+	 */
+	public function test_image_post_has_no_embed_when_image_url_is_not_an_image( array $image ): void {
+		$record = $this->create_post( $this->post_with_image( false ), 'image', self::BLOB, $image );
+
+		$this->assertSame( 0, $this->blob_uploads );
 		$this->assertArrayNotHasKey( 'embed', $record );
 	}
 }
