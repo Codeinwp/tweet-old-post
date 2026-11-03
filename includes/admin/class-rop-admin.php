@@ -1997,7 +1997,7 @@ class Rop_Admin {
 			$cta_label = __( 'Reactivate now', 'tweet-old-post' );
 		} else {
 			// translators: %s is the discount percentage.
-			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '50%' );
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '60%' );
 			// translators: %s - discount.
 			$config['title'] = sprintf( __( 'Revive Social Pro: %s off this week', 'tweet-old-post' ), '60%' );
 			// translators: %s - discount.
