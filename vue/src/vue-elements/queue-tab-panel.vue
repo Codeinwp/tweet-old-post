@@ -80,7 +80,7 @@
       >
         <div
           v-for=" (data, index) in queue "
-          :key="data.post_data.account_id + '-' + data.post_id + '-' + data.time"
+          :key="data.post_data.account_id + '-' + data.post_id + '-' + data.time + '-' + index"
           class="column col-12 text-left"
         >
           <queue-card

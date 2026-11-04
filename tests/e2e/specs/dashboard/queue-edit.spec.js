@@ -40,7 +40,7 @@ test.describe('Sharing Queue edit', () => {
 		accountId = (await ropUtils.seedAccount()).accountId;
 	});
 
-	// Every queue response triggers a cron status fetch that can outlive the test.
+	// The dashboard's cron status fetches can outlive the test.
 	test.afterEach(async ({ page }) => {
 		await page.unrouteAll({ behavior: 'ignoreErrors' });
 	});
@@ -73,16 +73,16 @@ test.describe('Sharing Queue edit', () => {
 		},
 	});
 
-	test('saving an untouched card after a skip keeps the previous caption off the next post', async ({
-		page,
-		admin,
-	}) => {
-		/** @type {QueueItem[]} */
-		let queue = [
-			queueItem(101, 'Content of post A', 2000000000),
-			queueItem(102, 'Content of post B', 2000003600),
-			queueItem(103, 'Content of post C', 2000007200),
-		];
+	/**
+	 * Serve the dashboard on a Business plan with a mocked queue API.
+	 *
+	 * @param {import('@playwright/test').Page} page          Playwright page.
+	 * @param {QueueItem[]}                     initialQueue  Queue the API starts with.
+	 * @param {number}                          failedUpdates Number of leading updates to abort.
+	 * @return {Promise<QueueUpdate[]>} Every update payload sent, in order.
+	 */
+	const mockQueueApi = async (page, initialQueue, failedUpdates = 0) => {
+		let queue = initialQueue;
 		/** @type {QueueUpdate[]} */
 		const updates = [];
 
@@ -118,6 +118,9 @@ test.describe('Sharing Queue edit', () => {
 				} else if (req === 'update_queue_event') {
 					const data = request.postDataJSON();
 					updates.push(data);
+					if (updates.length <= failedUpdates) {
+						return route.abort();
+					}
 					const item = queue.find(
 						(entry) => entry.post_id === data.post_id
 					);
@@ -132,9 +135,32 @@ test.describe('Sharing Queue edit', () => {
 			}
 		);
 
+		return updates;
+	};
+
+	/**
+	 * Open the Sharing Queue tab.
+	 *
+	 * @param {import('@playwright/test').Page} page  Playwright page.
+	 * @param {import('@wordpress/e2e-test-utils-playwright').Admin} admin Admin utils.
+	 * @return {Promise<void>}
+	 */
+	const openQueue = async (page, admin) => {
 		await admin.visitAdminPage('/admin.php?page=TweetOldPost');
 		await tryCloseTourModal(page);
 		await page.getByText('Sharing Queue', { exact: true }).click();
+	};
+
+	test('saving an untouched card after a skip keeps the previous caption off the next post', async ({
+		page,
+		admin,
+	}) => {
+		const updates = await mockQueueApi(page, [
+			queueItem(101, 'Content of post A', 2000000000),
+			queueItem(102, 'Content of post B', 2000003600),
+			queueItem(103, 'Content of post C', 2000007200),
+		]);
+		await openQueue(page, admin);
 
 		const firstCard = page.locator('.tab-view .card').first();
 		await expect(firstCard).toContainText('Content of post A');
@@ -160,5 +186,37 @@ test.describe('Sharing Queue edit', () => {
 		expect(updates[1].post_id).toBe(102);
 		expect(updates[1].custom_data).toEqual({});
 		await expect(firstCard).toContainText('Content of post B');
+	});
+
+	test('saving an untouched card after a failed save drops the hidden draft', async ({
+		page,
+		admin,
+	}) => {
+		const updates = await mockQueueApi(
+			page,
+			[ queueItem(101, 'Content of post A', 2000000000) ],
+			1
+		);
+		await openQueue(page, admin);
+
+		const firstCard = page.locator('.tab-view .card').first();
+		await expect(firstCard).toContainText('Content of post A');
+
+		await firstCard.getByRole('button', { name: 'Edit' }).click();
+		const caption = firstCard.locator('textarea');
+		await caption.clear();
+		await caption.pressSequentially('Draft text');
+		await firstCard.getByRole('button', { name: 'Save' }).click();
+		await expect.poll(() => updates.length).toBe(1);
+		await expect(firstCard).toContainText('Content of post A');
+
+		await firstCard.getByRole('button', { name: 'Edit' }).click();
+		await expect(caption).toHaveValue('Content of post A');
+		await firstCard.getByRole('button', { name: 'Save' }).click();
+
+		await expect.poll(() => updates.length).toBe(2);
+		expect(updates[0].custom_data).toEqual({ text: 'Draft text' });
+		expect(updates[1].post_id).toBe(101);
+		expect(updates[1].custom_data).toEqual({});
 	});
 });
