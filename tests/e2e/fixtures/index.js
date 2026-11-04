@@ -15,6 +15,8 @@ export const test = base.extend({
 		await use({
 			reset: () => call('reset'),
 			seedAccount: () => call('account'),
+			seedWebhookAccount: (name, url) =>
+				call('webhook-account', { name, url }),
 			runPublishNow: (postId) => call('publish-now', { postId }),
 			getRequests: () =>
 				call('requests').then((result) => result.requests),
