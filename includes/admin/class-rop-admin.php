@@ -782,8 +782,7 @@ class Rop_Admin {
 		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
 
 		if ( ! class_exists( 'Classic_Editor' ) ) {
-			$post = get_post( $post_id );
-			return $post && ! use_block_editor_for_post_type( $post->post_type );
+			return self::is_block_editor_disabled( $post_id );
 		}
 
 		$allow_users_to_switch_editors = ( 'allow' === get_option( 'classic-editor-allow-users' ) );
@@ -820,6 +819,45 @@ class Rop_Admin {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check whether WordPress disables the block editor for the post being edited.
+	 *
+	 * Honors the `use_block_editor_for_post` filter, which plugins such as Classic Editor +
+	 * use instead of the post type filter. A new post is checked as an auto-draft of the
+	 * requested post type, since this can run before core creates the draft.
+	 *
+	 * @param int $post_id The edited post ID, 0 on the new post screen.
+	 *
+	 * @return bool
+	 */
+	private static function is_block_editor_disabled( int $post_id ): bool {
+		// WordPress before 5.0 has no block editor.
+		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+			return true;
+		}
+
+		// Block editor meta box save; core would also check its nonce here.
+		if ( isset( $_GET['meta-box-loader'] ) ) {
+			return false;
+		}
+
+		if ( $post_id ) {
+			$post = get_post( $post_id );
+		} else {
+			$post_type = ! empty( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : 'post';
+			$post      = new WP_Post(
+				(object) array(
+					'post_type'   => $post_type,
+					'post_status' => 'auto-draft',
+					// Stops get_post() from reloading post ID 0.
+					'filter'      => 'raw',
+				)
+			);
+		}
+
+		return $post && ! use_block_editor_for_post( $post );
 	}
 
 	/**
