@@ -80,7 +80,7 @@
       >
         <div
           v-for=" (data, index) in queue "
-          :key="index"
+          :key="cardKeys[index]"
           class="column col-12 text-left"
         >
           <queue-card
@@ -115,6 +115,20 @@
 			},
 			queue: function () {
 				return this.$store.state.queue
+			},
+			/**
+			 * Card keys that follow an entry when the queue reorders.
+			 *
+			 * @return {string[]}
+			 */
+			cardKeys: function () {
+				/** @type {Record<string, number>} */
+				const seen = {};
+				return Object.values(this.queue).map(function (data) {
+					const key = data.post_data.account_id + '-' + data.post_id + '-' + data.time;
+					seen[key] = (seen[key] || 0) + 1;
+					return key + '-' + seen[key];
+				});
 			},
 			start_status: function () {
 				return this.$store.state.cron_status.current_status

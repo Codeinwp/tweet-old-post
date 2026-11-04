@@ -13,8 +13,9 @@ if ( 'production' === wp_get_environment_type() && ! in_array( $rop_e2e_host, ar
 	return;
 }
 
-const ROP_E2E_NAMESPACE    = 'rop-e2e/v1';
-const ROP_E2E_STATE_OPTION = '_rop_e2e_mock_state';
+const ROP_E2E_NAMESPACE             = 'rop-e2e/v1';
+const ROP_E2E_STATE_OPTION          = '_rop_e2e_mock_state';
+const ROP_E2E_WEBHOOK_SCHEMA_OPTION = '_rop_e2e_webhook_schema';
 
 function rop_e2e_require_admin() {
 	return current_user_can( 'manage_options' );
@@ -54,6 +55,7 @@ function rop_e2e_reset() {
 	}
 
 	delete_option( ROP_E2E_STATE_OPTION );
+	delete_option( ROP_E2E_WEBHOOK_SCHEMA_OPTION );
 	delete_option( 'rop_twitter_via_rs_app' );
 	wp_clear_scheduled_hook( 'rop_cron_job_publish_now' );
 
@@ -205,6 +207,65 @@ function rop_e2e_get_publish_now_state( WP_REST_Request $request ) {
 	);
 }
 
+/**
+ * Seed a webhook account with no headers.
+ *
+ * @param WP_REST_Request $request Request with `name` and `url`.
+ *
+ * @return WP_REST_Response|WP_Error
+ */
+function rop_e2e_seed_webhook_account( WP_REST_Request $request ) {
+	$loaded = rop_e2e_activate_plugin();
+	if ( is_wp_error( $loaded ) ) {
+		return $loaded;
+	}
+	if ( ! $loaded ) {
+		return new WP_Error( 'rop_e2e_plugin_missing', 'Revive Old Posts is not loaded.', array( 'status' => 500 ) );
+	}
+
+	$webhook = new Rop_Webhook_Service();
+	$added   = $webhook->add_webhook(
+		array(
+			'url'          => esc_url_raw( (string) $request->get_param( 'url' ) ),
+			'display_name' => sanitize_text_field( (string) $request->get_param( 'name' ) ),
+		)
+	);
+	if ( ! $added ) {
+		return new WP_Error( 'rop_e2e_webhook_invalid', 'A webhook url is required.', array( 'status' => 400 ) );
+	}
+
+	( new Rop_Services_Model() )->add_authenticated_service( array( $webhook->get_service_id() => $webhook->get_service() ) );
+	update_option( ROP_E2E_WEBHOOK_SCHEMA_OPTION, true, false );
+
+	return rest_ensure_response( array( 'ok' => true ) );
+}
+
+/**
+ * Add the webhook form fields Pro registers, so seeded webhooks can be edited.
+ *
+ * @param array<string, array<string, mixed>> $services Available services.
+ *
+ * @return array<string, array<string, mixed>>
+ */
+function rop_e2e_webhook_schema( $services ) {
+	if ( ! get_option( ROP_E2E_WEBHOOK_SCHEMA_OPTION ) || ! empty( $services['webhook']['credentials'] ) ) {
+		return $services;
+	}
+
+	$services['webhook']['credentials'] = array(
+		'display_name' => array(
+			'name'        => 'Name',
+			'description' => 'The name of the webhook.',
+		),
+		'url'          => array(
+			'name'        => 'Webhook URL',
+			'description' => 'The endpoint to send the data.',
+		),
+	);
+
+	return $services;
+}
+
 function rop_e2e_get_requests() {
 	$state = get_option( ROP_E2E_STATE_OPTION, array() );
 
@@ -212,6 +273,7 @@ function rop_e2e_get_requests() {
 }
 
 add_filter( 'rop_dont_work_on_staging', '__return_false', PHP_INT_MAX );
+add_filter( 'rop_available_services', 'rop_e2e_webhook_schema' );
 
 add_filter(
 	'pre_http_request',
@@ -250,6 +312,7 @@ add_action(
 
 		register_rest_route( ROP_E2E_NAMESPACE, '/reset', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_reset' ) );
 		register_rest_route( ROP_E2E_NAMESPACE, '/account', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_seed_account' ) );
+		register_rest_route( ROP_E2E_NAMESPACE, '/webhook-account', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_seed_webhook_account' ) );
 		register_rest_route( ROP_E2E_NAMESPACE, '/publish-now', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_run_publish_now' ) );
 		register_rest_route( ROP_E2E_NAMESPACE, '/requests', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_get_requests' ) );
 		register_rest_route( ROP_E2E_NAMESPACE, '/queued-post', $admin + array( 'methods' => 'POST', 'callback' => 'rop_e2e_seed_queued_post' ) );

@@ -1,7 +1,4 @@
-/**
- * WordPress dependencies
- */
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect } from '../../fixtures';
 
 test.describe( 'Accounts', () => {
 
@@ -35,5 +32,35 @@ test.describe( 'Accounts', () => {
         await expect( page.getByRole('button', { name: 'GMB' }) ).toBeVisible();
         await expect( page.getByRole('button', { name: 'Vk' }) ).toBeVisible();
         await expect( page.getByRole('button', { name: 'Webhook' }) ).toBeVisible();
+	} );
+} );
+
+test.describe( 'Webhook account editing', () => {
+	test.beforeEach( async ( { ropUtils } ) => {
+		await ropUtils.reset();
+		await ropUtils.seedWebhookAccount( 'Webhook A', 'https://a.example.test/hook' );
+		await ropUtils.seedWebhookAccount( 'Webhook B', 'https://b.example.test/hook' );
+	} );
+
+	test( 'an unadded header typed for one webhook is gone when editing another', async ( { admin, page } ) => {
+		await admin.visitAdminPage( '/admin.php?page=TweetOldPost' );
+		await page.waitForSelector( '.tab-view[type="accounts"]' );
+
+		const modal = page.locator( '.modal.active' );
+		const newHeader = modal.locator( '.webhook-headers input' ).last();
+
+		await page.locator( '.rop-account', { hasText: 'Webhook A' } ).locator( '.rop-edit-account' ).click();
+		await modal.getByRole( 'button', { name: 'Edit Headers' } ).click();
+		await newHeader.fill( 'X-Draft: from-A' );
+		await modal.locator( '.modal-header .btn-clear' ).click();
+		await expect( modal ).toHaveCount( 0 );
+
+		await page.locator( '.rop-account', { hasText: 'Webhook B' } ).locator( '.rop-edit-account' ).click();
+		const editHeaders = modal.getByRole( 'button', { name: 'Edit Headers' } );
+		await expect( modal.getByRole( 'button', { name: /^(Edit Headers|Hide)$/ } ) ).toBeVisible();
+		if ( await editHeaders.isVisible() ) {
+			await editHeaders.click();
+		}
+		await expect( newHeader ).toHaveValue( '' );
 	} );
 } );

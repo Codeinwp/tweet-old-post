@@ -372,10 +372,10 @@
 					}
 				}).then(response => {
 					this.is_loading = false;
-					this.toggleEditState()
+					this.cancelChanges()
 				}, error => {
 					this.is_loading = false;
-					this.toggleEditState()
+					this.cancelChanges()
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				})
 			},
