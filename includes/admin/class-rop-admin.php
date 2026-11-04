@@ -755,15 +755,9 @@ class Rop_Admin {
 	/**
 	 * Check if we are using the classic editor.
 	 *
-	 * This is quite complex as it needs to check various conditions:
-	 * - If the Classic Editor plugin is active.
-	 * - If the Disabled Gutenberg plugin is active.
-	 * - If the post is saved with the Classic Editor.
-	 * - If the user has selected the Classic Editor in their profile.
-	 * - If the post is a new post (post_id is 0).
-	 * - If the Classic Editor is set to replace the block editor.
-	 * - If the user has the option to switch editors.
-	 * Some edge cases might still exist, but this should cover most scenarios.
+	 * WPBakery's backend editor and Disable Gutenberg are detected directly. Everything else,
+	 * including the Classic Editor plugin's per-user and per-post choice, follows core's
+	 * block editor filters, which is how those plugins switch the editor.
 	 *
 	 * @return bool
 	 * @since 8.0.0
@@ -781,45 +775,46 @@ class Rop_Admin {
 
 		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
 
-		if ( ! class_exists( 'Classic_Editor' ) ) {
+		return self::is_block_editor_disabled( $post_id );
+	}
+
+	/**
+	 * Check whether WordPress disables the block editor for the post being edited.
+	 *
+	 * Honors the `use_block_editor_for_post` filter, which plugins such as Classic Editor +
+	 * use instead of the post type filter. A new post is checked as an auto-draft of the
+	 * requested post type, since this can run before core creates the draft.
+	 *
+	 * @param int $post_id The edited post ID, 0 on the new post screen.
+	 *
+	 * @return bool
+	 */
+	private static function is_block_editor_disabled( int $post_id ): bool {
+		// WordPress before 5.0 has no block editor.
+		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+			return true;
+		}
+
+		// Block editor meta box save; core would also check its nonce here.
+		if ( isset( $_GET['meta-box-loader'] ) ) {
+			return false;
+		}
+
+		if ( $post_id ) {
 			$post = get_post( $post_id );
-			return $post && ! use_block_editor_for_post_type( $post->post_type );
+		} else {
+			$post_type = ! empty( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : 'post';
+			$post      = new WP_Post(
+				(object) array(
+					'post_type'   => $post_type,
+					'post_status' => 'auto-draft',
+					// Stops get_post() from reloading post ID 0.
+					'filter'      => 'raw',
+				)
+			);
 		}
 
-		$allow_users_to_switch_editors = ( 'allow' === get_option( 'classic-editor-allow-users' ) );
-
-		if ( $post_id && $allow_users_to_switch_editors && ! isset( $_GET['classic-editor__forget'] ) ) {
-			$was_saved_with_classic_editor = ( 'classic-editor' === get_post_meta( $post_id, 'classic-editor-remember', true ) );
-			if ( $was_saved_with_classic_editor ) {
-				return true;
-			}
-		}
-
-		if ( isset( $_GET['classic-editor'] ) ) {
-			return true;
-		}
-
-		$option = get_option( 'classic-editor-replace' );
-
-		$use_classic_editor = ( empty( $option ) || $option === 'classic' || $option === 'replace' );
-
-		$user_classic_editor = get_user_meta( get_current_user_id(), 'wp_classic-editor-settings', true );
-
-		if ( ! $allow_users_to_switch_editors && $use_classic_editor ) {
-			return true;
-		}
-
-		// if user has selected the classic editor, we will use it.
-		if ( $allow_users_to_switch_editors && ! empty( $user_classic_editor ) && $user_classic_editor === 'classic' ) {
-			return true;
-		}
-
-		// if post_id is zero, we are on the new post screen.
-		if ( $post_id === 0 && $use_classic_editor && $user_classic_editor !== 'block' ) {
-			return true;
-		}
-
-		return false;
+		return $post && ! use_block_editor_for_post( $post );
 	}
 
 	/**
