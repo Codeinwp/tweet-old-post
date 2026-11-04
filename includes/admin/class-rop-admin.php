@@ -818,7 +818,8 @@ class Rop_Admin {
 			return true;
 		}
 
-		return false;
+		// Classic Editor decides the rest, e.g. posts without blocks, through this filter.
+		return self::is_block_editor_disabled( $post_id );
 	}
 
 	/**

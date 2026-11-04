@@ -70,6 +70,34 @@ class Test_RopClassicEditorDetection extends WP_UnitTestCase {
 		$this->assertFalse( Rop_Admin::is_classic_editor() );
 	}
 
+	/**
+	 * With users allowed to switch, Classic Editor picks the editor through the post filter.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_classic_editor_plugin_choice_is_followed_when_no_override_applies(): void {
+		if ( ! class_exists( 'Classic_Editor' ) ) {
+			eval( 'class Classic_Editor {}' );
+		}
+		update_option( 'classic-editor-allow-users', 'allow' );
+		update_option( 'classic-editor-replace', 'block' );
+		add_filter(
+			'use_block_editor_for_post',
+			static function ( bool $use_block_editor, WP_Post $post ): bool {
+				return has_blocks( $post ) ? $use_block_editor : false;
+			},
+			10,
+			2
+		);
+
+		$_GET['post'] = (string) self::factory()->post->create( array( 'post_content' => 'Plain text.' ) );
+		$this->assertTrue( Rop_Admin::is_classic_editor() );
+
+		$_GET['post'] = (string) self::factory()->post->create( array( 'post_content' => '<!-- wp:paragraph --><p>Blocks.</p><!-- /wp:paragraph -->' ) );
+		$this->assertFalse( Rop_Admin::is_classic_editor() );
+	}
+
 	public function test_block_editor_posts_are_not_classic(): void {
 		$this->assertFalse( Rop_Admin::is_classic_editor() );
 
