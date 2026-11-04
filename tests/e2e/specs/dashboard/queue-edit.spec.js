@@ -219,4 +219,38 @@ test.describe('Sharing Queue edit', () => {
 		expect(updates[1].post_id).toBe(101);
 		expect(updates[1].custom_data).toEqual({});
 	});
+
+	test('an open editor keeps its draft when a card above it is skipped', async ({
+		page,
+		admin,
+	}) => {
+		const updates = await mockQueueApi(page, [
+			queueItem(101, 'Content of post A', 2000000000),
+			queueItem(102, 'Content of post B', 2000003600),
+			queueItem(103, 'Content of post C', 2000007200),
+		]);
+		await openQueue(page, admin);
+
+		const cards = page.locator('.tab-view .card');
+		await expect(cards.nth(1)).toContainText('Content of post B');
+
+		await cards.nth(1).getByRole('button', { name: 'Edit' }).click();
+		const caption = cards.nth(1).locator('textarea');
+		await caption.clear();
+		await caption.pressSequentially('Draft for post B');
+
+		await cards.first().getByRole('button', { name: 'Skip' }).click();
+		await expect(cards).toHaveCount(2);
+
+		await expect(cards.first().locator('textarea')).toHaveValue(
+			'Draft for post B'
+		);
+		await cards.first().getByRole('button', { name: 'Save' }).click();
+
+		await expect.poll(() => updates.length).toBe(1);
+		expect(updates[0]).toMatchObject({
+			post_id: 102,
+			custom_data: { text: 'Draft for post B' },
+		});
+	});
 });
