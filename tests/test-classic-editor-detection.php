@@ -12,7 +12,7 @@
 class Test_RopClassicEditorDetection extends WP_UnitTestCase {
 
 	public function tearDown(): void {
-		unset( $_GET['post'], $_GET['post_type'], $_GET['meta-box-loader'], $GLOBALS['post'] );
+		unset( $_GET['post'], $_GET['post_type'], $_GET['meta-box-loader'], $_GET['classic-editor__forget'], $GLOBALS['post'] );
 		unregister_post_type( 'rop_no_rest' );
 		set_current_screen( 'front' );
 		parent::tearDown();
@@ -76,7 +76,7 @@ class Test_RopClassicEditorDetection extends WP_UnitTestCase {
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 */
-	public function test_classic_editor_plugin_choice_is_followed_when_no_override_applies(): void {
+	public function test_classic_editor_plugin_choice_is_followed_for_posts_without_blocks(): void {
 		if ( ! class_exists( 'Classic_Editor' ) ) {
 			eval( 'class Classic_Editor {}' );
 		}
@@ -95,6 +95,31 @@ class Test_RopClassicEditorDetection extends WP_UnitTestCase {
 		$this->assertTrue( Rop_Admin::is_classic_editor() );
 
 		$_GET['post'] = (string) self::factory()->post->create( array( 'post_content' => '<!-- wp:paragraph --><p>Blocks.</p><!-- /wp:paragraph -->' ) );
+		$this->assertFalse( Rop_Admin::is_classic_editor() );
+	}
+
+	/**
+	 * Switching a post to the block editor overrides a classic profile setting.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_switch_to_block_editor_is_followed_over_classic_user_setting(): void {
+		if ( ! class_exists( 'Classic_Editor' ) ) {
+			eval( 'class Classic_Editor {}' );
+		}
+		update_option( 'classic-editor-allow-users', 'allow' );
+		update_option( 'classic-editor-replace', 'classic' );
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		update_user_meta( get_current_user_id(), 'wp_classic-editor-settings', 'classic' );
+		$post_id = self::factory()->post->create( array( 'post_content' => 'Plain text.' ) );
+		update_post_meta( $post_id, 'classic-editor-remember', 'classic-editor' );
+		// Classic Editor keeps the block editor for its "Switch to block editor" link.
+		add_filter( 'use_block_editor_for_post', '__return_true', 100 );
+
+		$_GET['post']                   = (string) $post_id;
+		$_GET['classic-editor__forget'] = '';
+
 		$this->assertFalse( Rop_Admin::is_classic_editor() );
 	}
 

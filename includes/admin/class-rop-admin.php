@@ -755,15 +755,9 @@ class Rop_Admin {
 	/**
 	 * Check if we are using the classic editor.
 	 *
-	 * This is quite complex as it needs to check various conditions:
-	 * - If the Classic Editor plugin is active.
-	 * - If the Disabled Gutenberg plugin is active.
-	 * - If the post is saved with the Classic Editor.
-	 * - If the user has selected the Classic Editor in their profile.
-	 * - If the post is a new post (post_id is 0).
-	 * - If the Classic Editor is set to replace the block editor.
-	 * - If the user has the option to switch editors.
-	 * Some edge cases might still exist, but this should cover most scenarios.
+	 * WPBakery's backend editor and Disable Gutenberg are detected directly. Everything else,
+	 * including the Classic Editor plugin's per-user and per-post choice, follows core's
+	 * block editor filters, which is how those plugins switch the editor.
 	 *
 	 * @return bool
 	 * @since 8.0.0
@@ -781,44 +775,6 @@ class Rop_Admin {
 
 		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
 
-		if ( ! class_exists( 'Classic_Editor' ) ) {
-			return self::is_block_editor_disabled( $post_id );
-		}
-
-		$allow_users_to_switch_editors = ( 'allow' === get_option( 'classic-editor-allow-users' ) );
-
-		if ( $post_id && $allow_users_to_switch_editors && ! isset( $_GET['classic-editor__forget'] ) ) {
-			$was_saved_with_classic_editor = ( 'classic-editor' === get_post_meta( $post_id, 'classic-editor-remember', true ) );
-			if ( $was_saved_with_classic_editor ) {
-				return true;
-			}
-		}
-
-		if ( isset( $_GET['classic-editor'] ) ) {
-			return true;
-		}
-
-		$option = get_option( 'classic-editor-replace' );
-
-		$use_classic_editor = ( empty( $option ) || $option === 'classic' || $option === 'replace' );
-
-		$user_classic_editor = get_user_meta( get_current_user_id(), 'wp_classic-editor-settings', true );
-
-		if ( ! $allow_users_to_switch_editors && $use_classic_editor ) {
-			return true;
-		}
-
-		// if user has selected the classic editor, we will use it.
-		if ( $allow_users_to_switch_editors && ! empty( $user_classic_editor ) && $user_classic_editor === 'classic' ) {
-			return true;
-		}
-
-		// if post_id is zero, we are on the new post screen.
-		if ( $post_id === 0 && $use_classic_editor && $user_classic_editor !== 'block' ) {
-			return true;
-		}
-
-		// Classic Editor decides the rest, e.g. posts without blocks, through this filter.
 		return self::is_block_editor_disabled( $post_id );
 	}
 
