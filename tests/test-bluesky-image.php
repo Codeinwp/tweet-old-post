@@ -105,4 +105,62 @@ class Test_RopBlueskyImage extends WP_UnitTestCase {
 
 		wp_delete_attachment( $attach_id, true );
 	}
+
+	/**
+	 * With the image limit raised to 2MB, a share with a link (a link card) picks the
+	 * largest size within the card thumbnail limit, while an image share keeps the
+	 * raised limit.
+	 *
+	 * @covers Rop_Bluesky_Service::get_blob_safe_image_url
+	 */
+	public function test_link_card_image_fits_thumbnail_limit(): void {
+		$uploads = wp_get_upload_dir();
+		$full    = $uploads['basedir'] . '/rop-bsky-card.jpg';
+		$large   = $uploads['basedir'] . '/rop-bsky-card-1024x1024.jpg';
+		file_put_contents( $full, str_repeat( 'a', 1500000 ) );
+		file_put_contents( $large, str_repeat( 'a', 500000 ) );
+
+		$attach_id = wp_insert_attachment(
+			array(
+				'post_mime_type' => 'image/jpeg',
+				'post_title'     => 'rop-bsky-card',
+				'post_status'    => 'inherit',
+			),
+			$full
+		);
+		wp_update_attachment_metadata(
+			$attach_id,
+			array(
+				'file'  => 'rop-bsky-card.jpg',
+				'sizes' => array(
+					'large' => array( 'file' => 'rop-bsky-card-1024x1024.jpg' ),
+				),
+			)
+		);
+
+		$two_mb = function (): int {
+			return 2000000;
+		};
+		add_filter( 'rop_bluesky_max_image_bytes', $two_mb );
+
+		$full_url = $uploads['baseurl'] . '/rop-bsky-card.jpg';
+		$link     = $this->resolve(
+			array(
+				'post_image' => $full_url,
+				'post_url'   => 'https://example.org/my-post/',
+			)
+		);
+		$image    = $this->resolve(
+			array(
+				'post_image' => $full_url,
+				'post_url'   => '',
+			)
+		);
+
+		remove_filter( 'rop_bluesky_max_image_bytes', $two_mb );
+		wp_delete_attachment( $attach_id, true );
+
+		$this->assertSame( $uploads['baseurl'] . '/rop-bsky-card-1024x1024.jpg', $link );
+		$this->assertSame( $full_url, $image );
+	}
 }

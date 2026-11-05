@@ -320,6 +320,41 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A cron-published scheduled post still queues the share when a racing
+	 * request has put the pre-publish copy back in the object cache.
+	 */
+	public function test_scheduled_post_shares_with_stale_status_cache(): void {
+		$account_id = Rop_InitAccounts::get_account_id();
+		$post_id    = self::factory()->post->create(
+			array(
+				'post_status' => 'future',
+				'post_date'   => gmdate( 'Y-m-d H:i:s', time() + HOUR_IN_SECONDS ),
+			)
+		);
+
+		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', array( $account_id => '' ) );
+
+		$cache_stale_copy = static function ( string $new_status, string $old_status, WP_Post $post ): void {
+			$stale              = clone $post;
+			$stale->post_status = $old_status;
+			wp_cache_set( $post->ID, $stale, 'posts' );
+		};
+
+		wp_set_current_user( 0 );
+		add_filter( 'wp_doing_cron', '__return_true' );
+		add_action( 'transition_post_status', $cache_stale_copy, 5, 3 );
+
+		wp_publish_post( $post_id );
+
+		remove_action( 'transition_post_status', $cache_stale_copy, 5 );
+		remove_filter( 'wp_doing_cron', '__return_true' );
+		clean_post_cache( $post_id );
+
+		$this->assertSame( 'queued', get_post_meta( $post_id, 'rop_publish_now_status', true ) );
+	}
+
+	/**
 	 * The Classic Editor metabox is an explicit opt-in, so submitting it on an
 	 * already-published post must still share.
 	 */

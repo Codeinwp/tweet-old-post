@@ -76,5 +76,8 @@
         <testsuite name="facebook-graph-version">
             <directory>./tests/test-facebook-graph-version.php</directory>
         </testsuite>
+        <testsuite name="classic-editor-detection">
+            <directory>./tests/test-classic-editor-detection.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

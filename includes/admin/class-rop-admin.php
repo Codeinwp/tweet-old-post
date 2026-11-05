@@ -755,15 +755,9 @@ class Rop_Admin {
 	/**
 	 * Check if we are using the classic editor.
 	 *
-	 * This is quite complex as it needs to check various conditions:
-	 * - If the Classic Editor plugin is active.
-	 * - If the Disabled Gutenberg plugin is active.
-	 * - If the post is saved with the Classic Editor.
-	 * - If the user has selected the Classic Editor in their profile.
-	 * - If the post is a new post (post_id is 0).
-	 * - If the Classic Editor is set to replace the block editor.
-	 * - If the user has the option to switch editors.
-	 * Some edge cases might still exist, but this should cover most scenarios.
+	 * WPBakery's backend editor and Disable Gutenberg are detected directly. Everything else,
+	 * including the Classic Editor plugin's per-user and per-post choice, follows core's
+	 * block editor filters, which is how those plugins switch the editor.
 	 *
 	 * @return bool
 	 * @since 8.0.0
@@ -781,45 +775,46 @@ class Rop_Admin {
 
 		$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
 
-		if ( ! class_exists( 'Classic_Editor' ) ) {
+		return self::is_block_editor_disabled( $post_id );
+	}
+
+	/**
+	 * Check whether WordPress disables the block editor for the post being edited.
+	 *
+	 * Honors the `use_block_editor_for_post` filter, which plugins such as Classic Editor +
+	 * use instead of the post type filter. A new post is checked as an auto-draft of the
+	 * requested post type, since this can run before core creates the draft.
+	 *
+	 * @param int $post_id The edited post ID, 0 on the new post screen.
+	 *
+	 * @return bool
+	 */
+	private static function is_block_editor_disabled( int $post_id ): bool {
+		// WordPress before 5.0 has no block editor.
+		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+			return true;
+		}
+
+		// Block editor meta box save; core would also check its nonce here.
+		if ( isset( $_GET['meta-box-loader'] ) ) {
+			return false;
+		}
+
+		if ( $post_id ) {
 			$post = get_post( $post_id );
-			return $post && ! use_block_editor_for_post_type( $post->post_type );
+		} else {
+			$post_type = ! empty( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : 'post';
+			$post      = new WP_Post(
+				(object) array(
+					'post_type'   => $post_type,
+					'post_status' => 'auto-draft',
+					// Stops get_post() from reloading post ID 0.
+					'filter'      => 'raw',
+				)
+			);
 		}
 
-		$allow_users_to_switch_editors = ( 'allow' === get_option( 'classic-editor-allow-users' ) );
-
-		if ( $post_id && $allow_users_to_switch_editors && ! isset( $_GET['classic-editor__forget'] ) ) {
-			$was_saved_with_classic_editor = ( 'classic-editor' === get_post_meta( $post_id, 'classic-editor-remember', true ) );
-			if ( $was_saved_with_classic_editor ) {
-				return true;
-			}
-		}
-
-		if ( isset( $_GET['classic-editor'] ) ) {
-			return true;
-		}
-
-		$option = get_option( 'classic-editor-replace' );
-
-		$use_classic_editor = ( empty( $option ) || $option === 'classic' || $option === 'replace' );
-
-		$user_classic_editor = get_user_meta( get_current_user_id(), 'wp_classic-editor-settings', true );
-
-		if ( ! $allow_users_to_switch_editors && $use_classic_editor ) {
-			return true;
-		}
-
-		// if user has selected the classic editor, we will use it.
-		if ( $allow_users_to_switch_editors && ! empty( $user_classic_editor ) && $user_classic_editor === 'classic' ) {
-			return true;
-		}
-
-		// if post_id is zero, we are on the new post screen.
-		if ( $post_id === 0 && $use_classic_editor && $user_classic_editor !== 'block' ) {
-			return true;
-		}
-
-		return false;
+		return $post && ! use_block_editor_for_post( $post );
 	}
 
 	/**
@@ -909,7 +904,7 @@ class Rop_Admin {
 			return;
 		}
 
-		$this->maybe_publish_now( $post->ID, true );
+		$this->maybe_publish_now( $post->ID, true, $new_status );
 	}
 
 	/**
@@ -951,11 +946,13 @@ class Rop_Admin {
 	 * This is hooked to the `save_post` action.
 	 * The values from the Publish Now metabox are saved to the post meta.
 	 *
-	 * @param int  $post_id The post ID.
-	 * @param bool $force Whether to force the action.
+	 * @param int         $post_id     The post ID.
+	 * @param bool        $force       Whether to force the action.
+	 * @param string|null $post_status Status already known to the caller, e.g. from a status transition; read from the post when null.
 	 */
-	public function maybe_publish_now( $post_id, $force = false ) {
-		$post_status = get_post_status( $post_id );
+	public function maybe_publish_now( $post_id, $force = false, ?string $post_status = null ) {
+		// A persistent object cache can lag behind a status transition.
+		$post_status = $post_status ?? get_post_status( $post_id );
 
 		// Check if the status is set to future, for Classic Editor, we will save the publish now meta.
 		if ( in_array( $post_status, array( 'future', 'draft' ), true ) ) {
@@ -1972,7 +1969,7 @@ class Rop_Admin {
 		$license = apply_filters( 'product_rop_license_key', false );
 		$status  = apply_filters( 'product_rop_license_status', false );
 		$is_pro  = 'valid' === $status;
-		$is_expired = 'expired' === $status || 'active-expired' === $status;
+		$is_expired = in_array( $status, array( 'expired', 'active_expired', 'active-expired' ), true );
 
 		$pro_product_slug = defined( 'ROP_PRO_BASEFILE' ) ? basename( dirname( ROP_PRO_BASEFILE ) ) : '';
 
@@ -1995,7 +1992,7 @@ class Rop_Admin {
 			$cta_label = __( 'Reactivate now', 'tweet-old-post' );
 		} else {
 			// translators: %s is the discount percentage.
-			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '50%' );
+			$config['plugin_meta_message'] = sprintf( __( 'Black Friday Sale - %s off', 'tweet-old-post' ), '60%' );
 			// translators: %s - discount.
 			$config['title'] = sprintf( __( 'Revive Social Pro: %s off this week', 'tweet-old-post' ), '60%' );
 			// translators: %s - discount.

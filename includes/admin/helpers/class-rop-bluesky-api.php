@@ -20,6 +20,11 @@
 class Rop_Bluesky_Api {
 
 	/**
+	 * Lexicon maxSize of a link card thumbnail, in bytes.
+	 */
+	const MAX_THUMB_BYTES = 1000000;
+
+	/**
 	 * Holds response
 	 *
 	 * @var mixed.
@@ -310,31 +315,9 @@ class Rop_Bluesky_Api {
 				$record['facets'] = $facets;
 			}
 
-			if ( $post_type === 'link' && isset( $post['post_url'] ) && ! empty( $post['post_url'] ) ) {
-				$record['embed'] = $this->get_external_post_url( $post );
-			}
-
-			if ( $post_type === 'image' ) {
-				$external_embed = $this->get_external_post_url( $post );
-				if ( isset( $post['post_image'], $post['mimetype'] ) && ! empty( $post['post_image'] ) && ! empty( $post['mimetype'] ) ) {
-					$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
-					if ( ! empty( $external_embed ) ) {
-						$external_embed['external']['thumb'] = $image_blob;
-						$record['embed'] = $external_embed;
-					} else {
-						$record['embed'] = array(
-							'$type'   => 'app.bsky.embed.images',
-							'images' => array(
-								array(
-									'alt'   => isset( $post['title'] ) ? $post['title'] : '',
-									'image' => $image_blob,
-								),
-							),
-						);
-					}
-				} elseif ( ! empty( $external_embed ) ) {
-					$record['embed'] = $external_embed;
-				}
+			$embed = $this->build_embed( $post, $post_type, $access_token );
+			if ( ! empty( $embed ) ) {
+				$record['embed'] = $embed;
 			}
 
 			$response = wp_remote_post(
@@ -369,6 +352,54 @@ class Rop_Bluesky_Api {
 			$this->logger->alert_error( 'Bluesky API Error: ' . $e->getMessage() );
 			return false;
 		}
+	}
+
+	/**
+	 * Build the record embed: a link card with the post image as its thumbnail, or an image embed when there is no link.
+	 *
+	 * @param array<string, mixed> $post         The post.
+	 * @param string               $post_type    Type of the post.
+	 * @param string               $access_token The access token for authenticated requests.
+	 *
+	 * @return array<string, mixed> The embed, or an empty array when there is nothing to embed.
+	 */
+	private function build_embed( array $post, string $post_type, string $access_token ): array {
+		if ( ! in_array( $post_type, array( 'link', 'image' ), true ) ) {
+			return array();
+		}
+
+		$embed = $this->get_external_post_url( $post );
+		if ( 'link' === $post_type && empty( $embed ) ) {
+			return array();
+		}
+
+		if ( empty( $post['post_image'] ) || empty( $post['mimetype']['type'] ) ) {
+			return $embed;
+		}
+
+		$image_blob = $this->upload_blob( $access_token, $post['post_image'], $post['mimetype']['type'] );
+		if ( false === $image_blob ) {
+			return $embed;
+		}
+
+		if ( empty( $embed ) ) {
+			return array(
+				'$type'  => 'app.bsky.embed.images',
+				'images' => array(
+					array(
+						'alt'   => isset( $post['title'] ) ? $post['title'] : '',
+						'image' => $image_blob,
+					),
+				),
+			);
+		}
+
+		// An oversized thumb makes createRecord reject the whole post.
+		if ( $image_blob['size'] <= self::MAX_THUMB_BYTES ) {
+			$embed['external']['thumb'] = $image_blob;
+		}
+
+		return $embed;
 	}
 
 	/**
@@ -470,7 +501,7 @@ class Rop_Bluesky_Api {
 	 *
 	 * @param string $image_url The image URL.
 	 *
-	 * @return string|false Image binary data or false on failure.
+	 * @return string|false Image binary data, or false when the request fails or the response is not an image.
 	 */
 	public function get_image_blob_from_url( $image_url ) {
 		if ( empty( $image_url ) ) {
@@ -482,6 +513,18 @@ class Rop_Bluesky_Api {
 
 		if ( is_wp_error( $response ) ) {
 			$this->logger->alert_error( 'Bluesky get image blob Error: ' . $response->get_error_message() );
+			return false;
+		}
+
+		$code = wp_remote_retrieve_response_code( $response );
+		if ( 200 !== $code ) {
+			$this->logger->alert_error( 'Bluesky get image blob Error: Unexpected response code ' . $code . '.' );
+			return false;
+		}
+
+		$content_type = wp_remote_retrieve_header( $response, 'content-type' );
+		if ( ! is_string( $content_type ) || 0 !== stripos( $content_type, 'image/' ) ) {
+			$this->logger->alert_error( 'Bluesky get image blob Error: The URL did not return an image.' );
 			return false;
 		}
 

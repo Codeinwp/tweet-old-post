@@ -646,6 +646,7 @@ export default {
         this.modal.data = fieldData;
         this.webhooksHeaders = this.$store.state?.authenticatedServices?.[accountToEdit]?.credentials?.headers;
 
+        this.showHeaders = false;
         this.openModal();
       }
     },
