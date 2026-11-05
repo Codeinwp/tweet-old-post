@@ -1,3 +1,13 @@
+##### [Version 9.4.5](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.4...v9.4.5) (2026-11-05)
+
+- Fixed scheduled posts going live without sharing to social networks
+- Fixed Revive Social leaving WPML switched after sharing.
+- Fixed Bluesky link shares missing the featured image thumbnail.
+- Fixed Bluesky posts showing broken images when featured images were unavailable.
+- Fixed missing Revive Social boxes in the classic editor.
+- Fixed queue edits saving one post's caption onto another post.
+- Updated dependencies
+
 ##### [Version 9.4.4](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.3...v9.4.4) (2026-10-14)
 
 - Fixed social account selections being cleared when a draft is saved without sharing.
