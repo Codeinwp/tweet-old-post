@@ -634,7 +634,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( isset( $api ) && ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
 			$new_post = $this->twitter_media_post( $post_details, $api );
 		} elseif ( ! isset( $api ) && ! empty( $share_as_image_post ) ) {
-			$this->logger->info( __( 'Post with image is available only the local mode (Use my own API Keys). You can find the option when adding your X account to the plugin Dashboard.', 'tweet-old-post' ) . ' ' . __( ' Read more on:', 'tweet-old-post' ) . 'https://docs.revive.social/article/1908-how-to-solve-453-twitter-error-in-rop' );
+			$this->logger->info( __( 'Post with image is available only the local mode (Use my own API Keys). You can find the option when adding your X account to the plugin Dashboard.', 'tweet-old-post' ) . ' ' . __( ' Read more on:', 'tweet-old-post' ) . 'https://docs.revive.social/faqs/how-to-solve-453-twitter-error-in-rop' );
 		}
 
 		if ( empty( $new_post ) ) {

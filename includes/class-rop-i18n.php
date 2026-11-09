@@ -33,6 +33,32 @@ class Rop_I18n {
 	const UPSELL_LINK = 'https://revive.social/plugins/revive-old-post/';
 
 	/**
+	 * Revive Social docs URL.
+	 *
+	 * @var string Docs URL.
+	 */
+	const DOCS_URL = 'https://docs.revive.social/';
+
+	/**
+	 * Build a docs.revive.social URL with UTM parameters.
+	 *
+	 * @param string $path     Docs page path, e.g. 'general-guides/fix-revive-old-post-not-posting'.
+	 * @param string $campaign Feature the link is about (utm_campaign).
+	 * @param string $medium   Screen the link is shown on (utm_medium).
+	 *
+	 * @return string Docs URL.
+	 */
+	public static function docs_url( $path, $campaign, $medium ) {
+		$url = self::DOCS_URL . ltrim( $path, '/' );
+
+		if ( ! function_exists( 'tsdk_utmify' ) ) {
+			return $url;
+		}
+
+		return tsdk_utmify( $url, $campaign, $medium );
+	}
+
+	/**
 	 * Load the plugin text domain for translation.
 	 *
 	 * @since    8.0.0
@@ -108,14 +134,14 @@ class Rop_I18n {
 				'reset_selector_btn'         => __( 'Reset', 'tweet-old-post' ),
 				'for'                        => __( 'for', 'tweet-old-post' ),
 				'add_account'                => __( '<b>Add Your Accounts:</b>', 'tweet-old-post' ),
-				'upsell_accounts'            => sprintf( __( 'A maximum of 1 Facebook and Twitter account can be connected to the Lite version of Revive Social. Upgrade to unlock more great features including more social networks! Check out the Lite vs Pro %1$stable here%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/941-revive-old-post-free-vs-pro" target="_blank">', '</a>' ),
+				'upsell_accounts'            => sprintf( __( 'A maximum of 1 Facebook and Twitter account can be connected to the Lite version of Revive Social. Upgrade to unlock more great features including more social networks! Check out the Lite vs Pro %1$stable here%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="' . esc_url( self::docs_url( 'faqs/revive-old-post-free-vs-pro', 'free-vs-pro', 'accounts' ) ) . '" target="_blank">', '</a>' ),
 				'upsell_accounts_toggle'     => 'Active accounts limit reached.',
 				'toggle_account'             => __( 'Toggle account', 'tweet-old-post' ),
 				'activate_license'           => __( 'You need to activate your license key to unlock the Pro features of Revive Social. Add your key on the sidebar.', 'tweet-old-post' ),
 				'fb_app_id_title'            => __( 'Please add the APP ID from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_secret_title'        => __( 'Please add the APP SECRET from your Facebook app.', 'tweet-old-post' ),
-				'fb_app_desc'                => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post" target="_blank">', '</a>' ),
-				'twt_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/914-how-to-create-a-twitter-application-for-revive-old-post" target="_blank">', '</a>' ),
+				'fb_app_desc'                => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold" href="' . esc_url( self::docs_url( 'getting-started/how-to-connect-your-social-media-accounts', 'facebook-app', 'accounts' ) ) . '" target="_blank">', '</a>' ),
+				'twt_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="' . esc_url( self::docs_url( 'faqs/how-to-solve-453-twitter-error-in-rop', 'twitter-app', 'accounts' ) ) . '" target="_blank">', '</a>' ),
 				'service_error'              => __( 'The %1$s service can not be used or was not found', 'tweet-old-post' ),
 				'twitter_warning'            => __(
 					'
@@ -135,7 +161,7 @@ class Rop_I18n {
 				'edit_headers'               => __( 'Edit Headers', 'tweet-old-post' ),
 				'hide'                       => __( 'Hide', 'tweet-old-post' ),
 				'get_latest_pro_version'     => __( 'Get the latest Pro version to unlock.', 'tweet-old-post' ),
-				'tlg_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/2223-how-to-connect-revive-social-to-telegram" target="_blank">', '</a>' ),
+				'tlg_app_desc'               => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="' . esc_url( self::docs_url( 'general-guides/how-to-connect-revive-social-to-telegram', 'telegram', 'accounts' ) ) . '" target="_blank">', '</a>' ),
 				'upsell_bz_service_body'     => __( 'We\'re sorry, %1$s is not available on your plan. Please upgrade to the business plan to unlock all these features and get more traffic.', 'tweet-old-post' ),
 				'search_account'             => __( 'Search account', 'tweet-old-post' ),
 				'no_account_found'           => __( 'No account found for search', 'tweet-old-post' ),
@@ -161,10 +187,10 @@ class Rop_I18n {
 				),
 				'post_types_title'                      => __( 'Post Types', 'tweet-old-post' ),
 				'post_types_taxonomy_limit'             => sprintf( __( 'Upgrade to Pro version to select more than 4 taxonomies. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="' . tsdk_utmify( Rop_I18n::UPSELL_LINK, 'taxonomy', 'settings' ) . '" target="_blank">', '</a>' ),
-				'post_types_attachament_info'           => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
-				'post_types_desc'                       => __( 'Which post types should Revive Social share? <a href="https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'post_types_attachament_info'           => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/how-to-use-revive-old-post-media-sharing-feature', 'media-sharing', 'general-settings' ) ) . '" target="_blank">', '</a>' ),
+				'post_types_desc'                       => sprintf( __( 'Which post types should Revive Social share? %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts', 'post-types', 'general-settings' ) ) . '" target="_blank">', '</a>' ),
 				'update_post_published_date_title'      => __( 'Update Post Published Date After Share', 'tweet-old-post' ),
-				'update_post_published_date_desc'       => sprintf( __( 'Update the post published date after it has been shared to your social media account. %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1489-automatically-updating-post-publish-date-after-sharing-a-post" target="_blank">', '</a>' ),
+				'update_post_published_date_desc'       => sprintf( __( 'Update the post published date after it has been shared to your social media account. %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/automatically-updating-post-publish-date-after-sharing-a-post', 'update-post-date', 'general-settings' ) ) . '" target="_blank">', '</a>' ),
 				'filter_by_post_types_desc'             => __( 'Filter posts list by Post Type', 'tweet-old-post' ),
 				'post_types_upsell'                     => __(
 					'Selecting custom post types is available in the Pro
@@ -172,11 +198,7 @@ class Rop_I18n {
 					'tweet-old-post'
 				),
 				'taxonomies_title'            => __( 'Taxonomies', 'tweet-old-post' ),
-				'taxonomies_desc'             => __(
-					'Taxonomies available for the selected post types. Use to include or exclude
-							posts. <a href="https://docs.revive.social/article/457-how-to-exclude-taxonomies-in-revive-old-post" target="_blank">Learn more</a>.',
-					'tweet-old-post'
-				),
+				'taxonomies_desc'             => sprintf( __( 'Taxonomies available for the selected post types. Use to include or exclude posts. %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'faqs/how-to-exclude-taxonomies-in-revive-old-post', 'taxonomies', 'general-settings' ) ) . '" target="_blank">', '</a>' ),
 				'filter_by_taxonomies_desc'     => __( 'Filter posts list by Taxonomy', 'tweet-old-post' ),
 				'taxonomies_exclude'          => __( 'Exclude?', 'tweet-old-post' ),
 				'keyword_filter_title'        => __( 'Keyword Filtering', 'tweet-old-post' ),
@@ -195,17 +217,17 @@ class Rop_I18n {
 					'tweet-old-post'
 				),
 				'custom_share_title'          => __( 'Enable Share Content Variations', 'tweet-old-post' ),
-				'custom_share_desc'           => __( 'These messages will override the Post Content option in Post Format settings. You can go to each post and add multiple share content variations. <a href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'custom_share_desc'           => sprintf( __( 'These messages will override the Post Content option in Post Format settings. You can go to each post and add multiple share content variations. %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/how-to-add-variations-to-revive-old-posts-shares', 'share-variations', 'general-settings' ) ) . '" target="_blank">', '</a>' ),
 				'custom_share_order_title'    => __( 'Share Message Variations In the Order They Are Added.', 'tweet-old-post' ),
 				'custom_share_order_desc'     => __( 'By default message variations are shared randomly. Checking this box will cause them to share in the order they were added.', 'tweet-old-post' ),
 				'instant_share_title'         => __( 'Enable Instant Sharing Feature (Post on Publish)', 'tweet-old-post' ),
-				'instant_share_desc'          => __( 'Allows you to share posts immediately on publish/update. <a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'instant_share_desc'          => sprintf( __( 'Allows you to share posts immediately on publish/update. %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/how-to-share-posts-immediately-with-revive-old-posts', 'instant-sharing', 'general-settings' ) ) . '" target="_blank">', '</a>' ),
 				'instant_share_default_title' => __( 'Enable Instant Sharing By Default', 'tweet-old-post' ),
 				'instant_share_default_desc'  => __( 'Instant sharing option will be checked by default when creating new posts.', 'tweet-old-post' ),
 				'cron_type_label'                => __( 'Cron Job Type', 'tweet-old-post' ),
-				'cron_type_label_desc'           => sprintf( __( 'Select the between your local built-in WordPress task scheduler, or Revive Social\'s, %1$sLearn More%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1303-rop-local-cron-vs-remote-cron" target="_blank">', '</a>' ),
-				'cron_type_label_desc_terms'           => __( 'I understand that some site data is stored on the Revive Social\'s Remote Cron System to provide this service <a href="https://docs.revive.social/article/1317-info-we-collect-for-remote-cron-service" target="_blank">Read More Here</a>.', 'tweet-old-post' ),
-				'cron_type_notice'           => sprintf( __( '%1$sNOTE:%2$s This is a BETA Remote Cron feature to be used mainly if your %1$sposts aren\'t sharing%2$s. If the Remote Cron feature is used, and you notice that your posts are still not sharing, then please %1$sturn the setting back to "Local Cron"%2$s and read the following guide for alternative solutions that are sure to work: %1$s%3$sLearn More%4$s%2$s.', 'tweet-old-post' ), '<strong>', '</strong>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>' ),
+				'cron_type_label_desc'           => sprintf( __( 'Select the between your local built-in WordPress task scheduler, or Revive Social\'s, %1$sLearn More%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/fix-revive-old-post-not-posting', 'cron-type', 'general-settings' ) ) . '" target="_blank">', '</a>' ),
+				'cron_type_label_desc_terms'           => sprintf( __( 'I understand that some site data is stored on the Revive Social\'s Remote Cron System to provide this service %1$sRead More Here%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'faqs/info-we-collect-for-remote-cron-service', 'remote-cron', 'general-settings' ) ) . '" target="_blank">', '</a>' ),
+				'cron_type_notice'           => sprintf( __( '%1$sNOTE:%2$s This is a BETA Remote Cron feature to be used mainly if your %1$sposts aren\'t sharing%2$s. If the Remote Cron feature is used, and you notice that your posts are still not sharing, then please %1$sturn the setting back to "Local Cron"%2$s and read the following guide for alternative solutions that are sure to work: %1$s%3$sLearn More%4$s%2$s.', 'tweet-old-post' ), '<strong>', '</strong>', '<a href="' . esc_url( self::docs_url( 'general-guides/fix-revive-old-post-not-posting', 'remote-cron', 'general-settings' ) ) . '" target="_blank">', '</a>' ),
 				'housekeeping'                => __( 'Housekeeping', 'tweet-old-post' ),
 				'housekeeping_desc'           => __( 'Should we delete all saved settings on deletion of the Revive Social plugin?', 'tweet-old-post' ),
 				'save'                        => __( 'Save', 'tweet-old-post' ),
@@ -246,7 +268,7 @@ class Rop_I18n {
 				'add_char_title'                    => __( 'Additional Text', 'tweet-old-post' ),
 				'add_char_title_custom_content'     => __( 'Message Content', 'tweet-old-post' ),
 				'override_share_variations'         => __( 'Override Share Content Variations with the current content', 'tweet-old-post' ),
-				'add_char_desc'                     => sprintf( __( 'Add custom content to shared posts. It supports magic tags in the Pro version of Revive Social %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
+				'add_char_desc'                     => sprintf( __( 'Add custom content to shared posts. It supports magic tags in the Pro version of Revive Social %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/available-magic-tags-in-revive-old-posts', 'magic-tags', 'post-format' ) ) . '" target="_blank">', '</a>' ),
 				'add_char_placeholder'              => __( '...written by {author} on {date}.', 'tweet-old-post' ),
 				'add_char_placeholder_custom_content' => __( '{title} with {content} written by {author} on {date}.', 'tweet-old-post' ),
 				'add_pos_title'                     => __( 'Choose where you want the Additional Text to appear.', 'tweet-old-post' ),
@@ -283,16 +305,16 @@ class Rop_I18n {
 				'hashtags_randomize'                => __( 'Randomize hashtags', 'tweet-old-post' ),
 				'hashtags_randomize_desc'           => __( 'Randomize the list of hashtags on every successful share. You won\'t see this change in the Sharing Queue, the randomization happens at share time.', 'tweet-old-post' ),
 				'image_title'                       => __( 'Share As Image Post', 'tweet-old-post' ),
-				'image_desc'                        => __( 'Should Revive Social share your posts as an image post? <a href="https://docs.revive.social/article/958-how-to-share-posts-as-image-posts-to-social-accounts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'image_desc'                        => sprintf( __( 'Should Revive Social share your posts as an image post? %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/how-to-share-posts-as-image-posts-to-social-accounts', 'image-posts', 'post-format' ) ) . '" target="_blank">', '</a>' ),
 				'image_aspect_ratio_title'          => __( 'Automatically correct aspect ratio', 'tweet-old-post' ),
-				'image_aspect_ratio_title_desc'     => __( 'Should Revive Social automatically crop images with the wrong aspect ratio? <a href="https://docs.revive.social/article/1661-how-to-fix-invalid-aspect-ratio-when-posting-to-instagram" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'image_aspect_ratio_title_desc'     => sprintf( __( 'Should Revive Social automatically crop images with the wrong aspect ratio? %1$sLearn more%2$s.', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/how-to-fix-invalid-aspect-ratio-when-posting-to-instagram', 'image-aspect-ratio', 'post-format' ) ) . '" target="_blank">', '</a>' ),
 				'utm_campaign_medium'               => __( 'Campaign Medium', 'tweet-old-post' ),
 				'utm_campaign_medium_desc'          => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
 				'utm_campaign_name'                 => __( 'Campaign Name', 'tweet-old-post' ),
 				'utm_campaign_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
 				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the Pro version.', 'tweet-old-post' ),
 				'image_upsell'                      => __( 'Sharing as an Image Post is available in the Pro version.', 'tweet-old-post' ),
-				'full_wpml_support_upsell'          => sprintf( __( 'Language-based sharing only available in the %1$sPro version%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1338-how-to-share-different-wpml-languages-to-different-social-media-accounts" target="_blank">', '</a>' ),
+				'full_wpml_support_upsell'          => sprintf( __( 'Language-based sharing only available in the %1$sPro version%2$s', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/how-to-share-different-wpml-languages-to-different-social-media-accounts', 'wpml', 'post-format' ) ) . '" target="_blank">', '</a>' ),
 
 				'wpml_select_language'                  => __( 'Choose language', 'tweet-old-post' ),
 				'media_post_title'                  => __( 'Media Posts Content', 'tweet-old-post' ),
@@ -399,7 +421,7 @@ class Rop_I18n {
 				'next_share'                 => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'                => __( 'Sharing...', 'tweet-old-post' ),
 				'cron_interval'              => __( 'Once every 5 min', 'tweet-old-post' ),
-				'staging_status'             => sprintf( __( 'This seems to be a staging or development website. Some post types will not share to your accounts. %1$sLearn How to Turn Off%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1321-allow-revive-old-posts-to-work-on-staging-or-development-websites" target="_blank">', '</a>' ),
+				'staging_status'             => sprintf( __( 'This seems to be a staging or development website. Some post types will not share to your accounts. %1$sLearn How to Turn Off%2$s', 'tweet-old-post' ), '<a href="' . esc_url( self::docs_url( 'general-guides/allow-revive-old-posts-to-work-on-staging-or-development-websites', 'staging', 'dashboard' ) ) . '" target="_blank">', '</a>' ),
 				'api_not_available'          => __(
 					'Revive Social could not complete a request to its WordPress REST endpoint. Some dashboard information or actions may be unavailable.<br/>
 Reload the page and try again. If the problem continues, contact support with the action you were performing and any error shown.',
@@ -408,7 +430,7 @@ Reload the page and try again. If the problem continues, contact support with th
 				'rop_support'                => __( 'Get Support', 'tweet-old-post' ),
 				'rop_support_url'            => '',
 				'rop_facebook_domain_toast'  => __(
-					'You need to verify your website domain with Facebook so your shares can show as article posts on Facebook. [ <a href="https://docs.revive.social/article/1136-facebook-text-posts-vs-article-posts" target="_blank">Read this doc</a> ] for more information',
+					'You need to verify your website domain with Facebook so your shares can show as article posts on Facebook.',
 					'tweet-old-post'
 				),
 				'rop_docs'                   => __( 'Documentation', 'tweet-old-post' ),
@@ -431,7 +453,7 @@ Reload the page and try again. If the problem continues, contact support with th
 				'remove_variation'       => __( 'Delete', 'tweet-old-post' ),
 				'add_variation'          => __( 'Add New', 'tweet-old-post' ),
 				'new_variation'          => __( 'New Content Variation', 'tweet-old-post' ),
-				'custom_message_info'    => sprintf( __( 'Add share message variations to this post %1$sLearn More%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>' ),
+				'custom_message_info'    => sprintf( __( 'Add share message variations to this post %1$sLearn More%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="' . esc_url( self::docs_url( 'general-guides/how-to-add-variations-to-revive-old-posts-shares', 'share-variations', 'post-editor' ) ) . '" target="_blank">', '</a>' ),
 				'variation_num'          => __( 'Content Variation #', 'tweet-old-post' ),
 				'variation_image'        => __( 'Upload image', 'tweet-old-post' ),
 				'variation_image_change' => __( 'Change image', 'tweet-old-post' ),
@@ -450,8 +472,8 @@ Reload the page and try again. If the problem continues, contact support with th
 				'refresh_linkedin_token_subject'  => __( 'Revive Social - Refresh Your LinkedIn Token', 'tweet-old-post' ),
 				'refresh_linkedin_token_subject_final'  => __( 'Final - Refresh Your LinkedIn Token', 'tweet-old-post' ),
 				'share_once_sharing_done_message' => __( 'All posts have been shared to your connected social media accounts. No previously shared posts will be re-shared until you click the button to "Stop Sharing" and "Start Sharing" on the Revive Social plugin dashboard.', 'tweet-old-post' ),
-				'refresh_linkedin_token_message'  => sprintf( __( 'Hi! This email was sent by Revive Social on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>' ),
-				'refresh_linkedin_token_message_final'  => sprintf( __( 'Hi! This email was sent by Revive Social on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s. %3$sThis is the final notice email you will receieve from Revive Social.', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>', '<br><br>' ),
+				'refresh_linkedin_token_message'  => sprintf( __( 'Hi! This email was sent by Revive Social on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s', 'tweet-old-post' ), '<br><br>', '<a href="' . esc_url( self::docs_url( 'general-guides/how-to-refresh-linkedin-access-token', 'linkedin-token', 'email' ) ) . '">https://docs.revive.social/general-guides/how-to-refresh-linkedin-access-token</a>' ),
+				'refresh_linkedin_token_message_final'  => sprintf( __( 'Hi! This email was sent by Revive Social on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s. %3$sThis is the final notice email you will receieve from Revive Social.', 'tweet-old-post' ), '<br><br>', '<a href="' . esc_url( self::docs_url( 'general-guides/how-to-refresh-linkedin-access-token', 'linkedin-token', 'email' ) ) . '">https://docs.revive.social/general-guides/how-to-refresh-linkedin-access-token</a>', '<br><br>' ),
 			),
 			'cron_system' => array(
 				'delete_cron_service_account_info' => sprintf( __( 'This option will delete your website information from our Remote Cron Service. %1$s Revive Social will then fallback to using the Local Cron System built into WordPress. %1$s You can re-enable the Remote Cron System at anytime from General Settings > Cron Type, switch from Local Cron to Remote.', 'tweet-old-post' ), '<br>' ),
