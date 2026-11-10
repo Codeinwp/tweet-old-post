@@ -66,7 +66,7 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 
 		if ( ! array_key_exists( 'generic_access_token', $saved ) ) {
 			$logger          = new Rop_Logger();
-			$logger->alert_error( 'Generic Access Token not found. Please see the following link for instructions: https://is.gd/rop_bitly' );
+			$logger->alert_error( 'Generic Access Token not found. Please see the following link for instructions: ' . Rop_I18n::docs_url( 'getting-started/how-to-connect-bit-ly-to-revive-old-posts', 'bitly', 'sharing-logs' ) );
 
 			return $url;
 		}

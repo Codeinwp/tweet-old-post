@@ -60,7 +60,7 @@ function rop_buffer_present_notice() {
 	?>
 
 	<div class="notice notice-error is-dismissible">
-		<?php echo sprintf( __( '%1$s %2$sRevive Social:%3$s You have Buffer account(s) connected to Revive Social. You need to remove these accounts to avoid issues with the plugin. Plugin has been deactivated. %4$sClick here to read the article with the fix.%5$s %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1318-fix-php-fatal-error-uncaught-exception-invalid-service-name-given" target="_blank">', '</a>', '</p>' ); ?>
+		<?php echo sprintf( __( '%1$s %2$sRevive Social:%3$s You have Buffer account(s) connected to Revive Social. You need to remove these accounts to avoid issues with the plugin. Plugin has been deactivated. %4$sContact our support team if you need help.%5$s %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://revive.social/support/" target="_blank">', '</a>', '</p>' ); ?>
 	</div>
 	<?php
 }
@@ -106,7 +106,7 @@ function rop_php_notice() {
 	?>
 
 	<div class="notice notice-error is-dismissible">
-		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 7.4! Revive Social requires at least %2$sPHP 7.4%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 7.4! Revive Social requires at least %2$sPHP 7.4%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/general-guides/how-to-update-your-php-version?utm_source=wpadmin&amp;utm_medium=admin-notice&amp;utm_campaign=php-version&amp;utm_content=docsrevivesocialgeneral-guideshow-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
 	</div>
 	<?php
 }

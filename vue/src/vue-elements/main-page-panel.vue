@@ -164,7 +164,7 @@
             >{{ labels.rop_support }}</a>
             <a
               v-if="haveAccounts"
-              href="https://docs.revive.social/"
+              :href="docs_link"
               target="_blank"
               class="btn rop-sidebar-action-btns"
             >{{ labels.rop_docs }}</a>
@@ -264,6 +264,7 @@
                 license: this.$store.state.license,
                 labels: this.$store.state.labels.general,
                 upsell_link: ropApiSettings.upsell_link,
+                docs_link: ropApiSettings.docs_link,
                 staging: ropApiSettings.staging,
                 is_loading: false,
                 is_loading_logs: false,

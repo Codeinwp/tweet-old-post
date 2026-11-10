@@ -539,69 +539,69 @@ abstract class Rop_Services_Abstract {
 			// Facebook errors
 			'Only owners of the URL have the ability'                    => array(
 				'message' => __( 'You need to verify your website with Facebook before sharing posts as article posts.', 'tweet-old-post' ),
-				'link'    => 'https://is.gd/fix_owners_url',
+				'link'    => Rop_I18n::docs_url( 'faqs/fix-error-100-only-owners-of-the-url-have-the-ability-to-specify-the-picture-name-thumbnail-or-description-params', 'facebook-url-owners', 'sharing-logs' ),
 			),
 			'manage_pages and publish_pages as an admin'                 => array(
 				'message' => __( 'You need to put your Facebook app through review.', 'tweet-old-post' ),
-				'link'    => 'https://is.gd/fix_manage_pages_error',
+				'link'    => Rop_I18n::docs_url( 'general-guides/fix-error-200-requires-managepages-and-publishpages', 'facebook-app-review', 'sharing-logs' ),
 			),
 			'The session has been invalidated because the user changed their password' => array(
 				'message' => __( 'You need to reconnect your Facebook account.', 'tweet-old-post' ),
-				'link'    => 'https://is.gd/fix_fb_invalid_session',
+				'link'    => Rop_I18n::docs_url( 'general-guides/fix-facebook-invalidated-session-error-in-revive-old-posts', 'facebook-invalid-session', 'sharing-logs' ),
 			),
 			'Invalid parameter'                                          => array(
 				'message' => 'There might be an issue with link creations on your website.',
-				'link'    => 'https://is.gd/fix_link_issue',
+				'link'    => Rop_I18n::docs_url( 'general-guides/fix-invalid-parameter-linkedin-submitted-url-cannot-be-empty-tweets-with-no-link', 'link-issue', 'sharing-logs' ),
 			),
 			'The \'manage_pages\' permission must be granted before impersonating' => array(
 				'message' => 'You might need to reconnect your Facebook account.',
-				'link'    => 'https://is.gd/fix_pages_group_permissions',
+				'link'    => Rop_I18n::docs_url( 'general-guides/fix-the-managepages-permission-must-be-granted-before-impersonating-a-users-page', 'facebook-permissions', 'sharing-logs' ),
 			),
 			'If posting to a group, requires app being installed in the group' => array(
 				'message' => 'If posting to a page, then you might have to reconnect your Facebook account. If posting to a group then you need to install the Revive Social App on the group.',
-				'link'    => 'https://is.gd/fix_pages_group_permissions',
+				'link'    => Rop_I18n::docs_url( 'general-guides/fix-the-managepages-permission-must-be-granted-before-impersonating-a-users-page', 'facebook-permissions', 'sharing-logs' ),
 			),
 
 			// Twitter errors
 			'Desktop applications only support the oauth_callback value' => array(
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
-				'link'    => 'https://is.gd/fix_oauth_callback_value',
+				'link'    => Rop_I18n::docs_url( 'general-guides/desktop-applications-only-support-the-oauthcallback-value', 'twitter-callback-url', 'sharing-logs' ),
 			),
 			'User is over daily status update limit'                     => array(
 				'message' => 'You might be over your daily limit for sending tweets or our app has hit a limit.',
-				'link'    => 'https://is.gd/fix_over_daily_limit',
+				'link'    => Rop_I18n::docs_url( 'faqs/fix-twitter-error-185-user-is-over-daily-status-update-limit', 'twitter-daily-limit', 'sharing-logs' ),
 			),
 			'Invalid media_id: Some'                                     => array(
 				'message' => 'Our plugin might be having an issue posting tweets with an image to your account.',
-				'link'    => 'https://is.gd/fix_invalid_media',
+				'link'    => Rop_I18n::docs_url( 'general-guides/fix-twitter-invalid-mediaid-some', 'twitter-invalid-media', 'sharing-logs' ),
 			),
 			'Callback URL not approved for this client application' => array(
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
-				'link'    => 'https://is.gd/fix_oauth_callback_value',
+				'link'    => Rop_I18n::docs_url( 'general-guides/desktop-applications-only-support-the-oauthcallback-value', 'twitter-callback-url', 'sharing-logs' ),
 			),
 
 			// LinkedIn errors
 			'&#39;submitted-url&#39; can not be empty'                   => array(
 				'message' => 'There might be an issue with link creations on your website.',
-				'link'    => 'https://is.gd/fix_link_issue',
+				'link'    => Rop_I18n::docs_url( 'general-guides/fix-invalid-parameter-linkedin-submitted-url-cannot-be-empty-tweets-with-no-link', 'link-issue', 'sharing-logs' ),
 			),
 			'[ unauthorized_scope_error ] Scope "r_organization_social"' => array(
 				'message' => 'You might need to reconnect your LinkedIn account.',
-				'link'    => 'https://is.gd/linkedin_scope_error',
+				'link'    => Rop_I18n::docs_url( 'general-guides/how-to-move-to-linkedin-api-v2', 'linkedin-scope', 'sharing-logs' ),
 			),
 			'The token used in the request has expired' => array(
 				'message' => 'You need to reconnect your LinkedIn account.',
-				'link'    => 'https://is.gd/refresh_linkedin_token',
+				'link'    => Rop_I18n::docs_url( 'general-guides/how-to-refresh-linkedin-access-token', 'linkedin-token', 'sharing-logs' ),
 			),
 			'You are using an old method of sharing to LinkedIn' => array(
 				'message' => 'You need to reconnect your LinkedIn account.',
-				'link'    => 'https://is.gd/switch_linkedin_signon_method',
+				'link'    => Rop_I18n::docs_url( 'general-guides/how-to-move-to-linkedin-api-v2', 'linkedin-sign-in-method', 'sharing-logs' ),
 			),
 
 			// Pinterest errors
 			'Pinterest error (code: 429) with message: You have exceeded your rate limit' => array(
 				'message' => 'You\'ve hit the Pinterest rate limit.',
-				'link'    => 'https://is.gd/pinterest_rate_limit',
+				'link'    => Rop_I18n::docs_url( 'getting-started/rop-troubleshooting-guide', 'pinterest-rate-limit', 'sharing-logs' ),
 			),
 
 			// Add more common errors as necessary
