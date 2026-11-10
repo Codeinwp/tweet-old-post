@@ -104,6 +104,39 @@ class Test_RopDocsLinks extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The X "post with image" log message links to the docs with UTMs.
+	 *
+	 * Sharing through the Revive server (no own API keys) can't post images, so the share logs the docs link.
+	 *
+	 * @covers Rop_Twitter_Service::share
+	 */
+	public function test_twitter_image_log_links_to_docs() {
+		$logger = new Rop_Logger();
+		$logger->clear_user_logs();
+
+		add_filter( 'rop_dont_work_on_staging', '__return_false' );
+
+		$service = new Rop_Twitter_Service();
+		$service->set_credentials( array( 'rop_auth_token' => 'test-token' ) );
+		$service->share(
+			array(
+				'post_id'         => self::factory()->post->create(),
+				'post_url'        => 'https://example.org/',
+				'post_with_image' => true,
+				'account_id'      => 'test-account',
+				'hashtags'        => '',
+			)
+		);
+
+		remove_filter( 'rop_dont_work_on_staging', '__return_false' );
+
+		$this->assertStringContainsString(
+			'https://docs.revive.social/faqs/how-to-solve-453-twitter-error-in-rop?utm_source=wpadmin&utm_medium=sharing-logs&utm_campaign=twitter-image',
+			wp_json_encode( $logger->get_logs(), JSON_UNESCAPED_SLASHES )
+		);
+	}
+
+	/**
 	 * The LinkedIn token log message links to the docs with UTMs.
 	 *
 	 * @covers Rop_I18n::get_labels
