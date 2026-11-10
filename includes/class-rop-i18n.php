@@ -435,7 +435,7 @@ Reload the page and try again. If the problem continues, contact support with th
 				),
 				'rop_docs'                   => __( 'Documentation', 'tweet-old-post' ),
 				'rop_roadmap'                => __( 'Roadmap & Voting', 'tweet-old-post' ),
-				'rop_linkedin_refresh_token' => __( 'Your Linkedin access token is about to expire. You need to refresh your LinkedIn token to continue sharing without issue. Paste this link in your browser to find out why and how: https://is.gd/refresh_linkedin_token', 'tweet-old-post' ),
+				'rop_linkedin_refresh_token' => sprintf( __( 'Your Linkedin access token is about to expire. You need to refresh your LinkedIn token to continue sharing without issue. Paste this link in your browser to find out why and how: %s', 'tweet-old-post' ), self::docs_url( 'general-guides/how-to-refresh-linkedin-access-token', 'linkedin-token', 'sharing-logs' ) ),
 				'license_product'            => __( '%1$s license', 'tweet-old-post' ),
 				'license_help'               => __( 'Enter your revive.social license from purchase history in order to get plugin updates.', 'tweet-old-post' ),
 				'purchase_history'           => __( 'Go to Purchase History.', 'tweet-old-post' ),
