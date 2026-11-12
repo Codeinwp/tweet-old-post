@@ -66,8 +66,18 @@
             <div class="tile tile-centered">
               <div
                 class="tile-content"
-                v-html="markMatch(option.name, search)"
-              />
+              >
+                <template v-for="( segment, segmentIndex ) in markMatch(option.name, search)">
+                  <mark
+                    v-if="segment.highlighted"
+                    :key="segmentIndex"
+                  >{{ segment.text }}</mark>
+                  <span
+                    v-else
+                    :key="segmentIndex"
+                  >{{ segment.text }}</span>
+                </template>
+              </div>
             </div>
           </a>
         </template>
@@ -276,13 +286,27 @@
 				}
 			},
 			markMatch: function (value, search) {
-				var result = value
-				if (value.toLowerCase().indexOf(search.toLowerCase()) !== -1 && search !== '') {
-					var rex = new RegExp(search, 'ig')
-					result = value.replace(rex, function (match) {
-						return '<mark>' + match + '</mark>'
-					})
+				if (search === '') {
+					return [{text: value, highlighted: false}]
 				}
+
+				let result = []
+				let offset = 0
+				let match = value.toLowerCase().indexOf(search.toLowerCase())
+
+				while (match !== -1) {
+					if (match > offset) {
+						result.push({text: value.substring(offset, match), highlighted: false})
+					}
+					result.push({text: value.substring(match, match + search.length), highlighted: true})
+					offset = match + search.length
+					match = value.toLowerCase().indexOf(search.toLowerCase(), offset)
+				}
+
+				if (offset < value.length) {
+					result.push({text: value.substring(offset), highlighted: false})
+				}
+
 				return result
 			},
 			filterSearch(element) {

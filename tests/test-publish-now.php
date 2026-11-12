@@ -422,6 +422,41 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The REST callback must not let an Editor or Contributor queue a post that
+	 * they cannot edit, even though the route itself is available to editors.
+	 */
+	public function test_reshare_rest_callback_rejects_post_without_edit_access() {
+		$owner_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		$user_id  = self::factory()->user->create( array( 'role' => 'contributor' ) );
+		$post_id  = self::factory()->post->create(
+			array(
+				'post_author' => $owner_id,
+				'post_status' => 'publish',
+			)
+		);
+		wp_set_current_user( $user_id );
+
+		$request = new WP_REST_Request( 'POST', '/tweet-old-post/v8/share/' . $post_id );
+		$request->set_param( 'id', $post_id );
+		$request->set_body(
+			wp_json_encode(
+				array(
+					'rop_publish_now_accounts' => array( Rop_InitAccounts::get_account_id() => '' ),
+				)
+			)
+		);
+		$publish_now_before = get_post_meta( $post_id, 'rop_publish_now', true );
+		$accounts_before    = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
+
+		$response = ( new Rop_Rest_Api() )->share( $request );
+
+		$this->assertWPError( $response );
+		$this->assertSame( 403, $response->get_error_data()['status'] );
+		$this->assertSame( $publish_now_before, get_post_meta( $post_id, 'rop_publish_now', true ) );
+		$this->assertSame( $accounts_before, get_post_meta( $post_id, 'rop_publish_now_accounts', true ) );
+	}
+
+	/**
 	 * The metabox checkbox is not pre-checked when editing a published post
 	 * that has no share pending — this is what re-queued the archive content.
 	 */
@@ -492,5 +527,30 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 		$attributes      = $admin->publish_now_attributes( array() );
 
 		$this->assertSame( array( 'facebook_1_1' => 'Custom message' ), $attributes['page_active_accounts'] );
+	}
+
+	/**
+	 * Share variations are social-network text and must be normalized as text
+	 * when they cross the post-meta boundary.
+	 */
+	public function test_custom_share_messages_are_stored_as_plain_text() {
+		$admin = new Rop_Admin();
+		$admin->register_meta();
+		$post_id = self::factory()->post->create();
+
+		update_post_meta(
+			$post_id,
+			'rop_custom_messages_group',
+			array(
+				array( 'rop_custom_description' => "A <strong>useful</strong> update\n<script>globalThis.rop = 1;</script>" ),
+			)
+		);
+
+		$this->assertSame(
+			array(
+				array( 'rop_custom_description' => 'A useful update' ),
+			),
+			get_post_meta( $post_id, 'rop_custom_messages_group', true )
+		);
 	}
 }

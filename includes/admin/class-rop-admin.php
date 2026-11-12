@@ -2028,9 +2028,27 @@ class Rop_Admin {
 			return current_user_can( 'edit_posts' );
 		};
 
-		// JSON-encoded automatically by WP
+		// JSON-encoded automatically by WP.
 		$sanitize_passthrough = function ( $value ) {
 			return $value;
+		};
+		$sanitize_share_messages = function ( $messages ) {
+			if ( ! is_array( $messages ) ) {
+				return array();
+			}
+
+			$sanitized = array();
+			foreach ( $messages as $message ) {
+				if ( ! is_array( $message ) || ! isset( $message['rop_custom_description'] ) ) {
+					continue;
+				}
+
+				$sanitized[] = array(
+					'rop_custom_description' => sanitize_textarea_field( $message['rop_custom_description'] ),
+				);
+			}
+
+			return $sanitized;
 		};
 
 		register_post_meta(
@@ -2064,7 +2082,7 @@ class Rop_Admin {
 			array(
 				'single'            => true,
 				'type'              => 'array',
-				'sanitize_callback' => $sanitize_passthrough,
+				'sanitize_callback' => $sanitize_share_messages,
 				'auth_callback'     => $auth_can_edit_posts,
 				'show_in_rest'      => array(
 					'schema' => array(
