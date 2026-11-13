@@ -553,4 +553,23 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 			get_post_meta( $post_id, 'rop_custom_messages_group', true )
 		);
 	}
+
+	/**
+	 * A variation with a lone "<" is shared as typed, not as the entity sanitizing stored.
+	 */
+	public function test_custom_share_message_keeps_less_than_sign_when_shared() {
+		$settings      = new Rop_Settings_Model();
+		$settings_data = $settings->get_settings();
+		$settings_data['custom_messages'] = true;
+		$settings->save_settings( $settings_data );
+		( new Rop_Admin() )->register_meta();
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'rop_custom_messages_group', array( array( 'rop_custom_description' => 'We <3 our customers' ) ) );
+
+		$helper = new Rop_Post_Format_Helper();
+		$helper->set_post_format( Rop_InitAccounts::get_account_id() );
+		$content = $helper->build_content( $post_id );
+
+		$this->assertStringContainsString( 'We <3 our customers', $content['display_content'] );
+	}
 }
