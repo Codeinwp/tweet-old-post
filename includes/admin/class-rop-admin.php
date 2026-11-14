@@ -2050,7 +2050,7 @@ class Rop_Admin {
 				$description = wp_check_invalid_utf8( (string) $message['rop_custom_description'] );
 				do {
 					$previous    = $description;
-					$description = preg_replace( '/<(?![a-zA-Z\/!?])/', '&lt;', str_replace( '&', '&amp;', $description ) );
+					$description = preg_replace( '/<(?![a-zA-Z!?]|\/[a-zA-Z])/', '&lt;', str_replace( '&', '&amp;', $description ) );
 					$description = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', wp_pre_kses_less_than( $description ) );
 					$description = html_entity_decode( strip_tags( $description ), ENT_QUOTES, 'UTF-8' );
 				} while ( $description !== $previous );
