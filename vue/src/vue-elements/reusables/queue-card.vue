@@ -37,7 +37,10 @@
           class="columns"
         >
           <div class="column col-12">
-            <p v-html="content.content + hashtags( content.hashtags )" />
+            <p class="rop-queue-content">
+              <span>{{ content.content }}</span>
+              <strong v-if="content.hashtags"> {{ content.hashtags }}</strong>
+            </p>
           </div>
         </div>
         <div
@@ -430,16 +433,6 @@
 				}
 				return serviceIcon
 			},
-			hashtags: function (string) {
-				let regex = '#\\S+'
-				let check = new RegExp(regex, 'ig')
-				return string.toString().replace(check, function (matchedText, a, b) {
-					if (matchedText.slice(-1) === ',') {
-						return ('<strong>' + matchedText.substring(0, matchedText.lastIndexOf(',')) + '</strong>,')
-					}
-					return ('<strong>' + matchedText + '</strong>')
-				})
-			}
 		}
 	}
 </script>
@@ -455,6 +448,10 @@
 	
 	#rop_core figure.figure {
 		margin: -.7em -2em -1em 0;
+	}
+
+	.rop-queue-content {
+		white-space: pre-wrap;
 	}
 	
 	@media (max-width: 600px) {

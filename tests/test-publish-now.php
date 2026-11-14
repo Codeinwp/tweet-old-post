@@ -422,6 +422,41 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The REST callback must not let an Editor or Contributor queue a post that
+	 * they cannot edit, even though the route itself is available to editors.
+	 */
+	public function test_reshare_rest_callback_rejects_post_without_edit_access() {
+		$owner_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		$user_id  = self::factory()->user->create( array( 'role' => 'contributor' ) );
+		$post_id  = self::factory()->post->create(
+			array(
+				'post_author' => $owner_id,
+				'post_status' => 'publish',
+			)
+		);
+		wp_set_current_user( $user_id );
+
+		$request = new WP_REST_Request( 'POST', '/tweet-old-post/v8/share/' . $post_id );
+		$request->set_param( 'id', $post_id );
+		$request->set_body(
+			wp_json_encode(
+				array(
+					'rop_publish_now_accounts' => array( Rop_InitAccounts::get_account_id() => '' ),
+				)
+			)
+		);
+		$publish_now_before = get_post_meta( $post_id, 'rop_publish_now', true );
+		$accounts_before    = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
+
+		$response = ( new Rop_Rest_Api() )->share( $request );
+
+		$this->assertWPError( $response );
+		$this->assertSame( 403, $response->get_error_data()['status'] );
+		$this->assertSame( $publish_now_before, get_post_meta( $post_id, 'rop_publish_now', true ) );
+		$this->assertSame( $accounts_before, get_post_meta( $post_id, 'rop_publish_now_accounts', true ) );
+	}
+
+	/**
 	 * The metabox checkbox is not pre-checked when editing a published post
 	 * that has no share pending — this is what re-queued the archive content.
 	 */
@@ -492,5 +527,160 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 		$attributes      = $admin->publish_now_attributes( array() );
 
 		$this->assertSame( array( 'facebook_1_1' => 'Custom message' ), $attributes['page_active_accounts'] );
+	}
+
+	/**
+	 * Register the plugin meta with exactly one share variation sanitizer.
+	 *
+	 * The test case unregisters meta keys between tests while restoring hooks,
+	 * so a sanitizer can be left over or missing; neither must hide the result.
+	 */
+	private function register_share_variations_meta() {
+		remove_all_filters( 'sanitize_post_meta_rop_custom_messages_group' );
+		unregister_meta_key( 'post', 'rop_custom_messages_group' );
+		( new Rop_Admin() )->register_meta();
+	}
+
+	/**
+	 * Store share variations through the registered meta sanitizer.
+	 *
+	 * @param mixed $messages The raw meta value.
+	 *
+	 * @return mixed The stored meta value.
+	 */
+	private function store_share_variations( $messages ) {
+		$this->register_share_variations_meta();
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'rop_custom_messages_group', $messages );
+
+		return get_post_meta( $post_id, 'rop_custom_messages_group', true );
+	}
+
+	/**
+	 * Build the shared text for a post whose only share variation is given.
+	 *
+	 * @param string $description The variation text.
+	 *
+	 * @return string The shared text.
+	 */
+	private function share_variation( $description ) {
+		$settings      = new Rop_Settings_Model();
+		$settings_data = $settings->get_settings();
+		$settings_data['custom_messages'] = true;
+		$settings->save_settings( $settings_data );
+		$this->register_share_variations_meta();
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'rop_custom_messages_group', array( array( 'rop_custom_description' => $description ) ) );
+
+		$helper = new Rop_Post_Format_Helper();
+		$helper->set_post_format( Rop_InitAccounts::get_account_id() );
+		$content = $helper->build_content( $post_id );
+
+		return $content['display_content'];
+	}
+
+	/**
+	 * Share variations are social-network text and must be normalized as text
+	 * when they cross the post-meta boundary.
+	 */
+	public function test_custom_share_messages_are_stored_as_plain_text() {
+		$this->assertSame(
+			array(
+				array( 'rop_custom_description' => "A useful update\n" ),
+			),
+			$this->store_share_variations(
+				array(
+					array( 'rop_custom_description' => "A <strong>useful</strong> update\n<script>globalThis.rop = 1;</script>" ),
+				)
+			)
+		);
+	}
+
+	/**
+	 * A tag split around another tag is still removed.
+	 */
+	public function test_custom_share_messages_strip_tag_rebuilt_from_fragments() {
+		$this->assertSame(
+			array(
+				array( 'rop_custom_description' => 'Before  after' ),
+			),
+			$this->store_share_variations(
+				array(
+					array( 'rop_custom_description' => 'Before <<b>script> after' ),
+				)
+			)
+		);
+	}
+
+	/**
+	 * Entries that are not variations are dropped and the list is re-indexed.
+	 */
+	public function test_custom_share_messages_drop_entries_without_text() {
+		$this->assertSame(
+			array(
+				array( 'rop_custom_description' => 'ok' ),
+			),
+			$this->store_share_variations(
+				array(
+					'junk',
+					array( 'other' => 'x' ),
+					array( 'rop_custom_description' => array( 'nested' ) ),
+					array( 'rop_custom_description' => 'ok' ),
+				)
+			)
+		);
+	}
+
+	/**
+	 * A value that is not a list stores an empty list.
+	 */
+	public function test_custom_share_messages_non_list_is_stored_empty() {
+		$this->assertSame( array(), $this->store_share_variations( 'junk' ) );
+	}
+
+	/**
+	 * Text, a "<" that opens no tag, ampersands, entities typed as text, percent-encoded
+	 * sequences and edge whitespace are stored as typed.
+	 */
+	public function test_custom_share_messages_keep_typed_text() {
+		$typed = "  We <3 our customers & friends -> shop now\nPrice <50 and >20\nI </3 Mondays -> coffee\n50%2F off at https://example.com/caf%C3%A9\nWrite &lt;b&gt; here, \"quoted\" 'text'\nends with a <b\n";
+
+		$this->assertSame(
+			array( array( 'rop_custom_description' => $typed ) ),
+			$this->store_share_variations( array( array( 'rop_custom_description' => $typed ) ) )
+		);
+	}
+
+	/**
+	 * The block editor reads back the variation it saved, as typed.
+	 */
+	public function test_custom_share_message_round_trips_through_rest_api() {
+		$this->register_share_variations_meta();
+		$post_id = self::factory()->post->create();
+		$typed   = 'We <3 our customers & friends';
+
+		$save = new WP_REST_Request( 'POST', '/wp/v2/posts/' . $post_id );
+		$save->set_body_params( array( 'meta' => array( 'rop_custom_messages_group' => array( array( 'rop_custom_description' => $typed ) ) ) ) );
+		$this->assertSame( 200, rest_do_request( $save )->get_status() );
+
+		$read = new WP_REST_Request( 'GET', '/wp/v2/posts/' . $post_id );
+		$read->set_param( 'context', 'edit' );
+		$data = rest_do_request( $read )->get_data();
+
+		$this->assertSame( array( array( 'rop_custom_description' => $typed ) ), $data['meta']['rop_custom_messages_group'] );
+	}
+
+	/**
+	 * A variation is shared without its tags, and a lone "<" and an ampersand are shared as typed.
+	 */
+	public function test_custom_share_message_keeps_less_than_sign_when_shared() {
+		$this->assertSame( 'We <3 our customers & friends', $this->share_variation( '<em>We</em> <3 our customers & friends' ) );
+	}
+
+	/**
+	 * A variation that contains an entity typed as text is shared unchanged.
+	 */
+	public function test_custom_share_message_keeps_typed_entity_when_shared() {
+		$this->assertStringContainsString( 'Write &lt;b&gt; here', $this->share_variation( 'Write &lt;b&gt; here' ) );
 	}
 }
