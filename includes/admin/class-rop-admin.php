@@ -2039,12 +2039,22 @@ class Rop_Admin {
 
 			$sanitized = array();
 			foreach ( $messages as $message ) {
-				if ( ! is_array( $message ) || ! isset( $message['rop_custom_description'] ) ) {
+				if ( ! is_array( $message ) || ! isset( $message['rop_custom_description'] ) || ! is_scalar( $message['rop_custom_description'] ) ) {
 					continue;
 				}
 
+				// Strip tags but keep the text as typed: every "&" is encoded first, so the decode
+				// reverses only the encoding added here, and a lone "<" or a "%XX" sequence survives.
+				// Repeat until nothing is stripped, because a decoded lone "<" can join the text after a removed tag.
+				$description = wp_check_invalid_utf8( (string) $message['rop_custom_description'] );
+				do {
+					$previous    = $description;
+					$description = wp_strip_all_tags( wp_pre_kses_less_than( str_replace( '&', '&amp;', $description ) ) );
+					$description = html_entity_decode( $description, ENT_QUOTES, 'UTF-8' );
+				} while ( $description !== $previous );
+
 				$sanitized[] = array(
-					'rop_custom_description' => sanitize_textarea_field( $message['rop_custom_description'] ),
+					'rop_custom_description' => $description,
 				);
 			}
 

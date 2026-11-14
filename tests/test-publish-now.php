@@ -530,46 +530,156 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Share variations are social-network text and must be normalized as text
-	 * when they cross the post-meta boundary.
+	 * Register the plugin meta with exactly one share variation sanitizer.
+	 *
+	 * The test case unregisters meta keys between tests while restoring hooks,
+	 * so a sanitizer can be left over or missing; neither must hide the result.
 	 */
-	public function test_custom_share_messages_are_stored_as_plain_text() {
-		$admin = new Rop_Admin();
-		$admin->register_meta();
-		$post_id = self::factory()->post->create();
-
-		update_post_meta(
-			$post_id,
-			'rop_custom_messages_group',
-			array(
-				array( 'rop_custom_description' => "A <strong>useful</strong> update\n<script>globalThis.rop = 1;</script>" ),
-			)
-		);
-
-		$this->assertSame(
-			array(
-				array( 'rop_custom_description' => 'A useful update' ),
-			),
-			get_post_meta( $post_id, 'rop_custom_messages_group', true )
-		);
+	private function register_share_variations_meta() {
+		remove_all_filters( 'sanitize_post_meta_rop_custom_messages_group' );
+		unregister_meta_key( 'post', 'rop_custom_messages_group' );
+		( new Rop_Admin() )->register_meta();
 	}
 
 	/**
-	 * A variation with a lone "<" is shared as typed, not as the entity sanitizing stored.
+	 * Store share variations through the registered meta sanitizer.
+	 *
+	 * @param mixed $messages The raw meta value.
+	 *
+	 * @return mixed The stored meta value.
 	 */
-	public function test_custom_share_message_keeps_less_than_sign_when_shared() {
+	private function store_share_variations( $messages ) {
+		$this->register_share_variations_meta();
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'rop_custom_messages_group', $messages );
+
+		return get_post_meta( $post_id, 'rop_custom_messages_group', true );
+	}
+
+	/**
+	 * Build the shared text for a post whose only share variation is given.
+	 *
+	 * @param string $description The variation text.
+	 *
+	 * @return string The shared text.
+	 */
+	private function share_variation( $description ) {
 		$settings      = new Rop_Settings_Model();
 		$settings_data = $settings->get_settings();
 		$settings_data['custom_messages'] = true;
 		$settings->save_settings( $settings_data );
-		( new Rop_Admin() )->register_meta();
+		$this->register_share_variations_meta();
 		$post_id = self::factory()->post->create();
-		update_post_meta( $post_id, 'rop_custom_messages_group', array( array( 'rop_custom_description' => 'We <3 our customers' ) ) );
+		update_post_meta( $post_id, 'rop_custom_messages_group', array( array( 'rop_custom_description' => $description ) ) );
 
 		$helper = new Rop_Post_Format_Helper();
 		$helper->set_post_format( Rop_InitAccounts::get_account_id() );
 		$content = $helper->build_content( $post_id );
 
-		$this->assertStringContainsString( 'We <3 our customers', $content['display_content'] );
+		return $content['display_content'];
+	}
+
+	/**
+	 * Share variations are social-network text and must be normalized as text
+	 * when they cross the post-meta boundary.
+	 */
+	public function test_custom_share_messages_are_stored_as_plain_text() {
+		$this->assertSame(
+			array(
+				array( 'rop_custom_description' => 'A useful update' ),
+			),
+			$this->store_share_variations(
+				array(
+					array( 'rop_custom_description' => "A <strong>useful</strong> update\n<script>globalThis.rop = 1;</script>" ),
+				)
+			)
+		);
+	}
+
+	/**
+	 * A tag split around another tag is still removed.
+	 */
+	public function test_custom_share_messages_strip_tag_rebuilt_from_fragments() {
+		$this->assertSame(
+			array(
+				array( 'rop_custom_description' => 'Before  after' ),
+			),
+			$this->store_share_variations(
+				array(
+					array( 'rop_custom_description' => 'Before <<b>script> after' ),
+				)
+			)
+		);
+	}
+
+	/**
+	 * Entries that are not variations are dropped and the list is re-indexed.
+	 */
+	public function test_custom_share_messages_drop_entries_without_text() {
+		$this->assertSame(
+			array(
+				array( 'rop_custom_description' => 'ok' ),
+			),
+			$this->store_share_variations(
+				array(
+					'junk',
+					array( 'other' => 'x' ),
+					array( 'rop_custom_description' => array( 'nested' ) ),
+					array( 'rop_custom_description' => 'ok' ),
+				)
+			)
+		);
+	}
+
+	/**
+	 * A value that is not a list stores an empty list.
+	 */
+	public function test_custom_share_messages_non_list_is_stored_empty() {
+		$this->assertSame( array(), $this->store_share_variations( 'junk' ) );
+	}
+
+	/**
+	 * Text, ampersands, entities typed as text and percent-encoded sequences are stored as typed.
+	 */
+	public function test_custom_share_messages_keep_typed_text() {
+		$typed = "We <3 our customers & friends\n50%2F off at https://example.com/caf%C3%A9\nWrite &lt;b&gt; here, \"quoted\" 'text'";
+
+		$this->assertSame(
+			array( array( 'rop_custom_description' => $typed ) ),
+			$this->store_share_variations( array( array( 'rop_custom_description' => $typed ) ) )
+		);
+	}
+
+	/**
+	 * The block editor reads back the variation it saved, as typed.
+	 */
+	public function test_custom_share_message_round_trips_through_rest_api() {
+		$this->register_share_variations_meta();
+		$post_id = self::factory()->post->create();
+		$typed   = 'We <3 our customers & friends';
+
+		$save = new WP_REST_Request( 'POST', '/wp/v2/posts/' . $post_id );
+		$save->set_body_params( array( 'meta' => array( 'rop_custom_messages_group' => array( array( 'rop_custom_description' => $typed ) ) ) ) );
+		$this->assertSame( 200, rest_do_request( $save )->get_status() );
+
+		$read = new WP_REST_Request( 'GET', '/wp/v2/posts/' . $post_id );
+		$read->set_param( 'context', 'edit' );
+		$data = rest_do_request( $read )->get_data();
+
+		$this->assertSame( array( array( 'rop_custom_description' => $typed ) ), $data['meta']['rop_custom_messages_group'] );
+	}
+
+	/**
+	 * A variation is shared without its tags, and a lone "<" and an ampersand are shared as typed.
+	 */
+	public function test_custom_share_message_keeps_less_than_sign_when_shared() {
+		$this->assertSame( 'We <3 our customers & friends', $this->share_variation( '<em>We</em> <3 our customers & friends' ) );
+	}
+
+	/**
+	 * A variation that contains an entity typed as text is shared unchanged.
+	 */
+	public function test_custom_share_message_keeps_typed_entity_when_shared() {
+		$this->assertStringContainsString( 'Write &lt;b&gt; here', $this->share_variation( 'Write &lt;b&gt; here' ) );
 	}
 }

@@ -228,9 +228,6 @@ class Rop_Post_Format_Helper {
 				$share_content          = $custom_messages[ $random_index ]['rop_custom_description'];
 			}
 
-			// Variations are stored as sanitized text, which encodes a lone "<"; networks receive plain text.
-			$share_content = html_entity_decode( $share_content, ENT_QUOTES );
-
 			if ( isset( $pro_format_helper ) ) {
 				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
 			}
