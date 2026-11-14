@@ -586,7 +586,7 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 	public function test_custom_share_messages_are_stored_as_plain_text() {
 		$this->assertSame(
 			array(
-				array( 'rop_custom_description' => 'A useful update' ),
+				array( 'rop_custom_description' => "A useful update\n" ),
 			),
 			$this->store_share_variations(
 				array(
@@ -639,10 +639,11 @@ class Test_RopPublishNow extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Text, ampersands, entities typed as text and percent-encoded sequences are stored as typed.
+	 * Text, a "<" that opens no tag, ampersands, entities typed as text, percent-encoded
+	 * sequences and edge whitespace are stored as typed.
 	 */
 	public function test_custom_share_messages_keep_typed_text() {
-		$typed = "We <3 our customers & friends\n50%2F off at https://example.com/caf%C3%A9\nWrite &lt;b&gt; here, \"quoted\" 'text'";
+		$typed = "  We <3 our customers & friends -> shop now\nPrice <50 and >20\n50%2F off at https://example.com/caf%C3%A9\nWrite &lt;b&gt; here, \"quoted\" 'text'\nends with a <b\n";
 
 		$this->assertSame(
 			array( array( 'rop_custom_description' => $typed ) ),

@@ -2044,13 +2044,15 @@ class Rop_Admin {
 				}
 
 				// Strip tags but keep the text as typed: every "&" is encoded first, so the decode
-				// reverses only the encoding added here, and a lone "<" or a "%XX" sequence survives.
+				// reverses only the encoding added here. A "<" that cannot open a tag, or has no
+				// closing ">", is encoded so strip_tags() keeps it; edge whitespace is not trimmed.
 				// Repeat until nothing is stripped, because a decoded lone "<" can join the text after a removed tag.
 				$description = wp_check_invalid_utf8( (string) $message['rop_custom_description'] );
 				do {
 					$previous    = $description;
-					$description = wp_strip_all_tags( wp_pre_kses_less_than( str_replace( '&', '&amp;', $description ) ) );
-					$description = html_entity_decode( $description, ENT_QUOTES, 'UTF-8' );
+					$description = preg_replace( '/<(?![a-zA-Z\/!?])/', '&lt;', str_replace( '&', '&amp;', $description ) );
+					$description = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', wp_pre_kses_less_than( $description ) );
+					$description = html_entity_decode( strip_tags( $description ), ENT_QUOTES, 'UTF-8' );
 				} while ( $description !== $previous );
 
 				$sanitized[] = array(
