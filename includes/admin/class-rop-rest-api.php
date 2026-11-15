@@ -1681,8 +1681,16 @@ class Rop_Rest_Api {
 	 * @return array|mixed|null|string
 	 */
 	public function share( WP_REST_Request $request ) {
-		$post_id = $request->get_param( 'id' );
+		$post_id = absint( $request->get_param( 'id' ) );
 		$body    = json_decode( $request->get_body(), true );
+
+		if ( empty( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+			return new WP_Error(
+				'rest_cannot_edit',
+				__( 'Sorry, you are not allowed to share this post.', 'tweet-old-post' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
 
 		if ( ! isset( $body['rop_publish_now_accounts'] ) || ! is_array( $body['rop_publish_now_accounts'] ) || empty( $body['rop_publish_now_accounts'] ) ) {
 			return rest_ensure_response(

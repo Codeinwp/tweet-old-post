@@ -79,5 +79,8 @@
         <testsuite name="classic-editor-detection">
             <directory>./tests/test-classic-editor-detection.php</directory>
         </testsuite>
+        <testsuite name="docs-links">
+            <directory>./tests/test-docs-links.php</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

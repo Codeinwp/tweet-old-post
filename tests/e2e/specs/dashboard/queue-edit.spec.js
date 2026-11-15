@@ -11,7 +11,7 @@ import { tryCloseTourModal } from '../../utils';
 /**
  * @typedef {Object} QueueContent
  * @property {string}           content
- * @property {''}               hashtags
+ * @property {string}           hashtags
  * @property {false}            post_with_image
  * @property {''}               post_image
  * @property {''}               post_url
@@ -48,12 +48,13 @@ test.describe('Sharing Queue edit', () => {
 	/**
 	 * Build a queue entry for the seeded account.
 	 *
-	 * @param {number} postId  Post ID.
-	 * @param {string} content Card content.
-	 * @param {number} time    Scheduled timestamp.
+	 * @param {number} postId   Post ID.
+	 * @param {string} content  Card content.
+	 * @param {number} time     Scheduled timestamp.
+	 * @param {string} hashtags Card hashtags.
 	 * @return {QueueItem} Queue entry.
 	 */
-	const queueItem = (postId, content, time) => ({
+	const queueItem = (postId, content, time, hashtags = '') => ({
 		time,
 		post_id: postId,
 		post_data: {
@@ -63,7 +64,7 @@ test.describe('Sharing Queue edit', () => {
 			post_id: postId,
 			content: {
 				content,
-				hashtags: '',
+				hashtags,
 				post_with_image: false,
 				post_image: '',
 				post_url: '',
@@ -150,6 +151,24 @@ test.describe('Sharing Queue edit', () => {
 		await tryCloseTourModal(page);
 		await page.getByText('Sharing Queue', { exact: true }).click();
 	};
+
+	test('a queued card shows markup in its content as text and its hashtags in bold', async ({
+		page,
+		admin,
+	}) => {
+		await mockQueueApi(page, [
+			queueItem(101, 'Read <b>x</b> now', 2000000000, '#rop'),
+		]);
+		await openQueue(page, admin);
+
+		const content = page
+			.locator('.tab-view .card')
+			.first()
+			.locator('p', { hasText: 'Read' });
+		await expect(content).toContainText('Read <b>x</b> now');
+		await expect(content.locator('b')).toHaveCount(0);
+		await expect(content.locator('strong')).toHaveText('#rop');
+	});
 
 	test('saving an untouched card after a skip keeps the previous caption off the next post', async ({
 		page,

@@ -169,7 +169,7 @@ class Rop_Admin {
 		}
 		?>
 		<div class="notice notice-error is-dismissible">
-			<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
+			<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="' . esc_url( Rop_I18n::docs_url( 'getting-started/how-to-connect-bit-ly-to-revive-old-posts', 'bitly', 'admin-notice' ) ) . '" target="_blank">', '</a>', '</p>' ); ?>
 		</div>
 		<?php
 	}
@@ -356,6 +356,7 @@ class Rop_Admin {
 		$rop_api_settings['fb_domain_toast_display']         = $this->facebook_exception_toast_display();
 		$rop_api_settings['labels']                          = Rop_I18n::get_labels_frontend();
 		$rop_api_settings['upsell_link']                     = Rop_I18n::UPSELL_LINK;
+		$rop_api_settings['docs_link']                       = esc_url_raw( Rop_I18n::docs_url( '', 'documentation', 'dashboard' ) );
 		$rop_api_settings['pro_installed']                   = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
 		$rop_api_settings['show_li_app_btn']                 = $li_service->rop_show_li_app_btn();
 		$rop_api_settings['show_tmblr_app_btn']              = $tmblr_service->rop_show_tmblr_app_btn();
@@ -415,7 +416,7 @@ class Rop_Admin {
 		}
 
 		$rop_api_settings['tracking']           = 'yes' === get_option( 'tweet_old_post_logger_flag', 'no' );
-		$rop_api_settings['tracking_info_link'] = sanitize_url( 'https://docs.revive.social/article/2008-revive-old-posts-usage-tracking' );
+		$rop_api_settings['tracking_info_link'] = esc_url_raw( Rop_I18n::docs_url( 'general-guides/revive-old-posts-usage-tracking', 'usage-tracking', 'general-settings' ) );
 
 		$is_new_user  = (int) get_option( 'rop_is_new_user', 0 );
 		$install_time = ! $is_new_user ? (int) get_option( 'rop_first_install_date', 0 ) : 0;
@@ -1386,7 +1387,7 @@ class Rop_Admin {
 
 		?>
 		<div class="notice notice-error">
-			<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+			<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="' . esc_url( Rop_I18n::docs_url( 'general-guides/how-to-move-to-linkedin-api-v2', 'linkedin-api', 'admin-notice' ) ) . '" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 		</div>
 		<?php
@@ -1450,7 +1451,7 @@ class Rop_Admin {
 
 			?>
 			<div class="notice notice-error">
-				<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Social. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+				<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Social. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="' . esc_url( Rop_I18n::docs_url( 'general-guides/fix-revive-old-post-not-posting', 'wp-cron-disabled', 'admin-notice' ) ) . '" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 			</div>
 			<?php
@@ -1596,7 +1597,7 @@ class Rop_Admin {
 
 			?>
 			<div class="notice notice-error">
-				<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s There might be an issue preventing Revive Social from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-cron-event-status-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+				<?php echo sprintf( __( '%1$s%2$sRevive Social:%3$s There might be an issue preventing Revive Social from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="' . esc_url( Rop_I18n::docs_url( 'general-guides/fix-revive-old-post-not-posting', 'cron-event-status', 'admin-notice' ) ) . '" target="_blank">', '</a>', '<a style="float: right;" href="?rop-cron-event-status-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 			</div>
 			<?php
@@ -2027,9 +2028,39 @@ class Rop_Admin {
 			return current_user_can( 'edit_posts' );
 		};
 
-		// JSON-encoded automatically by WP
+		// JSON-encoded automatically by WP.
 		$sanitize_passthrough = function ( $value ) {
 			return $value;
+		};
+		$sanitize_share_messages = function ( $messages ) {
+			if ( ! is_array( $messages ) ) {
+				return array();
+			}
+
+			$sanitized = array();
+			foreach ( $messages as $message ) {
+				if ( ! is_array( $message ) || ! isset( $message['rop_custom_description'] ) || ! is_scalar( $message['rop_custom_description'] ) ) {
+					continue;
+				}
+
+				// Strip tags but keep the text as typed: every "&" is encoded first, so the decode
+				// reverses only the encoding added here. A "<" that cannot open a tag, or has no
+				// closing ">", is encoded so strip_tags() keeps it; edge whitespace is not trimmed.
+				// Repeat until nothing is stripped, because a decoded lone "<" can join the text after a removed tag.
+				$description = wp_check_invalid_utf8( (string) $message['rop_custom_description'] );
+				do {
+					$previous    = $description;
+					$description = preg_replace( '/<(?![a-zA-Z!?]|\/[a-zA-Z])/', '&lt;', str_replace( '&', '&amp;', $description ) );
+					$description = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', wp_pre_kses_less_than( $description ) );
+					$description = html_entity_decode( strip_tags( $description ), ENT_QUOTES, 'UTF-8' );
+				} while ( $description !== $previous );
+
+				$sanitized[] = array(
+					'rop_custom_description' => $description,
+				);
+			}
+
+			return $sanitized;
 		};
 
 		register_post_meta(
@@ -2063,7 +2094,7 @@ class Rop_Admin {
 			array(
 				'single'            => true,
 				'type'              => 'array',
-				'sanitize_callback' => $sanitize_passthrough,
+				'sanitize_callback' => $sanitize_share_messages,
 				'auth_callback'     => $auth_can_edit_posts,
 				'show_in_rest'      => array(
 					'schema' => array(
