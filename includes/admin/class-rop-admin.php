@@ -2028,9 +2028,39 @@ class Rop_Admin {
 			return current_user_can( 'edit_posts' );
 		};
 
-		// JSON-encoded automatically by WP
+		// JSON-encoded automatically by WP.
 		$sanitize_passthrough = function ( $value ) {
 			return $value;
+		};
+		$sanitize_share_messages = function ( $messages ) {
+			if ( ! is_array( $messages ) ) {
+				return array();
+			}
+
+			$sanitized = array();
+			foreach ( $messages as $message ) {
+				if ( ! is_array( $message ) || ! isset( $message['rop_custom_description'] ) || ! is_scalar( $message['rop_custom_description'] ) ) {
+					continue;
+				}
+
+				// Strip tags but keep the text as typed: every "&" is encoded first, so the decode
+				// reverses only the encoding added here. A "<" that cannot open a tag, or has no
+				// closing ">", is encoded so strip_tags() keeps it; edge whitespace is not trimmed.
+				// Repeat until nothing is stripped, because a decoded lone "<" can join the text after a removed tag.
+				$description = wp_check_invalid_utf8( (string) $message['rop_custom_description'] );
+				do {
+					$previous    = $description;
+					$description = preg_replace( '/<(?![a-zA-Z!?]|\/[a-zA-Z])/', '&lt;', str_replace( '&', '&amp;', $description ) );
+					$description = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', wp_pre_kses_less_than( $description ) );
+					$description = html_entity_decode( strip_tags( $description ), ENT_QUOTES, 'UTF-8' );
+				} while ( $description !== $previous );
+
+				$sanitized[] = array(
+					'rop_custom_description' => $description,
+				);
+			}
+
+			return $sanitized;
 		};
 
 		register_post_meta(
@@ -2064,7 +2094,7 @@ class Rop_Admin {
 			array(
 				'single'            => true,
 				'type'              => 'array',
-				'sanitize_callback' => $sanitize_passthrough,
+				'sanitize_callback' => $sanitize_share_messages,
 				'auth_callback'     => $auth_can_edit_posts,
 				'show_in_rest'      => array(
 					'schema' => array(
