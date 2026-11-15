@@ -345,6 +345,14 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+##### [Version 9.4.6](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.5...v9.4.6) (2026-11-15)
+
+- Enhanced security
+- Updated dependencies
+
+
+
+
 ##### [Version 9.4.5](https://github.com/Codeinwp/tweet-old-post/compare/v9.4.4...v9.4.5) (2026-11-05)
 
 - Fixed scheduled posts going live without sharing to social networks
