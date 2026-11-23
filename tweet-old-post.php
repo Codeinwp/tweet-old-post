@@ -265,6 +265,22 @@ function run_rop() {
 		}
 	);
 
+	add_filter(
+		'tweet_old_post_support_hub_metadata',
+		function () {
+			return array(
+				'is_pro' => defined( 'ROP_PRO_BASEFILE' ),
+				'links'  => array(
+					array(
+						'icon' => 'groups',
+						'text' => __( 'Community Forum', 'tweet-old-post' ),
+						'url'  => 'https://wordpress.org/support/plugin/tweet-old-post/',
+					),
+				),
+			);
+		}
+	);
+
 	add_filter( 'themeisle_sdk_enable_telemetry', '__return_true' );
 
 	$plugin = new Rop();
